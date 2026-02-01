@@ -47,6 +47,7 @@ docs:
   generate_readme: true
   generate_architecture_diagrams: true
   include_code_examples: true
+  language: english
 agent:
   verbosity: high
   reasoning: deep

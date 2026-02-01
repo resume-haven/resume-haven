@@ -549,11 +549,99 @@ When refactoring:
 4. Add documentation if behavior changes
 5. Test thoroughly after refactoring
 
+## Laravel Development
+
+### Application Structure
+
+ResumeHaven uses Laravel 12 with the following key features:
+
+- **Strict Types**: All PHP files include `declare(strict_types=1)`
+- **Database**: SQLite (default) with support for PostgreSQL/MySQL
+- **Testing**: PHPUnit for unit and feature tests
+- **Code Style**: PSR-12 via Laravel Pint
+
+### Common Laravel Commands
+
+```bash
+# Run migrations
+make migrate
+
+# Create a new migration
+docker-compose exec app php artisan make:migration create_table_name
+
+# Create a new model
+docker-compose exec app php artisan make:model ModelName
+
+# Create a controller
+docker-compose exec app php artisan make:controller ControllerName
+
+# Run seeders
+docker-compose exec app php artisan db:seed
+
+# Clear caches
+docker-compose exec app php artisan cache:clear
+docker-compose exec app php artisan config:clear
+docker-compose exec app php artisan route:clear
+```
+
+### Creating New Features
+
+1. **Create a migration**:
+   ```bash
+   docker-compose exec app php artisan make:migration create_resumes_table
+   ```
+
+2. **Create a model**:
+   ```bash
+   docker-compose exec app php artisan make:model Resume
+   ```
+
+3. **Create a controller**:
+   ```bash
+   docker-compose exec app php artisan make:controller ResumeController --resource
+   ```
+
+4. **Run migrations**:
+   ```bash
+   make migrate
+   ```
+
+### Testing
+
+Run the test suite:
+```bash
+make test
+```
+
+Create new tests:
+```bash
+# Feature test
+docker-compose exec app php artisan make:test ResumeTest
+
+# Unit test
+docker-compose exec app php artisan make:test ResumeTest --unit
+```
+
+### Database Management
+
+**View database**:
+```bash
+# SQLite
+docker-compose exec app php artisan tinker
+>>> DB::table('users')->get();
+```
+
+**Reset database**:
+```bash
+docker-compose exec app php artisan migrate:fresh --seed
+```
+
 ## Resources
 
 - [PHP Type Declarations](https://www.php.net/manual/en/language.types.declarations.php)
 - [PSR-12 Code Style](https://www.php-fig.org/psr/psr-12/)
 - [PHP 8.5 Features](https://www.php.net/releases/)
+- [Laravel Documentation](https://laravel.com/docs)
 
 ## Next Steps
 

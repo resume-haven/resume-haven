@@ -116,11 +116,54 @@ make fix-perms       # Fix file permissions
 ### Development
 
 ```bash
-make dev             # Complete setup (up + install)
-make debug           # Start debug listener
-make init            # Initialize project
-make reset           # Reset to fresh state
-make status          # Show project status
+make dev                  # Complete setup (up + install)
+make debug                # Start debug listener
+make init                 # Initialize project
+make reset                # Reset to fresh state
+make status               # Show project status
+make laravel-install      # Install Laravel framework
+make laravel-strict-types # Add strict types to all PHP files
+```
+
+#### `make laravel-install`
+
+Install Laravel framework into the project. This command:
+- Creates a fresh Laravel project in a temporary directory
+- Moves Laravel files to the project root
+- Configures SQLite as the database
+- Generates application key
+- Runs initial migrations
+- Preserves existing Docker and documentation files
+
+**Usage**:
+```bash
+make laravel-install
+```
+
+**Note**: This target is idempotent and can be run multiple times safely.
+
+#### `make laravel-strict-types`
+
+Add `declare(strict_types=1)` to all PHP files in the Laravel application.
+
+**Usage**:
+```bash
+make laravel-strict-types
+```
+
+This ensures type safety across the entire codebase by adding strict type declarations to:
+- `app/` - Application code
+- `bootstrap/` - Bootstrap files
+- `database/` - Migrations, seeders, factories
+- `routes/` - Route definitions
+- `tests/` - Test files
+
+**Example output**:
+```
+Added strict types: app/Models/User.php
+Added strict types: app/Http/Controllers/Controller.php
+...
+Done!
 ```
 
 ## Adding New Commands
