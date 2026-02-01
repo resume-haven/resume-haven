@@ -1,0 +1,22 @@
+services:
+  # FrankenPHP Web Server
+  app:
+    build:
+      context: .
+      dockerfile: docker/FrankenPHP/Dockerfile
+    container_name: resume-haven-app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - APP_NAME=ResumeHaven
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost
+      - LOG_CHANNEL=stderr
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    restart: unless-stopped
+    tty: true
