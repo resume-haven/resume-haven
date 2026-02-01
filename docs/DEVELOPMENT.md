@@ -332,16 +332,56 @@ composer install
 
 ### Testing Code
 
+We use **Pest** for testing - a modern, elegant testing framework for Laravel.
+
 ```bash
-# Run PHP syntax check
-php -l app/Models/Resume.php
+# Run all tests
+make test
 
-# Execute a file
-docker-compose exec app php app/test.php
+# Run tests with coverage report
+make test-coverage
 
-# Run tests (if configured)
-docker-compose exec app php artisan test
+# Run specific test file
+docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
+
+# Run tests matching pattern
+docker-compose exec app ./vendor/bin/pest --filter=ModelTest
+
+# Run tests in parallel
+docker-compose exec app ./vendor/bin/pest --parallel
 ```
+
+**Example Pest Test:**
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use App\Models\Resume;
+
+describe('Resume API', function () {
+    it('creates a resume', function () {
+        $data = [
+            'title' => 'John Doe',
+            'summary' => 'Experienced developer',
+        ];
+
+        $response = $this->postJson('/api/resumes', $data);
+        
+        $response->assertCreated()
+            ->assertJsonPath('data.title', 'John Doe');
+    });
+
+    it('returns 404 for missing resume', function () {
+        $this->getJson('/api/resumes/999')
+            ->assertNotFound();
+    });
+});
+```
+
+See [Code Quality Guide](CODE_QUALITY.md#pest-testing-framework) for more Pest documentation.
 
 ## File Organization
 

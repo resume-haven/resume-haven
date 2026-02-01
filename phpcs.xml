@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'paths' => [
+        'app',
+        'bootstrap',
+        'database/factories',
+        'database/migrations',
+        'database/seeders',
+        'routes',
+        'tests',
+    ],
+    'exclude' => [
+        'vendor',
+        'storage',
+        'bootstrap/cache',
+    ],
+    'rules' => [
+        'PSR2' => true,
+        'PSR1' => true,
+        'PSR12' => true,
+    ],
+    'indent' => '    ', // 4 spaces
+    'severity' => [
+        'error' => 5,
+        'warning' => 8,
+    ],
+];

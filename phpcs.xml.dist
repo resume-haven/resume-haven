@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>ResumeHaven Code Standard</description>
+
+    <!-- PSR-12 Standard -->
+    <rule ref="PSR12">
+        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    </rule>
+
+    <!-- Include paths -->
+    <file>app</file>
+    <file>bootstrap</file>
+    <file>config</file>
+    <file>database/factories</file>
+    <file>database/migrations</file>
+    <file>database/seeders</file>
+    <file>routes</file>
+    <file>tests</file>
+
+    <!-- Exclude paths -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/bootstrap/cache/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <!-- Configuration -->
+    <arg name="tab-width" value="4"/>
+    <arg name="encoding" value="utf-8"/>
+    <arg name="report" value="summary"/>
+    <arg name="colors"/>
+    <arg name="cache" value=".phpcs-cache"/>
+
+    <!-- Severity -->
+    <rule ref="PSR12">
+        <properties>
+            <property name="severity" value="5"/>
+        </properties>
+    </rule>
+</ruleset>

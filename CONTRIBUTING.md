@@ -48,6 +48,28 @@ Follow the [Development Guide](DEVELOPMENT.md):
 - Use strict types in all PHP files
 - Follow PSR-12 code style
 - Write clear commit messages (see below)
+- Write tests for new features
+
+### 4. Code Quality
+
+Before committing, run quality checks:
+
+```bash
+# Auto-fix code style and modernize
+make quality-fix
+
+# Validate all checks (no changes)
+make quality
+
+# Run tests
+make test
+```
+
+See [Code Quality Guide](docs/CODE_QUALITY.md) for details on all tools:
+- **Pint** - Code formatting
+- **PHPStan + Larastan** - Static analysis
+- **Pest** - Testing framework
+- **Rector** - Automated refactoring
 - Add tests for new features
 - Update documentation
 

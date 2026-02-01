@@ -123,6 +123,7 @@ resume-haven/
 
 - [Docker Setup](docs/DOCKER.md) - Docker configuration and usage
 - [Development Guide](docs/DEVELOPMENT.md) - Development workflow and standards
+- [Code Quality](docs/CODE_QUALITY.md) - Code quality, testing, and CI/CD
 - [Architecture](docs/ARCHITECTURE.md) - System architecture overview
 - [Deployment](docs/DEPLOYMENT.md) - Deployment instructions
 - [Makefile Reference](docs/MAKEFILE.md) - Complete Makefile documentation

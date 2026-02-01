@@ -97,15 +97,60 @@ update:
 	@echo "$(BLUE)Updating Composer dependencies...$(NC)"
 	docker-compose exec app composer update
 
-## Application: test - Run PHP tests
+## Application: test - Run Pest tests
 test:
-	@echo "$(BLUE)Running tests...$(NC)"
-	docker-compose exec app php artisan test
+	@echo "$(BLUE)Running Pest tests...$(NC)"
+	docker-compose exec app ./vendor/bin/pest
+
+## Application: test-coverage - Run tests with coverage report
+test-coverage:
+	@echo "$(BLUE)Running tests with coverage...$(NC)"
+	docker-compose exec app ./vendor/bin/pest --coverage
 
 ## Application: lint - Run code style checks
 lint:
-	@echo "$(BLUE)Running code linting...$(NC)"
-	docker-compose exec app composer lint
+	@echo "$(BLUE)Running code linting with Pint...$(NC)"
+	docker-compose exec app ./vendor/bin/pint
+
+## Application: lint-check - Check code style without fixing
+lint-check:
+	@echo "$(BLUE)Checking code style...$(NC)"
+	docker-compose exec app ./vendor/bin/pint --test
+
+## Application: phpstan - Run static analysis (PHPStan with Larastan)
+phpstan:
+	@echo "$(BLUE)Running static analysis with PHPStan...$(NC)"
+	docker-compose exec app ./vendor/bin/phpstan analyse --memory-limit=512M
+
+## Application: phpstan-baseline - Generate PHPStan baseline
+phpstan-baseline:
+	@echo "$(BLUE)Generating PHPStan baseline...$(NC)"
+	docker-compose exec app ./vendor/bin/phpstan analyse --generate-baseline --memory-limit=512M
+
+## Application: rector - Run code refactoring (dry-run)
+rector:
+	@echo "$(BLUE)Showing code refactoring suggestions...$(NC)"
+	docker-compose exec app ./vendor/bin/rector process --dry-run
+
+## Application: rector-fix - Apply code refactoring
+rector-fix:
+	@echo "$(BLUE)Applying code refactoring...$(NC)"
+	docker-compose exec app ./vendor/bin/rector process
+
+## Application: quality - Run all code quality checks
+quality:
+	@echo "$(BLUE)Running all code quality checks...$(NC)"
+	@make lint-check
+	@make phpstan
+	@make test
+	@echo "$(GREEN)All quality checks passed!$(NC)"
+
+## Application: quality-fix - Auto-fix code quality issues
+quality-fix:
+	@echo "$(BLUE)Auto-fixing code quality issues...$(NC)"
+	@make lint
+	@make rector-fix
+	@echo "$(GREEN)Code quality fixes applied!$(NC)"
 
 ## Application: migrate - Run database migrations
 migrate:
