@@ -1,0 +1,435 @@
+# Development Guide
+
+## Code Standards
+
+### Strict Types
+
+All PHP files must declare strict types at the top:
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\Models;
+
+class Resume
+{
+    // Code here...
+}
+```
+
+**Why Strict Types?**
+- Prevents type coercion bugs
+- Catches type errors at runtime
+- Improves code reliability
+- Makes intentions explicit
+
+### Enforcing Strict Types
+
+**All PHP files in these directories have strict types enabled:**
+- `app/` - Application code
+- `bootstrap/` - Bootstrap files
+- `database/` - Migrations, factories, seeders
+- `routes/` - Route definitions
+- `tests/` - Test files
+
+**Total: 47 files with `declare(strict_types=1)`**
+
+## Code Style Guide
+
+### Naming Conventions
+
+**Classes** - PascalCase
+```php
+class ResumeBuilder { }
+class ExperienceEntry { }
+class SkillAssessment { }
+```
+
+**Methods/Functions** - camelCase
+```php
+public function buildResume() { }
+private function validateInput() { }
+function calculateScore() { }
+```
+
+**Constants** - UPPER_SNAKE_CASE
+```php
+const MAX_FILE_SIZE = 5242880; // 5MB
+const RESUME_FORMAT_PDF = 'pdf';
+```
+
+**Variables** - camelCase
+```php
+$resumeData = [];
+$isValid = true;
+$maxAttempts = 3;
+```
+
+### Code Structure
+
+**Class Structure**
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Contracts\Buildable;
+use Illuminate\Support\Facades\Log;
+
+class Resume implements Buildable
+{
+    // Constants first
+    const EXPORT_FORMAT = 'pdf';
+    
+    // Properties
+    private string $name;
+    private array $sections = [];
+    
+    // Constructor
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+    
+    // Public methods
+    public function build(): string
+    {
+        return $this->render();
+    }
+    
+    // Protected/private methods
+    private function render(): string
+    {
+        return 'rendered content';
+    }
+}
+```
+
+## PHP Best Practices
+
+### Type Hints
+
+Always use type hints for parameters and return values:
+
+```php
+// ❌ Bad: No type hints
+public function processData($input) {
+    return $result;
+}
+
+// ✅ Good: Full type hints
+public function processData(array $input): string {
+    return json_encode($input);
+}
+```
+
+### Null Safety
+
+Use typed properties to prevent null issues:
+
+```php
+// ❌ Bad: Could be null
+private $data;
+
+// ✅ Good: Explicit nullability
+private ?array $data = null;
+
+// ✅ Best: Non-nullable with initialization
+private array $data = [];
+```
+
+### Error Handling
+
+Always handle exceptions properly:
+
+```php
+try {
+    $resume = $this->buildResume($data);
+} catch (\InvalidArgumentException $e) {
+    Log::error('Invalid resume data', ['error' => $e->getMessage()]);
+    throw $e;
+} catch (\Exception $e) {
+    Log::critical('Unexpected error building resume', ['error' => $e]);
+    throw new \RuntimeException('Failed to build resume', 0, $e);
+}
+```
+
+### Documentation
+
+Use PHPDoc for complex logic:
+
+```php
+/**
+ * Generates a resume in the specified format.
+ *
+ * @param array $resumeData The resume data structure
+ * @param string $format The export format (pdf, docx, html)
+ * @return string The generated resume content
+ * @throws \InvalidArgumentException If format is unsupported
+ */
+public function generate(array $resumeData, string $format): string
+{
+    if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
+        throw new \InvalidArgumentException("Format {$format} not supported");
+    }
+    
+    return $this->{'generate' . ucfirst($format)}($resumeData);
+}
+```
+
+## Development Workflow
+
+### Setting Up Your Environment
+
+```bash
+# 1. Start containers
+docker-compose up -d
+
+# 2. Enter container
+docker-compose exec app bash
+
+# 3. Install dependencies (if needed)
+composer install
+
+# 4. Set up IDE debugging (F5 in VS Code)
+```
+
+### Making Code Changes
+
+1. **Edit code locally** in VS Code
+2. **Container automatically detects changes** (mounted volume)
+3. **Refresh browser** to test changes
+4. **Use Xdebug** to debug (F5, set breakpoints)
+
+### Testing Code
+
+```bash
+# Run PHP syntax check
+php -l app/Models/Resume.php
+
+# Execute a file
+docker-compose exec app php app/test.php
+
+# Run tests (if configured)
+docker-compose exec app php artisan test
+```
+
+## File Organization
+
+### Adding New Files
+
+When creating new PHP files:
+
+1. **Use appropriate namespace**
+   ```php
+   <?php
+   declare(strict_types=1);
+   
+   namespace App\Services;
+   ```
+
+2. **Add strict types**
+   - Always second line after `<?php`
+
+3. **Follow PSR-12** code style
+   - Consistent indentation (4 spaces)
+   - One blank line between methods
+
+4. **Document public APIs**
+   - PHPDoc blocks for classes and public methods
+
+### Directory Purpose
+
+| Directory | Purpose |
+|-----------|---------|
+| `app/` | Core application code |
+| `public/` | Web server entry point and assets |
+| `bootstrap/` | Application initialization |
+| `storage/` | Temporary files, logs, cache |
+| `database/` | Migrations, factories, seeders |
+| `routes/` | Route definitions |
+| `tests/` | Test files |
+| `docker/` | Docker configurations |
+
+## Debugging Tips
+
+### Using Xdebug Effectively
+
+1. **Set breakpoints** on suspect code lines
+2. **Inspect variables** in Variables panel
+3. **Watch expressions** for complex logic
+4. **Step through code** methodically
+5. **Check call stack** for function flow
+
+See [docs/XDEBUG.md](XDEBUG.md) for detailed debugging guide.
+
+### Quick Debugging
+
+For quick inspection without IDE:
+
+```bash
+# Add to code
+var_dump($variable);
+die();
+
+# Or in containers
+docker-compose exec app php -r "var_dump(\$data);"
+```
+
+## Performance Considerations
+
+### Memory Usage
+
+For strict types enforcement:
+- ~0.5% overhead per file
+- Negligible in modern PHP 8.5
+- Benefit in error prevention far outweighs cost
+
+### Loading Time
+
+Type checking happens at:
+- **Parse time** (minimal impact)
+- **Runtime** (only on function calls)
+
+### Optimization
+
+Declare strict types doesn't slow down code because:
+1. Type hints compiled at parse time
+2. No reflection overhead
+3. PHP 8.5 optimizations handle native types
+
+## Security Best Practices
+
+### Input Validation
+
+Always validate and sanitize input:
+
+```php
+public function createResume(string $name, array $sections): Resume
+{
+    // Validate name
+    if (strlen($name) < 1 || strlen($name) > 255) {
+        throw new \InvalidArgumentException('Invalid resume name');
+    }
+    
+    // Validate sections
+    foreach ($sections as $section) {
+        if (!is_array($section) || empty($section['title'])) {
+            throw new \InvalidArgumentException('Invalid section structure');
+        }
+    }
+    
+    return new Resume($name, $sections);
+}
+```
+
+### SQL Injection Prevention
+
+Always use parameterized queries (if using direct DB):
+
+```php
+// ❌ Bad: SQL injection vulnerable
+$query = "SELECT * FROM users WHERE name = '$name'";
+
+// ✅ Good: Parameterized query
+$query = "SELECT * FROM users WHERE name = ?";
+$result = $db->query($query, [$name]);
+```
+
+## Common Patterns
+
+### Builder Pattern
+
+```php
+<?php
+declare(strict_types=1);
+
+class ResumeBuilder
+{
+    private Resume $resume;
+    
+    public function __construct(string $name)
+    {
+        $this->resume = new Resume($name);
+    }
+    
+    public function addExperience(Experience $exp): self
+    {
+        $this->resume->addSection('experience', $exp);
+        return $this;
+    }
+    
+    public function build(): Resume
+    {
+        return $this->resume;
+    }
+}
+
+// Usage
+$resume = (new ResumeBuilder('John Doe'))
+    ->addExperience($exp1)
+    ->addExperience($exp2)
+    ->build();
+```
+
+### Repository Pattern
+
+```php
+<?php
+declare(strict_types=1);
+
+interface ResumeRepository
+{
+    public function findById(string $id): ?Resume;
+    public function save(Resume $resume): void;
+}
+
+class SqliteResumeRepository implements ResumeRepository
+{
+    public function findById(string $id): ?Resume
+    {
+        // Database query
+    }
+    
+    public function save(Resume $resume): void
+    {
+        // Database insert/update
+    }
+}
+```
+
+## Continuous Improvement
+
+### Code Review Checklist
+
+When reviewing code:
+- [ ] Strict types declared
+- [ ] Type hints on all methods
+- [ ] Error handling present
+- [ ] Documentation complete
+- [ ] No obvious security issues
+- [ ] Follows naming conventions
+- [ ] Appropriate use of design patterns
+
+### Refactoring Guide
+
+When refactoring:
+1. Ensure tests pass before changes
+2. Make small, focused changes
+3. Update type hints if signatures change
+4. Add documentation if behavior changes
+5. Test thoroughly after refactoring
+
+## Resources
+
+- [PHP Type Declarations](https://www.php.net/manual/en/language.types.declarations.php)
+- [PSR-12 Code Style](https://www.php-fig.org/psr/psr-12/)
+- [PHP 8.5 Features](https://www.php.net/releases/)
+
+## Next Steps
+
+- [Docker Setup](DOCKER.md) - Container management
+- [Xdebug Debugging](XDEBUG.md) - IDE debugging
+- [Architecture](ARCHITECTURE.md) - Project structure

@@ -1,130 +1,143 @@
-# Docker Setup für ResumeHaven mit FrankenPHP
+# Docker Setup Guide
 
-## Überblick
+## Overview
 
-Dieses Docker-Setup enthält:
+ResumeHaven runs in a Docker container using **FrankenPHP** (PHP 8.5 with Caddy web server) on Alpine Linux. This provides a lightweight, secure, and efficient development environment.
 
-- **FrankenPHP** (PHP 8.5 mit Caddy) - Web Server
+## Architecture
 
-## Voraussetzungen
+### Services
 
-- Docker & Docker Compose installiert
-- Git
+**app** - FrankenPHP container
+- PHP 8.5.2 (Thread-Safe)
+- Caddy web server (built-in)
+- Xdebug 3.5.0 for debugging
+- Composer package manager
+- SQLite database support
 
-## Schnelleinstieg
+## Prerequisites
 
-### 1. Umgebungsvariablen vorbereiten
+- Docker Desktop 4.0+ or Docker + Docker Compose
+- WSL2 on Windows (recommended for performance)
+- At least 2GB available disk space
+- 2GB available RAM
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd resume-haven
+```
+
+### 2. Prepare Environment File
 
 ```bash
 cp .env.docker .env
 ```
 
-### 2. Docker-Umgebung starten
+### 3. Build and Start Containers
 
 ```bash
+docker-compose up -d --build
+```
+
+The first build takes 3-5 minutes to compile PHP extensions.
+
+### 4. Verify Installation
+
+```bash
+# Check container status
+docker-compose ps
+
+# Verify PHP version
+docker-compose exec app php -v
+```
+
+## Container Management
+
+### Starting Services
+
+```bash
+# Start in background
 docker-compose up -d
+
+# Start with log output
+docker-compose up
 ```
 
-Das erste Mal kann das Building länger dauern (~5-10 Minuten).
-
-### 3. Applikation initialisieren
+### Stopping Services
 
 ```bash
-# SSH in den Container
-docker-compose exec app bash
+# Stop all containers
+docker-compose stop
 
-# Im Container (nur wenn DB konfiguriert ist):
-php artisan migrate
+# Stop and remove containers
+docker-compose down
 ```
 
-Alternativ (ohne Shell zu betreten, nur mit DB-Konfiguration):
+### Viewing Logs
 
 ```bash
-docker-compose exec app php artisan migrate
-```
-
-### 4. Assets builden (optional, für Vite)
-
-```bash
-docker-compose exec app npm run build
-```
-
-## Zugriff
-
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| **Web App** | http://localhost | - |
-
-## Wichtige Befehle
-
-```bash
-# Logs anschauen
+# View and follow app logs
 docker-compose logs -f app
 
-# In den App-Container gehen
+# View last 50 lines
+docker-compose logs --tail=50 app
+```
+
+### Shell Access
+
+```bash
+# Enter container shell
 docker-compose exec app bash
 
-# Artisan-Befehle
-docker-compose exec app php artisan tinker
-docker-compose exec app php artisan make:model User -m
-
-# Tests ausführen
-docker-compose exec app php artisan test
-
-# Formatierung & Linting
-docker-compose exec app composer lint
-docker-compose exec app composer test:lint
-
-# Container stoppen
-docker-compose down
-
+# Run PHP command
+docker-compose exec app php -v
 ```
 
-## Entwicklungs-Tipps
+## Dockerfile Configuration
 
-### Dateien ändern
-- Der lokale Ordner ist in den Container gemountet → Änderungen sind sofort sichtbar
-- PHP-Cache wird bei FrankenPHP automatisch aktualisiert
+Located at `docker/FrankenPHP/Dockerfile`
 
-### Hot Module Replacement (Vite)
-```bash
-docker-compose exec app npm run dev
-```
+### Installed PHP Extensions
+
+- `pdo_sqlite` - SQLite database driver
+- `zip` - ZIP file handling
+- `gd` - Image processing (with webp, jpeg, freetype support)
+- `bcmath` - Arbitrary precision arithmetic
+- `exif` - EXIF metadata reading
+- `intl` - Internationalization
+- `pcntl` - Process control
+- `sockets` - Low-level socket operations
+- `xdebug` - Debugging and profiling
 
 ## Troubleshooting
 
-### Port 80/443 bereits in Verwendung
-Ändere in `docker-compose.yml`:
-```yaml
-ports:
-  - "8080:80"    # Statt 80
-  - "8443:443"   # Statt 443
-```
-Dann erreichbar unter http://localhost:8080
+### Container Won't Start
 
-### composer install fehlgeschlagen
 ```bash
-# Container löschen und neu starten
-docker-compose down
-docker-compose up -d
+# View error logs
+docker-compose logs app
+
+# Full rebuild
+docker rm -f resume-haven-app
+docker-compose up -d --build
 ```
 
-## Production Notes
+### Port Already in Use
 
-⚠️ **Für Production:**
-- APP_DEBUG=false setzen
-- Secrets nicht in .env hardcoden
-- APP_KEY vor Production generieren: `php artisan key:generate`
-- Proper Logging konfigurieren
+```bash
+# Windows: Find process using port 80
+netstat -ano | findstr :80
 
-## Anpassungen
+# Use different port in docker-compose.yml
+# Change "80:80" to "8000:80"
+```
 
-### Externe Datenbank nutzen
-Setze in `.env.docker` (oder `.env`) die Variablen `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+## Next Steps
 
-### Custom Ports
-Alle Ports sind in `docker-compose.yml` konfigurierbar.
-
----
-
-**Fragen?** Siehe Laravel-Dokumentation: https://laravel.com/docs
+1. [Setup Xdebug debugging](XDEBUG.md)
+2. [Review Development Guidelines](DEVELOPMENT.md)
+3. [Check Project Architecture](ARCHITECTURE.md)
