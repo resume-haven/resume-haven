@@ -54,3 +54,11 @@ agent:
   ask_before_large_changes: true
   generate_commits: false
   cli: wsl
+repository:
+  type: git
+  remote: origin
+  default_branch: main
+  protected_branches:
+    - main
+    - develop
+  commit_style: conventional-commits
