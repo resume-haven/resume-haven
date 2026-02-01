@@ -288,6 +288,27 @@ When changing functionality:
 
 ## Development Tools
 
+## Development Tools
+
+### Using Make Commands
+
+This project includes a `Makefile` for common tasks:
+
+```bash
+# View all available commands
+make help
+
+# Common commands
+make up              # Start containers
+make down            # Stop containers
+make install         # Install dependencies
+make test            # Run tests
+make lint            # Check code style
+make shell           # Open container shell
+make logs            # View logs
+make dev             # Full setup: up + install
+```
+
 ### VS Code Extensions
 
 Recommended extensions:
@@ -298,19 +319,26 @@ Recommended extensions:
 
 ### Local Development
 
+Using Make (recommended):
+
 ```bash
-# Start containers
-docker-compose up -d
+# Initial setup
+make dev
 
 # Enter container
-docker-compose exec app bash
+make shell
 
 # View logs
-docker-compose logs -f app
+make logs
 
-# Run commands
-docker-compose exec app composer install
-docker-compose exec app php artisan test
+# Run tests
+make test
+
+# Check code style
+make lint
+
+# Stop everything
+make down
 ```
 
 ### Debugging

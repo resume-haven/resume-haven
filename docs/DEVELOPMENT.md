@@ -252,9 +252,63 @@ git commit -m "chore(deps): upgrade PHP to 8.5.2"
 - [ ] Breaking changes use `!` after type
 - [ ] Body explains why, not what (what is shown in diff)
 
+## Makefile Reference
+
+This project includes a **Makefile** that automates common tasks. The help is automatically generated from comments in the Makefile.
+
+### View All Commands
+
+```bash
+make help
+# or just
+make
+```
+
+### Common Commands
+
+```bash
+# Docker Management
+make up              # Start containers
+make down            # Stop containers
+make logs            # View logs
+make shell           # Open container shell
+
+# Application
+make install         # Install dependencies
+make test            # Run tests
+make lint            # Check code style
+
+# Development Setup
+make dev             # Complete setup (up + install)
+make init            # Initialize fresh project
+```
+
+### How It Works
+
+The Makefile uses a **self-documenting system**:
+- Each target has a comment: `## GROUP: target - Description`
+- The `help` target parses these comments automatically
+- Documentation stays in sync with code
+
+**See [docs/MAKEFILE.md](MAKEFILE.md) for detailed documentation.**
+
 ## Development Workflow
 
 ### Setting Up Your Environment
+
+With Makefile (recommended):
+
+```bash
+# One command setup
+make dev
+
+# Then develop
+make shell        # Open container shell
+make logs         # View logs
+make test         # Run tests
+```
+
+Or manually:
 
 ```bash
 # 1. Start containers

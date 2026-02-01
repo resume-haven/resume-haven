@@ -67,12 +67,39 @@ docker-compose up -d
 docker-compose logs -f app
 
 # Stop services
-docker-compose down
-```
+## 🔨 Quick Commands with Make
 
-### Accessing the Container
+This project includes a `Makefile` for simplified command execution:
 
 ```bash
+# View all available commands
+make help
+
+# Common commands
+make up              # Start containers
+make down            # Stop containers
+make install         # Install dependencies
+make test            # Run tests
+make shell           # Open container shell
+make logs            # View logs
+```
+
+**Note:** Make requires Linux/macOS or WSL2 on Windows. See [docs/MAKEFILE.md](docs/MAKEFILE.md) for details.
+
+## 🐳 Docker Commands
+
+Alternatively, use Docker Compose directly:
+
+```bash
+# Start containers
+docker-compose up -d
+
+# View logs
+docker-compose logs -f app
+
+# Stop containers
+docker-compose down
+
 # Open a shell in the container
 docker-compose exec app bash
 
