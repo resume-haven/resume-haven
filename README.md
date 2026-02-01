@@ -191,3 +191,24 @@ See [LICENSE.md](LICENSE.md) for license information.
 ## 👨‍💻 Development
 
 For detailed development guidelines, coding standards, and best practices, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Commit Standards
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```bash
+# Feature
+git commit -m "feat(export): add PDF export functionality"
+
+# Bug fix
+git commit -m "fix(validation): prevent null pointer in email validator"
+
+# Documentation
+git commit -m "docs: update deployment guide"
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed commit guidelines.

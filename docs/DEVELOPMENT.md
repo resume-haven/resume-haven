@@ -179,6 +179,79 @@ public function generate(array $resumeData, string $format): string
 }
 ```
 
+## Git Workflow
+
+### Conventional Commits
+
+This project uses **Conventional Commits** as specified in [conventionalcommits.org](https://www.conventionalcommits.org/en/v1.0.0/).
+
+**Format:**
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types:**
+- `feat` - A new feature
+- `fix` - A bug fix
+- `docs` - Documentation only changes
+- `style` - Changes that don't affect code meaning (formatting, semicolons, etc.)
+- `refactor` - Code changes that neither fix bugs nor add features
+- `perf` - Code changes that improve performance
+- `test` - Adding or updating tests
+- `chore` - Changes to build process, dependencies, tools, CI/CD
+- `ci` - CI/CD configuration changes
+
+**Examples:**
+
+```bash
+# Simple feature
+git commit -m "feat: add resume PDF export functionality"
+
+# Bug fix with scope
+git commit -m "fix(validation): prevent null pointer in email validator"
+
+# Breaking change
+git commit -m "feat!: redesign resume builder API
+
+BREAKING CHANGE: ResumeBuilder constructor now requires Template parameter"
+
+# Multiple commits
+git commit -m "feat(export): add PDF export
+
+- Integrate PDFlib library
+- Implement PDF template rendering
+- Add format validation"
+
+# Documentation
+git commit -m "docs: update deployment guide for Kubernetes"
+
+# Test addition
+git commit -m "test(models): add tests for Resume class"
+
+# Dependencies
+git commit -m "chore(deps): upgrade PHP to 8.5.2"
+```
+
+**Benefits:**
+- Automated changelog generation
+- Clear commit history
+- Easy to identify breaking changes
+- Semantic versioning alignment
+- Better code review context
+
+**Commit Checklist:**
+- [ ] Type is one of: feat, fix, docs, style, refactor, perf, test, chore, ci
+- [ ] Description is in imperative mood ("add", not "added")
+- [ ] Description starts with lowercase (except for acronyms)
+- [ ] No period at end of description
+- [ ] Scope is optional but recommended
+- [ ] Breaking changes use `!` after type
+- [ ] Body explains why, not what (what is shown in diff)
+
 ## Development Workflow
 
 ### Setting Up Your Environment
