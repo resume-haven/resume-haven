@@ -6,6 +6,9 @@ RUN apk add --no-cache \
     git \
     curl \
     unzip \
+    autoconf \
+    automake \
+    build-base \
     libzip-dev \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -32,7 +35,8 @@ RUN install-php-extensions \
     exif \
     intl \
     pcntl \
-    sockets
+    sockets \
+    xdebug
 
 # Setze den Workdir
 WORKDIR /var/www/html
@@ -54,3 +58,6 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 
 # Caddyfile für FrankenPHP
 COPY docker/FrankenPHP/Caddyfile /etc/caddy/Caddyfile
+
+# xdebug Konfiguration
+COPY docker/FrankenPHP/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
