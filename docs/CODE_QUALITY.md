@@ -115,14 +115,22 @@ make rector-fix
 ```
 
 **Was es tut:**
-- PHP Version Upgrades (z.B. 8.0 → 8.1 Features)
-- Laravel Version Upgrades (z.B. Laravel 11 → 12)
+- PHP Version Upgrades (PHP 8.5 Zielversion)
+- Laravel Version Upgrades (Laravel 12.0)
 - Code Modernisierung
 - Deprecated Code ersetzen
 - Property Promotion
 - Readonly Properties
+- Type Declarations
 
 **Konfiguration:** `rector.php`
+
+**Aktuelle Setup (Stand Feb 2026):**
+- **PHP-Zielversion:** 8.5
+- **Laravel-Zielversion:** 12.0
+- **Performance:** 8 parallele Prozesse
+- **Caching:** Aktiviert für schnellere Läufe
+- **Laravel-Rulesets:** 14 spezialisierte Sets für Code Quality, Collections, Type Declarations, etc.
 
 **Beispiele von Rector:**
 ```php
@@ -138,6 +146,14 @@ public function __construct(
     private string $email,
 ) {}
 ```
+
+**Laravel-spezifische Refactorings:**
+- Facade Aliases → vollständig qualifizierte Namen
+- Collection helpers → Method calls
+- Static Calls → Dependency Injection
+- Legacy Factories → Factory Klassen
+- Magic Methods → Query Builder
+- Array/String Functions → Static Calls
 
 ---
 

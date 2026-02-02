@@ -55,9 +55,23 @@
         "test:lint": [
             "pint --test"
         ],
+        "test:phpstan": [
+            "phpstan analyse"
+        ],
+        "test:phpstan-fix": [
+            "phpstan analyse --fix"
+        ],
+        "test:rector": [
+            "rector process --dry-run"
+        ],
+        "test:rector-fix": [
+            "rector process"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
             "@test:lint",
+            "@test:phpstan",
+            "@test:rector",
             "@php artisan test"
         ],
         "post-autoload-dump": [

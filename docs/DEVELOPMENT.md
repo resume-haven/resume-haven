@@ -582,12 +582,38 @@ When reviewing code:
 
 ### Refactoring Guide
 
-When refactoring:
+**Automatisiertes Refactoring mit Rector:**
+
+```bash
+# Zeige Refactoring-Vorschläge (ohne Änderungen)
+make rector
+
+# Wende Refactoring automatisch an
+make rector-fix
+```
+
+**Rector-Konfiguration (Feb 2026):**
+- **PHP 8.5** - Zielversion mit moderner Syntax
+- **Laravel 12.0** - Neueste Laravel-Features
+- **14 Laravel-Rulesets** für Code Quality und Best Practices
+- **Parallelisierung** - 8 Prozesse für schnelle Verarbeitung
+- **Caching** - Beschleunigung bei wiederholten Läufen
+
+**Rector automatisiert:**
+- Property Promotion
+- Readonly Properties
+- Type Declarations
+- Facade Aliases → vollständig qualifizierte Namen
+- Collection Helpers → Method Calls
+- Static Calls → Dependency Injection
+
+**Manuelles Refactoring (wenn nötig):**
 1. Ensure tests pass before changes
 2. Make small, focused changes
 3. Update type hints if signatures change
 4. Add documentation if behavior changes
 5. Test thoroughly after refactoring
+6. Run `make rector-fix` zur Automatisierung
 
 ## Laravel Development
 
