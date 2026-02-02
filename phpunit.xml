@@ -2,7 +2,17 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
          colors="true"
+         beStrictAboutOutputDuringTests="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         testdox="true"
+         executionOrder="random"
+         resolveDependencies="true"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -12,6 +22,14 @@
             <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <coverage includeUncoveredFiles="true"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="false">
+        <report>
+            <html outputDirectory="coverage-report" lowUpperBound="50" highLowerBound="80"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+        </report>
+    </coverage>
     <source>
         <include>
             <directory>app</directory>
