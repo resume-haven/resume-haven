@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\Property\ReadonlyPropertyRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
@@ -13,16 +12,15 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\ValueObject\PhpVersion;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
-use RectorLaravel\Set\LaravelSetProvider;
 
 return RectorConfig::configure()
-    ->withPaths([   
-        __DIR__ . '/app',
-        __DIR__ . '/bootstrap',
-        __DIR__ . '/config',
-        __DIR__ . '/database',
-        __DIR__ . '/routes',
-        __DIR__ . '/tests',
+    ->withPaths([
+        __DIR__.'/app',
+        __DIR__.'/bootstrap',
+        __DIR__.'/config',
+        __DIR__.'/database',
+        __DIR__.'/routes',
+        __DIR__.'/tests',
     ])
     ->withSets([
         LaravelLevelSetList::UP_TO_LARAVEL_120,
@@ -49,7 +47,7 @@ return RectorConfig::configure()
         // PHP 8.x Features
         ReadonlyPropertyRector::class,
         AddOverrideAttributeToOverriddenMethodsRector::class,
-        
+
         // Type Declarations
         DeclareStrictTypesRector::class,
         TypedPropertyFromAssignsRector::class,
@@ -66,12 +64,12 @@ return RectorConfig::configure()
     )
     ->withPhpVersion(PhpVersion::PHP_85)
     ->withSkip([
-        __DIR__ . '/tests/Feature/ExampleTest.php',
-        __DIR__ . '/tests/Unit/ExampleTest.php',
-        
+        __DIR__.'/tests/Feature/ExampleTest.php',
+        __DIR__.'/tests/Unit/ExampleTest.php',
+
         // Skip specific rules if needed
         AddOverrideAttributeToOverriddenMethodsRector::class => [
-            __DIR__ . '/app/Providers',
+            __DIR__.'/app/Providers',
         ],
     ])
     ->withParallel(
@@ -79,5 +77,5 @@ return RectorConfig::configure()
         jobSize: 15,
     )
     ->withCache(
-        cacheDirectory: __DIR__ . '/storage/rector',
+        cacheDirectory: __DIR__.'/storage/rector',
     );
