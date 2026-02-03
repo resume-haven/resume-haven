@@ -110,17 +110,17 @@ test-coverage:
 ## Application: lint - Run code style checks
 lint:
 	@echo "$(BLUE)Running code linting with Pint...$(NC)"
-	docker-compose exec app ./vendor/bin/pint
+	docker-compose exec app composer lint
 
 ## Application: lint-check - Check code style without fixing
 lint-check:
 	@echo "$(BLUE)Checking code style...$(NC)"
-	docker-compose exec app ./vendor/bin/pint --test
+	docker-compose exec app composer test:lint
 
 ## Application: phpstan - Run static analysis (PHPStan with Larastan)
 phpstan:
 	@echo "$(BLUE)Running static analysis with PHPStan...$(NC)"
-	docker-compose exec app ./vendor/bin/phpstan analyse --memory-limit=512M
+	docker-compose exec app composer test:phpstan
 
 ## Application: phpstan-baseline - Generate PHPStan baseline
 phpstan-baseline:
@@ -130,44 +130,42 @@ phpstan-baseline:
 ## Application: rector - Run code refactoring (dry-run)
 rector:
 	@echo "$(BLUE)Showing code refactoring suggestions...$(NC)"
-	docker-compose exec app ./vendor/bin/rector process --dry-run
+	docker-compose exec app composer test:rector
 
 ## Application: rector-fix - Apply code refactoring
 rector-fix:
 	@echo "$(BLUE)Applying code refactoring...$(NC)"
-	docker-compose exec app ./vendor/bin/rector process
+	docker-compose exec app composer test:rector-fix
 
 ## Application: test - Run all tests (Unit, Feature, Integration, Architecture)
 test:
 	@echo "$(BLUE)Running all tests...$(NC)"
-	docker-compose exec app ./vendor/bin/pest
+	docker-compose exec app composer test
 
 ## Application: test-unit - Run unit tests only
 test-unit:
 	@echo "$(BLUE)Running Unit tests...$(NC)"
-	docker-compose exec app ./vendor/bin/pest tests/Unit
+	docker-compose exec app composer test:unit
 
 ## Application: test-feature - Run feature tests only
 test-feature:
 	@echo "$(BLUE)Running Feature tests...$(NC)"
-	docker-compose exec app ./vendor/bin/pest tests/Feature
+	docker-compose exec app composer test:feature
 
 ## Application: test-integration - Run integration tests only
 test-integration:
 	@echo "$(BLUE)Running Integration tests...$(NC)"
-	docker-compose exec app ./vendor/bin/pest tests/Integration
+	docker-compose exec app composer test:integration
 
 ## Application: test-architecture - Run architecture tests only
 test-architecture:
 	@echo "$(BLUE)Running Architecture tests...$(NC)"
-	docker-compose exec app ./vendor/bin/pest tests/Architecture
+	docker-compose exec app composer test:architecture
 
 ## Application: quality - Run all code quality checks
 quality:
 	@echo "$(BLUE)Running all code quality checks...$(NC)"
-	@make lint-check
-	@make phpstan
-	@make test
+	docker-compose exec app composer test
 	@echo "$(GREEN)All quality checks passed!$(NC)"
 
 ## Application: quality-fix - Auto-fix code quality issues

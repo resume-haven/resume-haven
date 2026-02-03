@@ -56,7 +56,7 @@
             "pint --test"
         ],
         "test:phpstan": [
-            "phpstan analyse"
+            "phpstan analyse --memory-limit=512M"
         ],
         "test:phpstan-fix": [
             "phpstan analyse --fix"
@@ -68,16 +68,16 @@
             "rector process"
         ],
         "test:unit": [
-            "./vendor/bin/pest tests/Unit"
+            "./vendor/bin/pest --colors=always --testsuite=Unit"
         ],
         "test:feature": [
-            "./vendor/bin/pest tests/Feature"
+            "./vendor/bin/pest --colors=always --testsuite=Feature"
         ],
         "test:integration": [
-            "./vendor/bin/pest tests/Integration"
+            "./vendor/bin/pest --colors=always --testsuite=Integration"
         ],
         "test:architecture": [
-            "./vendor/bin/pest tests/Architecture"
+            "./vendor/bin/pest --colors=always --testsuite=Architecture"
         ],
         "test": [
             "@php artisan config:clear --ansi",
