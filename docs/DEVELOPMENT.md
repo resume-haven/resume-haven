@@ -1,5 +1,9 @@
 # Development Guide
 
+## 🚀 Quick Start
+
+**See also:** [GitHub Actions](GITHUB_ACTIONS_QUICK.md) - Automated CI/CD Pipeline
+
 ## Code Standards
 
 ### Strict Types
@@ -708,9 +712,11 @@ docker-compose exec app php artisan migrate:fresh --seed
 - [PSR-12 Code Style](https://www.php-fig.org/psr/psr-12/)
 - [PHP 8.5 Features](https://www.php.net/releases/)
 - [Laravel Documentation](https://laravel.com/docs)
+- [GitHub Actions](GITHUB_ACTIONS_QUICK.md) - CI/CD Pipeline
 
 ## Next Steps
 
 - [Docker Setup](DOCKER.md) - Container management
 - [Xdebug Debugging](XDEBUG.md) - IDE debugging
 - [Architecture](ARCHITECTURE.md) - Project structure
+- [GitHub Actions](GITHUB_ACTIONS.md) - Automated CI/CD

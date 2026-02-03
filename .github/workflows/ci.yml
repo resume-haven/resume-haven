@@ -1,22 +1,50 @@
-name: Code Quality
+name: CI Pipeline
 
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
-  schedule:
-    # Täglich um 2:00 UTC (automatische Sicherheitsprüfung)
-    - cron: '0 2 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Code Style (Pint)
+  validation:
+    name: Validation
     runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer:latest
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+  lint:
+    name: Code Style
+    runs-on: ubuntu-latest
+    needs: validation
     
     steps:
       - uses: actions/checkout@v4
@@ -44,9 +72,10 @@ jobs:
       - name: Check code style with Pint
         run: composer test:lint
 
-  static-analysis:
-    name: Static Analysis (PHPStan)
+  analysis:
+    name: Static Analysis
     runs-on: ubuntu-latest
+    needs: validation
     
     steps:
       - uses: actions/checkout@v4
@@ -74,39 +103,13 @@ jobs:
       - name: Run PHPStan
         run: composer test:phpstan
 
-  rector:
-    name: Refactoring Check (Rector)
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          tools: composer:latest
-
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
       - name: Check Rector dry-run
         run: composer test:rector
 
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    needs: validation
     
     strategy:
       fail-fast: false
@@ -160,22 +163,20 @@ jobs:
       - name: Run ${{ matrix.description }}
         run: composer test:${{ matrix.suite | lower }}
 
-  all-checks:
-    name: ✅ All Checks Passed
+  status:
+    name: ✅ All Checks
     runs-on: ubuntu-latest
-    needs: [lint, static-analysis, rector, tests]
+    needs: [validation, lint, analysis, tests]
     if: always()
     
     steps:
-      - name: Check job status
+      - name: Check status
         run: |
-          if [ "${{ needs.lint.result }}" != "success" ] || \
-             [ "${{ needs.static-analysis.result }}" != "success" ] || \
-             [ "${{ needs.rector.result }}" != "success" ] || \
+          if [ "${{ needs.validation.result }}" != "success" ] || \
+             [ "${{ needs.lint.result }}" != "success" ] || \
+             [ "${{ needs.analysis.result }}" != "success" ] || \
              [ "${{ needs.tests.result }}" != "success" ]; then
             echo "❌ One or more checks failed"
             exit 1
           fi
           echo "✅ All checks passed"
-        run: ./vendor/bin/phpstan analyse --memory-limit=512M
-
