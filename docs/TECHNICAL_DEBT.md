@@ -42,6 +42,7 @@ chore(deps): update rector-laravel and webmozart/assert
 - [ ] PHPStan Level erhöhen (aktuell: TBD, Ziel: 8)
 - [ ] Pest Coverage auf > 80% bringen
 - [ ] Mutation Testing mit Pest einrichten
+- [ ] Profanity Testing mit Pest einrichten
 
 ### Documentation
 
