@@ -2,17 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+// Pest Test - Modern Format
+test('true is true', function () {
+    expect(true)->toBeTrue();
+});
 
-use PHPUnit\Framework\TestCase;
-
-class ExampleTest extends TestCase
-{
-    /**
-     * A basic test example.
-     */
-    public function test_that_true_is_true(): void
-    {
-        $this->assertTrue(true);
-    }
-}
+test('basic assertion', function () {
+    expect(1 + 1)->toBe(2);
+});

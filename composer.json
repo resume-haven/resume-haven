@@ -67,12 +67,27 @@
         "test:rector-fix": [
             "rector process"
         ],
+        "test:unit": [
+            "./vendor/bin/pest tests/Unit"
+        ],
+        "test:feature": [
+            "./vendor/bin/pest tests/Feature"
+        ],
+        "test:integration": [
+            "./vendor/bin/pest tests/Integration"
+        ],
+        "test:architecture": [
+            "./vendor/bin/pest tests/Architecture"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
             "@test:lint",
             "@test:phpstan",
             "@test:rector",
-            "@php artisan test"
+            "@test:unit",
+            "@test:feature",
+            "@test:integration",
+            "@test:architecture"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

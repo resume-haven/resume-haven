@@ -66,11 +66,14 @@ make phpstan-baseline
 # Run all tests
 make test
 
-# Run with coverage report
-make test-coverage
+# Run specific test suites
+make test-unit           # Unit tests only
+make test-feature        # Feature tests only
+make test-integration    # Integration tests only
+make test-architecture   # Architecture tests only
 
-# Run specific test
-docker-compose exec app ./vendor/bin/pest tests/Feature/ResumeTest.php
+# Run specific test file
+docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 ```
 
 **Features:**
@@ -80,14 +83,20 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ResumeTest.php
 - Artisan commands testing
 - Mocking & expectations
 - Laravel integration plugin
+- Architecture Tests
+- Dataset Support
 
-**Konfiguration:** `pest.xml`
+**Konfiguration:** `phpunit.xml` (Pest nutzt PHPUnit-Konfiguration)
+
+**Test-Struktur:**
+- `tests/Unit/` - Unit Tests für isolierte Logik
+- `tests/Feature/` - Feature Tests für HTTP & User-Workflows
+- `tests/Integration/` - Integration Tests für zusammenhängende Komponenten
+- `tests/Architecture/` - Architecture Tests für Code-Struktur & Rules
 
 **Beispiel Test (Pest):**
 ```php
 <?php
-
-use App\Models\Resume;
 
 test('can create resume', function () {
     $resume = Resume::factory()->create();
@@ -98,6 +107,8 @@ test('resume has required fields', function () {
     $resume = Resume::factory()->create();
     expect($resume->name)->toBeString()
         ->and($resume->email)->toBeString();
+});
+```
 });
 ```
 
@@ -164,9 +175,12 @@ public function __construct(
 make lint           # Format code mit Pint
 make lint-check     # Pint validieren
 make phpstan        # Static analysis
-make test           # Pest tests ausführen
-make test-coverage  # Tests mit Coverage
-make rector          # Refactoring vorschlagen
+make rector         # Refactoring vorschlagen
+make test           # Alle Tests ausführen
+make test-unit      # Nur Unit Tests
+make test-feature   # Nur Feature Tests
+make test-integration  # Nur Integration Tests
+make test-architecture # Nur Architecture Tests
 ```
 
 ### Alle Checks automatisch fixen

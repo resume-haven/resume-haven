@@ -137,6 +137,31 @@ rector-fix:
 	@echo "$(BLUE)Applying code refactoring...$(NC)"
 	docker-compose exec app ./vendor/bin/rector process
 
+## Application: test - Run all tests (Unit, Feature, Integration, Architecture)
+test:
+	@echo "$(BLUE)Running all tests...$(NC)"
+	docker-compose exec app ./vendor/bin/pest
+
+## Application: test-unit - Run unit tests only
+test-unit:
+	@echo "$(BLUE)Running Unit tests...$(NC)"
+	docker-compose exec app ./vendor/bin/pest tests/Unit
+
+## Application: test-feature - Run feature tests only
+test-feature:
+	@echo "$(BLUE)Running Feature tests...$(NC)"
+	docker-compose exec app ./vendor/bin/pest tests/Feature
+
+## Application: test-integration - Run integration tests only
+test-integration:
+	@echo "$(BLUE)Running Integration tests...$(NC)"
+	docker-compose exec app ./vendor/bin/pest tests/Integration
+
+## Application: test-architecture - Run architecture tests only
+test-architecture:
+	@echo "$(BLUE)Running Architecture tests...$(NC)"
+	docker-compose exec app ./vendor/bin/pest tests/Architecture
+
 ## Application: quality - Run all code quality checks
 quality:
 	@echo "$(BLUE)Running all code quality checks...$(NC)"
