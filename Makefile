@@ -76,7 +76,7 @@ logs:
 ## Docker Management: shell - Open shell in app container
 shell:
 	@echo "$(BLUE)Opening shell in app container...$(NC)"
-	docker-compose exec app bash
+	docker-compose exec -it app sh
 
 ## Docker Management: healthcheck - Check container health status
 healthcheck:
@@ -120,7 +120,7 @@ phpstan:
 ## Application: phpstan-baseline - Generate PHPStan baseline
 phpstan-baseline:
 	@echo "$(BLUE)Generating PHPStan baseline...$(NC)"
-	docker-compose exec app ./vendor/bin/phpstan analyse --generate-baseline --memory-limit=512M
+	docker-compose exec app composer test:phpstan-baseline
 
 ## Application: rector - Run code refactoring (dry-run)
 rector:

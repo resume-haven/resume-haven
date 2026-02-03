@@ -1,0 +1,49 @@
+includes:
+    - ./phpstan-baseline.neon
+
+parameters:
+    paths:
+        - app
+        - bootstrap
+        - config
+        - database/factories
+        - database/migrations
+        - database/seeders
+        - routes
+        - tests
+
+    excludePaths:
+        - vendor
+        - storage
+        - bootstrap/cache
+        - node_modules (?)
+        - tests/Feature/ExampleTest.php
+        - tests/Unit/ExampleTest.php
+
+    # Strict Level: 8 = sehr strikt (fast Maximum)
+    # Levels: 0 (most lenient) ... 9 (strictest)
+    level: 8
+
+    # Strict Rules für zusätzliche Checks
+    strictRules:
+        allRules: false
+        disallowedLooseComparison: true
+        booleansInConditions: true
+        uselessCast: true
+        requireParentConstructorCall: true
+        overwriteVariablesWithLoop: true
+        closureUsesThis: true
+        matchingInheritedMethodNames: true
+        numericOperandsInArithmeticOperators: true
+
+    # Bleeding Edge für PHP 8.5+ Features
+    polluteScopeWithLoopInitialAssignments: true
+    polluteScopeWithAlwaysIterableForeach: true
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    checkPhpDocMissingReturn: true
+    reportUnmatchedIgnoredErrors: true
+
+    # Cache für schnellere Analysen
+    tmpDir: storage/phpstan
