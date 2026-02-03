@@ -97,11 +97,6 @@ update:
 	@echo "$(BLUE)Updating Composer dependencies...$(NC)"
 	docker-compose exec app composer update
 
-## Application: test - Run Pest tests
-test:
-	@echo "$(BLUE)Running Pest tests...$(NC)"
-	docker-compose exec app ./vendor/bin/pest
-
 ## Application: test-coverage - Run tests with coverage report
 test-coverage:
 	@echo "$(BLUE)Running tests with coverage...$(NC)"
