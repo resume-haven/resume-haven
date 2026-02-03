@@ -65,6 +65,7 @@ chore(deps): update rector-laravel and webmozart/assert
 - [ ] Pre-commit Hooks einrichten (Husky oder ähnlich)
 - [ ] IDE Helper für bessere Auto-completion
 - [ ] Docker-Setup für verschiedene PHP-Versionen
+- [ ] Nutze [Just](https://github.com/casey/just) an Stelle von Makefile
 
 ### Testing
 
