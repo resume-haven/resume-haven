@@ -1,9 +1,9 @@
-# GitHub Actions Setup - Übersicht
+# GitHub Actions Setup - Overview
 
-## ✅ Erstellte Workflows
+## ✅ Workflows Created
 
 ### 1. `.github/workflows/code-quality.yml`
-**Hauptworkflow** für Code-Qualitätsprüfung
+**Main workflow** for code quality checks
 
 **Jobs (parallel):**
 ```
@@ -18,17 +18,17 @@
 └── Status Check (final)
 ```
 
-**Trigger:**
-- ✅ Push auf `main`, `develop`
+**Triggers:**
+- ✅ Push to `main`, `develop`
 - ✅ Pull Requests
-- ✅ Täglich 2:00 UTC
+- ✅ Daily at 2:00 UTC
 
-**Runtime:** ~8-10 Minuten
+**Runtime:** ~8-10 minutes
 
 ---
 
 ### 2. `.github/workflows/security.yml`
-**Sicherheitsworkflow** für dedizierte Sicherheitsprüfungen
+**Security workflow** for dedicated security checks
 
 **Jobs:**
 ```
@@ -37,36 +37,37 @@
 └── PHP Syntax Check
 ```
 
-**Trigger:**
+**Triggers:**
 - ✅ Push, PR
-- ✅ Täglich 3:00 UTC
+- ✅ Daily at 3:00 UTC
 
-**Runtime:** ~5-7 Minuten
+**Runtime:** ~5-7 minutes
 
 ---
 
 ### 3. `.github/workflows/ci.yml`
-**Full CI Pipeline** mit Abhängigkeiten
+**Full CI Pipeline** with dependencies
 
-**Job-Abhängigkeiten:**
+**Job Dependencies:**
 ```
 validation
-├── lint (braucht: validation)
-├── analysis (braucht: validation)
-├── tests (braucht: validation)
-└── status (braucht: alle)
+├── lint (requires: validation)
+├── analysis (requires: validation)
+├── tests (requires: validation)
+└── status (requires: all)
 ```
 
-**Runtime:** ~8-10 Minuten
+**Runtime:** ~8-10 minutes
 
 ---
 
-## 📚 Dokumentation
+## 📚 Documentation
 
-### Neue Dateien:
-- ✅ [docs/GITHUB_ACTIONS.md](docs/GITHUB_ACTIONS.md) - Vollständige Dokumentation
-- ✅ [docs/GITHUB_ACTIONS_QUICK.md](docs/GITHUB_ACTIONS_QUICK.md) - Quick Reference
-- ✅ [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Updated mit CI/CD Section
+### New Files:
+- ✅ [docs/GITHUB_ACTIONS.md](docs/GITHUB_ACTIONS.md) - Complete documentation
+- ✅ [docs/GITHUB_ACTIONS_QUICK.md](docs/GITHUB_ACTIONS_QUICK.md) - Quick reference
+- ✅ [docs/GITHUB_ACTIONS_SETUP.md](docs/GITHUB_ACTIONS_SETUP.md) - Setup overview
+- ✅ [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Updated with CI/CD section
 
 ---
 
@@ -102,10 +103,9 @@ validation
 - Alle Tests werden ausgeführt auch wenn einer fehlschlägt
 
 ---
+with Composer Scripts
 
-## 🔗 Integration mit Composer Scripts
-
-Alle Workflows nutzen Composer Scripts aus `composer.json`:
+All workflows use Composer scripts from `composer.json`:
 
 ```json
 {
@@ -121,14 +121,14 @@ Alle Workflows nutzen Composer Scripts aus `composer.json`:
 }
 ```
 
+**Advantage:** Single source of truth - changes automatically take effect in CI
 **Vorteil:** Single Source of Truth - Änderungen werden automatisch im CI wirksam
 
 ---
+ext Steps
 
-## 🚀 Nächste Schritte
-
-### 1. Workflows aktivieren
-Workflows sind automatisch aktiviert wenn in `.github/workflows/` pusht
+### 1. Activate Workflows
+Workflows are automatically enabled when pushed to `.github/workflows/`
 
 ### 2. Branch Protection (optional)
 ```
@@ -141,7 +141,8 @@ Settings → Branches → Add Rule
 └── ☑ Require pull request reviews before merging
 ```
 
-### 3. Status Badges hinzufügen (optional)
+### 3. Add Status Badges (optional)
+Add to `README.md`nzufügen (optional)
 Füge in `README.md` ein:
 ```markdown
 [![Code Quality](https://github.com/username/resume-haven/actions/workflows/code-quality.yml/badge.svg)](https://github.com/username/resume-haven/actions/workflows/code-quality.yml)
@@ -151,20 +152,20 @@ Füge in `README.md` ein:
 
 ---
 
-## 📊 Zusammenfassung
+## 📊 Summary
 
-| Aspekt | Status |
+| Aspect | Status |
 |--------|--------|
-| **Workflows** | ✅ 3 optimiert |
-| **Kostenlos** | ✅ Ja, vollständig |
-| **Dokumentation** | ✅ Vollständig |
-| **Integration** | ✅ Mit Composer Scripts |
-| **Performance** | ✅ Caching + Parallelisierung |
-| **Sicherheit** | ✅ Tägliche Prüfungen |
+| **Workflows** | ✅ 3 optimized |
+| **Free** | ✅ Yes, completely |
+| **Documentation** | ✅ Complete |
+| **Integration** | ✅ With Composer Scripts |
+| **Performance** | ✅ Caching + Parallelization |
+| **Security** | ✅ Daily checks |
 
 ---
 
-**Siehe auch:**
-- [Detaillierte Dokumentation](docs/GITHUB_ACTIONS.md)
+**See also:**
+- [Complete Documentation](docs/GITHUB_ACTIONS.md)
 - [Quick Reference](docs/GITHUB_ACTIONS_QUICK.md)
 - [Development Guide](docs/DEVELOPMENT.md)

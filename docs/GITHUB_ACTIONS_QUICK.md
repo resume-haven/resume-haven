@@ -8,7 +8,7 @@
 [![Security](https://github.com/your-org/resume-haven/actions/workflows/security.yml/badge.svg)](https://github.com/your-org/resume-haven/actions/workflows/security.yml)
 ```
 
-## Workflows auf einen Blick
+## Workflows at a Glance
 
 | Workflow | Trigger | Tools | Duration |
 |----------|---------|-------|----------|
@@ -16,15 +16,15 @@
 | **Security** | Push, PR, Cron 3:00 UTC | Pest (Arch), Composer, PHP | ~5-7 min |
 | **CI** | Push, PR | Validation, Lint, Analysis, Tests | ~8-10 min |
 
-## Lokale Tests
+## Local Tests
 
-Um Tests lokal zu laufen (gleich wie im CI):
+Run tests locally (same as in CI):
 
 ```bash
-# Alle Tests
+# All tests
 make quality
 
-# Einzelne Checks
+# Individual checks
 make lint-check      # Code Style
 make phpstan         # Static Analysis
 make rector          # Refactoring
@@ -34,20 +34,20 @@ make test-integration # Integration Tests
 make test-architecture # Architecture Tests
 ```
 
-## Fehlerhafte Workflows debuggen
+## Debug Failed Workflows
 
-1. Öffne das "Actions" Tab in GitHub
-2. Wähle den fehlgeschlagenen Workflow
-3. Klicke auf den fehlgeschlagenen Job
-4. Expandiere die einzelnen Steps
-5. Logs zeigen exakte Fehlerausgabe
+1. Open the "Actions" tab in GitHub
+2. Select the failed workflow
+3. Click on the failed job
+4. Expand individual steps
+5. Logs show exact error output
 
-## Cache-Issues
+## Cache Issues
 
-Cache wird automatisch invalidiert wenn:
-- `composer.lock` ändert
-- 7 Tage ohne Nutzung vergangen sind
+Cache is automatically invalidated when:
+- `composer.lock` changes
+- 7 days pass without use
 
-## Weitere Dokumentation
+## More Documentation
 
-Siehe [docs/GITHUB_ACTIONS.md](GITHUB_ACTIONS.md) für detaillierte Dokumentation.
+See [docs/GITHUB_ACTIONS.md](GITHUB_ACTIONS.md) for detailed documentation.

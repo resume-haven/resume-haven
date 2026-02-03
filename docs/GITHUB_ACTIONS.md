@@ -1,45 +1,45 @@
 # GitHub Actions Workflows
 
-Dieses Projekt verwendet GitHub Actions für automatisierte Code-Qualität und Sicherheitsprüfungen.
+This project uses GitHub Actions for automated code quality and security checks.
 
 ## 📋 Workflows
 
 ### 1. **Code Quality** (`code-quality.yml`)
-Automatische Code-Qualitätsprüfung bei jedem Push und Pull Request.
+Automatic code quality checks on every push and pull request.
 
 **Jobs:**
-- ✅ **Lint** - Code Style mit Pint
-- ✅ **Static Analysis** - PHPStan mit Larastan
+- ✅ **Lint** - Code Style with Pint
+- ✅ **Static Analysis** - PHPStan with Larastan
 - ✅ **Refactoring Check** - Rector dry-run
 - ✅ **Tests** - Unit, Feature, Integration, Architecture Tests
 
-**Trigger:**
-- Push auf `main`, `develop`
-- Pull Requests gegen `main`, `develop`
-- Täglich um 2:00 UTC
+**Triggers:**
+- Push to `main`, `develop`
+- Pull Requests against `main`, `develop`
+- Daily at 2:00 UTC
 
 **Features:**
-- Parallele Job-Ausführung (schneller)
+- Parallel job execution (faster)
 - Composer Dependency Caching
 - SQLite In-Memory Database
-- Fehlerhafte Jobs stoppen weitere nicht (fail-fast: false)
+- Failed jobs don't stop others (fail-fast: false)
 
 ### 2. **Security** (`security.yml`)
-Fokussierte Sicherheitsprüfungen und Dependency-Validierung.
+Focused security checks and dependency validation.
 
 **Jobs:**
 - ✅ **Architecture Security Tests** - Pest Architecture Preset
-- ✅ **Composer Validation** - `composer.json` und `composer.lock` validieren
-- ✅ **PHP Syntax Check** - Syntax-Fehler erkennen
+- ✅ **Composer Validation** - Validate `composer.json` and `composer.lock`
+- ✅ **PHP Syntax Check** - Detect syntax errors
 
-**Trigger:**
-- Push und Pull Requests
-- Täglich um 3:00 UTC
+**Triggers:**
+- Push and Pull Requests
+- Daily at 3:00 UTC
 
 ### 3. **CI Pipeline** (`ci.yml`)
-Vollständiger CI-Pipeline mit abhängigen Jobs.
+Complete CI pipeline with dependent jobs.
 
-**Job-Abhängigkeiten:**
+**Job Dependencies:**
 ```
 validation
     ├── lint
@@ -48,59 +48,59 @@ validation
          └── status (final check)
 ```
 
-**Trigger:**
-- Push auf `main`, `develop`
-- Pull Requests gegen `main`, `develop`
+**Triggers:**
+- Push to `main`, `develop`
+- Pull Requests against `main`, `develop`
 
 **Features:**
-- Abhängige Jobs (nur ausführen wenn vorherige erfolgreich)
-- Schnelleres Feedback bei Validierungsfehlern
-- Parallele Ausführung von lint, analysis, tests
+- Dependent jobs (only run if previous succeeded)
+- Faster feedback on validation errors
+- Parallel execution of lint, analysis, tests
 
 ## 🚀 Features
 
-### Kostenlos
-✅ Alle Workflows nutzen **kostenlose GitHub Actions**
-- Ubuntu Latest Runner (kostenfrei)
-- Standard Actions (kostenlos)
-- Keine Third-Party kostenpflichtigen Tools
+### Free
+✅ All workflows use **free GitHub Actions**
+- Ubuntu Latest Runner (free)
+- Standard Actions (free)
+- No third-party paid tools
 
 ### Performance
 ✅ **Composer Dependency Caching**
-- Cache basiert auf `composer.lock`
-- Spart ~30-60 Sekunden pro Run
+- Cache based on `composer.lock`
+- Saves ~30-60 seconds per run
 
-✅ **Parallele Job-Ausführung**
-- Lint, Analysis, Tests laufen parallel
-- Total Runtime: ~5-10 Minuten
+✅ **Parallel Job Execution**
+- Lint, Analysis, Tests run in parallel
+- Total Runtime: ~5-10 minutes
 
-✅ **Fail-Fast für Tests**
-- Architektur Tests stoppen bei erstem Fehler (--bail)
-- Schnelleres Feedback
+✅ **Fail-Fast for Tests**
+- Architecture Tests stop on first error (--bail)
+- Faster feedback
 
-### Zuverlässigkeit
+### Reliability
 ✅ **Concurrency Control**
-- Nur ein Workflow pro Branch
-- Ältere Runs werden abgebrochen
+- Only one workflow per branch
+- Older runs are cancelled
 
 ✅ **Scheduled Runs**
-- Sicherheitsprüfungen täglich
-- Erkennt Dependency-Probleme früh
+- Security checks daily
+- Detects dependency problems early
 
-## 📊 Verwendete Tools
+## 📊 Tools Used
 
-| Tool | Job | Aktion |
+| Tool | Job | Action |
 |------|-----|--------|
 | **Pint** | Lint | `composer test:lint` |
 | **PHPStan** | Analysis | `composer test:phpstan` |
 | **Rector** | Analysis | `composer test:rector` |
 | **Pest** | Tests | `composer test:*` |
 
-Alle Tools sind in `composer.json` Scripts definiert.
+All tools are defined as scripts in `composer.json`.
 
 ## 🔄 Workflow Status Badges
 
-Füge diese Badges in deine `README.md` ein:
+Add these badges to your `README.md`:
 
 ```markdown
 [![Code Quality](https://github.com/username/resume-haven/actions/workflows/code-quality.yml/badge.svg)](https://github.com/username/resume-haven/actions/workflows/code-quality.yml)
@@ -108,53 +108,53 @@ Füge diese Badges in deine `README.md` ein:
 [![Security](https://github.com/username/resume-haven/actions/workflows/security.yml/badge.svg)](https://github.com/username/resume-haven/actions/workflows/security.yml)
 ```
 
-## 📝 Anpassungen
+## 📝 Customization
 
-### Branches ändern
-Ändere `branches: [ main, develop ]` in den Workflows, um andere Branches zu nutzen.
+### Change Branches
+Update `branches: [ main, develop ]` in workflows to use different branches.
 
-### PHP-Version ändern
-Ändere `php-version: '8.5'` in den Workflows für andere PHP-Versionen.
+### Change PHP Version
+Update `php-version: '8.5'` in workflows for other PHP versions.
 
-### Schedule ändern
-Cron-Syntax für geplante Runs:
+### Change Schedule
+Cron syntax for scheduled runs:
 ```yaml
 schedule:
-  - cron: '0 2 * * *'  # täglich um 02:00 UTC
-  - cron: '0 */6 * * *'  # alle 6 Stunden
-  - cron: '0 0 * * 0'  # jeden Sonntag um 00:00 UTC
+  - cron: '0 2 * * *'  # daily at 02:00 UTC
+  - cron: '0 */6 * * *'  # every 6 hours
+  - cron: '0 0 * * 0'  # every Sunday at 00:00 UTC
 ```
 
 ## 🎯 Best Practices
 
-1. **Branches schützen**: Erlaubt Merges nur wenn all Checks bestanden
+1. **Protect Branches**: Allow merges only when all checks pass
    - GitHub Settings → Branches → Add Rule
-   - Aktiviere "Require status checks to pass"
+   - Enable "Require status checks to pass"
 
-2. **Notifications**: Konfiguriere GitHub Notifications für fehlgeschlagene Runs
+2. **Notifications**: Configure GitHub Notifications for failed runs
 
-3. **Artifacts**: Logs sind 90 Tage verfügbar
+3. **Artifacts**: Logs are available for 90 days
 
-4. **Secrets**: Keine Secrets in Workflows (nicht vorhanden in diesem Projekt)
+4. **Secrets**: No secrets in workflows (not used in this project)
 
 ## 🐛 Troubleshooting
 
-### Workflows werden nicht ausgeführt
-- Prüfe `.github/workflows/` Dateien sind committed
-- Branch muss in `on.push.branches` definiert sein
-- Prüfe "Actions" Tab auf Fehler
+### Workflows not executing
+- Check `.github/workflows/` files are committed
+- Branch must be defined in `on.push.branches`
+- Check "Actions" tab for errors
 
-### Cache wird nicht verwendet
-- Cache wird nur zwischen Runs geteilt
-- Unterschiedliche `composer.lock` = unterschiedliche Cache Keys
+### Cache not being used
+- Cache is shared only between runs
+- Different `composer.lock` = different cache keys
 
-### Tests schlagen fehl im CI aber lokal erfolgreich
-- Unterschiedliche Umgebung (PHP-Version, Extensions)
-- Fehlende `.env` Setup - siehe Workflow `Create .env file`
-- SQLite-Fehler - Workflow erstellt `storage/database.sqlite`
+### Tests fail in CI but pass locally
+- Different environment (PHP version, extensions)
+- Missing `.env` setup - see workflow `Create .env file`
+- SQLite errors - workflow creates `storage/database.sqlite`
 
-## 📚 Weitere Ressourcen
+## 📚 Further Resources
 
-- [GitHub Actions Dokumentation](https://docs.github.com/en/actions)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [shivammathur/setup-php](https://github.com/shivammathur/setup-php)
 - [actions/cache](https://github.com/actions/cache)
