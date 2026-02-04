@@ -71,39 +71,40 @@ validation
 
 ---
 
-## 🎯 Features der Workflows
+## 🎯 Workflow Features
 
-### Kostenlos
-✅ Keine kostenpflichtigen Features
+### Free
+✅ No paid features
 - Standard Ubuntu Runner
 - Standard GitHub Actions
-- Nur Open-Source Tools
+- Only open-source tools
 
 ### Performance
 ✅ **Dependency Caching**
-- Cache basiert auf `composer.lock`
-- Spart ~30-60 Sekunden pro Run
+- Cache based on `composer.lock`
+- Saves ~30-60 seconds per run
 
-✅ **Parallele Ausführung**
-- Lint, Analysis, Tests laufen gleichzeitig
-- Schnelleres Feedback
+✅ **Parallel Execution**
+- Lint, Analysis, Tests run simultaneously
+- Faster feedback
 
 ✅ **Concurrency Control**
-- Pro Branch nur 1 aktiver Workflow
-- Ältere Runs automatisch abgebrochen
+- Only 1 active workflow per branch
+- Older runs automatically cancelled
 
-### Zuver lässl lichkeit
+### Reliability
 ✅ **Scheduled Checks**
 - 2:00 UTC - Code Quality
 - 3:00 UTC - Security Checks
-- Sicherheitslücken früh erkennen
+- Early detection of security issues
 
-✅ **Matrix-Testing**
-- Tests laufen mit `fail-fast: false`
-- Alle Tests werden ausgeführt auch wenn einer fehlschlägt
+✅ **Matrix Testing**
+- Tests run with `fail-fast: false`
+- All tests executed even if one fails
 
 ---
-with Composer Scripts
+
+## 🔧 Integration with Composer Scripts
 
 All workflows use Composer scripts from `composer.json`:
 
@@ -122,10 +123,10 @@ All workflows use Composer scripts from `composer.json`:
 ```
 
 **Advantage:** Single source of truth - changes automatically take effect in CI
-**Vorteil:** Single Source of Truth - Änderungen werden automatisch im CI wirksam
 
 ---
-ext Steps
+
+## 📋 Next Steps
 
 ### 1. Activate Workflows
 Workflows are automatically enabled when pushed to `.github/workflows/`
@@ -142,8 +143,7 @@ Settings → Branches → Add Rule
 ```
 
 ### 3. Add Status Badges (optional)
-Add to `README.md`nzufügen (optional)
-Füge in `README.md` ein:
+Add to `README.md`:
 ```markdown
 [![Code Quality](https://github.com/username/resume-haven/actions/workflows/code-quality.yml/badge.svg)](https://github.com/username/resume-haven/actions/workflows/code-quality.yml)
 [![CI](https://github.com/username/resume-haven/actions/workflows/ci.yml/badge.svg)](https://github.com/username/resume-haven/actions/workflows/ci.yml)

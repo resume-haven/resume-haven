@@ -2,7 +2,7 @@ declare(strict_types=1);
 
 # Code Quality Guide
 
-ResumeHaven implementiert ein umfassendes Code Quality System mit vier spezialisierten Tools:
+ResumeHaven implements a comprehensive code quality system with four specialized tools:
 - **Pint** - Code Formatting
 - **PHPStan + Larastan** - Static Analysis
 - **Pest** - Testing Framework
@@ -11,7 +11,7 @@ ResumeHaven implementiert ein umfassendes Code Quality System mit vier spezialis
 ## Tools
 
 ### 1. Laravel Pint (Code Formatter)
-**Automatische Formatierung** von PHP-Code nach PSR-12 Standard.
+**Automatic formatting** of PHP code according to PSR-12 standard.
 
 ```bash
 # Format code
@@ -21,18 +21,18 @@ make lint
 make lint-check
 ```
 
-**Was es tut:**
-- Indentation korrekt setzen
-- Import-Statements organisieren
-- Code-Stil vereinheitlichen
-- Automatische Fixes anwenden
+**What it does:**
+- Set correct indentation
+- Organize import statements
+- Unify code style
+- Apply automatic fixes
 
-**Konfiguration:** `pint.json`
+**Configuration:** `pint.json`
 
 ---
 
 ### 2. PHPStan with Larastan (Static Analysis)
-**Findet Fehler** bevor der Code läuft - Types, Logik, Sicherheit.
+**Find errors** before code runs - Types, Logic, Security.
 
 ```bash
 # Run analysis
@@ -42,25 +42,25 @@ make phpstan
 make phpstan-baseline
 ```
 
-**Was es tut:**
-- Type-Fehler finden
-- Uninitialisierte Variablen
-- Null-Pointer Probleme
-- Logische Fehler
-- Laravel-spezifische Issues
+**What it does:**
+- Find type errors
+- Uninitialized variables
+- Null-pointer problems
+- Logical errors
+- Laravel-specific issues
 
-**Konfiguration:** `phpstan.neon.dist`  
-**Baseline:** `phpstan-baseline.neon` (für akzeptierte Fehler)
+**Configuration:** `phpstan.neon`  
+**Baseline:** `phpstan-baseline.neon` (for accepted errors)
 
-**Level Erklärung:**
-- **0:** Nur offensichtliche Fehler
-- **5:** Empfohlenes Level (Balanced)
-- **9:** Maximum strikt (Zeit-intensiv)
+**Level Explanation:**
+- **0:** Only obvious errors
+- **5:** Recommended level (Balanced)
+- **9:** Maximum strict (Time-intensive)
 
 ---
 
 ### 3. Pest (Testing Framework)
-**Testet** deine Anwendung mit ausdrucksstarker Syntax und erweiterten Funktionen.
+**Tests** your application with expressive syntax and advanced features.
 
 ```bash
 # Run all tests
@@ -77,7 +77,7 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 ```
 
 **Features:**
-- Elegant API mit fluent interface
+- Elegant API with fluent interface
 - Parallel test execution
 - Coverage reports
 - Artisan commands testing
@@ -86,15 +86,15 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 - Architecture Tests
 - Dataset Support
 
-**Konfiguration:** `phpunit.xml` (Pest nutzt PHPUnit-Konfiguration)
+**Configuration:** `phpunit.xml` (Pest uses PHPUnit configuration)
 
-**Test-Struktur:**
-- `tests/Unit/` - Unit Tests für isolierte Logik
-- `tests/Feature/` - Feature Tests für HTTP & User-Workflows
-- `tests/Integration/` - Integration Tests für zusammenhängende Komponenten
-- `tests/Architecture/` - Architecture Tests für Code-Struktur & Rules
+**Test Structure:**
+- `tests/Unit/` - Unit tests for isolated logic
+- `tests/Feature/` - Feature tests for HTTP & User workflows
+- `tests/Integration/` - Integration tests for connected components
+- `tests/Architecture/` - Architecture tests for code structure & rules
 
-**Beispiel Test (Pest):**
+**Example Test (Pest):**
 ```php
 <?php
 
@@ -109,13 +109,11 @@ test('resume has required fields', function () {
         ->and($resume->email)->toBeString();
 });
 ```
-});
-```
 
 ---
 
 ### 4. Rector (Automated Refactoring)
-**Automatisiert** Code-Refactoring und Modernisierung.
+**Automates** code refactoring and modernization.
 
 ```bash
 # See refactoring suggestions (dry-run)
@@ -125,44 +123,44 @@ make rector
 make rector-fix
 ```
 
-**Was es tut:**
-- PHP Version Upgrades (PHP 8.5 Zielversion)
+**What it does:**
+- PHP Version Upgrades (PHP 8.5 target)
 - Laravel Version Upgrades (Laravel 12.0)
-- Code Modernisierung
-- Deprecated Code ersetzen
+- Code modernization
+- Replace deprecated code
 - Property Promotion
 - Readonly Properties
 - Type Declarations
 
-**Konfiguration:** `rector.php`
+**Configuration:** `rector.php`
 
-**Aktuelle Setup (Stand Feb 2026):**
-- **PHP-Zielversion:** 8.5
-- **Laravel-Zielversion:** 12.0
-- **Performance:** 8 parallele Prozesse
-- **Caching:** Aktiviert für schnellere Läufe
-- **Laravel-Rulesets:** 14 spezialisierte Sets für Code Quality, Collections, Type Declarations, etc.
+**Current Setup (as of Feb 2026):**
+- **PHP Target Version:** 8.5
+- **Laravel Target Version:** 12.0
+- **Performance:** 8 parallel processes
+- **Caching:** Enabled for faster runs
+- **Laravel Rulesets:** 14 specialized sets for Code Quality, Collections, Type Declarations, etc.
 
-**Beispiele von Rector:**
+**Rector Examples:**
 ```php
-// Vorher
+// Before
 public function __construct(
     private string $name,
     private string $email
 ) {}
 
-// Nachher (Rector macht das automatisch!)
+// After (Rector does this automatically!)
 public function __construct(
     private string $name,
     private string $email,
 ) {}
 ```
 
-**Laravel-spezifische Refactorings:**
-- Facade Aliases → vollständig qualifizierte Namen
+**Laravel-specific Refactorings:**
+- Facade Aliases → Fully qualified names
 - Collection helpers → Method calls
 - Static Calls → Dependency Injection
-- Legacy Factories → Factory Klassen
+- Legacy Factories → Factory classes
 - Magic Methods → Query Builder
 - Array/String Functions → Static Calls
 
@@ -170,34 +168,34 @@ public function __construct(
 
 ## Quick Quality Checks
 
-### Einen Check laufen lassen
+### Run a single check
 ```bash
-make lint           # Format code mit Pint
-make lint-check     # Pint validieren
+make lint           # Format code with Pint
+make lint-check     # Validate Pint
 make phpstan        # Static analysis
-make rector         # Refactoring vorschlagen
-make test           # Alle Tests ausführen
-make test-unit      # Nur Unit Tests
-make test-feature   # Nur Feature Tests
-make test-integration  # Nur Integration Tests
-make test-architecture # Nur Architecture Tests
+make rector         # Suggest refactoring
+make test           # Run all tests
+make test-unit      # Unit tests only
+make test-feature   # Feature tests only
+make test-integration  # Integration tests only
+make test-architecture # Architecture tests only
 ```
 
-### Alle Checks automatisch fixen
+### Auto-fix all checks
 ```bash
 make quality-fix
 ```
 
-Das kombiniert:
+This combines:
 - `make lint` (Pint - auto-fix)
-- `make rector-fix` (Rector - Code modernisieren)
+- `make rector-fix` (Rector - modernize code)
 
-### Alle Checks validieren (ohne zu ändern)
+### Validate all checks (without changes)
 ```bash
 make quality
 ```
 
-Das kombiniert:
+This combines:
 - `make lint-check` (Pint validate)
 - `make phpstan` (Static analysis)
 - `make test` (Pest tests)
@@ -207,47 +205,47 @@ Das kombiniert:
 ## Code Quality in CI/CD
 
 ### GitHub Actions
-Die Pipeline läuft automatisch bei jedem **Push** und **Pull Request**.
+The pipeline runs automatically on every **Push** and **Pull Request**.
 
-**Siehe:** `.github/workflows/code-quality.yml`
+**See:** `.github/workflows/code-quality.yml`
 
-**Was die Pipeline tut:**
-1. ✓ Composer Dependencies validieren
-2. ✓ Code Style mit Pint prüfen
-3. ✓ Static Analysis mit PHPStan
+**What the pipeline does:**
+1. ✓ Validate Composer dependencies
+2. ✓ Check code style with Pint
+3. ✓ Static Analysis with PHPStan
 4. ✓ Pest Tests
 5. ✓ Coverage Report
 
-**Status:** Check den Status auf Pull Requests!
+**Status:** Check the status on Pull Requests!
 
 ---
 
 ## Best Practices
 
-### 1. Vor jedem Commit
+### 1. Before each commit
 ```bash
 make quality-fix  # Auto-fix issues (Pint + Rector)
 make test         # Ensure tests pass
 ```
 
-### 2. Vor Push
+### 2. Before push
 ```bash
 git add .
 make quality      # Validate all checks
 git push
 ```
 
-### 3. Im Team
-- Code Reviews überprüfen auch Quality Checks
-- Merge Requests können nur mit grünem Status merged werden
-- Baseline nur mit Team-Approval ändern
+### 3. In teams
+- Code reviews also check quality checks
+- Merge requests can only be merged with green status
+- Change baseline only with team approval
 
-### 4. Neue Features (TDD Workflow)
+### 4. New Features (TDD Workflow)
 ```bash
-# 1. Test schreiben (Red)
+# 1. Write test (Red)
 docker-compose exec app ./vendor/bin/pest tests/Feature/NewFeatureTest.php
 
-# 2. Implementieren (Green)
+# 2. Implement (Green)
 # ... code changes ...
 
 # 3. Refactor (Refactor)
@@ -269,7 +267,7 @@ git push
 ## Known Issues & Baseline
 
 ### PHPStan Baseline
-Wenn PHPStan Fehler findet, die du akzeptieren möchtest:
+If PHPStan finds errors you want to accept:
 
 ```bash
 make phpstan-baseline
@@ -277,72 +275,72 @@ git add phpstan-baseline.neon
 git commit -m "chore: update phpstan baseline"
 ```
 
-**Wichtig:** Baseline nur mit guten Gründen ändern!
+**Important:** Only change baseline with good reasons!
 
 ---
 
 ## Troubleshooting
 
-### Pint/Lint schlägt fehl
+### Pint/Lint fails
 ```bash
-# Meist einfach auto-fix
+# Usually just auto-fix
 make lint
 
-# Dann überprüfen
+# Then verify
 make lint-check
 ```
 
-### PHPStan braucht zu lange
+### PHPStan takes too long
 ```bash
-# Memory limit erhöhen
+# Increase memory limit
 docker-compose exec app ./vendor/bin/phpstan analyse --memory-limit=1G
 ```
 
-### Tests schlagen fehl
+### Tests fail
 ```bash
-# Datenbank reset
+# Reset database
 docker-compose exec app php artisan migrate:fresh
 make test
 ```
 
-### Rector Refactoring zu aggressiv
+### Rector refactoring too aggressive
 ```bash
-# Nur bestimmte Rules anwenden
+# Apply only specific rules
 docker-compose exec app ./vendor/bin/rector process app --set=laravel-12-0
 ```
 
 ---
 
-## Tools installieren
+## Install Tools
 
-Falls Tools fehlen:
+If tools are missing:
 
 ```bash
 docker-compose exec app composer update
 ```
 
-Die Tools sind in `composer.json` unter `require-dev` definiert:
-- `larastan/larastan` - PHPStan für Laravel
+Tools are defined in `composer.json` under `require-dev`:
+- `larastan/larastan` - PHPStan for Laravel
 - `pestphp/pest` - Testing Framework
-- `pestphp/pest-plugin-laravel` - Laravel Plugin für Pest
+- `pestphp/pest-plugin-laravel` - Laravel Plugin for Pest
 - `rector/rector` - Automated Refactoring
 
 ---
 
 ## Performance
 
-| Tool | Zeit | Frequenz |
+| Tool | Time | Frequency |
 |------|------|----------|
-| Pint | ~1s | Vor jedem Commit |
-| PHPStan | ~10s | Vor Pull Request |
-| Pest | ~5-30s | Vor jedem Push |
-| Rector | ~5s | Nach Version Upgrades |
+| Pint | ~1s | Before each commit |
+| PHPStan | ~10s | Before pull request |
+| Pest | ~5-30s | Before each push |
+| Rector | ~5s | After version upgrades |
 
-**Tipp:** Lokal `make quality-fix` vor Push, dann braucht CI/CD weniger Zeit.
+**Tip:** Run `make quality-fix` locally before push, then CI/CD needs less time.
 
 ---
 
-## Weitere Resources
+## Further Resources
 
 - [Laravel Pint Docs](https://laravel.com/docs/pint)
 - [PHPStan Docs](https://phpstan.org/)
@@ -350,255 +348,3 @@ Die Tools sind in `composer.json` unter `require-dev` definiert:
 - [Pest Docs](https://pestphp.com/)
 - [Rector Docs](https://getrector.com/)
 - [PSR-12 Standard](https://www.php-fig.org/psr/psr-12/)
-
-## Tools
-
-### 1. Laravel Pint (Code Formatter)
-**Automatische Formatierung** von PHP-Code nach PSR-12 Standard.
-
-```bash
-# Format code
-make lint
-
-# Check without fixing
-make lint-check
-```
-
-**Was es tut:**
-- Indentation korrekt setzen
-- Import-Statements organisieren
-- Code-Stil vereinheitlichen
-- Automatische Fixes anwenden
-
-**Konfiguration:** `pint.json` (wird von Laravel verwaltet)
-
----
-
-### 2. PHP_CodeSniffer (PSR-12 Compliance)
-**Überprüft** den Code gegen den PSR-12 Standard.
-
-```bash
-# Check code style
-make phpcs
-
-# Auto-fix issues
-make phpcs-fix
-```
-
-**Was es tut:**
-- Überprüft PSR-12 Einhaltung
-- Findet Style-Verletzungen
-- Kann viele automatisch beheben
-- Detaillierte Fehlerberichte
-
-**Konfiguration:** `phpcs.xml.dist`
-
----
-
-### 3. PHPStan with Larastan (Static Analysis)
-**Findet Fehler** bevor der Code läuft - Types, Logik, Sicherheit.
-
-```bash
-# Run analysis
-make phpstan
-
-# Generate baseline for known issues
-make phpstan-baseline
-```
-
-**Was es tut:**
-- Type-Fehler finden
-- Uninitialisierte Variablen
-- Null-Pointer Probleme
-- Logische Fehler
-- Laravel-spezifische Issues
-
-**Konfiguration:** `phpstan.neon.dist`  
-**Baseline:** `phpstan-baseline.neon` (für akzeptierte Fehler)
-
-**Level Erklärung:**
-- **0:** Nur offensichtliche Fehler
-- **5:** Empfohlenes Level (Balanced)
-- **9:** Maximum strikt (Zeit-intensiv)
-
----
-
-### 4. PHPUnit (Testing)
-**Testet** deine Anwendung auf Bugs und Regressions.
-
-```bash
-# Run tests
-make test
-
-# Run with coverage
-make test --coverage
-```
-
-**Konfiguration:** `phpunit.xml`
-
----
-
-## Quick Quality Checks
-
-### Einen Check laufen lassen
-```bash
-make lint           # Format code
-make phpcs          # PSR-12 check
-make phpstan        # Static analysis
-make test           # Run tests
-```
-
-### Alle Checks automatisch fixen
-```bash
-make quality-fix
-```
-
-Das kombiniert:
-- `make lint` (Pint - auto-fix)
-- `make phpcs-fix` (CodeSniffer - auto-fix)
-
-### Alle Checks validieren (ohne zu ändern)
-```bash
-make quality
-```
-
-Das kombiniert:
-- `make lint-check` (Pint validate)
-- `make phpcs` (CodeSniffer validate)
-- `make phpstan` (Static analysis)
-
----
-
-## Code Quality in CI/CD
-
-### GitHub Actions
-Die Pipeline läuft automatisch bei jedem **Push** und **Pull Request**.
-
-**Siehe:** `.github/workflows/code-quality.yml`
-
-**Was die Pipeline tut:**
-1. ✓ Composer Dependencies validieren
-2. ✓ Code Style mit Pint prüfen
-3. ✓ PSR-12 mit CodeSniffer prüfen
-4. ✓ Static Analysis mit PHPStan
-5. ✓ Unit & Feature Tests
-6. ✓ Coverage Report
-
-**Status:** Check den Status auf Pull Requests!
-
----
-
-## Best Practices
-
-### 1. Vor jedem Commit
-```bash
-make quality-fix  # Auto-fix issues
-make test         # Ensure tests pass
-```
-
-### 2. Vor Push
-```bash
-git add .
-make quality      # Validate all checks
-git push
-```
-
-### 3. Im Team
-- Code Reviews überprüfen auch Quality Checks
-- Merge Requests können nur mit grünem Status merged werden
-- Baseline nur mit Team-Approval ändern
-
-### 4. Neue Features
-```bash
-# 1. Implementieren
-# ... code changes ...
-
-# 2. Tests schreiben
-docker-compose exec app php artisan make:test FeatureName
-
-# 3. Quality checks
-make quality-fix
-make test
-
-# 4. Commit & Push
-git add .
-git commit -m "feat: add feature description"
-git push
-```
-
----
-
-## Known Issues & Baseline
-
-### PHPStan Baseline
-Wenn PHPStan Fehler findet, die du akzeptieren möchtest:
-
-```bash
-make phpstan-baseline
-git add phpstan-baseline.neon
-git commit -m "chore: update phpstan baseline"
-```
-
-**Wichtig:** Baseline nur mit guten Gründen ändern!
-
----
-
-## Troubleshooting
-
-### Pint/Lint schlägt fehl
-```bash
-# Meist einfach auto-fix
-make lint
-
-# Dann überprüfen
-make lint-check
-```
-
-### PHPStan braucht zu lange
-```bash
-# Memory limit erhöhen
-docker-compose exec app ./vendor/bin/phpstan analyse --memory-limit=1G
-```
-
-### Tests schlagen fehl
-```bash
-# Datenbank reset
-docker-compose exec app php artisan migrate:fresh
-make test
-```
-
----
-
-## Tools installieren
-
-Falls Tools fehlen:
-
-```bash
-docker-compose exec app composer install
-docker-compose exec app composer update
-```
-
-Die Tools sind in `composer.json` unter `require-dev` definiert.
-
----
-
-## Performance
-
-| Tool | Zeit | Frequenz |
-|------|------|----------|
-| Pint | ~1s | Vor jedem Commit |
-| CodeSniffer | ~2s | Vor jedem Commit |
-| PHPStan | ~10s | Vor Pull Request |
-| Tests | ~5-30s | Vor jedem Push |
-
-**Tipp:** Lokal `make quality-fix` vor Push, dann braucht CI/CD weniger Zeit.
-
----
-
-## Weitere Resources
-
-- [Laravel Pint Docs](https://laravel.com/docs/pint)
-- [PHPStan Docs](https://phpstan.org/)
-- [Larastan](https://larastan.com/)
-- [PSR-12 Standard](https://www.php-fig.org/psr/psr-12/)
-- [PHPUnit Docs](https://phpunit.de/)

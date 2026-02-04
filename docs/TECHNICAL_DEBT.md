@@ -60,6 +60,10 @@ chore(deps): update rector-laravel and webmozart/assert
 
 ## 🟢 Low Priority / Nice to Have
 
+### Documentation
+
+- [ ] Translate TECHNICAL_DEBT.md to English (German → English)
+
 ### Developer Experience
 
 - [ ] Pre-commit Hooks einrichten (Husky oder ähnlich)
