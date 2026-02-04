@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Strict Architecture Tests
- * 
+ *
  * Verwendet das offizielle Pest Strict Preset.
  * Erzwingt strenge Regeln für Code-Qualität.
  */

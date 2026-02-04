@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * SOLID Principles Tests
- * 
+ *
  * Prüft die Einhaltung der SOLID-Prinzipien.
  * Diese Tests sind projektspezifisch und verwenden keine Presets.
  */

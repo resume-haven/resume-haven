@@ -1,5 +1,9 @@
 # ResumeHaven
 
+[![Code Quality](https://github.com/YOUR_USERNAME/resume-haven/actions/workflows/code-quality.yml/badge.svg)](https://github.com/YOUR_USERNAME/resume-haven/actions/workflows/code-quality.yml)
+[![CI Pipeline](https://github.com/YOUR_USERNAME/resume-haven/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/resume-haven/actions/workflows/ci.yml)
+[![Security](https://github.com/YOUR_USERNAME/resume-haven/actions/workflows/security.yml/badge.svg)](https://github.com/YOUR_USERNAME/resume-haven/actions/workflows/security.yml)
+
 A modern resume builder application built with Laravel 12 and FrankenPHP.
 
 ## Tech Stack
@@ -68,6 +72,26 @@ make lint              # Run Laravel Pint (code style)
 
 For a complete list of commands, see [docs/MAKEFILE.md](docs/MAKEFILE.md).
 
+## Code Quality
+
+This project implements comprehensive code quality standards:
+
+- **Pint** - PSR-12 code formatting with strict types
+- **PHPStan Level 8** - Static analysis with Larastan
+- **Pest** - Modern testing framework with Architecture Tests
+- **Rector** - Automated refactoring (PHP 8.5 + Laravel 12)
+
+### Quick Quality Checks
+
+```bash
+make lint              # Auto-fix code style
+make phpstan           # Static analysis
+make test              # Run all tests
+make quality           # Validate all (no changes)
+```
+
+See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for detailed documentation.
+
 ## Development
 
 ### Database
@@ -121,13 +145,21 @@ resume-haven/
 
 ## Documentation
 
+### 📋 Setup & Development
 - [Docker Setup](docs/DOCKER.md) - Docker configuration and usage
 - [Development Guide](docs/DEVELOPMENT.md) - Development workflow and standards
-- [Code Quality](docs/CODE_QUALITY.md) - Code quality, testing, and CI/CD
-- [Architecture](docs/ARCHITECTURE.md) - System architecture overview
-- [Deployment](docs/DEPLOYMENT.md) - Deployment instructions
 - [Makefile Reference](docs/MAKEFILE.md) - Complete Makefile documentation
 - [Xdebug Setup](docs/XDEBUG.md) - Debugging configuration
+
+### 🔍 Code Quality & Testing
+- [Code Quality Guide](docs/CODE_QUALITY.md) - Pint, PHPStan, Pest, Rector
+- [GitHub Actions](docs/GITHUB_ACTIONS.md) - CI/CD workflows and setup
+- [GitHub Actions Quick Reference](docs/GITHUB_ACTIONS_QUICK.md) - Quick command reference
+
+### 🏗️ Architecture & Planning
+- [Architecture Overview](docs/ARCHITECTURE.md) - System architecture
+- [Technical Debt](docs/TECHNICAL_DEBT.md) - Known issues and TODOs
+- [Deployment Guide](docs/DEPLOYMENT.md) - Deployment instructions
 
 ## Contributing
 
@@ -147,6 +179,16 @@ feat: add user authentication
 fix: resolve database connection issue
 docs: update installation guide
 ```
+
+## CI/CD
+
+All code is automatically validated through GitHub Actions:
+
+- **Code Quality Workflow** - Pint, PHPStan, Rector checks
+- **CI Pipeline** - Full test suite with coverage
+- **Security Workflow** - Architecture tests, dependency validation
+
+Pull requests require all checks to pass before merging.
 
 ## License
 

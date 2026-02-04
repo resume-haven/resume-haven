@@ -56,6 +56,12 @@ chore(deps): update rector-laravel and webmozart/assert
 - [ ] Database Query Optimization
 - [ ] Caching-Strategie implementieren
 
+### Infrastructure
+
+- [ ] Git Config persistent in Docker machen (Git Ownership Warning beheben)
+  - Dockerfile oder entrypoint.sh anpassen
+  - `git config --global --add safe.directory /var/www/html` automatisch setzen
+
 ---
 
 ## 🟢 Low Priority / Nice to Have

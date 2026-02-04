@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Architecture Tests für ResumeHaven
- * 
+ *
  * Diese Tests verwenden die offiziellen Pest ArchPresets für Laravel.
  * Das Laravel-Preset enthält Best Practices für Laravel-Anwendungen.
  */

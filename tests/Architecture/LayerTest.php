@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 /**
  * Layer Architecture Tests
- * 
+ *
  * Testet die Einhaltung der Layer-Architektur gemäß DDD:
  * - Domain Layer (Kernlogik, unabhängig)
  * - Application Layer (Use Cases, Services)
  * - Infrastructure Layer (Externe Abhängigkeiten)
  * - UI Layer (HTTP, CLI, API)
  */
-
 arch('domain layer does not depend on infrastructure')
     ->expect('App\Domain')
     ->not->toUse('App\Infrastructure');

@@ -22,6 +22,7 @@ expect()->extend('toBeWithinRange', function (int $min, int $max) {
 // Check if value is a valid UUID
 expect()->extend('toBeValidUuid', function () {
     $uuidPattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+
     return $this->toMatch($uuidPattern);
 });
 
@@ -59,4 +60,3 @@ expect()->extend('toBeForidden', function () {
 expect()->extend('toBeNotFound', function () {
     return $this->response->assertNotFound();
 });
-
