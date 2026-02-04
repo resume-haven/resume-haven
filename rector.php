@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\Property\ReadonlyPropertyRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
+use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
@@ -51,6 +52,9 @@ return RectorConfig::configure()
         // Type Declarations
         DeclareStrictTypesRector::class,
         TypedPropertyFromAssignsRector::class,
+
+        // SOLID & DDD Patterns
+        FinalizeClassesWithoutChildrenRector::class, // Make classes final when possible
     ])
     ->withPreparedSets(
         deadCode: true,
@@ -70,6 +74,15 @@ return RectorConfig::configure()
         // Skip specific rules if needed
         AddOverrideAttributeToOverriddenMethodsRector::class => [
             __DIR__.'/app/Providers',
+        ],
+
+        // Don't make these classes final (designed for extension)
+        FinalizeClassesWithoutChildrenRector::class => [
+            __DIR__.'/app/Http/Controllers/Controller.php', // Base controller
+            __DIR__.'/app/Models', // Eloquent models often extended
+            __DIR__.'/app/Providers', // Service providers
+            __DIR__.'/database/factories', // Factories
+            __DIR__.'/database/seeders', // Seeders
         ],
     ])
     ->withParallel(

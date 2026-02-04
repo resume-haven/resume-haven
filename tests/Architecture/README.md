@@ -1,145 +1,174 @@
 # Architecture Tests
 
-Architecture Tests prüfen die Struktur und Architektur des Codes automatisch und stellen sicher, dass definierte Regeln eingehalten werden.
+Comprehensive architecture tests using Pest's Architecture Testing plugin to enforce **DDD**, **CQRS**, **SOLID** principles, and Laravel best practices.
 
-## Pest ArchPresets
+## Test Suites
 
-Dieses Projekt verwendet die offiziellen **Pest ArchPresets**, die Best Practices für PHP und Laravel bündeln:
+### 1. **GeneralTest.php** - Laravel & PHP Presets
+Uses official Pest presets:
+- **Laravel Preset**: Ensures Laravel conventions
+- **PHP Preset**: Enforces PHP best practices
+- **Custom Rules**: Value Objects, DTOs must be readonly
 
-### `arch()->preset()->laravel()`
-Das Laravel-Preset enthält bewährte Laravel-Konventionen:
-- ✅ Traits in `App\Traits` und `App\Concerns`
-- ✅ Enums in `App\Enums`
-- ✅ Models erweitern Eloquent Model
-- ✅ Controllers mit korrektem Suffix und Laravel-Methoden
-- ✅ Middleware, Policies, Commands mit korrekten Namenskonventionen
-- ✅ Keine Debugging-Funktionen (dd, ddd, dump, ray, env, exit)
-- ✅ Attributes implementieren ContextualAttribute
+### 2. **LayerTest.php** - DDD Layered Architecture
+Enforces strict Domain-Driven Design layers:
 
-### `arch()->preset()->security()`
-Das Security-Preset verhindert unsichere Funktionen:
-- ❌ Schwache Hash-Funktionen: `md5`, `sha1`
-- ❌ Unsichere Zufallsfunktionen: `uniqid`, `rand`, `mt_rand`, `str_shuffle`
-- ❌ Code-Ausführung: `eval`, `exec`, `shell_exec`, `system`, `passthru`, `create_function`
-- ❌ Unsichere Funktionen: `unserialize`, `extract`, `parse_str`, `mb_parse_str`, `assert`, `dl`
+**Domain Layer** (Pure Business Logic)
+- ✅ Framework-independent (no Illuminate/Laravel)
+- ✅ No dependencies on Infrastructure, Application, or UI
+- ✅ Entities are mutable (not readonly)
+- ✅ Value Objects are readonly and final
+- ✅ Repository interfaces in Domain contracts
 
-### `arch()->preset()->php()`
-Das PHP-Preset verhindert veraltete und schlechte Praktiken:
-- ❌ Debugging: `var_dump`, `print_r`, `debug_*`, `die`, `phpinfo`, `echo`
-- ❌ Veraltete MySQL-Funktionen: `mysql_*`
-- ❌ Schlechte Praktiken: `goto`, `global`
-- ❌ Veraltete Regex: `ereg`, `eregi`
+**Application Layer** (Use Cases & Orchestration)
+- ✅ Uses only Domain and Contracts
+- ✅ No direct Infrastructure or Eloquent usage
+- ✅ Services and Handlers are final
+- ✅ CQRS pattern (Commands/Queries/Handlers)
 
-### `arch()->preset()->strict()`
-Das Strict-Preset erzwingt strenge Code-Qualität:
-- ✅ Strict Types in allen Dateien
-- ✅ Strict Equality (`===` statt `==`)
-- ✅ Finale Klassen (keine Vererbung ohne Absicht)
-- ✅ Keine protected Methods (bevorzugt private oder public)
-- ✅ Keine abstract Klassen (bevorzugt Interfaces)
-- ❌ Keine `sleep`, `usleep` (blockierende Funktionen)
+**Infrastructure Layer** (External Dependencies)
+- ✅ Implements Domain interfaces
+- ✅ Only layer allowed to use Eloquent
+- ✅ Repository implementations
 
-## Test-Dateien
+**UI Layer** (Controllers & Presentation)
+- ✅ Uses only Application layer
+- ✅ No direct Infrastructure access
+- ✅ Controllers are final
+- ✅ No database/Eloquent in controllers
 
-### GeneralTest.php
-- Verwendet: `arch()->preset()->laravel()`, `arch()->preset()->php()`
-- Zusätzliche projektspezifische Regeln für Value Objects und DTOs
+### 3. **CqrsTest.php** - Command Query Responsibility Segregation
+Enforces CQRS patterns:
 
-### SecurityTest.php
-- Verwendet: `arch()->preset()->security()`
-- Zusätzliche Laravel-Security-Regeln (Raw SQL, fillable/guarded, CSRF)
+**Commands** (Write Operations)
+- ✅ In `App\Application\Commands`
+- ✅ Readonly classes
+- ✅ Suffix: `Command`
+- ✅ Used only by Handlers and Controllers
 
-### StrictTest.php
-- Verwendet: `arch()->preset()->strict()`
-- Erzwingt höchste Code-Qualität
+**Queries** (Read Operations)
+- ✅ In `App\Application\Queries`
+- ✅ Readonly classes
+- ✅ Suffix: `Query`
+- ✅ Used only by Handlers and Controllers
 
-### LayerTest.php
-Prüft die Layer-Architektur (DDD):
-- ✅ Domain Layer ist unabhängig von Infrastructure
-- ✅ Domain Layer kennt keine UI-Details
-- ✅ Application Layer nutzt Domain Layer
-- ✅ Infrastructure implementiert Domain Interfaces
-- ✅ Controller nutzen Application Services
-- ✅ Kein direkter DB-Zugriff in Controllern
+**Handlers** (Process Commands/Queries)
+- ✅ In `App\Application\Handlers`
+- ✅ Final classes
+- ✅ Suffix: `Handler`
+- ✅ No direct Eloquent usage
 
-### SolidTest.php
-Prüft SOLID-Prinzipien:
-- ✅ **I**nterface Segregation: Interfaces sind fokussiert (max. 5 Methoden)
-- ✅ **D**ependency Inversion: Abhängigkeit von Abstraktionen, nicht Implementierungen
+**DTOs** (Data Transfer Objects)
+- ✅ In `App\Application\DTOs`
+- ✅ Readonly classes
+- ✅ Suffix: `DTO`
 
-## Ausführung
+**Domain Events**
+- ✅ In `App\Domain\Events`
+- ✅ Readonly classes
+- ✅ Suffix: `Event`
+
+**Read Models**
+- ✅ Used only by Query Handlers
+- ✅ Write models (Eloquent) not in Query Handlers
+
+### 4. **SolidTest.php** - SOLID Principles
+
+**Single Responsibility Principle (SRP)**
+- ✅ Controllers have focused responsibilities
+- ✅ Services have clear suffixes
+
+**Open/Closed Principle (OCP)**
+- ✅ Services, Handlers, Value Objects are final
+- ✅ Closed for modification, open via interfaces
+
+**Liskov Substitution Principle (LSP)**
+- ✅ Clear interface contracts
+- ✅ No implementation details in names
+
+**Interface Segregation Principle (ISP)**
+- ✅ Focused interfaces
+- ✅ Repository interfaces segregated
+
+**Dependency Inversion Principle (DIP)**
+- ✅ High-level modules depend on abstractions
+- ✅ No concrete Infrastructure in Application
+- ✅ Controllers use Application, not Infrastructure
+- ✅ Dependency injection over facades
+
+### 5. **SecurityTest.php** - Security Preset
+Uses official Pest Security preset:
+- ✅ No raw SQL queries
+- ✅ Models use fillable/guarded
+- ✅ CSRF protection enabled
+
+### 6. **StrictTest.php** - Strict Rules Preset
+Uses official Pest Strict preset:
+- ✅ Classes are final when possible
+- ✅ No abstract classes except base controllers
+- ✅ No protected methods
+
+## Running Tests
 
 ```bash
-# Alle Architecture Tests
-make test-architecture
+# Run all architecture tests
+docker-compose exec app ./vendor/bin/pest --testsuite=Architecture
 
-# Einzelne Test-Datei
-docker-compose exec app ./vendor/bin/pest tests/Architecture/GeneralTest.php
+# Run specific test file
+docker-compose exec app ./vendor/bin/pest tests/Architecture/LayerTest.php
+docker-compose exec app ./vendor/bin/pest tests/Architecture/CqrsTest.php
+docker-compose exec app ./vendor/bin/pest tests/Architecture/SolidTest.php
 
-# Mit --bail (stoppt beim ersten Fehler)
-docker-compose exec app ./vendor/bin/pest tests/Architecture --bail
+# Via composer
+docker-compose exec app composer test:architecture
 ```
 
-## Erweitern
+## Expected Failures (For New Projects)
 
-Um neue Architektur-Regeln hinzuzufügen:
+When starting a new project, these tests will initially fail because the DDD structure doesn't exist yet. This is **expected and intentional**.
 
-```php
-<?php
+**Initial Setup Failures:**
+- Domain/Application/Infrastructure folders don't exist
+- Controllers use Eloquent directly (should use Application layer)
+- No CQRS structure (Commands/Queries/Handlers)
+- Models in wrong location
 
-arch('beschreibung der regel')
-    ->expect('App\Namespace')
-    ->toUseStrictTypes()
-    ->not->toUse('Verbotene\Klasse');
-```
+**How to Address:**
+1. **Gradually refactor** towards DDD/CQRS architecture
+2. **Create namespaces** as needed (Domain, Application, Infrastructure)
+3. **Move logic** from Controllers → Application Services
+4. **Extract** Eloquent models → Infrastructure layer
+5. **Implement** CQRS patterns (Commands, Queries, Handlers)
 
-### Verfügbare Expectations
+## Architecture Enforcement
 
-**Code Standards:**
-- `toUseStrictTypes()` - Strict types deklariert
-- `toBeFinal()` - Klasse ist final
-- `toBeReadonly()` - Klasse ist readonly (PHP 8.2+)
-- `toBeAbstract()` - Klasse ist abstrakt
-- `toBeInterface()` - Ist Interface
+These tests serve as **architectural guardrails**:
+- ❌ **Prevent** accidental violations (e.g., Controller using DB facade)
+- ✅ **Guide** developers towards correct patterns
+- 📚 **Document** architectural decisions in code
+- 🔒 **Enforce** in CI/CD (tests must pass before merge)
 
-**Naming:**
-- `toHaveSuffix('Suffix')` - Klassen haben Suffix
-- `toHavePrefix('Prefix')` - Klassen haben Prefix
-- `toMatch('/Pattern/')` - Name matched Pattern
+## Integration with CI/CD
 
-**Dependencies:**
-- `toUse('Namespace')` - Nutzt Namespace
-- `not->toUse('Namespace')` - Nutzt NICHT Namespace
-- `toOnlyUse(['Allowed'])` - Nutzt NUR erlaubte Namespaces
-- `toOnlyBeUsedIn(['Allowed'])` - Wird nur in bestimmten Namespaces genutzt
+Architecture tests run automatically in GitHub Actions:
+- ✅ On every push to `main`/`develop`
+- ✅ On every Pull Request
+- ✅ Must pass before merge (if branch protection enabled)
 
-**Inheritance:**
-- `toExtend('BaseClass')` - Erweitert Base Class
-- `toImplement('Interface')` - Implementiert Interface
-- `toExtendNothing()` - Erweitert nichts
+See [GitHub Actions Documentation](../../docs/GITHUB_ACTIONS.md) for details.
 
-**Methods & Properties:**
-- `toHaveMethod('methodName')` - Hat Methode
-- `toHaveProperty('propertyName')` - Hat Property
-- `toHaveMaximumMethodCount(5)` - Max. Anzahl Methoden
+## PHPStan Integration
 
-## Best Practices
+These architecture tests complement **PHPStan Level 8** static analysis:
+- **PHPStan**: Type safety, null safety, logical errors
+- **Architecture Tests**: Structural patterns, layer violations, naming conventions
 
-1. **Spezifisch bleiben**: Teste konkrete Regeln, nicht allgemeine Aussagen
-2. **Ignorieren wenn nötig**: Nutze `->ignoring()` für Ausnahmen
-3. **Kombinieren**: Nutze `and()` und `or()` für mehrere Bedingungen
-4. **Dokumentieren**: Jeder Test sollte eine klare Beschreibung haben
-5. **Iterativ erweitern**: Füge Tests hinzu während das Projekt wächst
+Both must pass for production-ready code.
 
-## Integration in CI/CD
+## Resources
 
-Architecture Tests laufen automatisch bei:
-- `make quality` - Code Quality Check
-- `make test` - Alle Tests
-- GitHub Actions CI/CD Pipeline
-
-## Weitere Informationen
-
-- [Pest Architecture Testing Docs](https://pestphp.com/docs/arch-testing)
+- [Pest Architecture Testing](https://pestphp.com/docs/arch-testing)
+- [Domain-Driven Design (DDD)](https://martinfowler.com/tags/domain%20driven%20design.html)
+- [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)
+- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html)
