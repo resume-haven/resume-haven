@@ -76,6 +76,7 @@ chore(deps): update rector-laravel and webmozart/assert
 - [ ] E2E Tests mit Laravel Dusk
 - [ ] Performance Tests einrichten
 - [ ] Security Testing automatisieren
+- [ ] Infection für intensiveres Mutation-Testing evaluieren
 
 ### CI/CD
 
