@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Application\Services;
 
+use App\Application\Contracts\ResumeReadRepositoryInterface;
 use App\Application\DTOs\ResumeDTO;
-use App\Domain\Contracts\ResumeRepositoryInterface;
 
 final class ResumeApplicationService
 {
-    public function __construct(private ResumeRepositoryInterface $resumes)
+    public function __construct(private ResumeReadRepositoryInterface $resumes)
     {
     }
 
@@ -21,6 +21,6 @@ final class ResumeApplicationService
             return null;
         }
 
-        return new ResumeDTO($resume->id, $resume->name->value, $resume->email->value);
+        return new ResumeDTO($resume->id, $resume->name, $resume->email);
     }
 }
