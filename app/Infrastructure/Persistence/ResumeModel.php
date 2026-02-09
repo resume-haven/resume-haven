@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 final class ResumeModel extends Model
 {
+    use HasFactory;
     /**
      * @var string
      */

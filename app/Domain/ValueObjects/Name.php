@@ -6,7 +6,9 @@ namespace App\Domain\ValueObjects;
 
 final readonly class Name
 {
-    public function __construct(public string $value)
+    public string $value;
+
+    public function __construct(string $value)
     {
         $trimmed = trim($value);
 

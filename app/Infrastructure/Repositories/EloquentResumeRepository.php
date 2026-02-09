@@ -36,6 +36,7 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
         $model = $this->findModel($entity->id) ?? new ResumeModel();
         $this->applyEntity($entity, $model);
         $model->save();
+        $entity->id = (int) $model->id;
     }
 
     public function delete(int $id): void

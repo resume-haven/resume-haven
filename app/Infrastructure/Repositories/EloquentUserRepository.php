@@ -36,6 +36,7 @@ final class EloquentUserRepository implements UserRepositoryInterface
         $model = $this->findModel($entity->id) ?? new UserModel();
         $this->applyEntity($entity, $model);
         $model->save();
+        $entity->id = (int) $model->id;
     }
 
     public function delete(int $id): void
