@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\ReadModels;
 
-final class UserReadModel
+final readonly class UserReadModel
 {
     public function __construct(
         public int $id,
