@@ -7,7 +7,7 @@ namespace App\Application\Services;
 use App\Application\Contracts\UserReadRepositoryInterface;
 use App\Application\DTOs\UserDTO;
 
-final class UserApplicationService
+final class UserQueryService
 {
     public function __construct(private UserReadRepositoryInterface $users)
     {

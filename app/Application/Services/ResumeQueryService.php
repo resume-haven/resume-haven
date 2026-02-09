@@ -7,7 +7,7 @@ namespace App\Application\Services;
 use App\Application\Contracts\ResumeReadRepositoryInterface;
 use App\Application\DTOs\ResumeDTO;
 
-final class ResumeApplicationService
+final class ResumeQueryService
 {
     public function __construct(private ResumeReadRepositoryInterface $resumes)
     {

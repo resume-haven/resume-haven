@@ -146,15 +146,15 @@ Request dependencies explicitly:
 <?php
 declare(strict_types=1);
 
-class ResumeApplicationService
+class ResumeQueryService
 {
     public function __construct(
-        private ResumeRepositoryInterface $repository,
+        private ResumeReadRepositoryInterface $repository,
     ) {}
     
-    public function create(array $data): Resume
+    public function getById(string $id): ?ResumeReadModel
     {
-        return $this->repository->save(new Resume(...$data));
+        return $this->repository->findById($id);
     }
 }
 ```
@@ -206,10 +206,10 @@ Encapsulate business logic:
 <?php
 declare(strict_types=1);
 
-class ResumeApplicationService
+class ResumeQueryService
 {
     public function __construct(
-        private ResumeRepositoryInterface $repository,
+        private ResumeReadRepositoryInterface $repository,
         private ExportService $exporter,
     ) {}
     
