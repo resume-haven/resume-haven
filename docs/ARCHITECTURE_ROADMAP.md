@@ -67,7 +67,7 @@ app/Infrastructure/
 **Action Required:**
 - [ ] Create Infrastructure namespace
 - [ ] Implement Repository pattern
-- [ ] Move Eloquent models from `app/Models` to `Infrastructure/Persistence`
+- [x] Move Eloquent models from `app/Models` to `Infrastructure/Persistence`
 - [ ] Create Read Models for queries
 
 #### 4. CQRS Tests

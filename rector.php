@@ -79,7 +79,7 @@ return RectorConfig::configure()
         // Don't make these classes final (designed for extension)
         FinalizeClassesWithoutChildrenRector::class => [
             __DIR__.'/app/Http/Controllers/Controller.php', // Base controller
-            __DIR__.'/app/Models', // Eloquent models often extended
+            __DIR__.'/app/Infrastructure/Persistence', // Eloquent models often extended
             __DIR__.'/app/Providers', // Service providers
             __DIR__.'/database/factories', // Factories
             __DIR__.'/database/seeders', // Seeders

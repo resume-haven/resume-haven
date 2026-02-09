@@ -1,10 +1,10 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Class App\\Models\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			message: '#^Class App\\Infrastructure\\Persistence\\UserModel uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
 			identifier: missingType.generics
 			count: 1
-			path: app/Models/User.php
+			path: app/Infrastructure/Persistence/UserModel.php
 
 		-
 			message: '#^Cannot call method make\(\) on Illuminate\\Contracts\\Hashing\\Hasher\|null\.$#'

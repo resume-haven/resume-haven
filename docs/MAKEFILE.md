@@ -160,7 +160,7 @@ This ensures type safety across the entire codebase by adding strict type declar
 
 **Example output**:
 ```
-Added strict types: app/Models/User.php
+Added strict types: app/Infrastructure/Persistence/UserModel.php
 Added strict types: app/Http/Controllers/Controller.php
 ...
 Done!

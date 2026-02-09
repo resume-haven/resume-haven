@@ -206,7 +206,7 @@ All PHP files must use strict types:
 <?php
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Domain\Entities;
 
 class MyClass { }
 ```
