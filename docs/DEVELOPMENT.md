@@ -178,6 +178,31 @@ public function generate(array $resumeData, string $format): string
     
     return $this->{'generate' . ucfirst($format)}($resumeData);
 }
+
+## HTTP & Routing
+
+### API vs Web Routes
+
+- `routes/api.php` is stateless and does not use CSRF protection.
+- `routes/web.php` is stateful and CSRF-protected.
+
+Controllers for JSON APIs should be registered in `api.php` to avoid CSRF errors in tests.
+
+### API Endpoints
+
+**Resumes**
+- `GET /api/resumes/{id}` - Fetch resume read model
+- `POST /api/resumes` - Create resume
+
+**Users**
+- `GET /api/users/{id}` - Fetch user read model
+- `POST /api/users` - Create user
+
+## Factories
+
+When models live under `App\Infrastructure\Persistence`, Laravel expects factory classes in the
+matching namespace `Database\Factories\Infrastructure\Persistence` and files under
+`database/factories/Infrastructure/Persistence/`.
 ```
 
 ## Git Workflow

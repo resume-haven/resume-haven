@@ -23,17 +23,23 @@ flowchart TD
 sequenceDiagram
     participant C as Controller (UI)
     participant H as Handler (Application)
+    participant QS as Query Service (Application)
+    participant CS as Command Service (Application)
     participant R as Repository (Infrastructure)
     participant RR as Read Repository (Infrastructure)
     participant D as Domain
 
-    C->>H: Command or Query
+    C->>QS: Read request
+    QS->>RR: Read (queries)
+    RR-->>QS: Read model
+    QS-->>C: Response DTO
+    C->>CS: Command request
+    CS->>H: Handle command
     H->>D: Invoke domain logic
     H->>R: Persist (commands)
-    H->>RR: Read (queries)
     R-->>H: Domain entity
-    RR-->>H: Read model
-    H-->>C: Response DTO/Result
+    H-->>CS: Domain entity
+    CS-->>C: Response DTO/Result
 ```
 
 ## Project Structure
@@ -62,7 +68,8 @@ resume-haven/
 │   ├── factories/                # Model factories
 │   └── seeders/                  # Sample data
 ├── routes/                       # Route definitions
-│   └── api.php                   # API routes
+│   ├── api.php                   # API routes (stateless)
+│   └── web.php                   # Web routes (CSRF protected)
 ├── tests/                        # Test suites
 │   ├── Unit/                     # Unit tests
 │   ├── Feature/                  # Integration tests
@@ -80,6 +87,18 @@ resume-haven/
 ```
 
 Current UI layer lives in `app/Http` (controllers, middleware, requests). A separate Vue.js frontend is planned for a later phase.
+
+## API Endpoints
+
+All JSON endpoints are registered in `routes/api.php`.
+
+**Resumes**
+- `GET /api/resumes/{id}` - Fetch resume read model
+- `POST /api/resumes` - Create resume
+
+**Users**
+- `GET /api/users/{id}` - Fetch user read model
+- `POST /api/users` - Create user
 
 ## Core Concepts
 
@@ -152,7 +171,7 @@ class ResumeQueryService
         private ResumeReadRepositoryInterface $repository,
     ) {}
     
-    public function getById(string $id): ?ResumeReadModel
+    public function getById(int $id): ?ResumeReadModel
     {
         return $this->repository->findById($id);
     }
@@ -210,19 +229,51 @@ class ResumeQueryService
 {
     public function __construct(
         private ResumeReadRepositoryInterface $repository,
-        private ExportService $exporter,
     ) {}
-    
-    public function buildAndExport(
-        string $resumeId,
-        string $format,
-    ): string {
-        $resume = $this->repository->findById($resumeId);
-        if ($resume === null) {
-            throw new \DomainException('Resume not found');
-        }
-        
-        return $this->exporter->export($resume, $format);
+
+    public function getById(int $id): ?ResumeReadModel
+    {
+        return $this->repository->findById($id);
+    }
+}
+
+class ResumeCommandService
+{
+    public function __construct(
+        private CreateResumeHandler $handler,
+    ) {}
+
+    public function create(string $name, string $email): Resume
+    {
+        $command = new CreateResumeCommand($name, new Email($email));
+
+        return $this->handler->handle($command);
+    }
+}
+
+class UserQueryService
+{
+    public function __construct(
+        private UserReadRepositoryInterface $repository,
+    ) {}
+
+    public function getById(int $id): ?UserReadModel
+    {
+        return $this->repository->findById($id);
+    }
+}
+
+class UserCommandService
+{
+    public function __construct(
+        private CreateUserHandler $handler,
+    ) {}
+
+    public function create(string $name, string $email, string $passwordHash): User
+    {
+        $command = new CreateUserCommand($name, new Email($email), $passwordHash);
+
+        return $this->handler->handle($command);
     }
 }
 ```
@@ -232,6 +283,156 @@ class ResumeQueryService
 - Reusable across controllers
 - Easier to test
 - Clear service boundaries
+
+### Controller and Command Flow
+
+Controllers should be thin and delegate to the command service:
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function __construct(
+        private ResumeQueryService $queries,
+        private ResumeCommandService $commands,
+    ) {}
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email'],
+        ]);
+
+        $resume = $this->commands->create($data['name'], $data['email']);
+
+        return response()->json([
+            'id' => $resume->id,
+            'name' => $resume->name->value,
+            'email' => $resume->email->value,
+        ], 201);
+    }
+}
+
+final class UserController
+{
+    public function __construct(
+        private UserQueryService $queries,
+        private UserCommandService $commands,
+    ) {}
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
+        $user = $this->commands->create(
+            $data['name'],
+            $data['email'],
+            Hash::make($data['password']),
+        );
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name->value,
+            'email' => $user->email->value,
+        ], 201);
+    }
+}
+```
+
+Flow summary:
+1. Controller validates input.
+2. Controller calls `ResumeCommandService`.
+3. Command service builds a command and forwards to the handler.
+4. Handler applies domain logic and persists through repository.
+5. Controller returns a minimal response DTO.
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant CS as Command Service
+    participant H as Command Handler
+    participant R as Repository
+    participant D as Domain
+
+    C->>CS: create(name, email)
+    CS->>H: Handle CreateResumeCommand
+    H->>D: Apply domain rules
+    H->>R: Save entity
+    R-->>H: Persisted entity
+    H-->>CS: Entity
+    CS-->>C: Result
+```
+
+### Controller and Query Flow
+
+Query endpoints should be read-only and return DTOs from query services:
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function __construct(
+        private ResumeQueryService $queries,
+        private ResumeCommandService $commands,
+    ) {}
+
+    public function show(int $id): JsonResponse
+    {
+        $resume = $this->queries->getById($id);
+
+        if ($resume === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        return response()->json($resume);
+    }
+}
+
+final class UserController
+{
+    public function __construct(
+        private UserQueryService $queries,
+        private UserCommandService $commands,
+    ) {}
+
+    public function show(int $id): JsonResponse
+    {
+        $user = $this->queries->getById($id);
+
+        if ($user === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        return response()->json($user);
+    }
+}
+```
+
+Flow summary:
+1. Controller calls `ResumeQueryService` with an ID.
+2. Query service reads from read repository and returns a read model.
+3. Controller returns the DTO or a 404 response.
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant QS as Query Service
+    participant RR as Read Repository
+
+    C->>QS: getById(id)
+    QS->>RR: Find read model
+    RR-->>QS: Read model
+    QS-->>C: DTO or null
+```
 
 ### Factory Pattern
 
@@ -434,13 +635,12 @@ class ResumeServiceTest extends TestCase
 {
     public function testCanBuildCompleteResume(): void
     {
-        $repository = new MockResumeRepository();
-        $exporter = new MockExportService();
-        $service = new ResumeBuilderService($repository, $exporter);
-        
-        $result = $service->buildAndExport('123', 'pdf');
-        
-        $this->assertNotEmpty($result);
+        $repository = new MockResumeReadRepository();
+        $service = new ResumeQueryService($repository);
+
+        $result = $service->getById(123);
+
+        $this->assertNotNull($result);
     }
 }
 ```

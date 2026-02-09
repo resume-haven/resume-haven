@@ -123,6 +123,42 @@ make test
 
 Xdebug is pre-configured. See [docs/XDEBUG.md](docs/XDEBUG.md) for setup instructions.
 
+## API Endpoints
+
+All JSON endpoints live in `routes/api.php`.
+
+**Resumes**
+- `GET /api/resumes/{id}` - Fetch resume read model
+- `POST /api/resumes` - Create resume
+
+Example:
+```bash
+curl -X POST http://localhost/api/resumes \
+   -H "Content-Type: application/json" \
+   -d '{"name":"Test Resume","email":"resume@example.com"}'
+```
+
+Example (httpie):
+```bash
+http POST http://localhost/api/resumes name="Test Resume" email="resume@example.com"
+```
+
+**Users**
+- `GET /api/users/{id}` - Fetch user read model
+- `POST /api/users` - Create user
+
+Example:
+```bash
+curl -X POST http://localhost/api/users \
+   -H "Content-Type: application/json" \
+   -d '{"name":"Test User","email":"user@example.com","password":"password123"}'
+```
+
+Example (httpie):
+```bash
+http POST http://localhost/api/users name="Test User" email="user@example.com" password="password123"
+```
+
 ## Project Structure
 
 ```
@@ -137,6 +173,8 @@ resume-haven/
 ├── public/                 # Web root
 ├── resources/              # Views, assets
 ├── routes/                 # Route definitions
+│   ├── api.php            # API routes (stateless)
+│   └── web.php            # Web routes (CSRF protected)
 ├── storage/                # Logs, cache, uploads
 ├── tests/                  # Test suite
 ├── Makefile               # Development commands

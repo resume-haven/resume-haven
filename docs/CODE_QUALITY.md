@@ -115,6 +115,9 @@ test('read model contains resume fields', function () {
 });
 ```
 
+**API Feature Test Tip:**
+When testing JSON endpoints, target `routes/api.php` and use `/api/...` to avoid CSRF issues.
+
 ---
 
 ### 4. Rector (Automated Refactoring)
