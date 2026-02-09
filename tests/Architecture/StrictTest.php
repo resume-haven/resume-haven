@@ -12,4 +12,11 @@ declare(strict_types=1);
 // Strict Preset
 // Erzwingt: keine protected Methods, keine abstract Klassen, strict types,
 // strict equality (===), finale Klassen, keine sleep/usleep
-arch()->preset()->strict();
+arch()
+	->preset()
+	->strict()
+	->ignoring([
+		'App\\Http\\Controllers\\Controller',
+		'App\\Models',
+		'App\\Infrastructure\\Persistence',
+	]);

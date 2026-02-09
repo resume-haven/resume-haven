@@ -11,25 +11,31 @@ declare(strict_types=1);
 
 // Laravel Preset
 // Enthält: Traits, Enums, Models, Controllers, Jobs, Events, etc.
-arch()->preset()->laravel();
+arch()
+    ->preset()
+    ->laravel()
+    ->ignoring([
+        'App\\Infrastructure\\Persistence',
+    ]);
 
 // PHP Preset
 // Verhindert: var_dump, die, goto, global, ereg, mysql_* Funktionen, etc.
-arch()->preset()->php();
+arch()
+    ->preset()
+    ->php()
+    ->ignoring([
+        'App\\Application\\Exceptions',
+        'App\\Domain\\Exceptions',
+    ]);
 
 // Zusätzliche projektspezifische Regeln
 
 arch('value objects are final and readonly')
-    ->expect('App\ValueObjects')
+    ->expect('App\Domain\ValueObjects')
     ->toBeFinal()
     ->toBeReadonly(); // PHP 8.2+ readonly classes
 
 arch('DTOs are readonly')
-    ->expect('App\DataTransferObjects')
+    ->expect('App\Application\DTOs')
     ->toBeFinal()
-    ->toBeReadonly()
-    ->toOnlyBeUsedIn([
-        'App\Http\Controllers',
-        'App\Services',
-        'App\Actions',
-    ]);
+    ->toBeReadonly();

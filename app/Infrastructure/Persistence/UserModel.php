@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Infrastructure\Persistence;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-final class User extends Authenticatable
+final class UserModel extends Authenticatable
 {
     use HasFactory;
     use Notifiable;

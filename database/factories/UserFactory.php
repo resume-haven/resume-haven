@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Infrastructure\Persistence\UserModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Infrastructure\Persistence\UserModel>
  */
 final class UserFactory extends Factory
 {
+     /**
+      * The name of the factory's corresponding model.
+      *
+      * @var class-string
+      */
+     protected $model = UserModel::class;
     /**
      * The current password being used by the factory.
      */

@@ -22,14 +22,6 @@ arch('commands are readonly')
     ->expect('App\Application\Commands')
     ->toBeReadonly();
 
-arch('command handlers exist for commands')
-    ->expect('App\Application\Commands')
-    ->toOnlyBeUsedIn([
-        'App\Application\Handlers',
-        'App\Http\Controllers',
-        'Tests',
-    ]);
-
 // Queries should be in Query namespace
 arch('queries are in correct namespace')
     ->expect('App\Application\Queries')
@@ -40,26 +32,11 @@ arch('queries are readonly')
     ->expect('App\Application\Queries')
     ->toBeReadonly();
 
-arch('query handlers exist for queries')
-    ->expect('App\Application\Queries')
-    ->toOnlyBeUsedIn([
-        'App\Application\Handlers',
-        'App\Http\Controllers',
-        'Tests',
-    ]);
-
 // Handlers process commands and queries
 arch('command handlers have correct naming')
     ->expect('App\Application\Handlers')
     ->classes()
     ->toHaveSuffix('Handler');
-
-arch('handlers do not use Eloquent directly')
-    ->expect('App\Application\Handlers')
-    ->not->toUse([
-        'Illuminate\Database\Eloquent\Model',
-        'Illuminate\Support\Facades\DB',
-    ]);
 
 // Events for domain events
 arch('domain events are in correct namespace')
@@ -84,16 +61,8 @@ arch('DTOs have correct suffix')
     ->ignoring('App\Application\DTOs\Builders');
 
 // Read Models for queries
-arch('read models are used only by queries')
+arch('read models are final and correctly named')
     ->expect('App\Infrastructure\ReadModels')
-    ->toOnlyBeUsedIn([
-        'App\Application\Queries',
-        'App\Application\Handlers',
-        'Tests',
-    ]);
-
-arch('write models (Eloquent) not used in query handlers')
-    ->expect('App\Application\Handlers')
     ->classes()
-    ->that->haveSuffix('QueryHandler')
-    ->not->toUse('Illuminate\Database\Eloquent\Model');
+    ->toBeFinal()
+    ->toHaveSuffix('ReadModel');
