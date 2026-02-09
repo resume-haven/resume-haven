@@ -17,6 +17,5 @@ arch()
 	->strict()
 	->ignoring([
 		'App\\Http\\Controllers\\Controller',
-		'App\\Models',
 		'App\\Infrastructure\\Persistence',
 	]);

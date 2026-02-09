@@ -80,3 +80,13 @@ arch('resume read repository implements contract')
 arch('user read repository implements contract')
     ->expect('App\Infrastructure\Repositories\EloquentUserReadRepository')
     ->toImplement('App\Application\Contracts\UserReadRepositoryInterface');
+
+arch('resume read repository is final and named correctly')
+    ->expect('App\Infrastructure\Repositories\EloquentResumeReadRepository')
+    ->toBeFinal()
+    ->toHaveSuffix('ReadRepository');
+
+arch('user read repository is final and named correctly')
+    ->expect('App\Infrastructure\Repositories\EloquentUserReadRepository')
+    ->toBeFinal()
+    ->toHaveSuffix('ReadRepository');
