@@ -8,6 +8,7 @@ use App\Domain\Contracts\UserRepositoryInterface;
 use App\Domain\Entities\User;
 use App\Domain\ValueObjects\Email;
 use App\Infrastructure\Persistence\UserModel;
+use App\Infrastructure\ReadModels\UserReadModel;
 
 final class EloquentUserRepository implements UserRepositoryInterface
 {
@@ -20,6 +21,17 @@ final class EloquentUserRepository implements UserRepositoryInterface
         }
 
         return $this->toEntity($model);
+    }
+
+    public function findReadModelById(int $id): ?UserReadModel
+    {
+        $model = $this->findModel($id);
+
+        if ($model === null) {
+            return null;
+        }
+
+        return $this->toReadModel($model);
     }
 
     /**
@@ -65,5 +77,14 @@ final class EloquentUserRepository implements UserRepositoryInterface
         $model->name = $entity->name;
         $model->email = $entity->email->value;
         $model->password = $entity->passwordHash;
+    }
+
+    private function toReadModel(UserModel $model): UserReadModel
+    {
+        return new UserReadModel(
+            (int) $model->id,
+            (string) $model->name,
+            (string) $model->email,
+        );
     }
 }

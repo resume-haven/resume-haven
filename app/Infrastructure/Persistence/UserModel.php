@@ -14,6 +14,11 @@ final class UserModel extends Authenticatable
     use Notifiable;
 
     /**
+     * @var string
+     */
+    protected $table = 'users';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

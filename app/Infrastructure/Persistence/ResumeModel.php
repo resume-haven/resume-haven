@@ -8,10 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 
 final class ResumeModel extends Model
 {
+    /**
+     * @var string
+     */
     protected $table = 'resumes';
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'name',
         'email',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email' => 'string',
+        ];
+    }
 }
