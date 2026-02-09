@@ -21,6 +21,6 @@ final class UserApplicationService
             return null;
         }
 
-        return new UserDTO($user->id, $user->name, $user->email->value);
+        return new UserDTO($user->id, $user->name->value, $user->email->value);
     }
 }

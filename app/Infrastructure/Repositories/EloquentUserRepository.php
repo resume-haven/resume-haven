@@ -7,6 +7,7 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Contracts\UserRepositoryInterface;
 use App\Domain\Entities\User;
 use App\Domain\ValueObjects\Email;
+use App\Domain\ValueObjects\Name;
 use App\Infrastructure\Persistence\UserModel;
 
 final class EloquentUserRepository implements UserRepositoryInterface
@@ -55,7 +56,7 @@ final class EloquentUserRepository implements UserRepositoryInterface
     {
         return new User(
             (int) $model->id,
-            (string) $model->name,
+            new Name((string) $model->name),
             new Email((string) $model->email),
             (string) $model->password,
         );
@@ -63,7 +64,7 @@ final class EloquentUserRepository implements UserRepositoryInterface
 
     private function applyEntity(User $entity, UserModel $model): void
     {
-        $model->name = $entity->name;
+        $model->name = $entity->name->value;
         $model->email = $entity->email->value;
         $model->password = $entity->passwordHash;
     }

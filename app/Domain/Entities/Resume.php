@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\Domain\Entities;
 
 use App\Domain\ValueObjects\Email;
+use App\Domain\ValueObjects\Name;
 
 final class Resume
 {
     public function __construct(
         public int $id,
-        public string $name,
+        public Name $name,
         public Email $email,
     ) {
     }
 
-    public function rename(string $name): void
+    public function rename(Name $name): void
     {
         $this->name = $name;
     }

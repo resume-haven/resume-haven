@@ -7,6 +7,7 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Contracts\ResumeRepositoryInterface;
 use App\Domain\Entities\Resume;
 use App\Domain\ValueObjects\Email;
+use App\Domain\ValueObjects\Name;
 use App\Infrastructure\Persistence\ResumeModel;
 
 final class EloquentResumeRepository implements ResumeRepositoryInterface
@@ -55,14 +56,14 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
     {
         return new Resume(
             (int) $model->id,
-            (string) $model->name,
+            new Name((string) $model->name),
             new Email((string) $model->email),
         );
     }
 
     private function applyEntity(Resume $entity, ResumeModel $model): void
     {
-        $model->name = $entity->name;
+        $model->name = $entity->name->value;
         $model->email = $entity->email->value;
     }
 

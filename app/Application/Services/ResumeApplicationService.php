@@ -21,6 +21,6 @@ final class ResumeApplicationService
             return null;
         }
 
-        return new ResumeDTO($resume->id, $resume->name, $resume->email->value);
+        return new ResumeDTO($resume->id, $resume->name->value, $resume->email->value);
     }
 }
