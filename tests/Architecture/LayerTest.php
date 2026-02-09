@@ -67,6 +67,14 @@ arch('infrastructure implements domain interfaces')
         'App\Infrastructure\Repositories\EloquentUserReadRepository',
     ]);
 
+arch('read repositories implement read contracts')
+    ->expect('App\Infrastructure\Repositories\EloquentResumeReadRepository')
+    ->toImplement('App\Application\Contracts\ResumeReadRepositoryInterface');
+
+arch('read repositories implement user read contracts')
+    ->expect('App\Infrastructure\Repositories\EloquentUserReadRepository')
+    ->toImplement('App\Application\Contracts\UserReadRepositoryInterface');
+
 // ============================================================================
 // UI LAYER - Controllers & Presentation
 // ============================================================================

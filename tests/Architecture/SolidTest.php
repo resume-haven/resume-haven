@@ -63,3 +63,11 @@ arch('repositories use interface contracts')
         'App\Infrastructure\Repositories\EloquentUserReadRepository',
     ]);
 
+arch('read repositories use resume read contracts')
+    ->expect('App\Infrastructure\Repositories\EloquentResumeReadRepository')
+    ->toImplement('App\Application\Contracts\ResumeReadRepositoryInterface');
+
+arch('read repositories use user read contracts')
+    ->expect('App\Infrastructure\Repositories\EloquentUserReadRepository')
+    ->toImplement('App\Application\Contracts\UserReadRepositoryInterface');
+
