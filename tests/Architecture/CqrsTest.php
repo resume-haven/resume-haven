@@ -62,7 +62,7 @@ arch('DTOs have correct suffix')
 
 // Read Models for queries
 arch('read models are final and correctly named')
-    ->expect('App\Infrastructure\ReadModels')
+    ->expect('App\Application\ReadModels')
     ->classes()
     ->toBeFinal()
     ->toHaveSuffix('ReadModel');

@@ -43,6 +43,7 @@ app/Application/
 │   └── QueryHandlers/
 ├── Services/          # Application services
 ├── DTOs/              # Data Transfer Objects
+├── ReadModels/         # Query read models
 └── Exceptions/        # Application exceptions
 ```
 
@@ -60,7 +61,6 @@ app/Application/
 app/Infrastructure/
 ├── Repositories/      # Repository implementations
 ├── Persistence/       # Eloquent models
-├── ReadModels/        # Query read models
 └── External/          # External API integrations
 ```
 
@@ -120,8 +120,8 @@ app/Infrastructure/
 1. ✅ Create namespace structure
    ```bash
    mkdir -p app/{Domain,Application,Infrastructure}/{Entities,ValueObjects,Services,Contracts}
-   mkdir -p app/Application/{Commands,Queries,Handlers,DTOs}
-   mkdir -p app/Infrastructure/{Repositories,Persistence,ReadModels}
+   mkdir -p app/Application/{Commands,Queries,Handlers,DTOs,ReadModels}
+   mkdir -p app/Infrastructure/{Repositories,Persistence,External}
    ```
 
 2. ✅ Define core Domain concepts

@@ -6,7 +6,7 @@ namespace App\Application\Handlers;
 
 use App\Application\Queries\GetUserQuery;
 use App\Application\Contracts\UserReadRepositoryInterface;
-use App\Infrastructure\ReadModels\UserReadModel;
+use App\Application\ReadModels\UserReadModel;
 
 final class GetUserHandler
 {

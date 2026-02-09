@@ -6,7 +6,7 @@ namespace App\Application\Handlers;
 
 use App\Application\Queries\GetResumeQuery;
 use App\Application\Contracts\ResumeReadRepositoryInterface;
-use App\Infrastructure\ReadModels\ResumeReadModel;
+use App\Application\ReadModels\ResumeReadModel;
 
 final class GetResumeHandler
 {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Infrastructure\Repositories;
 
 use App\Application\Contracts\ResumeReadRepositoryInterface;
+use App\Application\ReadModels\ResumeReadModel;
 use App\Infrastructure\Persistence\ResumeModel;
-use App\Infrastructure\ReadModels\ResumeReadModel;
 
 final class EloquentResumeReadRepository implements ResumeReadRepositoryInterface
 {

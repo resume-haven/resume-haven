@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\ReadModels;
+namespace App\Application\ReadModels;
 
-final readonly class ResumeReadModel
+final readonly class UserReadModel
 {
     public function __construct(
         public int $id,

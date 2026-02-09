@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Contracts;
 
-use App\Infrastructure\ReadModels\ResumeReadModel;
+use App\Application\ReadModels\ResumeReadModel;
 
 interface ResumeReadRepositoryInterface
 {

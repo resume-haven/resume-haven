@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Infrastructure\Repositories;
 
 use App\Application\Contracts\UserReadRepositoryInterface;
+use App\Application\ReadModels\UserReadModel;
 use App\Infrastructure\Persistence\UserModel;
-use App\Infrastructure\ReadModels\UserReadModel;
 
 final class EloquentUserReadRepository implements UserReadRepositoryInterface
 {

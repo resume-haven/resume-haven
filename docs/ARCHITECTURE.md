@@ -128,11 +128,12 @@ App\
 │   ├── Handlers\        # CQRS handlers
 │   ├── Contracts\       # Read repository interfaces
 │   ├── DTOs\            # Data transfer objects
+│   ├── ReadModels\      # Query models
 │   └── Services\        # Application services
 ├── Infrastructure\      # External dependencies
 │   ├── Persistence\     # Eloquent models
 │   ├── Repositories\    # Repository + read repository implementations
-│   └── ReadModels\      # Query models
+│   └── External\        # External API integrations
 ├── Http\                # UI layer (controllers, middleware)
 └── ...
 ```

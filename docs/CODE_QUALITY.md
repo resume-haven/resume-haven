@@ -100,7 +100,7 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 ```php
 <?php
 
-use App\Infrastructure\ReadModels\ResumeReadModel;
+use App\Application\ReadModels\ResumeReadModel;
 use App\Infrastructure\Repositories\EloquentResumeReadRepository;
 
 test('read model contains resume fields', function () {
