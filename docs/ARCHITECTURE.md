@@ -24,12 +24,15 @@ sequenceDiagram
     participant C as Controller (UI)
     participant H as Handler (Application)
     participant R as Repository (Infrastructure)
+    participant RR as Read Repository (Infrastructure)
     participant D as Domain
 
     C->>H: Command or Query
     H->>D: Invoke domain logic
-    H->>R: Persist or read
-    R-->>H: Result
+    H->>R: Persist (commands)
+    H->>RR: Read (queries)
+    R-->>H: Domain entity
+    RR-->>H: Read model
     H-->>C: Response DTO/Result
 ```
 
@@ -123,11 +126,12 @@ App\
 │   ├── Commands\        # Write operations
 │   ├── Queries\         # Read operations
 │   ├── Handlers\        # CQRS handlers
+│   ├── Contracts\       # Read repository interfaces
 │   ├── DTOs\            # Data transfer objects
 │   └── Services\        # Application services
 ├── Infrastructure\      # External dependencies
 │   ├── Persistence\     # Eloquent models
-│   ├── Repositories\    # Repository implementations
+│   ├── Repositories\    # Repository + read repository implementations
 │   └── ReadModels\      # Query models
 ├── Http\                # UI layer (controllers, middleware)
 └── ...
@@ -175,6 +179,16 @@ interface ResumeRepositoryInterface
 class EloquentResumeRepository implements ResumeRepositoryInterface
 {
     // Implementation details
+}
+
+interface ResumeReadRepositoryInterface
+{
+    public function findById(string $id): ?ResumeReadModel;
+}
+
+class EloquentResumeReadRepository implements ResumeReadRepositoryInterface
+{
+    // Read-model mapping for queries
 }
 ```
 

@@ -144,6 +144,7 @@ resume-haven/
 ```
 
 Current UI layer lives in `app/Http` (controllers, middleware, requests). A separate Vue.js frontend is planned for a later phase.
+Query handlers return read models via read repositories; command handlers work with domain entities.
 
 ## Documentation
 

@@ -96,19 +96,22 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 - `tests/Acceptance/` - Acceptance tests for business requirements
 - `tests/Architecture/` - Architecture tests for code structure & rules
 
-**Example Test (Pest):**
+**Example Test (Pest + Read Model):**
 ```php
 <?php
 
-test('can create resume', function () {
-    $resume = App\Infrastructure\Persistence\ResumeModel::factory()->create();
-    expect($resume)->toBeInstanceOf(App\Infrastructure\Persistence\ResumeModel::class);
-});
+use App\Infrastructure\ReadModels\ResumeReadModel;
+use App\Infrastructure\Repositories\EloquentResumeReadRepository;
 
-test('resume has required fields', function () {
+test('read model contains resume fields', function () {
     $resume = App\Infrastructure\Persistence\ResumeModel::factory()->create();
-    expect($resume->name)->toBeString()
-        ->and($resume->email)->toBeString();
+    $repo = new EloquentResumeReadRepository();
+
+    $read = $repo->findById((int) $resume->id);
+
+    expect($read)->toBeInstanceOf(ResumeReadModel::class)
+        ->and($read?->name)->toBeString()
+        ->and($read?->email)->toBeString();
 });
 ```
 

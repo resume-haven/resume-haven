@@ -335,6 +335,8 @@ composer install
 
 We use **Pest** for testing - a modern, elegant testing framework for Laravel.
 
+Query handlers return read models (from read repositories), while command handlers work with domain entities.
+
 ```bash
 # Run all tests
 make test
