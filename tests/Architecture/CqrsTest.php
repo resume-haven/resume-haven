@@ -66,3 +66,17 @@ arch('read models are final and correctly named')
     ->classes()
     ->toBeFinal()
     ->toHaveSuffix('ReadModel');
+
+// Read repository interfaces and implementations
+arch('read repository interfaces are in application contracts')
+    ->expect('App\Application\Contracts')
+    ->interfaces()
+    ->toHaveSuffix('ReadRepositoryInterface');
+
+arch('resume read repository implements contract')
+    ->expect('App\Infrastructure\Repositories\EloquentResumeReadRepository')
+    ->toImplement('App\Application\Contracts\ResumeReadRepositoryInterface');
+
+arch('user read repository implements contract')
+    ->expect('App\Infrastructure\Repositories\EloquentUserReadRepository')
+    ->toImplement('App\Application\Contracts\UserReadRepositoryInterface');

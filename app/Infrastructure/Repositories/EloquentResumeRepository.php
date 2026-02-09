@@ -8,7 +8,6 @@ use App\Domain\Contracts\ResumeRepositoryInterface;
 use App\Domain\Entities\Resume;
 use App\Domain\ValueObjects\Email;
 use App\Infrastructure\Persistence\ResumeModel;
-use App\Infrastructure\ReadModels\ResumeReadModel;
 
 final class EloquentResumeRepository implements ResumeRepositoryInterface
 {
@@ -23,16 +22,6 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
         return $this->toEntity($model);
     }
 
-    public function findReadModelById(int $id): ?ResumeReadModel
-    {
-        $model = $this->findModel($id);
-
-        if ($model === null) {
-            return null;
-        }
-
-        return $this->toReadModel($model);
-    }
 
     /**
      * @param Resume $entity
@@ -77,12 +66,4 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
         $model->email = $entity->email->value;
     }
 
-    private function toReadModel(ResumeModel $model): ResumeReadModel
-    {
-        return new ResumeReadModel(
-            (int) $model->id,
-            (string) $model->name,
-            (string) $model->email,
-        );
-    }
 }

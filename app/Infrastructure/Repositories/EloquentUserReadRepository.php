@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Repositories;
+
+use App\Application\Contracts\UserReadRepositoryInterface;
+use App\Infrastructure\Persistence\UserModel;
+use App\Infrastructure\ReadModels\UserReadModel;
+
+final class EloquentUserReadRepository implements UserReadRepositoryInterface
+{
+    public function findById(int $id): ?UserReadModel
+    {
+        if ($id <= 0) {
+            return null;
+        }
+
+        $model = UserModel::query()->find($id);
+
+        if ($model === null) {
+            return null;
+        }
+
+        return new UserReadModel(
+            (int) $model->id,
+            (string) $model->name,
+            (string) $model->email,
+        );
+    }
+}

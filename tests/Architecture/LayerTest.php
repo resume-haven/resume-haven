@@ -63,6 +63,8 @@ arch('infrastructure implements domain interfaces')
     ->toImplement('App\Domain\Contracts\RepositoryInterface')
     ->ignoring([
         'App\Infrastructure\Repositories\BaseRepository',
+        'App\Infrastructure\Repositories\EloquentResumeReadRepository',
+        'App\Infrastructure\Repositories\EloquentUserReadRepository',
     ]);
 
 // ============================================================================
