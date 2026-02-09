@@ -1,9 +1,10 @@
-project: 
-  name: MeinProjekt 
-  language: php 
-  framework: laravel 
-  style: strict 
-  architecture: 
+project:
+  name: ResumeHaven
+  description: A modern resume builder application built with Laravel, designed to help users create professional resumes
+  language: php
+  framework: laravel
+  style: strict
+  architecture:
     - domain-driven
     - modular
     - cqrs
@@ -28,14 +29,16 @@ structure:
   domain: app/Domain
   application: app/Application
   infrastructure: app/Infrastructure
-  ui: app/UI
+  ui:
+    - app/UI (later)
+    - app/Http/Controllers
   documentation: docs
   tests: tests
 tests:
   framework: pest
   naming: "*Test.php"
   coverage_required: true
-  mutation_testing: pest
+  mutation_testing: pest (later)
   test_types:
     - unit
     - integration

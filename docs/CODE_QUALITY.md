@@ -92,6 +92,8 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 - `tests/Unit/` - Unit tests for isolated logic
 - `tests/Feature/` - Feature tests for HTTP & User workflows
 - `tests/Integration/` - Integration tests for connected components
+- `tests/Functional/` - Functional tests for end-to-end features
+- `tests/Acceptance/` - Acceptance tests for business requirements
 - `tests/Architecture/` - Architecture tests for code structure & rules
 
 **Example Test (Pest):**
@@ -99,12 +101,12 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 <?php
 
 test('can create resume', function () {
-    $resume = Resume::factory()->create();
-    expect($resume)->toBeInstanceOf(Resume::class);
+    $resume = App\Infrastructure\Persistence\ResumeModel::factory()->create();
+    expect($resume)->toBeInstanceOf(App\Infrastructure\Persistence\ResumeModel::class);
 });
 
 test('resume has required fields', function () {
-    $resume = Resume::factory()->create();
+    $resume = App\Infrastructure\Persistence\ResumeModel::factory()->create();
     expect($resume->name)->toBeString()
         ->and($resume->email)->toBeString();
 });

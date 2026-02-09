@@ -14,7 +14,7 @@ All PHP files must declare strict types at the top:
 <?php
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Domain\Entities;
 
 class Resume
 {
@@ -77,12 +77,9 @@ $maxAttempts = 3;
 <?php
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Domain\Entities;
 
-use App\Contracts\Buildable;
-use Illuminate\Support\Facades\Log;
-
-class Resume implements Buildable
+class Resume
 {
     // Constants first
     const EXPORT_FORMAT = 'pdf';
@@ -152,10 +149,10 @@ Always handle exceptions properly:
 try {
     $resume = $this->buildResume($data);
 } catch (\InvalidArgumentException $e) {
-    Log::error('Invalid resume data', ['error' => $e->getMessage()]);
+    $this->logger->error('Invalid resume data', ['error' => $e->getMessage()]);
     throw $e;
 } catch (\Exception $e) {
-    Log::critical('Unexpected error building resume', ['error' => $e]);
+    $this->logger->critical('Unexpected error building resume', ['error' => $e]);
     throw new \RuntimeException('Failed to build resume', 0, $e);
 }
 ```
@@ -363,7 +360,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\Resume;
+use App\Infrastructure\Persistence\ResumeModel;
 
 describe('Resume API', function () {
     it('creates a resume', function () {
@@ -398,7 +395,7 @@ When creating new PHP files:
    <?php
    declare(strict_types=1);
    
-   namespace App\Services;
+    namespace App\Application\Services;
    ```
 
 2. **Add strict types**
@@ -498,15 +495,15 @@ public function createResume(string $name, array $sections): Resume
 
 ### SQL Injection Prevention
 
-Always use parameterized queries (if using direct DB):
+Direct database access is not allowed. Use repositories and Eloquent models instead of raw SQL.
 
 ```php
-// ❌ Bad: SQL injection vulnerable
-$query = "SELECT * FROM users WHERE name = '$name'";
-
-// ✅ Good: Parameterized query
+// ❌ Bad: direct SQL access
 $query = "SELECT * FROM users WHERE name = ?";
 $result = $db->query($query, [$name]);
+
+// ✅ Good: repository + ORM
+$user = $this->users->findByName($name);
 ```
 
 ## Common Patterns
@@ -627,7 +624,7 @@ ResumeHaven uses Laravel 12 with the following key features:
 
 - **Strict Types**: All PHP files include `declare(strict_types=1)`
 - **Database**: SQLite (default) with support for PostgreSQL/MySQL
-- **Testing**: PHPUnit for unit and feature tests
+- **Testing**: Pest for unit and feature tests
 - **Code Style**: PSR-12 via Laravel Pint
 
 ### Common Laravel Commands
@@ -698,7 +695,7 @@ docker-compose exec app php artisan make:test ResumeTest --unit
 ```bash
 # SQLite
 docker-compose exec app php artisan tinker
->>> DB::table('users')->get();
+>>> App\Infrastructure\Persistence\ResumeModel::query()->get();
 ```
 
 **Reset database**:

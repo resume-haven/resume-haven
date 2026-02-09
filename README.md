@@ -66,7 +66,7 @@ make down              # Stop all containers
 make shell             # Open shell in app container
 make logs              # View container logs
 make migrate           # Run database migrations
-make test              # Run PHPUnit tests
+make test              # Run Pest tests
 make lint              # Run Laravel Pint (code style)
 ```
 
@@ -143,6 +143,8 @@ resume-haven/
 └── docker-compose.yml     # Docker services
 ```
 
+Current UI layer lives in `app/Http` (controllers, middleware, requests). A separate Vue.js frontend is planned for a later phase.
+
 ## Documentation
 
 ### 📋 Setup & Development
@@ -157,11 +159,16 @@ resume-haven/
 - [GitHub Actions Quick Reference](docs/GITHUB_ACTIONS_QUICK.md) - Quick command reference
 
 ### 🏗️ Architecture & Planning
-- [Architecture Overview](docs/ARCHITECTURE.md) - System architecture
+- [Architecture Overview](docs/ARCHITECTURE.md) - System architecture and diagrams
 - [Technical Debt](docs/TECHNICAL_DEBT.md) - Known issues and TODOs
 - [Deployment Guide](docs/DEPLOYMENT.md) - Deployment instructions
 
 ## Contributing
+
+## AI Instructions
+
+If you use an AI coding assistant, please follow the guidance in
+[.github/agents/default.yaml](.github/agents/default.yaml).
 
 We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on:
 

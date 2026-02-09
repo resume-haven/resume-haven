@@ -4,16 +4,44 @@
 
 ResumeHaven is a modern PHP application built with strict type safety and containerized development. This document outlines the project structure, design decisions, and how components interact.
 
+## Architecture Diagrams
+
+### Layered Architecture
+
+```mermaid
+flowchart TD
+    UI[UI Layer\napp/Http] --> APP[Application Layer\napp/Application]
+    APP --> DOMAIN[Domain Layer\napp/Domain]
+    INFRA[Infrastructure Layer\napp/Infrastructure] --> DOMAIN
+    APP --> INFRA
+    UI --> INFRA
+```
+
+### CQRS Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Controller (UI)
+    participant H as Handler (Application)
+    participant R as Repository (Infrastructure)
+    participant D as Domain
+
+    C->>H: Command or Query
+    H->>D: Invoke domain logic
+    H->>R: Persist or read
+    R-->>H: Result
+    H-->>C: Response DTO/Result
+```
+
 ## Project Structure
 
 ```
 resume-haven/
 ├── app/                          # Application source code
-│   ├── Models/                   # Data models
-│   ├── Services/                 # Business logic
-│   ├── Controllers/              # Request handlers (if using)
-│   ├── Contracts/                # Interfaces
-│   ├── Exceptions/               # Custom exceptions
+│   ├── Domain/                   # Domain layer (entities, value objects)
+│   ├── Application/              # Application layer (use cases, handlers)
+│   ├── Infrastructure/           # Infrastructure layer (persistence, adapters)
+│   ├── Http/                     # UI layer (controllers, middleware, requests)
 │   └── ...
 ├── public/                       # Web-accessible files
 │   ├── index.php                 # Application entry point
@@ -48,6 +76,8 @@ resume-haven/
 └── README.md                     # Project documentation
 ```
 
+Current UI layer lives in `app/Http` (controllers, middleware, requests). A separate Vue.js frontend is planned for a later phase.
+
 ## Core Concepts
 
 ### Strict Type Safety
@@ -58,7 +88,7 @@ All PHP files use `declare(strict_types=1)`:
 <?php
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Domain\Entities;
 
 class Resume
 {
@@ -80,16 +110,26 @@ class Resume
 
 ### Namespacing
 
-Organize code by responsibility:
+Organize code by responsibility (DDD layers):
 
 ```
 App\
-├── Models\              # Data representation
-├── Services\           # Business logic
-├── Controllers\        # Request handlers
-├── Repositories\       # Data access
-├── Contracts\          # Interfaces
-├── Exceptions\         # Custom exceptions
+├── Domain\              # Core business logic
+│   ├── Entities\        # Domain entities
+│   ├── ValueObjects\    # Immutable value objects
+│   ├── Contracts\       # Domain interfaces
+│   └── Services\        # Domain services
+├── Application\         # Use cases and orchestration
+│   ├── Commands\        # Write operations
+│   ├── Queries\         # Read operations
+│   ├── Handlers\        # CQRS handlers
+│   ├── DTOs\            # Data transfer objects
+│   └── Services\        # Application services
+├── Infrastructure\      # External dependencies
+│   ├── Persistence\     # Eloquent models
+│   ├── Repositories\    # Repository implementations
+│   └── ReadModels\      # Query models
+├── Http\                # UI layer (controllers, middleware)
 └── ...
 ```
 
@@ -101,17 +141,15 @@ Request dependencies explicitly:
 <?php
 declare(strict_types=1);
 
-class ResumeService
+class ResumeApplicationService
 {
     public function __construct(
-        private ResumeRepository $repository,
-        private ValidationService $validator,
+        private ResumeRepositoryInterface $repository,
     ) {}
     
     public function create(array $data): Resume
     {
-        $validated = $this->validator->validate($data);
-        return $this->repository->save($validated);
+        return $this->repository->save(new Resume(...$data));
     }
 }
 ```
@@ -126,7 +164,7 @@ Abstract data access:
 <?php
 declare(strict_types=1);
 
-interface ResumeRepository
+interface ResumeRepositoryInterface
 {
     public function findById(string $id): ?Resume;
     public function findAll(): array;
@@ -134,7 +172,7 @@ interface ResumeRepository
     public function delete(string $id): void;
 }
 
-class SqliteResumeRepository implements ResumeRepository
+class EloquentResumeRepository implements ResumeRepositoryInterface
 {
     // Implementation details
 }
@@ -153,10 +191,10 @@ Encapsulate business logic:
 <?php
 declare(strict_types=1);
 
-class ResumeBuilderService
+class ResumeApplicationService
 {
     public function __construct(
-        private ResumeRepository $repository,
+        private ResumeRepositoryInterface $repository,
         private ExportService $exporter,
     ) {}
     
