@@ -13,18 +13,13 @@ final class EloquentUserRepository implements UserRepositoryInterface
 {
     public function findById(int $id): ?User
     {
-        $model = UserModel::query()->find($id);
+        $model = $this->findModel($id);
 
         if ($model === null) {
             return null;
         }
 
-        return new User(
-            (int) $model->id,
-            (string) $model->name,
-            new Email((string) $model->email),
-            (string) $model->password,
-        );
+        return $this->toEntity($model);
     }
 
     /**
@@ -36,15 +31,39 @@ final class EloquentUserRepository implements UserRepositoryInterface
             throw new \InvalidArgumentException('Expected User entity.');
         }
 
-        $model = UserModel::query()->find($entity->id) ?? new UserModel();
-        $model->name = $entity->name;
-        $model->email = $entity->email->value;
-        $model->password = $entity->passwordHash;
+        $model = $this->findModel($entity->id) ?? new UserModel();
+        $this->applyEntity($entity, $model);
         $model->save();
     }
 
     public function delete(int $id): void
     {
         UserModel::query()->whereKey($id)->delete();
+    }
+
+    private function findModel(int $id): ?UserModel
+    {
+        if ($id <= 0) {
+            return null;
+        }
+
+        return UserModel::query()->find($id);
+    }
+
+    private function toEntity(UserModel $model): User
+    {
+        return new User(
+            (int) $model->id,
+            (string) $model->name,
+            new Email((string) $model->email),
+            (string) $model->password,
+        );
+    }
+
+    private function applyEntity(User $entity, UserModel $model): void
+    {
+        $model->name = $entity->name;
+        $model->email = $entity->email->value;
+        $model->password = $entity->passwordHash;
     }
 }

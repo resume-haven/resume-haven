@@ -13,17 +13,13 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
 {
     public function findById(int $id): ?Resume
     {
-        $model = ResumeModel::query()->find($id);
+        $model = $this->findModel($id);
 
         if ($model === null) {
             return null;
         }
 
-        return new Resume(
-            (int) $model->id,
-            (string) $model->name,
-            new Email((string) $model->email),
-        );
+        return $this->toEntity($model);
     }
 
     /**
@@ -35,14 +31,37 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
             throw new \InvalidArgumentException('Expected Resume entity.');
         }
 
-        $model = ResumeModel::query()->find($entity->id) ?? new ResumeModel();
-        $model->name = $entity->name;
-        $model->email = $entity->email->value;
+        $model = $this->findModel($entity->id) ?? new ResumeModel();
+        $this->applyEntity($entity, $model);
         $model->save();
     }
 
     public function delete(int $id): void
     {
         ResumeModel::query()->whereKey($id)->delete();
+    }
+
+    private function findModel(int $id): ?ResumeModel
+    {
+        if ($id <= 0) {
+            return null;
+        }
+
+        return ResumeModel::query()->find($id);
+    }
+
+    private function toEntity(ResumeModel $model): Resume
+    {
+        return new Resume(
+            (int) $model->id,
+            (string) $model->name,
+            new Email((string) $model->email),
+        );
+    }
+
+    private function applyEntity(Resume $entity, ResumeModel $model): void
+    {
+        $model->name = $entity->name;
+        $model->email = $entity->email->value;
     }
 }
