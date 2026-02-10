@@ -137,6 +137,7 @@ Swagger UI: http://localhost/docs/swagger
 
 **Resumes**
 - `GET /api/resumes/{id}` - Fetch resume read model
+- `GET /api/resumes/{id}/status-history` - Fetch resume status history
 - `POST /api/resumes` - Create resume
 - `PUT /api/resumes/{id}` - Update resume
 - `PATCH /api/resumes/{id}` - Partially update resume
@@ -172,6 +173,29 @@ Response (200):
    "email": "resume@example.com",
    "status": "draft"
 }
+```
+
+Example (status history GET):
+```bash
+curl http://localhost/api/resumes/1/status-history
+```
+
+Response (200):
+```json
+[
+   {
+      "id": 1,
+      "resume_id": 1,
+      "from_status": "draft",
+      "to_status": "published",
+      "changed_at": "2026-02-10T12:30:00.000Z"
+   }
+]
+```
+
+Example (status history GET, httpie):
+```bash
+http GET http://localhost/api/resumes/1/status-history
 ```
 
 Response (404):

@@ -7,6 +7,7 @@ use App\Domain\Events\ResumeDeletedEvent;
 use App\Domain\Events\ResumeStatusChangedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Infrastructure\Persistence\ResumeModel;
+use App\Infrastructure\Persistence\ResumeStatusHistoryModel;
 use Illuminate\Support\Facades\Event;
 
 it('shows a resume', function () {
@@ -24,6 +25,39 @@ it('shows a resume', function () {
 
 it('returns not found for missing resume', function () {
     $this->getJson('/api/resumes/999999')
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'Resume not found.',
+        ]);
+});
+
+it('shows resume status history', function () {
+    $resume = ResumeModel::factory()->create([
+        'status' => 'draft',
+    ]);
+
+    $history = ResumeStatusHistoryModel::query()->create([
+        'resume_id' => $resume->id,
+        'from_status' => 'draft',
+        'to_status' => 'published',
+        'changed_at' => new DateTimeImmutable('2026-02-10T12:30:00Z'),
+    ]);
+
+    $this->getJson("/api/resumes/{$resume->id}/status-history")
+        ->assertOk()
+        ->assertJson([
+            [
+                'id' => $history->id,
+                'resume_id' => $resume->id,
+                'from_status' => 'draft',
+                'to_status' => 'published',
+                'changed_at' => $history->changed_at->toISOString(),
+            ],
+        ]);
+});
+
+it('returns not found for missing resume status history', function () {
+    $this->getJson('/api/resumes/999999/status-history')
         ->assertNotFound()
         ->assertJson([
             'message' => 'Resume not found.',
@@ -143,6 +177,12 @@ it('patches a resume status', function () {
     $this->assertDatabaseHas('resumes', [
         'id' => $resume->id,
         'status' => 'published',
+    ]);
+
+    $this->assertDatabaseHas('resume_status_history', [
+        'resume_id' => $resume->id,
+        'from_status' => 'draft',
+        'to_status' => 'published',
     ]);
 
     Event::assertDispatched(ResumeUpdatedEvent::class);

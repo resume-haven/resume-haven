@@ -64,6 +64,7 @@ arch('infrastructure implements domain interfaces')
     ->ignoring([
         'App\Infrastructure\Repositories\BaseRepository',
         'App\Infrastructure\Repositories\EloquentResumeReadRepository',
+        'App\Infrastructure\Repositories\EloquentResumeStatusHistoryReadRepository',
         'App\Infrastructure\Repositories\EloquentUserReadRepository',
     ]);
 

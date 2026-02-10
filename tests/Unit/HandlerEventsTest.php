@@ -18,6 +18,7 @@ use App\Application\Handlers\PatchResumeHandler;
 use App\Application\Handlers\PatchUserHandler;
 use App\Application\Handlers\UpdateResumeHandler;
 use App\Application\Handlers\UpdateUserHandler;
+use App\Domain\Contracts\ResumeStatusHistoryRepositoryInterface;
 use App\Domain\Contracts\ResumeRepositoryInterface;
 use App\Domain\Contracts\UserRepositoryInterface;
 use App\Domain\Entities\Resume;
@@ -69,7 +70,9 @@ final class FakeResumeRepository implements ResumeRepositoryInterface
 
         $this->saved = $entity;
         $this->existing = $entity;
-        $entity->id = new ResumeId(1);
+        if ($entity->id->value <= 0) {
+            $entity->id = new ResumeId(1);
+        }
     }
 
     public function delete(int $id): void
@@ -115,6 +118,24 @@ final class FakeUserRepository implements UserRepositoryInterface
     }
 }
 
+final class FakeResumeStatusHistoryRepository implements ResumeStatusHistoryRepositoryInterface
+{
+    /**
+     * @var list<array{resume_id: int, from_status: string, to_status: string, changed_at: DateTimeImmutable}>
+     */
+    public array $records = [];
+
+    public function record(int $resumeId, string $fromStatus, string $toStatus, DateTimeImmutable $changedAt): void
+    {
+        $this->records[] = [
+            'resume_id' => $resumeId,
+            'from_status' => $fromStatus,
+            'to_status' => $toStatus,
+            'changed_at' => $changedAt,
+        ];
+    }
+}
+
 
 it('dispatches resume created event in handler', function () {
     Event::fake();
@@ -151,7 +172,11 @@ it('dispatches resume updated event in handler', function () {
         new Email('old@example.com'),
         ResumeStatus::draft()
     );
-    $handler = new UpdateResumeHandler(new FakeResumeRepository($existing), new ResumeStatusService());
+    $handler = new UpdateResumeHandler(
+        new FakeResumeRepository($existing),
+        new ResumeStatusService(),
+        new FakeResumeStatusHistoryRepository(),
+    );
     $command = new UpdateResumeCommand(5, 'New Resume', new Email('new@example.com'), null);
 
     $resume = $handler->handle($command);
@@ -170,7 +195,11 @@ it('dispatches resume patched event in handler', function () {
         new Email('old@example.com'),
         ResumeStatus::draft()
     );
-    $handler = new PatchResumeHandler(new FakeResumeRepository($existing), new ResumeStatusService());
+    $handler = new PatchResumeHandler(
+        new FakeResumeRepository($existing),
+        new ResumeStatusService(),
+        new FakeResumeStatusHistoryRepository(),
+    );
     $command = new PatchResumeCommand(6, 'Patched Resume', null, null);
 
     $resume = $handler->handle($command);
@@ -246,7 +275,12 @@ it('dispatches resume status changed event in handler', function () {
         new Email('old@example.com'),
         ResumeStatus::draft()
     );
-    $handler = new PatchResumeHandler(new FakeResumeRepository($existing), new ResumeStatusService());
+    $history = new FakeResumeStatusHistoryRepository();
+    $handler = new PatchResumeHandler(
+        new FakeResumeRepository($existing),
+        new ResumeStatusService(),
+        $history,
+    );
     $command = new PatchResumeCommand(12, null, null, new ResumeStatus('published'));
 
     $resume = $handler->handle($command);
@@ -254,6 +288,12 @@ it('dispatches resume status changed event in handler', function () {
     Event::assertDispatched(ResumeStatusChangedEvent::class, function (ResumeStatusChangedEvent $event) use ($resume) {
         return $event->resume === $resume && $event->from === 'draft' && $event->to === 'published';
     });
+
+    $this->assertCount(1, $history->records);
+    $this->assertSame(12, $history->records[0]['resume_id']);
+    $this->assertSame('draft', $history->records[0]['from_status']);
+    $this->assertSame('published', $history->records[0]['to_status']);
+    $this->assertInstanceOf(DateTimeImmutable::class, $history->records[0]['changed_at']);
 });
 
 it('dispatches user deleted event in handler', function () {

@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Application\Contracts\ResumeReadRepositoryInterface;
+use App\Application\Contracts\ResumeStatusHistoryReadRepositoryInterface;
 use App\Application\Contracts\UserReadRepositoryInterface;
+use App\Domain\Contracts\ResumeStatusHistoryRepositoryInterface;
 use App\Domain\Contracts\ResumeRepositoryInterface;
 use App\Domain\Contracts\UserRepositoryInterface;
+use App\Infrastructure\Persistence\ResumeStatusHistoryRepository;
+use App\Infrastructure\Repositories\EloquentResumeStatusHistoryReadRepository;
 use App\Infrastructure\Repositories\EloquentResumeReadRepository;
 use App\Infrastructure\Repositories\EloquentResumeRepository;
 use App\Infrastructure\Repositories\EloquentUserReadRepository;
@@ -25,6 +29,8 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, EloquentUserRepository::class);
         $this->app->bind(ResumeReadRepositoryInterface::class, EloquentResumeReadRepository::class);
         $this->app->bind(UserReadRepositoryInterface::class, EloquentUserReadRepository::class);
+        $this->app->bind(ResumeStatusHistoryRepositoryInterface::class, ResumeStatusHistoryRepository::class);
+        $this->app->bind(ResumeStatusHistoryReadRepositoryInterface::class, EloquentResumeStatusHistoryReadRepository::class);
     }
 
     /**

@@ -11,12 +11,15 @@ use App\Domain\Events\ResumeStatusChangedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Domain\Services\ResumeStatusService;
 use App\Domain\ValueObjects\Name;
+use App\Domain\Contracts\ResumeStatusHistoryRepositoryInterface;
+use DateTimeImmutable;
 
 final class PatchResumeHandler
 {
     public function __construct(
         private ResumeRepositoryInterface $resumes,
         private ResumeStatusService $statusService,
+        private ResumeStatusHistoryRepositoryInterface $history,
     ) {
     }
 
@@ -47,6 +50,12 @@ final class PatchResumeHandler
 
         if ($command->status !== null && $previousStatus !== $resume->status->value) {
             event(new ResumeStatusChangedEvent($resume, $previousStatus, $resume->status->value));
+            $this->history->record(
+                $resume->id->value,
+                $previousStatus,
+                $resume->status->value,
+                new DateTimeImmutable(),
+            );
         }
 
         return $resume;

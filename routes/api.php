@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\ResumeStatusHistoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/resumes/{id}', [ResumeController::class, 'show']);
+Route::get('/resumes/{id}/status-history', ResumeStatusHistoryController::class);
 Route::post('/resumes', [ResumeController::class, 'store']);
 Route::put('/resumes/{id}', [ResumeController::class, 'update']);
 Route::patch('/resumes/{id}', [ResumeController::class, 'update']);

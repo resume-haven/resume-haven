@@ -248,6 +248,40 @@ paths:
                     errors:
                       name:
                         - The name field is required.
+  /api/resumes/{id}/status-history:
+    get:
+      tags:
+        - Resumes
+      summary: Fetch resume status history
+      operationId: getResumeStatusHistory
+      description: Returns audit history entries for status changes.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      responses:
+        "200":
+          description: Status history entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResumeStatusHistoryList"
+              examples:
+                statusHistory:
+                  value:
+                    - id: 1
+                      resume_id: 1
+                      from_status: draft
+                      to_status: published
+                      changed_at: 2026-02-10T12:30:00.000Z
+        "404":
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                resumeNotFound:
+                  value:
+                    message: Resume not found.
   /api/users/{id}:
     get:
       tags:
@@ -532,6 +566,44 @@ components:
             - published
             - archived
           example: draft
+    ResumeStatusHistoryEntry:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - resume_id
+        - from_status
+        - to_status
+        - changed_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        resume_id:
+          type: integer
+          example: 1
+        from_status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
+          example: draft
+        to_status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
+          example: published
+        changed_at:
+          type: string
+          format: date-time
+          example: 2026-02-10T12:30:00.000Z
+    ResumeStatusHistoryList:
+      type: array
+      items:
+        $ref: "#/components/schemas/ResumeStatusHistoryEntry"
     UserRead:
       type: object
       additionalProperties: false
