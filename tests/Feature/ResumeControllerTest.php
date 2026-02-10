@@ -81,6 +81,51 @@ it('updates a resume', function () {
     Event::assertDispatched(ResumeUpdatedEvent::class);
 });
 
+it('patches a resume name', function () {
+    Event::fake();
+
+    $resume = ResumeModel::factory()->create([
+        'name' => 'Old Resume',
+        'email' => 'old@example.com',
+    ]);
+
+    $this->patchJson("/api/resumes/{$resume->id}", [
+        'name' => 'Patched Resume',
+    ])
+        ->assertOk()
+        ->assertJson([
+            'id' => $resume->id,
+            'name' => 'Patched Resume',
+            'email' => 'old@example.com',
+        ]);
+
+    $this->assertDatabaseHas('resumes', [
+        'id' => $resume->id,
+        'name' => 'Patched Resume',
+        'email' => 'old@example.com',
+    ]);
+
+    Event::assertDispatched(ResumeUpdatedEvent::class);
+});
+
+it('validates resume patch input', function () {
+    $resume = ResumeModel::factory()->create();
+
+    $this->patchJson("/api/resumes/{$resume->id}", [])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['fields']);
+});
+
+it('returns not found for resume patch', function () {
+    $this->patchJson('/api/resumes/999999', [
+        'name' => 'Patched Resume',
+    ])
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'Resume not found.',
+        ]);
+});
+
 it('deletes a resume', function () {
     Event::fake();
 

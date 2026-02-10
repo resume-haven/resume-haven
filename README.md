@@ -139,6 +139,7 @@ Swagger UI: http://localhost/docs/swagger
 - `GET /api/resumes/{id}` - Fetch resume read model
 - `POST /api/resumes` - Create resume
 - `PUT /api/resumes/{id}` - Update resume
+- `PATCH /api/resumes/{id}` - Partially update resume
 - `DELETE /api/resumes/{id}` - Delete resume
 
 Example:
@@ -192,6 +193,7 @@ http GET http://localhost/api/resumes/1
 - `GET /api/users/{id}` - Fetch user read model
 - `POST /api/users` - Create user
 - `PUT /api/users/{id}` - Update user
+- `PATCH /api/users/{id}` - Partially update user
 - `DELETE /api/users/{id}` - Delete user
 
 Example:

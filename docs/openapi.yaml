@@ -124,6 +124,63 @@ paths:
                 resumeNotFound:
                   value:
                     message: Resume not found.
+    patch:
+      tags:
+        - Resumes
+      summary: Patch a resume
+      operationId: patchResume
+      description: Partially updates a resume, emits ResumeUpdatedEvent, and returns the updated resource.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchResumeRequest"
+            examples:
+              patchResumeName:
+                value:
+                  name: Patched Resume
+              patchResumeEmail:
+                value:
+                  email: patched@example.com
+      responses:
+        "200":
+          description: Resume updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResumeRead"
+              examples:
+                resumePatched:
+                  value:
+                    id: 1
+                    name: Patched Resume
+                    email: resume@example.com
+        "404":
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                resumeNotFound:
+                  value:
+                    message: Resume not found.
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+              examples:
+                invalidResumePatch:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      fields:
+                        - At least one field must be provided.
   /api/resumes:
     post:
       tags:
@@ -303,6 +360,63 @@ paths:
                 userNotFound:
                   value:
                     message: User not found.
+    patch:
+      tags:
+        - Users
+      summary: Patch a user
+      operationId: patchUser
+      description: Partially updates a user, emits UserUpdatedEvent, and returns the updated resource.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchUserRequest"
+            examples:
+              patchUserEmail:
+                value:
+                  email: patched@example.com
+              patchUserPassword:
+                value:
+                  password: newpassword123
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRead"
+              examples:
+                userPatched:
+                  value:
+                    id: 1
+                    name: Test User
+                    email: patched@example.com
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                userNotFound:
+                  value:
+                    message: User not found.
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+              examples:
+                invalidUserPatch:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      fields:
+                        - At least one field must be provided.
   /api/users:
     post:
       tags:
@@ -449,6 +563,19 @@ components:
           type: string
           format: email
           maxLength: 255
+    PatchResumeRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 255
     CreateUserRequest:
       type: object
       additionalProperties: false
@@ -475,6 +602,23 @@ components:
       required:
         - name
         - email
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          minLength: 8
+          maxLength: 255
+    PatchUserRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
       properties:
         name:
           type: string

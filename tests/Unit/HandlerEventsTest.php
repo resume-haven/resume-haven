@@ -6,12 +6,16 @@ use App\Application\Commands\CreateResumeCommand;
 use App\Application\Commands\CreateUserCommand;
 use App\Application\Commands\DeleteResumeCommand;
 use App\Application\Commands\DeleteUserCommand;
+use App\Application\Commands\PatchResumeCommand;
+use App\Application\Commands\PatchUserCommand;
 use App\Application\Commands\UpdateResumeCommand;
 use App\Application\Commands\UpdateUserCommand;
 use App\Application\Handlers\CreateResumeHandler;
 use App\Application\Handlers\CreateUserHandler;
 use App\Application\Handlers\DeleteResumeHandler;
 use App\Application\Handlers\DeleteUserHandler;
+use App\Application\Handlers\PatchResumeHandler;
+use App\Application\Handlers\PatchUserHandler;
 use App\Application\Handlers\UpdateResumeHandler;
 use App\Application\Handlers\UpdateUserHandler;
 use App\Domain\Contracts\ResumeRepositoryInterface;
@@ -149,6 +153,20 @@ it('dispatches resume updated event in handler', function () {
     });
 });
 
+it('dispatches resume patched event in handler', function () {
+    Event::fake();
+
+    $existing = new Resume(new ResumeId(6), new Name('Old Resume'), new Email('old@example.com'));
+    $handler = new PatchResumeHandler(new FakeResumeRepository($existing));
+    $command = new PatchResumeCommand(6, 'Patched Resume', null);
+
+    $resume = $handler->handle($command);
+
+    Event::assertDispatched(ResumeUpdatedEvent::class, function (ResumeUpdatedEvent $event) use ($resume) {
+        return $event->resume === $resume;
+    });
+});
+
 it('dispatches user updated event in handler', function () {
     Event::fake();
 
@@ -160,6 +178,25 @@ it('dispatches user updated event in handler', function () {
     );
     $handler = new UpdateUserHandler(new FakeUserRepository($existing));
     $command = new UpdateUserCommand(7, 'New User', new Email('new@example.com'), 'newhashed');
+
+    $user = $handler->handle($command);
+
+    Event::assertDispatched(UserUpdatedEvent::class, function (UserUpdatedEvent $event) use ($user) {
+        return $event->user === $user;
+    });
+});
+
+it('dispatches user patched event in handler', function () {
+    Event::fake();
+
+    $existing = new User(
+        new UserId(10),
+        new Name('Old User'),
+        new Email('old@example.com'),
+        new PasswordHash('hashed')
+    );
+    $handler = new PatchUserHandler(new FakeUserRepository($existing));
+    $command = new PatchUserCommand(10, null, new Email('patched@example.com'), null);
 
     $user = $handler->handle($command);
 

@@ -108,6 +108,68 @@ Flow summary:
 5. Handler emits a domain event.
 6. Controller returns the updated DTO or 404.
 
+### Resume Patch Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function update(int $id, Request $request): JsonResponse
+    {
+        if ($request->isMethod('patch')) {
+            $validator = Validator::make($request->all(), [
+                'name' => ['sometimes', 'string', 'max:200'],
+                'email' => ['sometimes', 'email', 'max:255'],
+            ]);
+
+            $validator->after(function ($validator) use ($request) {
+                $fields = array_intersect_key($request->all(), array_flip(['name', 'email']));
+
+                if ($fields === []) {
+                    $validator->errors()->add('fields', 'At least one field must be provided.');
+                }
+            });
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => $validator->errors()->toArray(),
+                ], 422);
+            }
+
+            $data = $validator->validated();
+            $resume = $this->commands->patch(
+                $id,
+                $data['name'] ?? null,
+                $data['email'] ?? null,
+            );
+
+            if ($resume === null) {
+                return response()->json(['message' => 'Resume not found.'], 404);
+            }
+
+            return response()->json([
+                'id' => $resume->id->value,
+                'name' => $resume->name->value,
+                'email' => $resume->email->value,
+            ]);
+        }
+
+        // PUT uses the full update flow shown above.
+    }
+}
+```
+
+Flow summary:
+1. Controller validates partial input.
+2. Controller calls `ResumeCommandService`.
+3. Command service forwards to the patch handler.
+4. Handler applies provided changes and persists.
+5. Handler emits a domain event.
+6. Controller returns the updated DTO or 404.
+
 ### Resume Delete Command Flow
 
 ```php
@@ -264,6 +326,73 @@ Flow summary:
 2. Controller calls `UserCommandService`.
 3. Command service forwards to the update handler.
 4. Handler loads entity, applies changes, and persists.
+5. Handler emits a domain event.
+6. Controller returns the updated DTO or 404.
+
+### User Patch Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class UserController
+{
+    public function update(int $id, Request $request): JsonResponse
+    {
+        if ($request->isMethod('patch')) {
+            $validator = Validator::make($request->all(), [
+                'name' => ['sometimes', 'string', 'max:200'],
+                'email' => ['sometimes', 'email', 'max:255'],
+                'password' => ['sometimes', 'string', 'min:8', 'max:255'],
+            ]);
+
+            $validator->after(function ($validator) use ($request) {
+                $fields = array_intersect_key($request->all(), array_flip(['name', 'email', 'password']));
+
+                if ($fields === []) {
+                    $validator->errors()->add('fields', 'At least one field must be provided.');
+                }
+            });
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => $validator->errors()->toArray(),
+                ], 422);
+            }
+
+            $data = $validator->validated();
+            $password = $data['password'] ?? null;
+            $passwordHash = $password !== null ? Hash::make($password) : null;
+
+            $user = $this->commands->patch(
+                $id,
+                $data['name'] ?? null,
+                $data['email'] ?? null,
+                $passwordHash,
+            );
+
+            if ($user === null) {
+                return response()->json(['message' => 'User not found.'], 404);
+            }
+
+            return response()->json([
+                'id' => $user->id->value,
+                'name' => $user->name->value,
+                'email' => $user->email->value,
+            ]);
+        }
+
+        // PUT uses the full update flow shown above.
+    }
+}
+```
+
+Flow summary:
+1. Controller validates partial input.
+2. Controller calls `UserCommandService`.
+3. Command service forwards to the patch handler.
+4. Handler applies provided changes and persists.
 5. Handler emits a domain event.
 6. Controller returns the updated DTO or 404.
 

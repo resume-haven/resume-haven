@@ -9,6 +9,7 @@ use App\Application\Services\ResumeQueryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 final class ResumeController extends Controller
 {
@@ -47,12 +48,41 @@ final class ResumeController extends Controller
 
     public function update(int $id, Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:200'],
-            'email' => ['required', 'email', 'max:255'],
-        ]);
+        if ($request->isMethod('patch')) {
+            $validator = Validator::make($request->all(), [
+                'name' => ['sometimes', 'string', 'max:200'],
+                'email' => ['sometimes', 'email', 'max:255'],
+            ]);
 
-        $resume = $this->commands->update($id, $data['name'], $data['email']);
+            $validator->after(function ($validator) use ($request) {
+                $fields = array_intersect_key($request->all(), array_flip(['name', 'email']));
+
+                if ($fields === []) {
+                    $validator->errors()->add('fields', 'At least one field must be provided.');
+                }
+            });
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => $validator->errors()->toArray(),
+                ], 422);
+            }
+
+            $data = $validator->validated();
+            $resume = $this->commands->patch(
+                $id,
+                $data['name'] ?? null,
+                $data['email'] ?? null,
+            );
+        } else {
+            $data = $request->validate([
+                'name' => ['required', 'string', 'max:200'],
+                'email' => ['required', 'email', 'max:255'],
+            ]);
+
+            $resume = $this->commands->update($id, $data['name'], $data['email']);
+        }
 
         if ($resume === null) {
             return response()->json(['message' => 'Resume not found.'], 404);

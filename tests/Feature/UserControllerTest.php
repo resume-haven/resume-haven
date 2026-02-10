@@ -115,6 +115,51 @@ it('updates a user without password', function () {
     Event::assertDispatched(UserUpdatedEvent::class);
 });
 
+it('patches a user email', function () {
+    Event::fake();
+
+    $user = UserModel::factory()->create([
+        'name' => 'Old User',
+        'email' => 'old@example.com',
+        'password' => Hash::make('oldpassword'),
+    ]);
+
+    $this->patchJson("/api/users/{$user->id}", [
+        'email' => 'patched@example.com',
+    ])
+        ->assertOk()
+        ->assertJson([
+            'id' => $user->id,
+            'name' => 'Old User',
+            'email' => 'patched@example.com',
+        ]);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'email' => 'patched@example.com',
+    ]);
+
+    Event::assertDispatched(UserUpdatedEvent::class);
+});
+
+it('validates user patch input', function () {
+    $user = UserModel::factory()->create();
+
+    $this->patchJson("/api/users/{$user->id}", [])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['fields']);
+});
+
+it('returns not found for user patch', function () {
+    $this->patchJson('/api/users/999999', [
+        'email' => 'patched@example.com',
+    ])
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'User not found.',
+        ]);
+});
+
 it('deletes a user', function () {
     Event::fake();
 
