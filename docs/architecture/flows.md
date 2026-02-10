@@ -1,0 +1,259 @@
+# Controller Flows
+
+## Command Flow
+
+### Resume Command Flow
+
+Controllers should be thin and delegate to the command service:
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function __construct(
+        private ResumeQueryService $queries,
+        private ResumeCommandService $commands,
+    ) {}
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email'],
+        ]);
+
+        $resume = $this->commands->create($data['name'], $data['email']);
+
+        return response()->json([
+            'id' => $resume->id,
+            'name' => $resume->name->value,
+            'email' => $resume->email->value,
+        ], 201);
+    }
+}
+```
+
+Flow summary:
+1. Controller validates input.
+2. Controller calls `ResumeCommandService`.
+3. Command service builds a command and forwards to the handler.
+4. Handler applies domain logic and persists through repository.
+5. Controller returns a minimal response DTO.
+
+Typical responses:
+
+```json
+{
+    "id": 1,
+    "name": "Test Resume",
+    "email": "resume@example.com"
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant CS as Command Service
+    participant H as Command Handler
+    participant R as Repository
+    participant D as Domain
+
+    C->>CS: create(name, email)
+    CS->>H: Handle CreateResumeCommand
+    H->>D: Apply domain rules
+    H->>R: Save entity
+    R-->>H: Persisted entity
+    H-->>CS: Entity
+    CS-->>C: Result
+```
+
+### User Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class UserController
+{
+    public function __construct(
+        private UserQueryService $queries,
+        private UserCommandService $commands,
+    ) {}
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
+        $user = $this->commands->create(
+            $data['name'],
+            $data['email'],
+            Hash::make($data['password']),
+        );
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name->value,
+            'email' => $user->email->value,
+        ], 201);
+    }
+}
+```
+
+Flow summary:
+1. Controller validates input.
+2. Controller calls `UserCommandService`.
+3. Command service builds a command and forwards to the handler.
+4. Handler applies domain logic and persists through repository.
+5. Controller returns a minimal response DTO.
+
+Typical responses:
+
+```json
+{
+    "id": 1,
+    "name": "Test User",
+    "email": "user@example.com"
+}
+```
+
+Validation error response (422):
+
+```json
+{
+    "message": "The given data was invalid.",
+    "errors": {
+        "email": ["The email must be a valid email address."],
+        "name": ["The name field is required."],
+        "password": ["The password must be at least 8 characters."]
+    }
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant CS as Command Service
+    participant H as Command Handler
+    participant R as Repository
+    participant D as Domain
+
+    C->>CS: create(name, email, passwordHash)
+    CS->>H: Handle CreateUserCommand
+    H->>D: Apply domain rules
+    H->>R: Save entity
+    R-->>H: Persisted entity
+    H-->>CS: Entity
+    CS-->>C: Result
+```
+
+## Query Flow
+
+### Resume Query Flow
+
+Query endpoints should be read-only and return DTOs from query services:
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function __construct(
+        private ResumeQueryService $queries,
+        private ResumeCommandService $commands,
+    ) {}
+
+    public function show(int $id): JsonResponse
+    {
+        $resume = $this->queries->getById($id);
+
+        if ($resume === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        return response()->json($resume);
+    }
+}
+```
+
+Flow summary:
+1. Controller calls `ResumeQueryService` with an ID.
+2. Query service reads from read repository and returns a read model.
+3. Controller returns the DTO or a 404 response.
+
+Not found response:
+
+```json
+{
+    "message": "Resume not found."
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant QS as Query Service
+    participant RR as Read Repository
+
+    C->>QS: getById(id)
+    QS->>RR: Find read model
+    RR-->>QS: Read model
+    QS-->>C: DTO or null
+```
+
+### User Query Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class UserController
+{
+    public function __construct(
+        private UserQueryService $queries,
+        private UserCommandService $commands,
+    ) {}
+
+    public function show(int $id): JsonResponse
+    {
+        $user = $this->queries->getById($id);
+
+        if ($user === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        return response()->json($user);
+    }
+}
+```
+
+Flow summary:
+1. Controller calls `UserQueryService` with an ID.
+2. Query service reads from read repository and returns a read model.
+3. Controller returns the DTO or a 404 response.
+
+Not found response:
+
+```json
+{
+    "message": "User not found."
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant C as Controller
+    participant QS as Query Service
+    participant RR as Read Repository
+
+    C->>QS: getById(id)
+    QS->>RR: Find read model
+    RR-->>QS: Read model
+    QS-->>C: DTO or null
+```

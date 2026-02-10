@@ -138,9 +138,44 @@ curl -X POST http://localhost/api/resumes \
    -d '{"name":"Test Resume","email":"resume@example.com"}'
 ```
 
+Response (201):
+```json
+{
+   "id": 1,
+   "name": "Test Resume",
+   "email": "resume@example.com"
+}
+```
+
+Example (GET):
+```bash
+curl http://localhost/api/resumes/1
+```
+
+Response (200):
+```json
+{
+   "id": 1,
+   "name": "Test Resume",
+   "email": "resume@example.com"
+}
+```
+
+Response (404):
+```json
+{
+   "message": "Resume not found."
+}
+```
+
 Example (httpie):
 ```bash
 http POST http://localhost/api/resumes name="Test Resume" email="resume@example.com"
+```
+
+Example (httpie GET):
+```bash
+http GET http://localhost/api/resumes/1
 ```
 
 **Users**
@@ -154,9 +189,44 @@ curl -X POST http://localhost/api/users \
    -d '{"name":"Test User","email":"user@example.com","password":"password123"}'
 ```
 
+Response (201):
+```json
+{
+   "id": 1,
+   "name": "Test User",
+   "email": "user@example.com"
+}
+```
+
+Example (GET):
+```bash
+curl http://localhost/api/users/1
+```
+
+Response (200):
+```json
+{
+   "id": 1,
+   "name": "Test User",
+   "email": "user@example.com"
+}
+```
+
+Response (404):
+```json
+{
+   "message": "User not found."
+}
+```
+
 Example (httpie):
 ```bash
 http POST http://localhost/api/users name="Test User" email="user@example.com" password="password123"
+```
+
+Example (httpie GET):
+```bash
+http GET http://localhost/api/users/1
 ```
 
 ## Project Structure
