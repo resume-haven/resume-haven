@@ -120,7 +120,9 @@ make test
 ```
 
 Domain event dispatch is covered in unit handler tests and feature POST tests
-(see tests/Unit/HandlerEventsTest.php and tests/Feature/*ControllerTest.php).
+(see [tests/Unit/HandlerEventsTest.php](tests/Unit/HandlerEventsTest.php),
+[tests/Feature/ResumeControllerTest.php](tests/Feature/ResumeControllerTest.php),
+and [tests/Feature/UserControllerTest.php](tests/Feature/UserControllerTest.php)).
 
 ### Debugging
 

@@ -48,30 +48,30 @@ class ResumeServiceTest extends TestCase
 }
 ```
 
-    ## Domain Event Tests
+## Domain Event Tests
 
-    Verify that handlers and endpoints dispatch domain events. Unit tests use the
-    full Laravel TestCase to bootstrap facades:
+Verify that handlers and endpoints dispatch domain events. Unit tests use the
+full Laravel TestCase to bootstrap facades:
 
-    ```php
-    <?php
+```php
+<?php
 
-    use Illuminate\Support\Facades\Event;
-    use Tests\TestCase;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
-    uses(TestCase::class);
+uses(TestCase::class);
 
-    it('dispatches resume created event', function () {
-        Event::fake();
+it('dispatches resume created event', function () {
+    Event::fake();
 
-        $handler = new CreateResumeHandler(new FakeResumeRepository());
-        $handler->handle(new CreateResumeCommand('Test Resume', new Email('resume@example.com')));
+    $handler = new CreateResumeHandler(new FakeResumeRepository());
+    $handler->handle(new CreateResumeCommand('Test Resume', new Email('resume@example.com')));
 
-        Event::assertDispatched(ResumeCreatedEvent::class);
-    });
-    ```
+    Event::assertDispatched(ResumeCreatedEvent::class);
+});
+```
 
-    Feature tests assert event dispatch on POST endpoints:
+Feature tests assert event dispatch on POST endpoints:
 
-    - tests/Feature/ResumeControllerTest.php
-    - tests/Feature/UserControllerTest.php
+- [tests/Feature/ResumeControllerTest.php](tests/Feature/ResumeControllerTest.php)
+- [tests/Feature/UserControllerTest.php](tests/Feature/UserControllerTest.php)
