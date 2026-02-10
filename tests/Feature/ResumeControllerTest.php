@@ -18,6 +18,7 @@ it('shows a resume', function () {
             'id' => $resume->id,
             'name' => $resume->name,
             'email' => $resume->email,
+            'status' => $resume->status,
         ]);
 });
 

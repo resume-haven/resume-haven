@@ -115,7 +115,8 @@ test('read model contains resume fields', function () {
 
     expect($read)->toBeInstanceOf(ResumeReadModel::class)
         ->and($read?->name)->toBeString()
-        ->and($read?->email)->toBeString();
+        ->and($read?->email)->toBeString()
+        ->and($read?->status)->toBeString();
 });
 ```
 

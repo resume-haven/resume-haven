@@ -16,7 +16,9 @@ final class EloquentResumeReadRepository implements ResumeReadRepositoryInterfac
             return null;
         }
 
-        $model = ResumeModel::query()->find($id);
+        $model = ResumeModel::query()
+            ->select(['id', 'name', 'email', 'status'])
+            ->find($id);
 
         if ($model === null) {
             return null;

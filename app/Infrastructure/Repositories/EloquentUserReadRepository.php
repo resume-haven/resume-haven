@@ -16,7 +16,9 @@ final class EloquentUserReadRepository implements UserReadRepositoryInterface
             return null;
         }
 
-        $model = UserModel::query()->find($id);
+        $model = UserModel::query()
+            ->select(['id', 'name', 'email'])
+            ->find($id);
 
         if ($model === null) {
             return null;

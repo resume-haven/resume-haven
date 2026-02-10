@@ -21,6 +21,6 @@ final class ResumeQueryService
             return null;
         }
 
-        return new ResumeDTO($resume->id, $resume->name, $resume->email);
+        return new ResumeDTO($resume->id, $resume->name, $resume->email, $resume->status);
     }
 }
