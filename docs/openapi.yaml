@@ -33,7 +33,7 @@ paths:
                     id: 1
                     name: Test Resume
                     email: resume@example.com
-                      status: draft
+                    status: draft
         "404":
           description: Resume not found
           content:
@@ -79,7 +79,7 @@ paths:
                     id: 1
                     name: Updated Resume
                     email: updated@example.com
-                      status: draft
+                    status: draft
         "404":
           description: Resume not found
           content:
@@ -160,7 +160,7 @@ paths:
                     id: 1
                     name: Patched Resume
                     email: resume@example.com
-                      status: published
+                    status: published
         "404":
           description: Resume not found
           content:
@@ -215,7 +215,7 @@ paths:
                     id: 1
                     name: Test Resume
                     email: resume@example.com
-                      status: draft
+                    status: draft
         "422":
           description: Validation error
           content:
