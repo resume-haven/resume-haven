@@ -210,7 +210,8 @@ Response (201):
 {
    "id": 1,
    "name": "Test User",
-   "email": "user@example.com"
+   "email": "user@example.com",
+   "created_at": "2026-02-10T12:00:00.000Z"
 }
 ```
 
@@ -224,7 +225,8 @@ Response (200):
 {
    "id": 1,
    "name": "Test User",
-   "email": "user@example.com"
+   "email": "user@example.com",
+   "created_at": "2026-02-10T12:00:00.000Z"
 }
 ```
 

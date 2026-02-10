@@ -45,7 +45,9 @@ final class UserController extends Controller
             Hash::make($data['password']),
         );
 
-        return response()->json([
+        $read = $this->queries->getById($user->id->value);
+
+        return response()->json($read ?? [
             'id' => $user->id->value,
             'name' => $user->name->value,
             'email' => $user->email->value,
@@ -108,7 +110,9 @@ final class UserController extends Controller
             return response()->json(['message' => 'User not found.'], 404);
         }
 
-        return response()->json([
+        $read = $this->queries->getById($user->id->value);
+
+        return response()->json($read ?? [
             'id' => $user->id->value,
             'name' => $user->name->value,
             'email' => $user->email->value,

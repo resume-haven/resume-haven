@@ -10,6 +10,7 @@ final readonly class UserReadModel
         public int $id,
         public string $name,
         public string $email,
+        public string $created_at,
     ) {
     }
 }

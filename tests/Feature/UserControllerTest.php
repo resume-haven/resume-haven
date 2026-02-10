@@ -18,6 +18,7 @@ it('shows a user', function () {
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'created_at' => $user->created_at->toISOString(),
         ]);
 });
 
@@ -38,12 +39,8 @@ it('creates a user', function () {
         'password' => 'password123',
     ];
 
-    $this->postJson('/api/users', $payload)
-        ->assertCreated()
-        ->assertJson([
-            'name' => $payload['name'],
-            'email' => $payload['email'],
-        ]);
+    $response = $this->postJson('/api/users', $payload)
+        ->assertCreated();
 
     $this->assertDatabaseHas('users', [
         'name' => $payload['name'],
@@ -53,6 +50,12 @@ it('creates a user', function () {
     $user = UserModel::query()->where('email', $payload['email'])->first();
     expect($user)->not->toBeNull();
     expect(Hash::check($payload['password'], (string) $user?->password))->toBeTrue();
+
+    $response->assertJson([
+        'name' => $payload['name'],
+        'email' => $payload['email'],
+        'created_at' => $user?->created_at?->toISOString(),
+    ]);
 
     Event::assertDispatched(UserCreatedEvent::class);
 });
@@ -78,6 +81,7 @@ it('updates a user with password', function () {
             'id' => $user->id,
             'name' => $payload['name'],
             'email' => $payload['email'],
+            'created_at' => $user->created_at->toISOString(),
         ]);
 
     $this->assertDatabaseHas('users', [
@@ -132,6 +136,7 @@ it('patches a user email', function () {
             'id' => $user->id,
             'name' => 'Old User',
             'email' => 'patched@example.com',
+            'created_at' => $user->created_at->toISOString(),
         ]);
 
     $this->assertDatabaseHas('users', [

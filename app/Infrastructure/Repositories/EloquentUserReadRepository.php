@@ -17,7 +17,7 @@ final class EloquentUserReadRepository implements UserReadRepositoryInterface
         }
 
         $model = UserModel::query()
-            ->select(['id', 'name', 'email'])
+            ->select(['id', 'name', 'email', 'created_at'])
             ->find($id);
 
         if ($model === null) {
@@ -28,6 +28,7 @@ final class EloquentUserReadRepository implements UserReadRepositoryInterface
             (int) $model->id,
             (string) $model->name,
             (string) $model->email,
+            (string) $model->created_at->toISOString(),
         );
     }
 }

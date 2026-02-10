@@ -21,6 +21,6 @@ final class UserQueryService
             return null;
         }
 
-        return new UserDTO($user->id, $user->name, $user->email);
+        return new UserDTO($user->id, $user->name, $user->email, $user->created_at);
     }
 }
