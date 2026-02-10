@@ -58,3 +58,13 @@ it('validates user creation input', function () {
         ->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'email', 'password']);
 });
+
+it('rejects long user email and password', function () {
+    $this->postJson('/api/users', [
+        'name' => 'Valid Name',
+        'email' => str_repeat('a', 256) . '@example.com',
+        'password' => str_repeat('p', 256),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['email', 'password']);
+});

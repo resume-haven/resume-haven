@@ -32,7 +32,7 @@ final class ResumeController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:200'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'max:255'],
         ]);
 
         $resume = $this->commands->create($data['name'], $data['email']);

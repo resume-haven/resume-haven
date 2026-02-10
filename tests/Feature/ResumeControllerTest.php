@@ -51,3 +51,12 @@ it('validates resume creation input', function () {
         ->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'email']);
 });
+
+it('rejects long resume email', function () {
+    $this->postJson('/api/resumes', [
+        'name' => 'Valid Name',
+        'email' => str_repeat('a', 256) . '@example.com',
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['email']);
+});

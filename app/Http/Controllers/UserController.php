@@ -33,8 +33,8 @@ final class UserController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:200'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:8'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
         ]);
 
         $user = $this->commands->create(

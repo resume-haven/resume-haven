@@ -43,6 +43,9 @@ paths:
                 resumeNotFound:
                   value:
                     message: Resume not found.
+                resumeNotFoundGeneric:
+                  value:
+                    message: Resource not found.
   /api/resumes:
     post:
       tags:
@@ -89,6 +92,19 @@ paths:
                         - The name field is required.
                       email:
                         - The email must be a valid email address.
+                        - The email may not be greater than 255 characters.
+                resumeEmailTooLong:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      email:
+                        - The email may not be greater than 255 characters.
+                resumeNameMissing:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      name:
+                        - The name field is required.
   /api/users/{id}:
     get:
       tags:
@@ -121,6 +137,9 @@ paths:
                 userNotFound:
                   value:
                     message: User not found.
+                userNotFoundGeneric:
+                  value:
+                    message: Resource not found.
   /api/users:
     post:
       tags:
@@ -168,8 +187,22 @@ paths:
                         - The name field is required.
                       email:
                         - The email must be a valid email address.
+                        - The email may not be greater than 255 characters.
                       password:
                         - The password must be at least 8 characters.
+                        - The password may not be greater than 255 characters.
+                userEmailTooLong:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      email:
+                        - The email may not be greater than 255 characters.
+                userPasswordTooLong:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      password:
+                        - The password may not be greater than 255 characters.
 components:
   parameters:
     IdPath:
@@ -193,10 +226,13 @@ components:
           example: 1
         name:
           type: string
+          minLength: 1
+          maxLength: 200
           example: Test Resume
         email:
           type: string
           format: email
+          maxLength: 255
           example: resume@example.com
     UserRead:
       type: object
@@ -211,10 +247,13 @@ components:
           example: 1
         name:
           type: string
+          minLength: 1
+          maxLength: 200
           example: Test User
         email:
           type: string
           format: email
+          maxLength: 255
           example: user@example.com
     CreateResumeRequest:
       type: object
@@ -225,10 +264,12 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 200
         email:
           type: string
           format: email
+          maxLength: 255
     CreateUserRequest:
       type: object
       additionalProperties: false
@@ -239,13 +280,16 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
           maxLength: 200
         email:
           type: string
           format: email
+          maxLength: 255
         password:
           type: string
           minLength: 8
+          maxLength: 255
     NotFoundError:
       type: object
       additionalProperties: false
