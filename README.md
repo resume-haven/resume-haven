@@ -92,6 +92,13 @@ make quality           # Validate all (no changes)
 
 See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for detailed documentation.
 
+## Features & Documentation
+
+### Authentication & Security
+
+- **Fortify** - Headless authentication backend (registration, password reset, 2FA)
+- See [docs/FORTIFY.md](docs/FORTIFY.md) for authentication details
+
 ## Development
 
 ### Database

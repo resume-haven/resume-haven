@@ -30,6 +30,32 @@ final class ResumeQueryService
     }
 
     /**
+     * @return list<ResumeDTO>
+     */
+    public function list(int $limit, int $offset): array
+    {
+        return array_map(
+            static fn ($resume): ResumeDTO => new ResumeDTO(
+                $resume->id,
+                $resume->name,
+                $resume->email,
+                $resume->status,
+            ),
+            $this->resumes->list($limit, $offset),
+        );
+    }
+
+    public function getTotal(): int
+    {
+        return $this->resumes->countAll();
+    }
+
+    public function getStatusHistoryTotal(): int
+    {
+        return $this->history->countAll();
+    }
+
+    /**
      * @return list<ResumeStatusHistoryDTO>|null
      */
     public function getStatusHistory(int $id): ?array

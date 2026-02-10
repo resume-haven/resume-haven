@@ -31,4 +31,32 @@ final class EloquentUserReadRepository implements UserReadRepositoryInterface
             (string) $model->created_at->toISOString(),
         );
     }
+
+    public function list(int $limit, int $offset): array
+    {
+        if ($limit <= 0 || $offset < 0) {
+            return [];
+        }
+
+        $models = UserModel::query()
+            ->select(['id', 'name', 'email', 'created_at'])
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
+        return $models->map(static function (UserModel $model): UserReadModel {
+            return new UserReadModel(
+                (int) $model->id,
+                (string) $model->name,
+                (string) $model->email,
+                (string) $model->created_at->toISOString(),
+            );
+        })->all();
+    }
+
+    public function countAll(): int
+    {
+        return (int) UserModel::query()->count();
+    }
 }

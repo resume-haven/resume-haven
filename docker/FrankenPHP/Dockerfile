@@ -5,6 +5,8 @@ FROM dunglas/frankenphp:php8.5-alpine
 RUN apk add --no-cache \
     git \
     curl \
+    nodejs \
+    npm \
     unzip \
     autoconf \
     automake \

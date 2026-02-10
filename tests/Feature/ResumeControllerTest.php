@@ -8,6 +8,7 @@ use App\Domain\Events\ResumeStatusChangedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Infrastructure\Persistence\ResumeModel;
 use App\Infrastructure\Persistence\ResumeStatusHistoryModel;
+use App\Infrastructure\Persistence\UserModel;
 use Illuminate\Support\Facades\Event;
 
 it('shows a resume', function () {
@@ -67,12 +68,15 @@ it('returns not found for missing resume status history', function () {
 it('creates a resume', function () {
     Event::fake();
 
+    $user = UserModel::factory()->create();
+
     $payload = [
         'name' => 'Test Resume',
         'email' => 'resume@example.com',
     ];
 
-    $this->postJson('/api/resumes', $payload)
+    $this->actingAs($user)
+        ->postJson('/api/resumes', $payload)
         ->assertCreated()
         ->assertJson([
             'name' => $payload['name'],
@@ -92,6 +96,8 @@ it('creates a resume', function () {
 it('updates a resume', function () {
     Event::fake();
 
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create([
         'name' => 'Old Resume',
         'email' => 'old@example.com',
@@ -102,7 +108,8 @@ it('updates a resume', function () {
         'email' => 'updated@example.com',
     ];
 
-    $this->putJson("/api/resumes/{$resume->id}", $payload)
+    $this->actingAs($user)
+        ->putJson("/api/resumes/{$resume->id}", $payload)
         ->assertOk()
         ->assertJson([
             'id' => $resume->id,
@@ -124,14 +131,17 @@ it('updates a resume', function () {
 it('patches a resume name', function () {
     Event::fake();
 
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create([
         'name' => 'Old Resume',
         'email' => 'old@example.com',
     ]);
 
-    $this->patchJson("/api/resumes/{$resume->id}", [
-        'name' => 'Patched Resume',
-    ])
+    $this->actingAs($user)
+        ->patchJson("/api/resumes/{$resume->id}", [
+            'name' => 'Patched Resume',
+        ])
         ->assertOk()
         ->assertJson([
             'id' => $resume->id,
@@ -151,9 +161,12 @@ it('patches a resume name', function () {
 });
 
 it('validates resume patch input', function () {
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create();
 
-    $this->patchJson("/api/resumes/{$resume->id}", [])
+    $this->actingAs($user)
+        ->patchJson("/api/resumes/{$resume->id}", [])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['fields']);
 });
@@ -161,13 +174,16 @@ it('validates resume patch input', function () {
 it('patches a resume status', function () {
     Event::fake();
 
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create([
         'status' => 'draft',
     ]);
 
-    $this->patchJson("/api/resumes/{$resume->id}", [
-        'status' => 'published',
-    ])
+    $this->actingAs($user)
+        ->patchJson("/api/resumes/{$resume->id}", [
+            'status' => 'published',
+        ])
         ->assertOk()
         ->assertJson([
             'id' => $resume->id,
@@ -190,19 +206,25 @@ it('patches a resume status', function () {
 });
 
 it('rejects invalid resume status', function () {
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create();
 
-    $this->patchJson("/api/resumes/{$resume->id}", [
-        'status' => 'invalid',
-    ])
+    $this->actingAs($user)
+        ->patchJson("/api/resumes/{$resume->id}", [
+            'status' => 'invalid',
+        ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['status']);
 });
 
 it('returns not found for resume patch', function () {
-    $this->patchJson('/api/resumes/999999', [
-        'name' => 'Patched Resume',
-    ])
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->patchJson('/api/resumes/999999', [
+            'name' => 'Patched Resume',
+        ])
         ->assertNotFound()
         ->assertJson([
             'message' => 'Resume not found.',
@@ -212,9 +234,12 @@ it('returns not found for resume patch', function () {
 it('deletes a resume', function () {
     Event::fake();
 
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create();
 
-    $this->deleteJson("/api/resumes/{$resume->id}")
+    $this->actingAs($user)
+        ->deleteJson("/api/resumes/{$resume->id}")
         ->assertNoContent();
 
     $this->assertDatabaseMissing('resumes', [
@@ -225,7 +250,10 @@ it('deletes a resume', function () {
 });
 
 it('returns not found for resume delete', function () {
-    $this->deleteJson('/api/resumes/999999')
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->deleteJson('/api/resumes/999999')
         ->assertNotFound()
         ->assertJson([
             'message' => 'Resume not found.',
@@ -233,10 +261,13 @@ it('returns not found for resume delete', function () {
 });
 
 it('returns not found for resume update', function () {
-    $this->putJson('/api/resumes/999999', [
-        'name' => 'Missing Resume',
-        'email' => 'missing@example.com',
-    ])
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->putJson('/api/resumes/999999', [
+            'name' => 'Missing Resume',
+            'email' => 'missing@example.com',
+        ])
         ->assertNotFound()
         ->assertJson([
             'message' => 'Resume not found.',
@@ -244,30 +275,39 @@ it('returns not found for resume update', function () {
 });
 
 it('validates resume update input', function () {
+    $user = UserModel::factory()->create();
+
     $resume = ResumeModel::factory()->create();
 
-    $this->putJson("/api/resumes/{$resume->id}", [
-        'name' => '',
-        'email' => 'invalid-email',
-    ])
+    $this->actingAs($user)
+        ->putJson("/api/resumes/{$resume->id}", [
+            'name' => '',
+            'email' => 'invalid-email',
+        ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'email']);
 });
 
 it('validates resume creation input', function () {
-    $this->postJson('/api/resumes', [
-        'name' => '',
-        'email' => 'invalid-email',
-    ])
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->postJson('/api/resumes', [
+            'name' => '',
+            'email' => 'invalid-email',
+        ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'email']);
 });
 
 it('rejects long resume email', function () {
-    $this->postJson('/api/resumes', [
-        'name' => 'Valid Name',
-        'email' => str_repeat('a', 256) . '@example.com',
-    ])
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->postJson('/api/resumes', [
+            'name' => 'Valid Name',
+            'email' => str_repeat('a', 256) . '@example.com',
+        ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email']);
 });

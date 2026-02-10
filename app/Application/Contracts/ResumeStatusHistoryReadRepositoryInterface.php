@@ -12,4 +12,6 @@ interface ResumeStatusHistoryReadRepositoryInterface
      * @return list<ResumeStatusHistoryReadModel>
      */
     public function listForResume(int $resumeId): array;
+
+    public function countAll(): int;
 }

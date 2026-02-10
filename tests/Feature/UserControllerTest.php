@@ -75,7 +75,8 @@ it('updates a user with password', function () {
         'password' => 'newpassword123',
     ];
 
-    $this->putJson("/api/users/{$user->id}", $payload)
+    $this->actingAs($user)
+        ->putJson("/api/users/{$user->id}", $payload)
         ->assertOk()
         ->assertJson([
             'id' => $user->id,
@@ -110,7 +111,8 @@ it('updates a user without password', function () {
         'email' => 'updated@example.com',
     ];
 
-    $this->putJson("/api/users/{$user->id}", $payload)
+    $this->actingAs($user)
+        ->putJson("/api/users/{$user->id}", $payload)
         ->assertOk();
 
     $updated = UserModel::query()->find($user->id);
@@ -128,9 +130,10 @@ it('patches a user email', function () {
         'password' => Hash::make('oldpassword'),
     ]);
 
-    $this->patchJson("/api/users/{$user->id}", [
-        'email' => 'patched@example.com',
-    ])
+    $this->actingAs($user)
+        ->patchJson("/api/users/{$user->id}", [
+            'email' => 'patched@example.com',
+        ])
         ->assertOk()
         ->assertJson([
             'id' => $user->id,
@@ -150,15 +153,19 @@ it('patches a user email', function () {
 it('validates user patch input', function () {
     $user = UserModel::factory()->create();
 
-    $this->patchJson("/api/users/{$user->id}", [])
+    $this->actingAs($user)
+        ->patchJson("/api/users/{$user->id}", [])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['fields']);
 });
 
 it('returns not found for user patch', function () {
-    $this->patchJson('/api/users/999999', [
-        'email' => 'patched@example.com',
-    ])
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->patchJson('/api/users/999999', [
+            'email' => 'patched@example.com',
+        ])
         ->assertNotFound()
         ->assertJson([
             'message' => 'User not found.',
@@ -170,7 +177,8 @@ it('deletes a user', function () {
 
     $user = UserModel::factory()->create();
 
-    $this->deleteJson("/api/users/{$user->id}")
+    $this->actingAs($user)
+        ->deleteJson("/api/users/{$user->id}")
         ->assertNoContent();
 
     $this->assertDatabaseMissing('users', [
@@ -181,7 +189,10 @@ it('deletes a user', function () {
 });
 
 it('returns not found for user delete', function () {
-    $this->deleteJson('/api/users/999999')
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->deleteJson('/api/users/999999')
         ->assertNotFound()
         ->assertJson([
             'message' => 'User not found.',
@@ -189,10 +200,13 @@ it('returns not found for user delete', function () {
 });
 
 it('returns not found for user update', function () {
-    $this->putJson('/api/users/999999', [
-        'name' => 'Missing User',
-        'email' => 'missing@example.com',
-    ])
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user)
+        ->putJson('/api/users/999999', [
+            'name' => 'Missing User',
+            'email' => 'missing@example.com',
+        ])
         ->assertNotFound()
         ->assertJson([
             'message' => 'User not found.',
@@ -202,11 +216,12 @@ it('returns not found for user update', function () {
 it('validates user update input', function () {
     $user = UserModel::factory()->create();
 
-    $this->putJson("/api/users/{$user->id}", [
-        'name' => '',
-        'email' => 'invalid-email',
-        'password' => 'short',
-    ])
+    $this->actingAs($user)
+        ->putJson("/api/users/{$user->id}", [
+            'name' => '',
+            'email' => 'invalid-email',
+            'password' => 'short',
+        ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['name', 'email', 'password']);
 });

@@ -31,4 +31,9 @@ final class EloquentResumeStatusHistoryReadRepository implements ResumeStatusHis
             );
         })->all();
     }
+
+    public function countAll(): int
+    {
+        return (int) ResumeStatusHistoryModel::query()->count();
+    }
 }

@@ -23,4 +23,25 @@ final class UserQueryService
 
         return new UserDTO($user->id, $user->name, $user->email, $user->created_at);
     }
+
+    /**
+     * @return list<UserDTO>
+     */
+    public function list(int $limit, int $offset): array
+    {
+        return array_map(
+            static fn ($user): UserDTO => new UserDTO(
+                $user->id,
+                $user->name,
+                $user->email,
+                $user->created_at,
+            ),
+            $this->users->list($limit, $offset),
+        );
+    }
+
+    public function getTotal(): int
+    {
+        return $this->users->countAll();
+    }
 }

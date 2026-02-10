@@ -31,4 +31,32 @@ final class EloquentResumeReadRepository implements ResumeReadRepositoryInterfac
             (string) ($model->status ?? 'draft'),
         );
     }
+
+    public function list(int $limit, int $offset): array
+    {
+        if ($limit <= 0 || $offset < 0) {
+            return [];
+        }
+
+        $models = ResumeModel::query()
+            ->select(['id', 'name', 'email', 'status'])
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
+        return $models->map(static function (ResumeModel $model): ResumeReadModel {
+            return new ResumeReadModel(
+                (int) $model->id,
+                (string) $model->name,
+                (string) $model->email,
+                (string) ($model->status ?? 'draft'),
+            );
+        })->all();
+    }
+
+    public function countAll(): int
+    {
+        return (int) ResumeModel::query()->count();
+    }
 }
