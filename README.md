@@ -127,6 +127,9 @@ Xdebug is pre-configured. See [docs/XDEBUG.md](docs/XDEBUG.md) for setup instruc
 
 All JSON endpoints live in `routes/api.php`.
 
+OpenAPI spec: [docs/openapi.yaml](docs/openapi.yaml)
+Swagger UI: http://localhost/docs/swagger
+
 **Resumes**
 - `GET /api/resumes/{id}` - Fetch resume read model
 - `POST /api/resumes` - Create resume
