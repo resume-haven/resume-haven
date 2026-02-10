@@ -66,6 +66,7 @@ paths:
                 value:
                   name: Updated Resume
                   email: updated@example.com
+                  status: published
       responses:
         "200":
           description: Resume updated
@@ -147,6 +148,9 @@ paths:
               patchResumeEmail:
                 value:
                   email: patched@example.com
+              patchResumeStatus:
+                value:
+                  status: archived
       responses:
         "200":
           description: Resume updated
