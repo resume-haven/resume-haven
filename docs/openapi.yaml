@@ -46,6 +46,63 @@ paths:
                 resumeNotFoundGeneric:
                   value:
                     message: Resource not found.
+    put:
+      tags:
+        - Resumes
+      summary: Update a resume
+      operationId: updateResume
+      description: Updates a resume, emits ResumeUpdatedEvent, and returns the updated resource.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateResumeRequest"
+            examples:
+              updateResume:
+                value:
+                  name: Updated Resume
+                  email: updated@example.com
+      responses:
+        "200":
+          description: Resume updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResumeRead"
+              examples:
+                resumeUpdated:
+                  value:
+                    id: 1
+                    name: Updated Resume
+                    email: updated@example.com
+        "404":
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                resumeNotFound:
+                  value:
+                    message: Resume not found.
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+              examples:
+                invalidResumeUpdate:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      name:
+                        - The name field is required.
+                      email:
+                        - The email must be a valid email address.
   /api/resumes:
     post:
       tags:
@@ -140,6 +197,70 @@ paths:
                 userNotFoundGeneric:
                   value:
                     message: Resource not found.
+    put:
+      tags:
+        - Users
+      summary: Update a user
+      operationId: updateUser
+      description: Updates a user, emits UserUpdatedEvent, and returns the updated resource.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+            examples:
+              updateUser:
+                value:
+                  name: Updated User
+                  email: updated@example.com
+                  password: newpassword123
+              updateUserNoPassword:
+                value:
+                  name: Updated User
+                  email: updated@example.com
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRead"
+              examples:
+                userUpdated:
+                  value:
+                    id: 1
+                    name: Updated User
+                    email: updated@example.com
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                userNotFound:
+                  value:
+                    message: User not found.
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+              examples:
+                invalidUserUpdate:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      name:
+                        - The name field is required.
+                      email:
+                        - The email must be a valid email address.
+                      password:
+                        - The password must be at least 8 characters.
   /api/users:
     post:
       tags:
@@ -271,6 +392,21 @@ components:
           type: string
           format: email
           maxLength: 255
+    UpdateResumeRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 255
     CreateUserRequest:
       type: object
       additionalProperties: false
@@ -278,6 +414,25 @@ components:
         - name
         - email
         - password
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          minLength: 8
+          maxLength: 255
+    UpdateUserRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - email
       properties:
         name:
           type: string

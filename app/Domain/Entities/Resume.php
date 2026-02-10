@@ -21,4 +21,9 @@ final class Resume
     {
         $this->name = $name;
     }
+
+    public function changeEmail(Email $email): void
+    {
+        $this->email = $email;
+    }
 }

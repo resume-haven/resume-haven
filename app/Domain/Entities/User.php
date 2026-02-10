@@ -23,4 +23,14 @@ final class User
     {
         $this->name = $name;
     }
+
+    public function changeEmail(Email $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function changePasswordHash(PasswordHash $passwordHash): void
+    {
+        $this->passwordHash = $passwordHash;
+    }
 }

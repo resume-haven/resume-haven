@@ -190,4 +190,14 @@ final readonly class UserCreatedEvent
 {
     public function __construct(public User $user) {}
 }
+
+final readonly class ResumeUpdatedEvent
+{
+    public function __construct(public Resume $resume) {}
+}
+
+final readonly class UserUpdatedEvent
+{
+    public function __construct(public User $user) {}
+}
 ```

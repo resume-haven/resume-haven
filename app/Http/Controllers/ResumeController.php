@@ -43,4 +43,24 @@ final class ResumeController extends Controller
             'email' => $resume->email->value,
         ], 201);
     }
+
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $resume = $this->commands->update($id, $data['name'], $data['email']);
+
+        if ($resume === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        return response()->json([
+            'id' => $resume->id->value,
+            'name' => $resume->name->value,
+            'email' => $resume->email->value,
+        ]);
+    }
 }

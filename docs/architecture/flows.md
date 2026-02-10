@@ -70,6 +70,44 @@ sequenceDiagram
     CS-->>C: Result
 ```
 
+### Resume Update Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $resume = $this->commands->update($id, $data['name'], $data['email']);
+
+        if ($resume === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        return response()->json([
+            'id' => $resume->id->value,
+            'name' => $resume->name->value,
+            'email' => $resume->email->value,
+        ]);
+    }
+}
+```
+
+Flow summary:
+1. Controller validates input.
+2. Controller calls `ResumeCommandService`.
+3. Command service forwards to the update handler.
+4. Handler loads entity, applies changes, and persists.
+5. Handler emits a domain event.
+6. Controller returns the updated DTO or 404.
+
 ### User Command Flow
 
 ```php
@@ -153,6 +191,53 @@ sequenceDiagram
     H-->>CS: Entity
     CS-->>C: Result
 ```
+
+### User Update Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class UserController
+{
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['nullable', 'string', 'min:8', 'max:255'],
+        ]);
+
+        $password = $data['password'] ?? null;
+        $passwordHash = $password !== null ? Hash::make($password) : null;
+
+        $user = $this->commands->update(
+            $id,
+            $data['name'],
+            $data['email'],
+            $passwordHash,
+        );
+
+        if ($user === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        return response()->json([
+            'id' => $user->id->value,
+            'name' => $user->name->value,
+            'email' => $user->email->value,
+        ]);
+    }
+}
+```
+
+Flow summary:
+1. Controller validates input.
+2. Controller calls `UserCommandService`.
+3. Command service forwards to the update handler.
+4. Handler loads entity, applies changes, and persists.
+5. Handler emits a domain event.
+6. Controller returns the updated DTO or 404.
 
 ## Query Flow
 

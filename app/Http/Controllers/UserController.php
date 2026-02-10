@@ -49,4 +49,33 @@ final class UserController extends Controller
             'email' => $user->email->value,
         ], 201);
     }
+
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['nullable', 'string', 'min:8', 'max:255'],
+        ]);
+
+        $password = $data['password'] ?? null;
+        $passwordHash = $password !== null ? Hash::make($password) : null;
+
+        $user = $this->commands->update(
+            $id,
+            $data['name'],
+            $data['email'],
+            $passwordHash,
+        );
+
+        if ($user === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        return response()->json([
+            'id' => $user->id->value,
+            'name' => $user->name->value,
+            'email' => $user->email->value,
+        ]);
+    }
 }

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/resumes/{id}', [ResumeController::class, 'show']);
 Route::post('/resumes', [ResumeController::class, 'store']);
+Route::put('/resumes/{id}', [ResumeController::class, 'update']);
 
 Route::get('/users/{id}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);
+Route::put('/users/{id}', [UserController::class, 'update']);

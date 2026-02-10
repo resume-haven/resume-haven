@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Events\UserCreatedEvent;
+use App\Domain\Events\UserUpdatedEvent;
 use App\Infrastructure\Persistence\UserModel;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
@@ -53,6 +54,87 @@ it('creates a user', function () {
     expect(Hash::check($payload['password'], (string) $user?->password))->toBeTrue();
 
     Event::assertDispatched(UserCreatedEvent::class);
+});
+
+it('updates a user with password', function () {
+    Event::fake();
+
+    $user = UserModel::factory()->create([
+        'name' => 'Old User',
+        'email' => 'old@example.com',
+        'password' => Hash::make('oldpassword'),
+    ]);
+
+    $payload = [
+        'name' => 'Updated User',
+        'email' => 'updated@example.com',
+        'password' => 'newpassword123',
+    ];
+
+    $this->putJson("/api/users/{$user->id}", $payload)
+        ->assertOk()
+        ->assertJson([
+            'id' => $user->id,
+            'name' => $payload['name'],
+            'email' => $payload['email'],
+        ]);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'name' => $payload['name'],
+        'email' => $payload['email'],
+    ]);
+
+    $updated = UserModel::query()->find($user->id);
+    expect(Hash::check($payload['password'], (string) $updated?->password))->toBeTrue();
+
+    Event::assertDispatched(UserUpdatedEvent::class);
+});
+
+it('updates a user without password', function () {
+    Event::fake();
+
+    $user = UserModel::factory()->create([
+        'name' => 'Old User',
+        'email' => 'old@example.com',
+        'password' => Hash::make('oldpassword'),
+    ]);
+
+    $payload = [
+        'name' => 'Updated User',
+        'email' => 'updated@example.com',
+    ];
+
+    $this->putJson("/api/users/{$user->id}", $payload)
+        ->assertOk();
+
+    $updated = UserModel::query()->find($user->id);
+    expect(Hash::check('oldpassword', (string) $updated?->password))->toBeTrue();
+
+    Event::assertDispatched(UserUpdatedEvent::class);
+});
+
+it('returns not found for user update', function () {
+    $this->putJson('/api/users/999999', [
+        'name' => 'Missing User',
+        'email' => 'missing@example.com',
+    ])
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'User not found.',
+        ]);
+});
+
+it('validates user update input', function () {
+    $user = UserModel::factory()->create();
+
+    $this->putJson("/api/users/{$user->id}", [
+        'name' => '',
+        'email' => 'invalid-email',
+        'password' => 'short',
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['name', 'email', 'password']);
 });
 
 it('validates user creation input', function () {

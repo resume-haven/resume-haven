@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Events\ResumeCreatedEvent;
+use App\Domain\Events\ResumeUpdatedEvent;
 use App\Infrastructure\Persistence\ResumeModel;
 use Illuminate\Support\Facades\Event;
 
@@ -47,6 +48,58 @@ it('creates a resume', function () {
     ]);
 
     Event::assertDispatched(ResumeCreatedEvent::class);
+});
+
+it('updates a resume', function () {
+    Event::fake();
+
+    $resume = ResumeModel::factory()->create([
+        'name' => 'Old Resume',
+        'email' => 'old@example.com',
+    ]);
+
+    $payload = [
+        'name' => 'Updated Resume',
+        'email' => 'updated@example.com',
+    ];
+
+    $this->putJson("/api/resumes/{$resume->id}", $payload)
+        ->assertOk()
+        ->assertJson([
+            'id' => $resume->id,
+            'name' => $payload['name'],
+            'email' => $payload['email'],
+        ]);
+
+    $this->assertDatabaseHas('resumes', [
+        'id' => $resume->id,
+        'name' => $payload['name'],
+        'email' => $payload['email'],
+    ]);
+
+    Event::assertDispatched(ResumeUpdatedEvent::class);
+});
+
+it('returns not found for resume update', function () {
+    $this->putJson('/api/resumes/999999', [
+        'name' => 'Missing Resume',
+        'email' => 'missing@example.com',
+    ])
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'Resume not found.',
+        ]);
+});
+
+it('validates resume update input', function () {
+    $resume = ResumeModel::factory()->create();
+
+    $this->putJson("/api/resumes/{$resume->id}", [
+        'name' => '',
+        'email' => 'invalid-email',
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['name', 'email']);
 });
 
 it('validates resume creation input', function () {
