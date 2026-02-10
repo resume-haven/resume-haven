@@ -119,6 +119,9 @@ Run the test suite:
 make test
 ```
 
+Domain event dispatch is covered in unit handler tests and feature POST tests
+(see tests/Unit/HandlerEventsTest.php and tests/Feature/*ControllerTest.php).
+
 ### Debugging
 
 Xdebug is pre-configured. See [docs/XDEBUG.md](docs/XDEBUG.md) for setup instructions.

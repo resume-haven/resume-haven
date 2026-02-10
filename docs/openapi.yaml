@@ -52,7 +52,7 @@ paths:
         - Resumes
       summary: Create a resume
       operationId: createResume
-      description: Creates a resume and returns the created resource.
+      description: Creates a resume, emits ResumeCreatedEvent, and returns the created resource.
       requestBody:
         required: true
         content:
@@ -146,7 +146,7 @@ paths:
         - Users
       summary: Create a user
       operationId: createUser
-      description: Creates a user and returns the created resource.
+      description: Creates a user, emits UserCreatedEvent, and returns the created resource.
       requestBody:
         required: true
         content:

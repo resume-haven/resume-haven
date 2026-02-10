@@ -96,6 +96,10 @@ docker-compose exec app ./vendor/bin/pest tests/Feature/ExampleTest.php
 - `tests/Acceptance/` - Acceptance tests for business requirements
 - `tests/Architecture/` - Architecture tests for code structure & rules
 
+**Domain Events:**
+- Handler unit tests assert dispatch via Event::fake/assertDispatched.
+- Feature tests assert dispatch on POST endpoints.
+
 **Example Test (Pest + Read Model):**
 ```php
 <?php
