@@ -33,6 +33,7 @@ paths:
                     id: 1
                     name: Test Resume
                     email: resume@example.com
+                      status: draft
         "404":
           description: Resume not found
           content:
@@ -78,6 +79,7 @@ paths:
                     id: 1
                     name: Updated Resume
                     email: updated@example.com
+                      status: draft
         "404":
           description: Resume not found
           content:
@@ -158,6 +160,7 @@ paths:
                     id: 1
                     name: Patched Resume
                     email: resume@example.com
+                      status: published
         "404":
           description: Resume not found
           content:
@@ -212,6 +215,7 @@ paths:
                     id: 1
                     name: Test Resume
                     email: resume@example.com
+                      status: draft
         "422":
           description: Validation error
           content:
@@ -498,6 +502,7 @@ components:
         - id
         - name
         - email
+        - status
       properties:
         id:
           type: integer
@@ -512,6 +517,13 @@ components:
           format: email
           maxLength: 255
           example: resume@example.com
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
+          example: draft
     UserRead:
       type: object
       additionalProperties: false
@@ -563,6 +575,12 @@ components:
           type: string
           format: email
           maxLength: 255
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
     PatchResumeRequest:
       type: object
       additionalProperties: false
@@ -576,6 +594,12 @@ components:
           type: string
           format: email
           maxLength: 255
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
     CreateUserRequest:
       type: object
       additionalProperties: false

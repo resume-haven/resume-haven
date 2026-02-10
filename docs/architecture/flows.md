@@ -49,7 +49,8 @@ Typical responses:
 {
     "id": 1,
     "name": "Test Resume",
-    "email": "resume@example.com"
+    "email": "resume@example.com",
+    "status": "draft"
 }
 ```
 

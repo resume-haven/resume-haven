@@ -24,6 +24,7 @@ use App\Domain\Entities\Resume;
 use App\Domain\Entities\User;
 use App\Domain\Events\ResumeCreatedEvent;
 use App\Domain\Events\ResumeDeletedEvent;
+use App\Domain\Events\ResumeStatusChangedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Domain\Events\UserCreatedEvent;
 use App\Domain\Events\UserDeletedEvent;
@@ -32,7 +33,9 @@ use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
 use App\Domain\ValueObjects\PasswordHash;
 use App\Domain\ValueObjects\ResumeId;
+use App\Domain\ValueObjects\ResumeStatus;
 use App\Domain\ValueObjects\UserId;
+use App\Domain\Services\ResumeStatusService;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -142,9 +145,14 @@ it('dispatches user created event in handler', function () {
 it('dispatches resume updated event in handler', function () {
     Event::fake();
 
-    $existing = new Resume(new ResumeId(5), new Name('Old Resume'), new Email('old@example.com'));
-    $handler = new UpdateResumeHandler(new FakeResumeRepository($existing));
-    $command = new UpdateResumeCommand(5, 'New Resume', new Email('new@example.com'));
+    $existing = new Resume(
+        new ResumeId(5),
+        new Name('Old Resume'),
+        new Email('old@example.com'),
+        ResumeStatus::draft()
+    );
+    $handler = new UpdateResumeHandler(new FakeResumeRepository($existing), new ResumeStatusService());
+    $command = new UpdateResumeCommand(5, 'New Resume', new Email('new@example.com'), null);
 
     $resume = $handler->handle($command);
 
@@ -156,9 +164,14 @@ it('dispatches resume updated event in handler', function () {
 it('dispatches resume patched event in handler', function () {
     Event::fake();
 
-    $existing = new Resume(new ResumeId(6), new Name('Old Resume'), new Email('old@example.com'));
-    $handler = new PatchResumeHandler(new FakeResumeRepository($existing));
-    $command = new PatchResumeCommand(6, 'Patched Resume', null);
+    $existing = new Resume(
+        new ResumeId(6),
+        new Name('Old Resume'),
+        new Email('old@example.com'),
+        ResumeStatus::draft()
+    );
+    $handler = new PatchResumeHandler(new FakeResumeRepository($existing), new ResumeStatusService());
+    $command = new PatchResumeCommand(6, 'Patched Resume', null, null);
 
     $resume = $handler->handle($command);
 
@@ -208,7 +221,12 @@ it('dispatches user patched event in handler', function () {
 it('dispatches resume deleted event in handler', function () {
     Event::fake();
 
-    $existing = new Resume(new ResumeId(8), new Name('Old Resume'), new Email('old@example.com'));
+    $existing = new Resume(
+        new ResumeId(8),
+        new Name('Old Resume'),
+        new Email('old@example.com'),
+        ResumeStatus::draft()
+    );
     $handler = new DeleteResumeHandler(new FakeResumeRepository($existing));
     $command = new DeleteResumeCommand(8);
 
@@ -216,6 +234,25 @@ it('dispatches resume deleted event in handler', function () {
 
     Event::assertDispatched(ResumeDeletedEvent::class, function (ResumeDeletedEvent $event) use ($resume) {
         return $event->resume === $resume;
+    });
+});
+
+it('dispatches resume status changed event in handler', function () {
+    Event::fake();
+
+    $existing = new Resume(
+        new ResumeId(12),
+        new Name('Old Resume'),
+        new Email('old@example.com'),
+        ResumeStatus::draft()
+    );
+    $handler = new PatchResumeHandler(new FakeResumeRepository($existing), new ResumeStatusService());
+    $command = new PatchResumeCommand(12, null, null, new ResumeStatus('published'));
+
+    $resume = $handler->handle($command);
+
+    Event::assertDispatched(ResumeStatusChangedEvent::class, function (ResumeStatusChangedEvent $event) use ($resume) {
+        return $event->resume === $resume && $event->from === 'draft' && $event->to === 'published';
     });
 });
 

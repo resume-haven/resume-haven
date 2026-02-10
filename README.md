@@ -154,7 +154,8 @@ Response (201):
 {
    "id": 1,
    "name": "Test Resume",
-   "email": "resume@example.com"
+   "email": "resume@example.com",
+   "status": "draft"
 }
 ```
 
@@ -168,7 +169,8 @@ Response (200):
 {
    "id": 1,
    "name": "Test Resume",
-   "email": "resume@example.com"
+   "email": "resume@example.com",
+   "status": "draft"
 }
 ```
 

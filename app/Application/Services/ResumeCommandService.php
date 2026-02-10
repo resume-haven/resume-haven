@@ -14,6 +14,7 @@ use App\Application\Handlers\PatchResumeHandler;
 use App\Application\Handlers\UpdateResumeHandler;
 use App\Domain\Entities\Resume;
 use App\Domain\ValueObjects\Email;
+use App\Domain\ValueObjects\ResumeStatus;
 
 final class ResumeCommandService
 {
@@ -32,19 +33,25 @@ final class ResumeCommandService
         return $this->createHandler->handle($command);
     }
 
-    public function update(int $id, string $name, string $email): ?Resume
+    public function update(int $id, string $name, string $email, ?string $status): ?Resume
     {
-        $command = new UpdateResumeCommand($id, $name, new Email($email));
+        $command = new UpdateResumeCommand(
+            $id,
+            $name,
+            new Email($email),
+            $status !== null ? new ResumeStatus($status) : null,
+        );
 
         return $this->updateHandler->handle($command);
     }
 
-    public function patch(int $id, ?string $name, ?string $email): ?Resume
+    public function patch(int $id, ?string $name, ?string $email, ?string $status): ?Resume
     {
         $command = new PatchResumeCommand(
             $id,
             $name,
             $email !== null ? new Email($email) : null,
+            $status !== null ? new ResumeStatus($status) : null,
         );
 
         return $this->patchHandler->handle($command);

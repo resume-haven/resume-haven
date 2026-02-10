@@ -7,6 +7,7 @@ namespace App\Domain\Entities;
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
 use App\Domain\ValueObjects\ResumeId;
+use App\Domain\ValueObjects\ResumeStatus;
 
 final class Resume
 {
@@ -14,6 +15,7 @@ final class Resume
         public ResumeId $id,
         public Name $name,
         public Email $email,
+        public ResumeStatus $status,
     ) {
     }
 
@@ -25,5 +27,10 @@ final class Resume
     public function changeEmail(Email $email): void
     {
         $this->email = $email;
+    }
+
+    public function changeStatus(ResumeStatus $status): void
+    {
+        $this->status = $status;
     }
 }

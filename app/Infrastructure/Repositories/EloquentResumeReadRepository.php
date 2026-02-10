@@ -26,6 +26,7 @@ final class EloquentResumeReadRepository implements ResumeReadRepositoryInterfac
             (int) $model->id,
             (string) $model->name,
             (string) $model->email,
+            (string) ($model->status ?? 'draft'),
         );
     }
 }

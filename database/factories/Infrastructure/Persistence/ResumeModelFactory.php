@@ -27,6 +27,7 @@ final class ResumeModelFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'status' => 'draft',
         ];
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Commands;
 
 use App\Domain\ValueObjects\Email;
+use App\Domain\ValueObjects\ResumeStatus;
 
 final readonly class PatchResumeCommand
 {
@@ -12,6 +13,7 @@ final readonly class PatchResumeCommand
         public int $id,
         public ?string $name,
         public ?Email $email,
+        public ?ResumeStatus $status,
     ) {
     }
 }

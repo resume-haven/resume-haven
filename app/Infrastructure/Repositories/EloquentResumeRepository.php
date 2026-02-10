@@ -9,6 +9,7 @@ use App\Domain\Entities\Resume;
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
 use App\Domain\ValueObjects\ResumeId;
+use App\Domain\ValueObjects\ResumeStatus;
 use App\Infrastructure\Persistence\ResumeModel;
 
 final class EloquentResumeRepository implements ResumeRepositoryInterface
@@ -56,10 +57,13 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
 
     private function toEntity(ResumeModel $model): Resume
     {
+        $status = (string) ($model->status ?? ResumeStatus::DRAFT);
+
         return new Resume(
             new ResumeId((int) $model->id),
             new Name((string) $model->name),
             new Email((string) $model->email),
+            new ResumeStatus($status),
         );
     }
 
@@ -67,6 +71,7 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
     {
         $model->name = $entity->name->value;
         $model->email = $entity->email->value;
+        $model->status = $entity->status->value;
     }
 
 }

@@ -21,6 +21,7 @@ final class ResumeModel extends Model
     protected $fillable = [
         'name',
         'email',
+        'status',
     ];
 
     /**
@@ -30,6 +31,7 @@ final class ResumeModel extends Model
     {
         return [
             'email' => 'string',
+            'status' => 'string',
         ];
     }
 }

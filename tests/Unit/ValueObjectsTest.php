@@ -6,6 +6,7 @@ use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
 use App\Domain\ValueObjects\PasswordHash;
 use App\Domain\ValueObjects\ResumeId;
+use App\Domain\ValueObjects\ResumeStatus;
 use App\Domain\ValueObjects\UserId;
 
 it('creates name with trimmed value', function () {
@@ -47,6 +48,16 @@ it('accepts resume id zero or greater', function () {
 
 it('rejects negative resume id', function () {
     new ResumeId(-1);
+})->throws(InvalidArgumentException::class);
+
+it('accepts valid resume status values', function () {
+    expect(new ResumeStatus('draft')->value)->toBe('draft');
+    expect(new ResumeStatus('published')->value)->toBe('published');
+    expect(new ResumeStatus('archived')->value)->toBe('archived');
+});
+
+it('rejects invalid resume status', function () {
+    new ResumeStatus('invalid');
 })->throws(InvalidArgumentException::class);
 
 it('accepts user id zero or greater', function () {

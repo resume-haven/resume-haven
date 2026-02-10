@@ -206,6 +206,11 @@ final readonly class ResumeUpdatedEvent
     public function __construct(public Resume $resume) {}
 }
 
+final readonly class ResumeStatusChangedEvent
+{
+    public function __construct(public Resume $resume, public string $from, public string $to) {}
+}
+
 final readonly class UserUpdatedEvent
 {
     public function __construct(public User $user) {}

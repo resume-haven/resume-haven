@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Events\ResumeCreatedEvent;
 use App\Domain\Events\ResumeDeletedEvent;
+use App\Domain\Events\ResumeStatusChangedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Infrastructure\Persistence\ResumeModel;
 use Illuminate\Support\Facades\Event;
@@ -41,11 +42,13 @@ it('creates a resume', function () {
         ->assertJson([
             'name' => $payload['name'],
             'email' => $payload['email'],
+            'status' => 'draft',
         ]);
 
     $this->assertDatabaseHas('resumes', [
         'name' => $payload['name'],
         'email' => $payload['email'],
+        'status' => 'draft',
     ]);
 
     Event::assertDispatched(ResumeCreatedEvent::class);
@@ -70,12 +73,14 @@ it('updates a resume', function () {
             'id' => $resume->id,
             'name' => $payload['name'],
             'email' => $payload['email'],
+            'status' => 'draft',
         ]);
 
     $this->assertDatabaseHas('resumes', [
         'id' => $resume->id,
         'name' => $payload['name'],
         'email' => $payload['email'],
+        'status' => 'draft',
     ]);
 
     Event::assertDispatched(ResumeUpdatedEvent::class);
@@ -97,12 +102,14 @@ it('patches a resume name', function () {
             'id' => $resume->id,
             'name' => 'Patched Resume',
             'email' => 'old@example.com',
+            'status' => 'draft',
         ]);
 
     $this->assertDatabaseHas('resumes', [
         'id' => $resume->id,
         'name' => 'Patched Resume',
         'email' => 'old@example.com',
+        'status' => 'draft',
     ]);
 
     Event::assertDispatched(ResumeUpdatedEvent::class);
@@ -114,6 +121,41 @@ it('validates resume patch input', function () {
     $this->patchJson("/api/resumes/{$resume->id}", [])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['fields']);
+});
+
+it('patches a resume status', function () {
+    Event::fake();
+
+    $resume = ResumeModel::factory()->create([
+        'status' => 'draft',
+    ]);
+
+    $this->patchJson("/api/resumes/{$resume->id}", [
+        'status' => 'published',
+    ])
+        ->assertOk()
+        ->assertJson([
+            'id' => $resume->id,
+            'status' => 'published',
+        ]);
+
+    $this->assertDatabaseHas('resumes', [
+        'id' => $resume->id,
+        'status' => 'published',
+    ]);
+
+    Event::assertDispatched(ResumeUpdatedEvent::class);
+    Event::assertDispatched(ResumeStatusChangedEvent::class);
+});
+
+it('rejects invalid resume status', function () {
+    $resume = ResumeModel::factory()->create();
+
+    $this->patchJson("/api/resumes/{$resume->id}", [
+        'status' => 'invalid',
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['status']);
 });
 
 it('returns not found for resume patch', function () {
