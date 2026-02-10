@@ -5,19 +5,21 @@ info:
   description: API contract for ResumeHaven JSON endpoints.
 servers:
   - url: http://localhost
+tags:
+  - name: Resumes
+    description: Resume read and write endpoints
+  - name: Users
+    description: User read and write endpoints
 paths:
   /api/resumes/{id}:
     get:
       tags:
         - Resumes
       summary: Fetch a resume read model
+      operationId: getResumeById
+      description: Returns a resume read model for the given ID.
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            minimum: 1
+        - $ref: "#/components/parameters/IdPath"
       responses:
         "200":
           description: Resume found
@@ -25,6 +27,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResumeRead"
+              examples:
+                resumeFound:
+                  value:
+                    id: 1
+                    name: Test Resume
+                    email: resume@example.com
         "404":
           description: Resume not found
           content:
@@ -40,12 +48,19 @@ paths:
       tags:
         - Resumes
       summary: Create a resume
+      operationId: createResume
+      description: Creates a resume and returns the created resource.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateResumeRequest"
+            examples:
+              createResume:
+                value:
+                  name: Test Resume
+                  email: resume@example.com
       responses:
         "201":
           description: Resume created
@@ -53,6 +68,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResumeRead"
+              examples:
+                resumeCreated:
+                  value:
+                    id: 1
+                    name: Test Resume
+                    email: resume@example.com
         "422":
           description: Validation error
           content:
@@ -73,13 +94,10 @@ paths:
       tags:
         - Users
       summary: Fetch a user read model
+      operationId: getUserById
+      description: Returns a user read model for the given ID.
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            minimum: 1
+        - $ref: "#/components/parameters/IdPath"
       responses:
         "200":
           description: User found
@@ -87,6 +105,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserRead"
+              examples:
+                userFound:
+                  value:
+                    id: 1
+                    name: Test User
+                    email: user@example.com
         "404":
           description: User not found
           content:
@@ -102,12 +126,20 @@ paths:
       tags:
         - Users
       summary: Create a user
+      operationId: createUser
+      description: Creates a user and returns the created resource.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreateUserRequest"
+            examples:
+              createUser:
+                value:
+                  name: Test User
+                  email: user@example.com
+                  password: password123
       responses:
         "201":
           description: User created
@@ -115,6 +147,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserRead"
+              examples:
+                userCreated:
+                  value:
+                    id: 1
+                    name: Test User
+                    email: user@example.com
         "422":
           description: Validation error
           content:
@@ -133,6 +171,14 @@ paths:
                       password:
                         - The password must be at least 8 characters.
 components:
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
   schemas:
     ResumeRead:
       type: object
