@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Events\ResumeCreatedEvent;
+use App\Domain\Events\ResumeDeletedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Infrastructure\Persistence\ResumeModel;
 use Illuminate\Support\Facades\Event;
@@ -78,6 +79,29 @@ it('updates a resume', function () {
     ]);
 
     Event::assertDispatched(ResumeUpdatedEvent::class);
+});
+
+it('deletes a resume', function () {
+    Event::fake();
+
+    $resume = ResumeModel::factory()->create();
+
+    $this->deleteJson("/api/resumes/{$resume->id}")
+        ->assertNoContent();
+
+    $this->assertDatabaseMissing('resumes', [
+        'id' => $resume->id,
+    ]);
+
+    Event::assertDispatched(ResumeDeletedEvent::class);
+});
+
+it('returns not found for resume delete', function () {
+    $this->deleteJson('/api/resumes/999999')
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'Resume not found.',
+        ]);
 });
 
 it('returns not found for resume update', function () {

@@ -108,6 +108,34 @@ Flow summary:
 5. Handler emits a domain event.
 6. Controller returns the updated DTO or 404.
 
+### Resume Delete Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class ResumeController
+{
+    public function destroy(int $id): JsonResponse
+    {
+        $resume = $this->commands->delete($id);
+
+        if ($resume === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        return response()->noContent();
+    }
+}
+```
+
+Flow summary:
+1. Controller calls `ResumeCommandService` with an ID.
+2. Command service forwards to the delete handler.
+3. Handler loads the entity and deletes it through the repository.
+4. Handler emits a domain event.
+5. Controller returns 204 or 404.
+
 ### User Command Flow
 
 ```php
@@ -238,6 +266,34 @@ Flow summary:
 4. Handler loads entity, applies changes, and persists.
 5. Handler emits a domain event.
 6. Controller returns the updated DTO or 404.
+
+### User Delete Command Flow
+
+```php
+<?php
+declare(strict_types=1);
+
+final class UserController
+{
+    public function destroy(int $id): JsonResponse
+    {
+        $user = $this->commands->delete($id);
+
+        if ($user === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        return response()->noContent();
+    }
+}
+```
+
+Flow summary:
+1. Controller calls `UserCommandService` with an ID.
+2. Command service forwards to the delete handler.
+3. Handler loads the entity and deletes it through the repository.
+4. Handler emits a domain event.
+5. Controller returns 204 or 404.
 
 ## Query Flow
 

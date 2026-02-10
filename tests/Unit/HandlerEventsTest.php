@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 use App\Application\Commands\CreateResumeCommand;
 use App\Application\Commands\CreateUserCommand;
+use App\Application\Commands\DeleteResumeCommand;
+use App\Application\Commands\DeleteUserCommand;
 use App\Application\Commands\UpdateResumeCommand;
 use App\Application\Commands\UpdateUserCommand;
 use App\Application\Handlers\CreateResumeHandler;
 use App\Application\Handlers\CreateUserHandler;
+use App\Application\Handlers\DeleteResumeHandler;
+use App\Application\Handlers\DeleteUserHandler;
 use App\Application\Handlers\UpdateResumeHandler;
 use App\Application\Handlers\UpdateUserHandler;
 use App\Domain\Contracts\ResumeRepositoryInterface;
@@ -15,8 +19,10 @@ use App\Domain\Contracts\UserRepositoryInterface;
 use App\Domain\Entities\Resume;
 use App\Domain\Entities\User;
 use App\Domain\Events\ResumeCreatedEvent;
+use App\Domain\Events\ResumeDeletedEvent;
 use App\Domain\Events\ResumeUpdatedEvent;
 use App\Domain\Events\UserCreatedEvent;
+use App\Domain\Events\UserDeletedEvent;
 use App\Domain\Events\UserUpdatedEvent;
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
@@ -31,6 +37,7 @@ uses(TestCase::class);
 final class FakeResumeRepository implements ResumeRepositoryInterface
 {
     public ?Resume $saved = null;
+    public ?int $deletedId = null;
     private ?Resume $existing;
 
     public function __construct(?Resume $existing = null)
@@ -60,12 +67,14 @@ final class FakeResumeRepository implements ResumeRepositoryInterface
 
     public function delete(int $id): void
     {
+        $this->deletedId = $id;
     }
 }
 
 final class FakeUserRepository implements UserRepositoryInterface
 {
     public ?User $saved = null;
+    public ?int $deletedId = null;
     private ?User $existing;
 
     public function __construct(?User $existing = null)
@@ -95,6 +104,7 @@ final class FakeUserRepository implements UserRepositoryInterface
 
     public function delete(int $id): void
     {
+        $this->deletedId = $id;
     }
 }
 
@@ -154,6 +164,39 @@ it('dispatches user updated event in handler', function () {
     $user = $handler->handle($command);
 
     Event::assertDispatched(UserUpdatedEvent::class, function (UserUpdatedEvent $event) use ($user) {
+        return $event->user === $user;
+    });
+});
+
+it('dispatches resume deleted event in handler', function () {
+    Event::fake();
+
+    $existing = new Resume(new ResumeId(8), new Name('Old Resume'), new Email('old@example.com'));
+    $handler = new DeleteResumeHandler(new FakeResumeRepository($existing));
+    $command = new DeleteResumeCommand(8);
+
+    $resume = $handler->handle($command);
+
+    Event::assertDispatched(ResumeDeletedEvent::class, function (ResumeDeletedEvent $event) use ($resume) {
+        return $event->resume === $resume;
+    });
+});
+
+it('dispatches user deleted event in handler', function () {
+    Event::fake();
+
+    $existing = new User(
+        new UserId(9),
+        new Name('Old User'),
+        new Email('old@example.com'),
+        new PasswordHash('hashed')
+    );
+    $handler = new DeleteUserHandler(new FakeUserRepository($existing));
+    $command = new DeleteUserCommand(9);
+
+    $user = $handler->handle($command);
+
+    Event::assertDispatched(UserDeletedEvent::class, function (UserDeletedEvent $event) use ($user) {
         return $event->user === $user;
     });
 });

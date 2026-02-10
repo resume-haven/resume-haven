@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Application\Services\ResumeCommandService;
 use App\Application\Services\ResumeQueryService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 final class ResumeController extends Controller
@@ -62,5 +63,16 @@ final class ResumeController extends Controller
             'name' => $resume->name->value,
             'email' => $resume->email->value,
         ]);
+    }
+
+    public function destroy(int $id): Response|JsonResponse
+    {
+        $resume = $this->commands->delete($id);
+
+        if ($resume === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        return response()->noContent();
     }
 }

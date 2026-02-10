@@ -103,6 +103,27 @@ paths:
                         - The name field is required.
                       email:
                         - The email must be a valid email address.
+    delete:
+      tags:
+        - Resumes
+      summary: Delete a resume
+      operationId: deleteResume
+      description: Deletes a resume, emits ResumeDeletedEvent, and returns no content.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      responses:
+        "204":
+          description: Resume deleted
+        "404":
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                resumeNotFound:
+                  value:
+                    message: Resume not found.
   /api/resumes:
     post:
       tags:
@@ -261,6 +282,27 @@ paths:
                         - The email must be a valid email address.
                       password:
                         - The password must be at least 8 characters.
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      operationId: deleteUser
+      description: Deletes a user, emits UserDeletedEvent, and returns no content.
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      responses:
+        "204":
+          description: User deleted
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+              examples:
+                userNotFound:
+                  value:
+                    message: User not found.
   /api/users:
     post:
       tags:

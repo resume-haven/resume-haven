@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Application\Services\UserCommandService;
 use App\Application\Services\UserQueryService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -77,5 +78,16 @@ final class UserController extends Controller
             'name' => $user->name->value,
             'email' => $user->email->value,
         ]);
+    }
+
+    public function destroy(int $id): Response|JsonResponse
+    {
+        $user = $this->commands->delete($id);
+
+        if ($user === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        return response()->noContent();
     }
 }

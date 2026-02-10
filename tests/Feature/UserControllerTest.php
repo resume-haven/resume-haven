@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Events\UserCreatedEvent;
+use App\Domain\Events\UserDeletedEvent;
 use App\Domain\Events\UserUpdatedEvent;
 use App\Infrastructure\Persistence\UserModel;
 use Illuminate\Support\Facades\Event;
@@ -112,6 +113,29 @@ it('updates a user without password', function () {
     expect(Hash::check('oldpassword', (string) $updated?->password))->toBeTrue();
 
     Event::assertDispatched(UserUpdatedEvent::class);
+});
+
+it('deletes a user', function () {
+    Event::fake();
+
+    $user = UserModel::factory()->create();
+
+    $this->deleteJson("/api/users/{$user->id}")
+        ->assertNoContent();
+
+    $this->assertDatabaseMissing('users', [
+        'id' => $user->id,
+    ]);
+
+    Event::assertDispatched(UserDeletedEvent::class);
+});
+
+it('returns not found for user delete', function () {
+    $this->deleteJson('/api/users/999999')
+        ->assertNotFound()
+        ->assertJson([
+            'message' => 'User not found.',
+        ]);
 });
 
 it('returns not found for user update', function () {

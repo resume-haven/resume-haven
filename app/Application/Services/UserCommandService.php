@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Application\Services;
 
 use App\Application\Commands\CreateUserCommand;
+use App\Application\Commands\DeleteUserCommand;
 use App\Application\Commands\UpdateUserCommand;
 use App\Application\Handlers\CreateUserHandler;
+use App\Application\Handlers\DeleteUserHandler;
 use App\Application\Handlers\UpdateUserHandler;
 use App\Domain\Entities\User;
 use App\Domain\ValueObjects\Email;
@@ -16,6 +18,7 @@ final class UserCommandService
     public function __construct(
         private CreateUserHandler $createHandler,
         private UpdateUserHandler $updateHandler,
+        private DeleteUserHandler $deleteHandler,
     ) {
     }
 
@@ -31,5 +34,12 @@ final class UserCommandService
         $command = new UpdateUserCommand($id, $name, new Email($email), $passwordHash);
 
         return $this->updateHandler->handle($command);
+    }
+
+    public function delete(int $id): ?User
+    {
+        $command = new DeleteUserCommand($id);
+
+        return $this->deleteHandler->handle($command);
     }
 }
