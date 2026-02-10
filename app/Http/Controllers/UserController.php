@@ -44,7 +44,7 @@ final class UserController extends Controller
         );
 
         return response()->json([
-            'id' => $user->id,
+            'id' => $user->id->value,
             'name' => $user->name->value,
             'email' => $user->email->value,
         ], 201);

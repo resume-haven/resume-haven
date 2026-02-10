@@ -71,7 +71,30 @@ class ResumeQueryService
     
     public function getById(int $id): ?ResumeReadModel
     {
+
+    ## Identifiers and Hashes
+
+    Entity identifiers and stored secrets are wrapped in value objects:
+
+    ```php
+    <?php
         return $this->repository->findById($id);
+
+    final readonly class ResumeId
+    {
+        public int $value;
+    }
+
+    final readonly class UserId
+    {
+        public int $value;
+    }
+
+    final readonly class PasswordHash
+    {
+        public string $value;
+    }
+    ```
     }
 }
 ```

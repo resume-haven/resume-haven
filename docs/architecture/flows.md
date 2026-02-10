@@ -40,7 +40,8 @@ Flow summary:
 2. Controller calls `ResumeCommandService`.
 3. Command service builds a command and forwards to the handler.
 4. Handler applies domain logic and persists through repository.
-5. Controller returns a minimal response DTO.
+5. Handler emits a domain event.
+6. Controller returns a minimal response DTO.
 
 Typical responses:
 
@@ -110,7 +111,8 @@ Flow summary:
 2. Controller calls `UserCommandService`.
 3. Command service builds a command and forwards to the handler.
 4. Handler applies domain logic and persists through repository.
-5. Controller returns a minimal response DTO.
+5. Handler emits a domain event.
+6. Controller returns a minimal response DTO.
 
 Typical responses:
 

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Events\UserCreatedEvent;
 use App\Infrastructure\Persistence\UserModel;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
 it('shows a user', function () {
@@ -26,6 +28,8 @@ it('returns not found for missing user', function () {
 });
 
 it('creates a user', function () {
+    Event::fake();
+
     $payload = [
         'name' => 'Test User',
         'email' => 'user@example.com',
@@ -47,6 +51,8 @@ it('creates a user', function () {
     $user = UserModel::query()->where('email', $payload['email'])->first();
     expect($user)->not->toBeNull();
     expect(Hash::check($payload['password'], (string) $user?->password))->toBeTrue();
+
+    Event::assertDispatched(UserCreatedEvent::class);
 });
 
 it('validates user creation input', function () {

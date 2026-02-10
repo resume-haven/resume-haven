@@ -8,6 +8,8 @@ use App\Domain\Contracts\UserRepositoryInterface;
 use App\Domain\Entities\User;
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
+use App\Domain\ValueObjects\PasswordHash;
+use App\Domain\ValueObjects\UserId;
 use App\Infrastructure\Persistence\UserModel;
 
 final class EloquentUserRepository implements UserRepositoryInterface
@@ -33,10 +35,10 @@ final class EloquentUserRepository implements UserRepositoryInterface
             throw new \InvalidArgumentException('Expected User entity.');
         }
 
-        $model = $this->findModel($entity->id) ?? new UserModel();
+        $model = $this->findModel($entity->id->value) ?? new UserModel();
         $this->applyEntity($entity, $model);
         $model->save();
-        $entity->id = (int) $model->id;
+        $entity->id = new UserId((int) $model->id);
     }
 
     public function delete(int $id): void
@@ -56,10 +58,10 @@ final class EloquentUserRepository implements UserRepositoryInterface
     private function toEntity(UserModel $model): User
     {
         return new User(
-            (int) $model->id,
+            new UserId((int) $model->id),
             new Name((string) $model->name),
             new Email((string) $model->email),
-            (string) $model->password,
+            new PasswordHash((string) $model->password),
         );
     }
 
@@ -67,7 +69,7 @@ final class EloquentUserRepository implements UserRepositoryInterface
     {
         $model->name = $entity->name->value;
         $model->email = $entity->email->value;
-        $model->password = $entity->passwordHash;
+        $model->password = $entity->passwordHash->value;
     }
 
 }

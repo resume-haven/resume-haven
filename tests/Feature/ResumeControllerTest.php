@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Events\ResumeCreatedEvent;
 use App\Infrastructure\Persistence\ResumeModel;
+use Illuminate\Support\Facades\Event;
 
 it('shows a resume', function () {
     $resume = ResumeModel::factory()->create();
@@ -25,6 +27,8 @@ it('returns not found for missing resume', function () {
 });
 
 it('creates a resume', function () {
+    Event::fake();
+
     $payload = [
         'name' => 'Test Resume',
         'email' => 'resume@example.com',
@@ -41,6 +45,8 @@ it('creates a resume', function () {
         'name' => $payload['name'],
         'email' => $payload['email'],
     ]);
+
+    Event::assertDispatched(ResumeCreatedEvent::class);
 });
 
 it('validates resume creation input', function () {

@@ -8,6 +8,7 @@ use App\Domain\Contracts\ResumeRepositoryInterface;
 use App\Domain\Entities\Resume;
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
+use App\Domain\ValueObjects\ResumeId;
 use App\Infrastructure\Persistence\ResumeModel;
 
 final class EloquentResumeRepository implements ResumeRepositoryInterface
@@ -33,10 +34,10 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
             throw new \InvalidArgumentException('Expected Resume entity.');
         }
 
-        $model = $this->findModel($entity->id) ?? new ResumeModel();
+        $model = $this->findModel($entity->id->value) ?? new ResumeModel();
         $this->applyEntity($entity, $model);
         $model->save();
-        $entity->id = (int) $model->id;
+        $entity->id = new ResumeId((int) $model->id);
     }
 
     public function delete(int $id): void
@@ -56,7 +57,7 @@ final class EloquentResumeRepository implements ResumeRepositoryInterface
     private function toEntity(ResumeModel $model): Resume
     {
         return new Resume(
-            (int) $model->id,
+            new ResumeId((int) $model->id),
             new Name((string) $model->name),
             new Email((string) $model->email),
         );

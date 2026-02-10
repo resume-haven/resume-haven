@@ -6,11 +6,12 @@ namespace App\Domain\Entities;
 
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
+use App\Domain\ValueObjects\ResumeId;
 
 final class Resume
 {
     public function __construct(
-        public int $id,
+        public ResumeId $id,
         public Name $name,
         public Email $email,
     ) {

@@ -7,7 +7,9 @@ namespace App\Application\Handlers;
 use App\Application\Commands\CreateResumeCommand;
 use App\Domain\Contracts\ResumeRepositoryInterface;
 use App\Domain\Entities\Resume;
+use App\Domain\Events\ResumeCreatedEvent;
 use App\Domain\ValueObjects\Name;
+use App\Domain\ValueObjects\ResumeId;
 
 final class CreateResumeHandler
 {
@@ -17,8 +19,9 @@ final class CreateResumeHandler
 
     public function handle(CreateResumeCommand $command): Resume
     {
-        $resume = new Resume(0, new Name($command->name), $command->email);
+        $resume = new Resume(new ResumeId(0), new Name($command->name), $command->email);
         $this->resumes->save($resume);
+        event(new ResumeCreatedEvent($resume));
 
         return $resume;
     }

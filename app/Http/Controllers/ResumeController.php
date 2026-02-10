@@ -38,7 +38,7 @@ final class ResumeController extends Controller
         $resume = $this->commands->create($data['name'], $data['email']);
 
         return response()->json([
-            'id' => $resume->id,
+            'id' => $resume->id->value,
             'name' => $resume->name->value,
             'email' => $resume->email->value,
         ], 201);

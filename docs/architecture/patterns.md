@@ -172,3 +172,22 @@ class Email
 $email = new Email('user@example.com');
 $validated = true; // Type system guarantees validity
 ```
+
+## Domain Events
+
+Domain events capture business occurrences and are emitted from handlers:
+
+```php
+<?php
+declare(strict_types=1);
+
+final readonly class ResumeCreatedEvent
+{
+    public function __construct(public Resume $resume) {}
+}
+
+final readonly class UserCreatedEvent
+{
+    public function __construct(public User $user) {}
+}
+```

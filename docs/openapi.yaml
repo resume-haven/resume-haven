@@ -209,6 +209,7 @@ components:
       name: id
       in: path
       required: true
+      description: Numeric identifier of the resource.
       schema:
         type: integer
         minimum: 1

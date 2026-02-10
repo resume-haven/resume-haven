@@ -6,14 +6,16 @@ namespace App\Domain\Entities;
 
 use App\Domain\ValueObjects\Email;
 use App\Domain\ValueObjects\Name;
+use App\Domain\ValueObjects\PasswordHash;
+use App\Domain\ValueObjects\UserId;
 
 final class User
 {
     public function __construct(
-        public int $id,
+        public UserId $id,
         public Name $name,
         public Email $email,
-        public string $passwordHash,
+        public PasswordHash $passwordHash,
     ) {
     }
 
