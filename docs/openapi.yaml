@@ -52,7 +52,7 @@ paths:
         - Resumes
       summary: Update a resume
       operationId: updateResume
-      description: Updates a resume, emits ResumeUpdatedEvent, and returns the updated resource.
+      description: Updates a resume, emits ResumeUpdatedEvent (and ResumeStatusChangedEvent when status changes), and returns the updated resource.
       parameters:
         - $ref: "#/components/parameters/IdPath"
       requestBody:
@@ -132,7 +132,7 @@ paths:
         - Resumes
       summary: Patch a resume
       operationId: patchResume
-      description: Partially updates a resume, emits ResumeUpdatedEvent, and returns the updated resource.
+      description: Partially updates a resume, emits ResumeUpdatedEvent (and ResumeStatusChangedEvent when status changes), and returns the updated resource.
       parameters:
         - $ref: "#/components/parameters/IdPath"
       requestBody:
