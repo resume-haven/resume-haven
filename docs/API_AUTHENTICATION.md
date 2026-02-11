@@ -45,6 +45,7 @@ GET /api/resumes/{id}/status-history       # Get resume status history
 GET /api/users/{id}                        # Get user details
 POST /api/users                            # Create user (registration)
 POST /api/tokens                           # Generate API token
+POST /api/email/verification-notification  # Resend verification email
 ```
 
 ### Protected Endpoints (Token Authentication + Verified Email Required)
@@ -59,6 +60,8 @@ PATCH /api/resumes/{id}                    # Partially update resume
 DELETE /api/resumes/{id}                   # Delete resume
 ```
 
+Resume updates and deletes are restricted to the owner or admin users.
+
 **Users:**
 ```bash
 PUT /api/users/{id}                        # Update user
@@ -66,9 +69,16 @@ PATCH /api/users/{id}                      # Partially update user
 DELETE /api/users/{id}                     # Delete user
 ```
 
+User updates and deletes are restricted to the account owner or admin users.
+
 **Tokens:**
 ```bash
 POST /api/tokens/revoke                    # Revoke all user tokens
+```
+
+**Verification:**
+```bash
+POST /api/email/verification-notification  # Resend verification email
 ```
 
 ## Getting an API Token
@@ -76,6 +86,8 @@ POST /api/tokens/revoke                    # Revoke all user tokens
 ### Via API Endpoint (Recommended)
 
 To obtain a token, send user credentials to the token endpoint:
+
+Note: The email address must be verified.
 
 ```bash
 curl -X POST http://localhost/api/tokens \
@@ -237,6 +249,18 @@ curl -X POST http://localhost/api/tokens \
 
 Before calling protected endpoints, the user must verify their email address
 using the link sent during registration.
+
+If you need to resend the verification email:
+
+```bash
+curl -X POST http://localhost/api/email/verification-notification \
+   -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+# Response (202):
+# {
+#   "message": "Verification email sent."
+# }
+```
 
 During development, verification emails are captured by Mailpit:
 - Web UI: http://localhost:8025

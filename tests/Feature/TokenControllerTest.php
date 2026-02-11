@@ -34,6 +34,26 @@ it('creates api token with valid credentials', function () {
     ]);
 });
 
+it('rejects token creation for unverified users', function () {
+    $user = UserModel::factory()->unverified()->create([
+        'email' => 'unverified@example.com',
+        'password' => Hash::make('password123'),
+    ]);
+
+    $this->postJson('/api/tokens', [
+        'email' => 'unverified@example.com',
+        'password' => 'password123',
+        'device_name' => 'My Device',
+    ])
+        ->assertStatus(403)
+        ->assertJson(['message' => 'Email not verified.']);
+
+    $this->assertDatabaseMissing('personal_access_tokens', [
+        'tokenable_id' => $user->id,
+        'name' => 'My Device',
+    ]);
+});
+
 it('rejects invalid email', function () {
     $this->postJson('/api/tokens', [
         'email' => 'nonexistent@example.com',

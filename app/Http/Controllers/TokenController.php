@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Infrastructure\Persistence\UserModel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,10 @@ final class TokenController extends Controller
             throw ValidationException::withMessages([
                 'email' => [__('auth.failed')],
             ]);
+        }
+
+        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email not verified.'], 403);
         }
 
         $token = $user->createToken($credentials['device_name'])->plainTextToken;

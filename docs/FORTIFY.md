@@ -77,8 +77,14 @@ Email verification is enabled via `Features::emailVerification()`.
 
 Behavior:
 - Newly registered users receive a verification email.
-- Admin routes require a verified email address.
+- Admin routes require a verified email address and an admin role.
 - Protected API routes require a verified email address.
+
+Login flow:
+- The root path `/` redirects to `/admin`.
+- Guests are redirected to `/login`.
+- Unverified users receive 403 on admin routes.
+- Verified users without the admin role receive 403 on admin routes.
 
 The verification flow relies on the `MustVerifyEmail` contract and trait.
 

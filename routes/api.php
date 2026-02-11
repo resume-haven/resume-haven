@@ -6,6 +6,7 @@ use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ResumeStatusHistoryController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmailVerificationController;
 use Illuminate\Support\Facades\Route;
 
 // Public endpoints (no authentication required)
@@ -15,6 +16,8 @@ Route::get('/users/{id}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);  // User registration
 Route::post('/tokens', [TokenController::class, 'store']);  // Generate API token
 Route::post('/tokens/revoke', [TokenController::class, 'destroy']);  // Revoke tokens
+Route::post('/email/verification-notification', EmailVerificationController::class)
+    ->middleware(['auth:sanctum', 'throttle:6,1']);
 
 // Protected endpoints (authentication required)
 Route::middleware(['auth:sanctum', 'verified'])->group(function (): void {

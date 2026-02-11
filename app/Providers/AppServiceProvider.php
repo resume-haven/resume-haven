@@ -16,6 +16,11 @@ use App\Infrastructure\Repositories\EloquentResumeReadRepository;
 use App\Infrastructure\Repositories\EloquentResumeRepository;
 use App\Infrastructure\Repositories\EloquentUserReadRepository;
 use App\Infrastructure\Repositories\EloquentUserRepository;
+use App\Infrastructure\Persistence\ResumeModel;
+use App\Infrastructure\Persistence\UserModel;
+use App\Policies\ResumePolicy;
+use App\Policies\UserPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -38,6 +43,7 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(ResumeModel::class, ResumePolicy::class);
+        Gate::policy(UserModel::class, UserPolicy::class);
     }
 }

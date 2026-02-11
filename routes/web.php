@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminResumeController;
 use App\Http\Controllers\Admin\AdminUserController;
 
-Route::get('/', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('welcome'));
+Route::redirect('/', '/admin');
 
 Route::get('/docs/openapi.yaml', function () {
 	return response()->file(
@@ -18,7 +18,7 @@ Route::get('/docs/openapi.yaml', function () {
 
 Route::get('/docs/swagger', fn () => redirect('/docs/swagger/index.html'));
 
-Route::middleware(['auth', 'verified'])
+Route::middleware(['auth', 'verified', 'role:admin'])
 	->prefix('admin')
 	->name('admin.')
 	->group(function (): void {

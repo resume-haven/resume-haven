@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories\Infrastructure\Persistence;
 
 use App\Infrastructure\Persistence\ResumeModel;
+use App\Infrastructure\Persistence\UserModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,6 +26,7 @@ final class ResumeModelFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => UserModel::factory(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'status' => 'draft',

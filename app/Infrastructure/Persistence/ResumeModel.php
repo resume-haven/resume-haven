@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 final class ResumeModel extends Model
 {
@@ -19,6 +20,7 @@ final class ResumeModel extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'status',
@@ -30,8 +32,14 @@ final class ResumeModel extends Model
     protected function casts(): array
     {
         return [
+            'user_id' => 'integer',
             'email' => 'string',
             'status' => 'string',
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(UserModel::class, 'user_id');
     }
 }

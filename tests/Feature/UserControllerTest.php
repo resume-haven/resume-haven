@@ -80,6 +80,32 @@ it('sends verification email after user registration', function () {
     Notification::assertSentTo($user, VerifyEmail::class);
 });
 
+it('resends verification email for unverified users', function () {
+    Notification::fake();
+
+    $user = UserModel::factory()->unverified()->create();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/email/verification-notification')
+        ->assertStatus(202)
+        ->assertJson(['message' => 'Verification email sent.']);
+
+    Notification::assertSentTo($user, VerifyEmail::class);
+});
+
+it('does not resend verification email for verified users', function () {
+    Notification::fake();
+
+    $user = UserModel::factory()->create();
+
+    $this->actingAs($user, 'sanctum')
+        ->postJson('/api/email/verification-notification')
+        ->assertOk()
+        ->assertJson(['message' => 'Email already verified.']);
+
+    Notification::assertNothingSent();
+});
+
 it('updates a user with password', function () {
     Event::fake();
 
@@ -139,6 +165,32 @@ it('updates a user without password', function () {
     expect(Hash::check('oldpassword', (string) $updated?->password))->toBeTrue();
 
     Event::assertDispatched(UserUpdatedEvent::class);
+});
+
+it('rejects updating another user without admin role', function () {
+    $actor = UserModel::factory()->create();
+    $target = UserModel::factory()->create();
+
+    $this->actingAs($actor)
+        ->putJson("/api/users/{$target->id}", [
+            'name' => 'Blocked User',
+            'email' => 'blocked@example.com',
+        ])
+        ->assertStatus(403);
+});
+
+it('allows admin to update another user', function () {
+    $role = \App\Infrastructure\Persistence\RoleModel::factory()->create(['name' => 'admin']);
+    $actor = UserModel::factory()->create();
+    $actor->roles()->attach($role);
+    $target = UserModel::factory()->create();
+
+    $this->actingAs($actor)
+        ->putJson("/api/users/{$target->id}", [
+            'name' => 'Admin Update',
+            'email' => 'admin-update@example.com',
+        ])
+        ->assertOk();
 });
 
 it('rejects updates from unverified users', function () {
@@ -217,6 +269,15 @@ it('deletes a user', function () {
     ]);
 
     Event::assertDispatched(UserDeletedEvent::class);
+});
+
+it('rejects deleting another user without admin role', function () {
+    $actor = UserModel::factory()->create();
+    $target = UserModel::factory()->create();
+
+    $this->actingAs($actor)
+        ->deleteJson("/api/users/{$target->id}")
+        ->assertStatus(403);
 });
 
 it('returns not found for user delete', function () {

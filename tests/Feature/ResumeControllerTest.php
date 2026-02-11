@@ -88,6 +88,7 @@ it('creates a resume', function () {
         'name' => $payload['name'],
         'email' => $payload['email'],
         'status' => 'draft',
+        'user_id' => $user->id,
     ]);
 
     Event::assertDispatched(ResumeCreatedEvent::class);
@@ -106,12 +107,51 @@ it('rejects resume creation for unverified users', function () {
         ->assertStatus(403);
 });
 
+it('rejects resume update from non-owner', function () {
+    $owner = UserModel::factory()->create();
+    $other = UserModel::factory()->create();
+
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $owner->id,
+        'name' => 'Owned Resume',
+        'email' => 'owned@example.com',
+    ]);
+
+    $this->actingAs($other)
+        ->putJson("/api/resumes/{$resume->id}", [
+            'name' => 'Blocked Resume',
+            'email' => 'blocked@example.com',
+        ])
+        ->assertStatus(403);
+});
+
+it('allows admin to update another user resume', function () {
+    $owner = UserModel::factory()->create();
+    $admin = UserModel::factory()->create();
+    $role = \App\Infrastructure\Persistence\RoleModel::factory()->create(['name' => 'admin']);
+    $admin->roles()->attach($role);
+
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $owner->id,
+        'name' => 'Owned Resume',
+        'email' => 'owned@example.com',
+    ]);
+
+    $this->actingAs($admin)
+        ->putJson("/api/resumes/{$resume->id}", [
+            'name' => 'Admin Update',
+            'email' => 'admin-update@example.com',
+        ])
+        ->assertOk();
+});
+
 it('updates a resume', function () {
     Event::fake();
 
     $user = UserModel::factory()->create();
 
     $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
         'name' => 'Old Resume',
         'email' => 'old@example.com',
     ]);
@@ -147,6 +187,7 @@ it('patches a resume name', function () {
     $user = UserModel::factory()->create();
 
     $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
         'name' => 'Old Resume',
         'email' => 'old@example.com',
     ]);
@@ -176,7 +217,9 @@ it('patches a resume name', function () {
 it('validates resume patch input', function () {
     $user = UserModel::factory()->create();
 
-    $resume = ResumeModel::factory()->create();
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
+    ]);
 
     $this->actingAs($user)
         ->patchJson("/api/resumes/{$resume->id}", [])
@@ -190,6 +233,7 @@ it('patches a resume status', function () {
     $user = UserModel::factory()->create();
 
     $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
         'status' => 'draft',
     ]);
 
@@ -221,7 +265,9 @@ it('patches a resume status', function () {
 it('rejects invalid resume status', function () {
     $user = UserModel::factory()->create();
 
-    $resume = ResumeModel::factory()->create();
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
+    ]);
 
     $this->actingAs($user)
         ->patchJson("/api/resumes/{$resume->id}", [
@@ -249,7 +295,9 @@ it('deletes a resume', function () {
 
     $user = UserModel::factory()->create();
 
-    $resume = ResumeModel::factory()->create();
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
+    ]);
 
     $this->actingAs($user)
         ->deleteJson("/api/resumes/{$resume->id}")
@@ -260,6 +308,34 @@ it('deletes a resume', function () {
     ]);
 
     Event::assertDispatched(ResumeDeletedEvent::class);
+});
+
+it('rejects resume delete from non-owner', function () {
+    $owner = UserModel::factory()->create();
+    $other = UserModel::factory()->create();
+
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $owner->id,
+    ]);
+
+    $this->actingAs($other)
+        ->deleteJson("/api/resumes/{$resume->id}")
+        ->assertStatus(403);
+});
+
+it('allows admin to delete another user resume', function () {
+    $owner = UserModel::factory()->create();
+    $admin = UserModel::factory()->create();
+    $role = \App\Infrastructure\Persistence\RoleModel::factory()->create(['name' => 'admin']);
+    $admin->roles()->attach($role);
+
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $owner->id,
+    ]);
+
+    $this->actingAs($admin)
+        ->deleteJson("/api/resumes/{$resume->id}")
+        ->assertNoContent();
 });
 
 it('returns not found for resume delete', function () {
@@ -290,7 +366,9 @@ it('returns not found for resume update', function () {
 it('validates resume update input', function () {
     $user = UserModel::factory()->create();
 
-    $resume = ResumeModel::factory()->create();
+    $resume = ResumeModel::factory()->create([
+        'user_id' => $user->id,
+    ]);
 
     $this->actingAs($user)
         ->putJson("/api/resumes/{$resume->id}", [

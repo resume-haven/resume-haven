@@ -64,6 +64,14 @@ final class UserController extends Controller
 
     public function update(int $id, Request $request): JsonResponse
     {
+        $target = UserModel::query()->find($id);
+
+        if ($target === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        $this->authorize('update', $target);
+
         if ($request->isMethod('patch')) {
             $validator = Validator::make($request->all(), [
                 'name' => ['sometimes', 'string', 'max:200'],
@@ -129,6 +137,14 @@ final class UserController extends Controller
 
     public function destroy(int $id): Response|JsonResponse
     {
+        $target = UserModel::query()->find($id);
+
+        if ($target === null) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        $this->authorize('delete', $target);
+
         $user = $this->commands->delete($id);
 
         if ($user === null) {

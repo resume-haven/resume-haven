@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Application\Services\ResumeCommandService;
 use App\Application\Services\ResumeQueryService;
+use App\Infrastructure\Persistence\ResumeModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -40,6 +41,12 @@ final class ResumeController extends Controller
 
         $resume = $this->commands->create($data['name'], $data['email']);
 
+        $user = $request->user('sanctum');
+
+        if ($user !== null) {
+            ResumeModel::query()->whereKey($resume->id->value)->update(['user_id' => $user->id]);
+        }
+
         return response()->json([
             'id' => $resume->id->value,
             'name' => $resume->name->value,
@@ -50,6 +57,14 @@ final class ResumeController extends Controller
 
     public function update(int $id, Request $request): JsonResponse
     {
+        $target = ResumeModel::query()->find($id);
+
+        if ($target === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        $this->authorize('update', $target);
+
         if ($request->isMethod('patch')) {
             $validator = Validator::make($request->all(), [
                 'name' => ['sometimes', 'string', 'max:200'],
@@ -108,6 +123,14 @@ final class ResumeController extends Controller
 
     public function destroy(int $id): Response|JsonResponse
     {
+        $target = ResumeModel::query()->find($id);
+
+        if ($target === null) {
+            return response()->json(['message' => 'Resume not found.'], 404);
+        }
+
+        $this->authorize('delete', $target);
+
         $resume = $this->commands->delete($id);
 
         if ($resume === null) {
