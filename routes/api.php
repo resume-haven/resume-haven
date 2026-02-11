@@ -17,7 +17,7 @@ Route::post('/tokens', [TokenController::class, 'store']);  // Generate API toke
 Route::post('/tokens/revoke', [TokenController::class, 'destroy']);  // Revoke tokens
 
 // Protected endpoints (authentication required)
-Route::middleware(['auth:sanctum'])->group(function (): void {
+Route::middleware(['auth:sanctum', 'verified'])->group(function (): void {
     // Resumes
     Route::post('/resumes', [ResumeController::class, 'store']);
     Route::put('/resumes/{id}', [ResumeController::class, 'update']);

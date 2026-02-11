@@ -15,6 +15,10 @@ ResumeHaven runs in a Docker container using **FrankenPHP** (PHP 8.5 with Caddy 
 - Composer package manager
 - SQLite database support
 
+**mailpit** - Local mail catcher
+- SMTP server for development emails
+- Web UI for viewing messages
+
 ## Prerequisites
 
 - Docker Desktop 4.0+ or Docker + Docker Compose
@@ -53,6 +57,21 @@ docker-compose ps
 
 # Verify PHP version
 docker-compose exec app php -v
+```
+
+### 5. Mailpit Access
+
+Mailpit captures all outgoing mail locally.
+
+- Web UI: http://localhost:8025
+- SMTP: mailpit:1025
+
+Ensure the mail settings point to Mailpit:
+
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
 ```
 
 ## Container Management

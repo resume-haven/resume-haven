@@ -21,3 +21,11 @@ services:
       - ./bootstrap/cache:/var/www/html/bootstrap/cache
     restart: unless-stopped
     tty: true
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: resume-haven-mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    restart: unless-stopped

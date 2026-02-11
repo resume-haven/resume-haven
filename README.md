@@ -24,6 +24,10 @@ make up
 open http://localhost
 ```
 
+Mailpit captures outgoing emails during development:
+- Web UI: http://localhost:8025
+- SMTP: mailpit:1025
+
 ## Installation
 
 ### Prerequisites
@@ -54,6 +58,7 @@ open http://localhost
 4. **Access the application**
    - HTTP: http://localhost
    - HTTPS: https://localhost (self-signed certificate)
+   - Mailpit: http://localhost:8025
 
 ## Quick Commands
 
@@ -97,7 +102,11 @@ See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for detailed documentation.
 ### Authentication & Security
 
 - **Fortify** - Headless authentication backend (registration, password reset, 2FA)
+- **Email verification** - Enabled for web and API protected routes
 - See [docs/FORTIFY.md](docs/FORTIFY.md) for authentication details
+
+Verification emails are captured locally by Mailpit during development:
+- Web UI: http://localhost:8025
 
 ## Development
 

@@ -93,6 +93,19 @@ it('creates a resume', function () {
     Event::assertDispatched(ResumeCreatedEvent::class);
 });
 
+it('rejects resume creation for unverified users', function () {
+    $user = UserModel::factory()->unverified()->create();
+
+    $payload = [
+        'name' => 'Blocked Resume',
+        'email' => 'blocked@example.com',
+    ];
+
+    $this->actingAs($user)
+        ->postJson('/api/resumes', $payload)
+        ->assertStatus(403);
+});
+
 it('updates a resume', function () {
     Event::fake();
 

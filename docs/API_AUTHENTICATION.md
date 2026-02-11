@@ -47,9 +47,9 @@ POST /api/users                            # Create user (registration)
 POST /api/tokens                           # Generate API token
 ```
 
-### Protected Endpoints (Token Authentication Required)
+### Protected Endpoints (Token Authentication + Verified Email Required)
 
-All write operations require authentication via `auth:sanctum` middleware:
+All write operations require authentication via `auth:sanctum` and a verified email:
 
 **Resumes:**
 ```bash
@@ -176,7 +176,7 @@ $user->tokens()->where('name', 'api-token')->delete();
 Applied to all write operations (POST, PUT, PATCH, DELETE):
 
 ```php
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/resumes', [ResumeController::class, 'store']);
     // ...
 });
@@ -207,6 +207,8 @@ curl -X POST http://localhost/api/users \
 #   "email": "john@example.com",
 #   "created_at": "2026-02-10T12:00:00.000Z"
 # }
+
+# A verification email is sent after registration.
 ```
 
 ### 2. Generate an API Token
@@ -231,7 +233,16 @@ curl -X POST http://localhost/api/tokens \
 # }
 ```
 
-### 3. Create a Resume with Token
+### 3. Verify Email Address
+
+Before calling protected endpoints, the user must verify their email address
+using the link sent during registration.
+
+During development, verification emails are captured by Mailpit:
+- Web UI: http://localhost:8025
+- SMTP: mailpit:1025
+
+### 4. Create a Resume with Token
 
 ```bash
 curl -X POST http://localhost/api/resumes \

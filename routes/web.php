@@ -18,7 +18,7 @@ Route::get('/docs/openapi.yaml', function () {
 
 Route::get('/docs/swagger', fn () => redirect('/docs/swagger/index.html'));
 
-Route::middleware(['auth'])
+Route::middleware(['auth', 'verified'])
 	->prefix('admin')
 	->name('admin.')
 	->group(function (): void {

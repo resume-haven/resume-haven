@@ -4,6 +4,16 @@
 
 **See also:** [GitHub Actions](GITHUB_ACTIONS_QUICK.md) - Automated CI/CD Pipeline
 
+
+### Local Mail (Mailpit)
+
+Development emails are routed to Mailpit instead of real recipients.
+
+- Web UI: http://localhost:8025
+- SMTP: mailpit:1025
+
+If you use a local `.env`, ensure these values are set.
+
 ## Code Standards
 
 ### Strict Types
@@ -347,6 +357,30 @@ docker-compose exec app bash
 composer install
 
 # 4. Set up IDE debugging (F5 in VS Code)
+```
+
+#### Mailpit Configuration
+
+If you use a local `.env`, ensure Mailpit is configured:
+
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+```
+
+#### Environment Variables
+
+Common local settings:
+
+```dotenv
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
 ```
 
 ### Making Code Changes

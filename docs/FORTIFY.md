@@ -8,6 +8,7 @@ Fortify is installed and configured to provide:
 
 - **User Registration** - `Features::registration()`
 - **Password Reset** - `Features::resetPasswords()`
+- **Email Verification** - `Features::emailVerification()`
 - **Profile Updates** - `Features::updateProfileInformation()`
 - **Password Changes** - `Features::updatePasswords()`
 - **Two-Factor Authentication (2FA)** - `Features::twoFactorAuthentication()` *(Web only)*
@@ -21,6 +22,7 @@ The `UserModel` extends `Authenticatable` and includes Fortify-specific columns:
 ```php
 use HasApiTokens;      // Laravel Sanctum - for API token generation
 use HasFactory;        // Factory support for testing
+use MustVerifyEmail;   // Email verification
 use Notifiable;        // Email notifications
 ```
 
@@ -69,6 +71,17 @@ protected function casts(): array
 }
 ```
 
+## Email Verification
+
+Email verification is enabled via `Features::emailVerification()`.
+
+Behavior:
+- Newly registered users receive a verification email.
+- Admin routes require a verified email address.
+- Protected API routes require a verified email address.
+
+The verification flow relies on the `MustVerifyEmail` contract and trait.
+
 ## Fortify Actions
 
 Fortify uses action classes to handle authentication operations. These are stored in `app/Actions/Fortify/`:
@@ -89,6 +102,7 @@ See `config/fortify.php` for full configuration:
 'features' => [
     Features::registration(),
     Features::resetPasswords(),
+    Features::emailVerification(),
     Features::updateProfileInformation(),
     Features::updatePasswords(),
     Features::twoFactorAuthentication([
@@ -150,7 +164,6 @@ make test
 
 - Implement API token authentication (Laravel Sanctum) for API endpoints
 - Add rate limiting to authentication endpoints
-- Create email verification flow
 - Add audit logging for authentication events
 
 ## References

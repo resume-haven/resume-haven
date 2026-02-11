@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Application\Services\UserCommandService;
 use App\Application\Services\UserQueryService;
+use App\Infrastructure\Persistence\UserModel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -44,6 +46,12 @@ final class UserController extends Controller
             $data['email'],
             Hash::make($data['password']),
         );
+
+        $authUser = UserModel::query()->find($user->id->value);
+
+        if ($authUser instanceof MustVerifyEmail && ! $authUser->hasVerifiedEmail()) {
+            $authUser->sendEmailVerificationNotification();
+        }
 
         $read = $this->queries->getById($user->id->value);
 

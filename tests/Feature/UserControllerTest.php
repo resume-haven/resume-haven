@@ -6,8 +6,10 @@ use App\Domain\Events\UserCreatedEvent;
 use App\Domain\Events\UserDeletedEvent;
 use App\Domain\Events\UserUpdatedEvent;
 use App\Infrastructure\Persistence\UserModel;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 
 it('shows a user', function () {
     $user = UserModel::factory()->create();
@@ -58,6 +60,24 @@ it('creates a user', function () {
     ]);
 
     Event::assertDispatched(UserCreatedEvent::class);
+});
+
+it('sends verification email after user registration', function () {
+    Notification::fake();
+
+    $payload = [
+        'name' => 'Verify User',
+        'email' => 'verify@example.com',
+        'password' => 'password123',
+    ];
+
+    $this->postJson('/api/users', $payload)
+        ->assertCreated();
+
+    $user = UserModel::query()->where('email', $payload['email'])->first();
+    expect($user)->not->toBeNull();
+
+    Notification::assertSentTo($user, VerifyEmail::class);
 });
 
 it('updates a user with password', function () {
@@ -119,6 +139,17 @@ it('updates a user without password', function () {
     expect(Hash::check('oldpassword', (string) $updated?->password))->toBeTrue();
 
     Event::assertDispatched(UserUpdatedEvent::class);
+});
+
+it('rejects updates from unverified users', function () {
+    $user = UserModel::factory()->unverified()->create();
+
+    $this->actingAs($user)
+        ->putJson("/api/users/{$user->id}", [
+            'name' => 'Blocked User',
+            'email' => 'blocked@example.com',
+        ])
+        ->assertStatus(403);
 });
 
 it('patches a user email', function () {
