@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ResumeStatusHistoryController;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,8 @@ Route::get('/resumes/{id}', [ResumeController::class, 'show']);
 Route::get('/resumes/{id}/status-history', ResumeStatusHistoryController::class);
 Route::get('/users/{id}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);  // User registration
+Route::post('/tokens', [TokenController::class, 'store']);  // Generate API token
+Route::post('/tokens/revoke', [TokenController::class, 'destroy']);  // Revoke tokens
 
 // Protected endpoints (authentication required)
 Route::middleware(['auth:sanctum'])->group(function (): void {
@@ -25,4 +28,5 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::patch('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
 });

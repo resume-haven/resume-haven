@@ -16,6 +16,14 @@ Fortify is installed and configured to provide:
 
 The `UserModel` extends `Authenticatable` and includes Fortify-specific columns:
 
+### Traits
+
+```php
+use HasApiTokens;      // Laravel Sanctum - for API token generation
+use HasFactory;        // Factory support for testing
+use Notifiable;        // Email notifications
+```
+
 ### Database Columns (added by migration)
 
 ```sql

@@ -34,10 +34,17 @@ This allows both web sessions and API tokens for authentication.
 
 ### Public Endpoints (No Authentication)
 
+**Resumes:**
 ```bash
 GET /api/resumes/{id}                      # Get resume details
 GET /api/resumes/{id}/status-history       # Get resume status history
+```
+
+**Users & Authentication:**
+```bash
 GET /api/users/{id}                        # Get user details
+POST /api/users                            # Create user (registration)
+POST /api/tokens                           # Generate API token
 ```
 
 ### Protected Endpoints (Token Authentication Required)
@@ -54,20 +61,62 @@ DELETE /api/resumes/{id}                   # Delete resume
 
 **Users:**
 ```bash
-POST /api/users                            # Create user
 PUT /api/users/{id}                        # Update user
 PATCH /api/users/{id}                      # Partially update user
 DELETE /api/users/{id}                     # Delete user
 ```
 
+**Tokens:**
+```bash
+POST /api/tokens/revoke                    # Revoke all user tokens
+```
+
 ## Getting an API Token
 
-To authenticate, a user must obtain a personal access token.
+### Via API Endpoint (Recommended)
+
+To obtain a token, send user credentials to the token endpoint:
+
+```bash
+curl -X POST http://localhost/api/tokens \
+   -H "Content-Type: application/json" \
+   -d '{
+     "email": "user@example.com",
+     "password": "password123",
+     "device_name": "My Mobile App"
+   }'
+
+# Response (201):
+# {
+#   "token": "1|AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+#   "user": {
+#     "id": 1,
+#     "name": "John Doe",
+#     "email": "user@example.com"
+#   }
+# }
+```
+
+Or with HTTPie:
+
+```bash
+http POST http://localhost/api/tokens \
+   email="user@example.com" \
+   password="password123" \
+   device_name="My Mobile App"
+```
+
+**Required fields:**
+- `email` - User email address
+- `password` - User password (minimum 8 characters)
+- `device_name` - Label for the token (e.g., "iOS App", "Web Client")
 
 ### Creating a Token Programmatically
 
+For server-side testing or administrative purposes:
+
 ```php
-$user = User::find(1);
+$user = UserModel::find(1);
 $token = $user->createToken('api-token')->plainTextToken;
 
 // Example output:
@@ -96,7 +145,19 @@ http POST http://localhost/api/resumes \
 
 ### Revoking Tokens
 
-All tokens for a user can be revoked:
+Revoke all tokens for the authenticated user:
+
+```bash
+curl -X POST http://localhost/api/tokens/revoke \
+   -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+Response (200):
+```json
+{
+  "message": "All tokens revoked."
+}
+```
 
 ```php
 $user->tokens()->delete();
@@ -150,20 +211,31 @@ curl -X POST http://localhost/api/users \
 
 ### 2. Generate an API Token
 
-Since token generation is not currently exposed via API, it must be done via Artisan command or web interface:
-
 ```bash
-php artisan tinker
+curl -X POST http://localhost/api/tokens \
+   -H "Content-Type: application/json" \
+   -d '{
+     "email": "john@example.com",
+     "password": "password123",
+     "device_name": "My App"
+   }'
 
->>> $user = \App\Infrastructure\Persistence\UserModel::find(1)
->>> $token = $user->createToken('api-token')->plainTextToken
+# Response (201):
+# {
+#   "token": "1|AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+#   "user": {
+#     "id": 1,
+#     "name": "John Doe",
+#     "email": "john@example.com"
+#   }
+# }
 ```
 
 ### 3. Create a Resume with Token
 
 ```bash
 curl -X POST http://localhost/api/resumes \
-   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+   -H "Authorization: Bearer 1|AbCdEfGhIjKlMnOpQrStUvWxYz1234567890" \
    -H "Content-Type: application/json" \
    -d '{
      "name": "My First Resume",
@@ -183,7 +255,7 @@ curl -X POST http://localhost/api/resumes \
 
 ```bash
 curl -X PUT http://localhost/api/resumes/1 \
-   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+   -H "Authorization: Bearer 1|AbCdEfGhIjKlMnOpQrStUvWxYz1234567890" \
    -H "Content-Type: application/json" \
    -d '{"name": "Updated Resume"}'
 ```
