@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminResumeActionController;
 use App\Http\Controllers\Admin\AdminResumeController;
 use App\Http\Controllers\Admin\AdminUserController;
 
@@ -25,5 +26,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 		Route::get('/', AdminDashboardController::class)->name('dashboard');
 		Route::get('/resumes', [AdminResumeController::class, 'index'])->name('resumes.index');
 		Route::get('/resumes/{id}', [AdminResumeController::class, 'show'])->name('resumes.show');
+		Route::patch('/resumes/{id}/status', [AdminResumeActionController::class, 'update'])->name('resumes.status');
+		Route::delete('/resumes/{id}', [AdminResumeActionController::class, 'destroy'])->name('resumes.destroy');
 		Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
 	});

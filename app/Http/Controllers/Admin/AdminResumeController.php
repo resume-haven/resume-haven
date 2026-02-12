@@ -17,6 +17,8 @@ final class AdminResumeController extends Controller
 
     public function index(Request $request): Response
     {
+        $this->authorize('admin.resumes.view');
+
         $page = max(1, (int) $request->query('page', 1));
         $limit = 20;
         $offset = ($page - 1) * $limit;
@@ -33,6 +35,8 @@ final class AdminResumeController extends Controller
 
     public function show(int $id): Response
     {
+        $this->authorize('admin.resumes.view-one');
+
         $resume = $this->resumes->getById($id);
 
         if ($resume === null) {

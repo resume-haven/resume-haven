@@ -86,6 +86,14 @@ Login flow:
 - Unverified users receive 403 on admin routes.
 - Verified users without the admin role receive 403 on admin routes.
 
+Admin UI policies:
+- `admin.dashboard` for the dashboard.
+- `admin.users.view` for the users list.
+- `admin.resumes.view` for the resume list.
+- `admin.resumes.view-one` for the resume detail.
+- `admin.resumes.update` for status updates.
+- `admin.resumes.delete` for deletions.
+
 The verification flow relies on the `MustVerifyEmail` contract and trait.
 
 ## Fortify Actions

@@ -17,6 +17,8 @@ final class AdminUserController extends Controller
 
     public function index(Request $request): Response
     {
+        $this->authorize('admin.users.view');
+
         $page = max(1, (int) $request->query('page', 1));
         $limit = 20;
         $offset = ($page - 1) * $limit;

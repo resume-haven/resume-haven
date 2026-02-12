@@ -20,6 +20,8 @@ final class AdminDashboardController extends Controller
 
     public function __invoke(Request $request): Response
     {
+        $this->authorize('admin.dashboard');
+
         $recentResumes = $this->resumes->list(5, 0);
         $recentUsers = $this->users->list(5, 0);
 

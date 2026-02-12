@@ -28,6 +28,37 @@
 
     <section class="panel">
         <div class="top-bar">
+            <h1>Admin Actions</h1>
+        </div>
+        <div class="card-grid">
+            <form method="POST" action="{{ route('admin.resumes.status', $resume->id) }}" class="card">
+                @csrf
+                @method('PATCH')
+                <h3>Update Status</h3>
+                <div class="metric">
+                    <select name="status">
+                        @foreach (['draft', 'published', 'archived'] as $status)
+                            <option value="{{ $status }}" @selected($resume->status === $status)>
+                                {{ ucfirst($status) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button class="link-chip" type="submit">Save</button>
+            </form>
+
+            <form method="POST" action="{{ route('admin.resumes.destroy', $resume->id) }}" class="card">
+                @csrf
+                @method('DELETE')
+                <h3>Delete Resume</h3>
+                <p class="badge">This cannot be undone.</p>
+                <button class="link-chip" type="submit">Delete</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="top-bar">
             <h1>Status History</h1>
         </div>
         <table class="table">

@@ -18,6 +18,7 @@ use App\Infrastructure\Repositories\EloquentUserReadRepository;
 use App\Infrastructure\Repositories\EloquentUserRepository;
 use App\Infrastructure\Persistence\ResumeModel;
 use App\Infrastructure\Persistence\UserModel;
+use App\Policies\AdminPolicy;
 use App\Policies\ResumePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -43,6 +44,12 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::define('admin.dashboard', [AdminPolicy::class, 'dashboard']);
+        Gate::define('admin.users.view', [AdminPolicy::class, 'viewUsers']);
+        Gate::define('admin.resumes.view', [AdminPolicy::class, 'viewResumes']);
+        Gate::define('admin.resumes.view-one', [AdminPolicy::class, 'viewResume']);
+        Gate::define('admin.resumes.update', [AdminPolicy::class, 'updateResume']);
+        Gate::define('admin.resumes.delete', [AdminPolicy::class, 'deleteResume']);
         Gate::policy(ResumeModel::class, ResumePolicy::class);
         Gate::policy(UserModel::class, UserPolicy::class);
     }
