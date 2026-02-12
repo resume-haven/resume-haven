@@ -163,6 +163,19 @@ When users enable 2FA in the web UI:
 - Never expose these values in JSON responses
 - The `hidden` configuration in `UserModel` ensures they're excluded from serialization
 
+## Audit Logging
+
+Authentication events are captured in the `auth_audit_logs` table. Logged events include:
+
+- `auth.login`
+- `auth.logout`
+- `auth.verified`
+- `auth.verification.resent`
+- `auth.token.created`
+- `auth.token.revoked`
+
+The logger stores `user_id`, `ip_address`, `user_agent`, and optional context values.
+
 ## Testing
 
 User creation and authentication tests are in:
@@ -178,7 +191,6 @@ make test
 
 - Implement API token authentication (Laravel Sanctum) for API endpoints
 - Add rate limiting to authentication endpoints
-- Add audit logging for authentication events
 
 ## References
 

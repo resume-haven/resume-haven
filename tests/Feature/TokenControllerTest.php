@@ -32,6 +32,11 @@ it('creates api token with valid credentials', function () {
         'tokenable_id' => $user->id,
         'name' => 'My Device',
     ]);
+
+    $this->assertDatabaseHas('auth_audit_logs', [
+        'user_id' => $user->id,
+        'event' => 'auth.token.created',
+    ]);
 });
 
 it('rejects token creation for unverified users', function () {
@@ -131,6 +136,11 @@ it('revokes all tokens for authenticated user', function () {
         ->assertJson(['message' => 'All tokens revoked.']);
 
     $this->assertDatabaseCount('personal_access_tokens', 0);
+
+    $this->assertDatabaseHas('auth_audit_logs', [
+        'user_id' => $user->id,
+        'event' => 'auth.token.revoked',
+    ]);
 });
 
 it('returns unauthorized when revoking without authentication', function () {

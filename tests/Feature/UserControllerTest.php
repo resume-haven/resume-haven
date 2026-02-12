@@ -91,6 +91,11 @@ it('resends verification email for unverified users', function () {
         ->assertJson(['message' => 'Verification email sent.']);
 
     Notification::assertSentTo($user, VerifyEmail::class);
+
+    $this->assertDatabaseHas('auth_audit_logs', [
+        'user_id' => $user->id,
+        'event' => 'auth.verification.resent',
+    ]);
 });
 
 it('does not resend verification email for verified users', function () {
