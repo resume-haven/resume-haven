@@ -9,6 +9,7 @@ services:
       - "80:80"
       - "443:443"
       - "9003:9003" # Xdebug
+      - "5173:5173" # Vite dev server
     environment:
       - APP_NAME=ResumeHaven
       - APP_ENV=local
