@@ -17,6 +17,9 @@ return new class () extends Migration {
             $table->text('user_agent')->nullable();
             $table->json('context')->nullable();
             $table->timestamps();
+
+            $table->index('created_at');
+            $table->index('event');
         });
     }
 
