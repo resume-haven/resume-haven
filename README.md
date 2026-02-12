@@ -108,6 +108,10 @@ See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for detailed documentation.
 Verification emails are captured locally by Mailpit during development:
 - Web UI: http://localhost:8025
 
+### UI Styling
+
+- Admin UI and login pages use Tailwind via `resources/css/app.css`
+
 ## Development
 
 ### Database

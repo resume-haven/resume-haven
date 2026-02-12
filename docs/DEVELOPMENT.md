@@ -364,6 +364,18 @@ composer install
 # 4. Set up IDE debugging (F5 in VS Code)
 ```
 
+#### Vite (Tailwind)
+
+The admin UI and login pages are styled via Tailwind. Start the Vite dev server:
+
+```bash
+docker-compose exec app npm run dev
+```
+
+Troubleshooting:
+- If assets return 404/connection refused, ensure port 5173 is exposed and the dev server is running.
+- If dependencies are missing, run `docker-compose exec app npm install`.
+
 #### Mailpit Configuration
 
 If you use a local `.env`, ensure Mailpit is configured:

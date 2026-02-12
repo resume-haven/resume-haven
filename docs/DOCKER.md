@@ -74,6 +74,18 @@ MAIL_HOST=mailpit
 MAIL_PORT=1025
 ```
 
+### 6. Tailwind (Vite)
+
+The admin UI and login pages are styled via Tailwind using Vite.
+
+Start the Vite dev server inside the container:
+
+```bash
+docker-compose exec app npm run dev
+```
+
+Ensure port 5173 is exposed in docker-compose.
+
 ## Container Management
 
 ### Starting Services
