@@ -118,6 +118,11 @@ class Resume
 }
 ```
 
+## Frontend Styling
+
+The admin UI and login pages use Tailwind via `resources/css/app.css`.
+The legacy `resources/css/admin.css` has been removed.
+
 ## PHP Best Practices
 
 ### Type Hints
