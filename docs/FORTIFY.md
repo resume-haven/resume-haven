@@ -175,6 +175,7 @@ Authentication events are captured in the `auth_audit_logs` table. Logged events
 - `auth.token.revoked`
 
 The logger stores `user_id`, `ip_address`, `user_agent`, and optional context values.
+Logs are retained for 30 days and pruned daily via `model:prune`.
 
 ## Testing
 

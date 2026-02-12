@@ -6,10 +6,12 @@ namespace App\Infrastructure\Persistence;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 
 final class AuthAuditLogModel extends Model
 {
     use HasFactory;
+    use Prunable;
 
     /**
      * @var string
@@ -36,5 +38,10 @@ final class AuthAuditLogModel extends Model
             'user_id' => 'integer',
             'context' => 'array',
         ];
+    }
+
+    public function prunable(): \Illuminate\Database\Eloquent\Builder
+    {
+        return static::query()->where('created_at', '<', now()->subDays(30));
     }
 }
