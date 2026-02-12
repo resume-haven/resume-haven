@@ -181,6 +181,33 @@ Or a specific token:
 $user->tokens()->where('name', 'api-token')->delete();
 ```
 
+### Password Change
+
+To change your password via API, send a PATCH or PUT request to `/api/users/{id}` with the `password` field:
+
+```bash
+curl -X PATCH http://localhost/api/users/1 \
+   -H "Authorization: Bearer <token>" \
+   -H "Content-Type: application/json" \
+   -d '{ "password": "newpassword123" }'
+
+# Response (200):
+# {
+#   "id": 1,
+#   "name": "John Doe",
+#   "email": "user@example.com"
+# }
+```
+
+You can also update name/email and password together:
+
+```bash
+curl -X PUT http://localhost/api/users/1 \
+   -H "Authorization: Bearer <token>" \
+   -H "Content-Type: application/json" \
+   -d '{ "name": "New Name", "email": "new@example.com", "password": "newpassword123" }'
+```
+
 ## Middleware
 
 ### `auth:sanctum`

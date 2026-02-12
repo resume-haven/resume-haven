@@ -238,6 +238,28 @@ it('patches a user email', function () {
     Event::assertDispatched(UserUpdatedEvent::class);
 });
 
+it('patches a user password', function () {
+    $user = UserModel::factory()->create([
+        'name' => 'Patch User',
+        'email' => 'patch@example.com',
+        'password' => Hash::make('oldpassword'),
+    ]);
+
+    $this->actingAs($user)
+        ->patchJson("/api/users/{$user->id}", [
+            'password' => 'newpatchpassword',
+        ])
+        ->assertOk()
+        ->assertJson([
+            'id' => $user->id,
+            'name' => 'Patch User',
+            'email' => 'patch@example.com',
+        ]);
+
+    $updated = UserModel::query()->find($user->id);
+    expect(Hash::check('newpatchpassword', (string) $updated?->password))->toBeTrue();
+});
+
 it('validates user patch input', function () {
     $user = UserModel::factory()->create();
 

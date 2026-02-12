@@ -422,6 +422,9 @@ paths:
               patchUserEmail:
                 value:
                   email: patched@example.com
+                patchUserPassword:
+                  value:
+                    password: newpassword123
               patchUserPassword:
                 value:
                   password: newpassword123
