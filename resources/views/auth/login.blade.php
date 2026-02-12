@@ -4,39 +4,53 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Admin Login · {{ config('app.name', 'ResumeHaven') }}</title>
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=space-grotesk:400,500,600,700" rel="stylesheet" />
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/admin.css'])
+            @vite(['resources/css/app.css'])
         @endif
     </head>
-    <body class="admin">
-        <main class="admin-main">
-            <section class="panel" style="max-width: 480px; margin: 6rem auto;">
-                <div class="top-bar">
-                    <div>
-                        <h1>Admin Login</h1>
-                        <p class="badge">ResumeHaven</p>
-                    </div>
+    <body class="min-h-screen bg-slate-50 text-slate-900">
+        <main class="flex min-h-screen items-center justify-center px-6 py-12">
+            <section class="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
+                <div class="space-y-2">
+                    <h1 class="text-2xl font-semibold">Admin Login</h1>
+                    <p class="text-sm uppercase tracking-[0.2em] text-slate-400">ResumeHaven</p>
                 </div>
 
                 @if ($errors->any())
-                    <div class="badge" style="background: #1f2937;">
+                    <div class="mt-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                         {{ $errors->first() }}
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="card">
+                <form method="POST" action="{{ route('login') }}" class="mt-6 space-y-4">
                     @csrf
-                    <label for="email">Email</label>
-                    <input id="email" name="email" type="email" required autofocus value="{{ old('email') }}">
-
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password" required>
-
-                    <div style="margin-top: 1rem;">
-                        <button class="link-chip" type="submit">Sign in</button>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-600" for="email">Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                            autofocus
+                            value="{{ old('email') }}"
+                            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                        >
                     </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-600" for="password">Password</label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            required
+                            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                        >
+                    </div>
+
+                    <button class="mt-4 w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800" type="submit">
+                        Sign in
+                    </button>
                 </form>
             </section>
         </main>
