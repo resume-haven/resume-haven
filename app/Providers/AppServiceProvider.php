@@ -21,6 +21,11 @@ use App\Infrastructure\Persistence\UserModel;
 use App\Policies\AdminPolicy;
 use App\Policies\ResumePolicy;
 use App\Policies\UserPolicy;
+use App\Support\AuthAuditLogger;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -44,6 +49,20 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(Login::class, function (Login $event): void {
+            AuthAuditLogger::log('auth.login', $event->user);
+        });
+
+        Event::listen(Logout::class, function (Logout $event): void {
+            $user = $event->user instanceof UserModel ? $event->user : null;
+            AuthAuditLogger::log('auth.logout', $user);
+        });
+
+        Event::listen(Verified::class, function (Verified $event): void {
+            $user = $event->user instanceof UserModel ? $event->user : null;
+            AuthAuditLogger::log('auth.verified', $user);
+        });
+
         Gate::define('admin.dashboard', [AdminPolicy::class, 'dashboard']);
         Gate::define('admin.users.view', [AdminPolicy::class, 'viewUsers']);
         Gate::define('admin.resumes.view', [AdminPolicy::class, 'viewResumes']);

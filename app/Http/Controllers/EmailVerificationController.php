@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Support\AuthAuditLogger;
 
 final class EmailVerificationController extends Controller
 {
@@ -23,6 +24,8 @@ final class EmailVerificationController extends Controller
         }
 
         $user->sendEmailVerificationNotification();
+
+        AuthAuditLogger::log('auth.verification.resent', $user);
 
         return response()->json(['message' => 'Verification email sent.'], 202);
     }

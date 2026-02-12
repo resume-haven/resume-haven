@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Infrastructure\Persistence\UserModel;
+use App\Support\AuthAuditLogger;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,10 @@ final class TokenController extends Controller
 
         $token = $user->createToken($credentials['device_name'])->plainTextToken;
 
+        AuthAuditLogger::log('auth.token.created', $user, [
+            'device_name' => $credentials['device_name'],
+        ]);
+
         return response()->json([
             'token' => $token,
             'user' => [
@@ -62,6 +67,8 @@ final class TokenController extends Controller
         }
 
         $user->tokens()->delete();
+
+        AuthAuditLogger::log('auth.token.revoked', $user);
 
         return response()->json(['message' => 'All tokens revoked.']);
     }
