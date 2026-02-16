@@ -1,0 +1,3 @@
+[submodule "pimcore"]
+	path = pimcore
+	url = git@github.com:resume-haven/resume-haven-pimcore.git
