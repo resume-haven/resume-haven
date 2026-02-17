@@ -1,1 +1,5 @@
 .env
+/application/var/
+/application/vendor/
+/pimcore/vendor/
+/pimcore/var/
