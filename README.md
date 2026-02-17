@@ -36,8 +36,8 @@ To run the application locally, follow the onboarding guide:
 
 Please read:
 
-- **CONTRIBUTING.md**
-- **docs/CODE_STYLEGUIDE.md**
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**
+- **[docs/CODE_STYLEGUIDE.md](docs/CODE_STYLEGUIDE.md)**
 
 Before submitting a pull request.
 
@@ -45,4 +45,4 @@ Before submitting a pull request.
 
 # 📄 License
 
-See `LICENSE.md` for details.
+See [LICENSE.md](LICENSE.md) for details.
