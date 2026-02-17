@@ -1,41 +1,32 @@
-project: 
-  name: MeinProjekt 
-  language: php 
-  framework: laravel 
-  style: strict 
-  architecture: 
-    - domain-driven
-    - modular
-    - cqrs
+project:
+  name: ResumeHaven
+  language: php
+  framework: pimcore, symfony
+  style: strict
+  architecture:
+    - bundles
     - SOLID
 coding:
-  php_version: "8.5"
+  php_version: "8.4"
   strict_types: true
-  formatting: pint
   static_analysis: phpstan
-  test_framework: pest
 rules:
   forbidden:
     - global functions
     - static state
-    - facades
     - direct database access
   allowed:
     - dependency injection
     - value objects
     - DTOs
 structure:
-  domain: app/Domain
-  application: app/Application
-  infrastructure: app/Infrastructure
-  ui: app/UI
+  application: app
+  pimcore: pimcore
   documentation: docs
   tests: tests
 tests:
-  framework: pest
   naming: "*Test.php"
   coverage_required: true
-  mutation_testing: pest
   test_types:
     - unit
     - integration
@@ -53,4 +44,4 @@ agent:
   refactor_safely: true
   ask_before_large_changes: true
   generate_commits: false
-  cli: wsl
+  terminal: wsl
