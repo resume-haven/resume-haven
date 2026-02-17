@@ -64,3 +64,33 @@ traefik-reload:
 
 traefik-logs:
 	docker compose logs -f traefik
+
+# -------------------------
+# Monitoring Stack
+# -------------------------
+
+monitoring-up:
+	docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+
+monitoring-down:
+	docker compose -f docker-compose.yml -f docker-compose.monitoring.yml down
+
+monitoring-restart:
+	docker compose -f docker-compose.yml -f docker-compose.monitoring.yml down
+	docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+
+monitoring-logs:
+	docker compose -f docker-compose.yml -f docker-compose.monitoring.yml logs -f
+
+monitoring-grafana:
+	@echo "Grafana läuft unter http://localhost:3001"
+
+monitoring-prometheus:
+	@echo "Prometheus läuft unter http://localhost:9090"
+
+monitoring-loki:
+	@echo "Loki API läuft unter http://localhost:3100"
+
+monitoring-rabbitmq:
+	@echo "RabbitMQ Dashboard verfügbar unter http://localhost:3001"
+	@echo "Dashboard ID: 10991"
