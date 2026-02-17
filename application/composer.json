@@ -1,4 +1,5 @@
 {
+    "name": "resume-haven/resume-haven",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
@@ -14,6 +15,8 @@
         "symfony/framework-bundle": "8.0.*",
         "symfony/runtime": "8.0.*",
         "symfony/yaml": "8.0.*"
+    },
+    "require-dev": {
     },
     "config": {
         "allow-plugins": {
