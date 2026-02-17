@@ -44,7 +44,8 @@ services:
     user: "${UID}:${GID}"
     image: pimcore/pimcore:php8.3-debug-latest
     environment:
-      COMPOSER_HOME: /var/www/html
+      working_dir: /var/www/html
+      COMPOSER_CACHE_DIR: /composer/cache
       PHP_IDE_CONFIG: serverName=localhost
 
       PIMCORE_INSTALL_ADMIN_USERNAME: ${PIMCORE_ADMIN_USERNAME}
@@ -61,6 +62,8 @@ services:
     volumes:
       - ./pimcore:/var/www/html
       - ./pimcore/.docker/messenger.yaml:/var/www/html/config/packages/messenger.yaml:ro
+      - ./pimcore/.docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - composer-cache:/composer/cache
 
   supervisord:
     user: "${UID}:${GID}"

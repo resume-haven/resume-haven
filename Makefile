@@ -94,3 +94,19 @@ monitoring-loki:
 monitoring-rabbitmq:
 	@echo "RabbitMQ Dashboard verfügbar unter http://localhost:3001"
 	@echo "Dashboard ID: 10991"
+
+# -------------------------
+# Composer
+# -------------------------
+
+composer-install:
+    docker compose exec php composer install --no-interaction --prefer-dist
+
+composer-update:
+    docker compose exec php composer update --no-interaction
+
+composer-require:
+    docker compose exec php composer require $(package)
+
+composer-remove:
+    docker compose exec php composer remove $(package)

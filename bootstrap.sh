@@ -12,7 +12,7 @@ else
   echo "✅ .env existiert bereits – überspringe Erstellung."
 fi
 
-# 2. Submodule initialisieren (falls noch nicht)
+# 2. Submodule initialisieren
 if [ -d .git ] && [ -f .gitmodules ]; then
   echo "🔁 Initialisiere Git Submodule"
   git submodule update --init --recursive
@@ -24,15 +24,19 @@ fi
 echo "🐳 Starte Docker-Services"
 docker compose up -d
 
-# 4. Pimcore-Installation prüfen/ausführen
+# 4. Composer-Abhängigkeiten installieren
+echo "📦 Installiere Composer-Abhängigkeiten im Pimcore Submodule..."
+docker compose exec php composer install --no-interaction --prefer-dist
+
+# 5. Pimcore-Installation prüfen/ausführen
 echo "🔍 Prüfe, ob Pimcore bereits installiert ist..."
 
-if docker compose exec php test -f var/config/system.yml >/dev/null 2>&1; then
-  echo "✅ Pimcore scheint bereits installiert zu sein (var/config/system.yml gefunden)."
+if docker compose exec php test -f var/config/system.yaml >/dev/null 2>&1; then
+  echo "✅ Pimcore scheint bereits installiert zu sein (var/config/system.yaml gefunden)."
 else
   echo "🚀 Installiere Pimcore (dies kann einige Minuten dauern)..."
-  docker compose exec php vendor/bin/pimcore-install --no-interaction
+  docker compose exec php vendor/bin/pimcore-install --no-interaction --ignore-existing-config
   echo "✅ Pimcore-Installation abgeschlossen."
 fi
 
-echo "✅ Bootstrap abgeschlossen."
+echo "🎉 Bootstrap abgeschlossen."
