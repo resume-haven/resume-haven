@@ -4,23 +4,29 @@ services:
       context: ./docker/php
     volumes:
       - ./src:/var/www/html
+    container_name: resumehaven-php
 
   nginx:
     build:
       context: ./docker/nginx
-    volumes:
-      - ./src:/var/www/html
     ports:
       - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php
+    container_name: resumehaven-nginx
 
   node:
     build:
       context: ./docker/node
     volumes:
       - ./src:/var/www/html
+    container_name: resumehaven-node
 
   mailpit:
     image: axllent/mailpit:latest
     ports:
       - "8025:8025"
       - "1025:1025"
+    container_name: resumehaven-mailpit
