@@ -1,3 +1,4 @@
-FROM node:20
+FROM node:20-alpine
 
-# später: npm install, tailwind build
+
+WORKDIR /var/www/html
