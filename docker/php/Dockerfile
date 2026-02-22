@@ -24,3 +24,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
+
+# Erstelle notwendige Verzeichnisse mit korrekten Permissions
+RUN mkdir -p storage/logs bootstrap/cache \
+    && chmod -R 755 storage bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html

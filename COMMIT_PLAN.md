@@ -7,11 +7,12 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 ---
 
-# 🧱 Commit 1 – Projektgrundstruktur
+## 🧱 Commit 1 – Projektgrundstruktur
 
 **Zweck:** Repository initialisieren und Basisordner anlegen.
 
 **Inhalt:**
+
 - Leeres Repository initialisiert  
 - Ordnerstruktur angelegt:  
   - `/docker/php`  
@@ -23,22 +24,24 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 ---
 
-# 🐳 Commit 2 – docker-compose Grundgerüst
+## 🐳 Commit 2 – docker-compose Grundgerüst
 
 **Zweck:** Grundstruktur der Container definieren.
 
 **Inhalt:**
+
 - `docker-compose.yml` mit Service‑Platzhaltern  
 - Services: php, nginx, node, mailpit  
 - Noch keine Konfiguration, nur Struktur  
 
 ---
 
-# 🧩 Commit 3 – Dockerfiles (Skeleton)
+## 🧩 Commit 3 – Dockerfiles (Skeleton)
 
 **Zweck:** Basis-Dockerfiles anlegen.
 
 **Inhalt:**
+
 - `docker/php/Dockerfile`  
 - `docker/nginx/Dockerfile`  
 - `docker/node/Dockerfile`  
@@ -46,19 +49,22 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 ---
 
-# 🌐 Commit 4 – Nginx-Konfiguration vorbereiten
+## 🌐 Commit 4 – Nginx-Konfiguration vorbereiten
 
 **Zweck:** Webserver-Struktur vorbereiten.
 
 **Inhalt:**
+
 - `docker/nginx/default.conf` hinzugefügt  
 - Minimaler Serverblock  
 - Noch ohne Laravel‑Routing  
 
 ---
 
-# 🐘 Commit 5 – Finalize PHP container for Laravel
-## Added
+## 🐘 Commit 5 – Finalize PHP container for Laravel
+
+### Added
+
 - Completed PHP 8.5 Dockerfile with all required Laravel extensions:
   - pdo_mysql  
   - mbstring  
@@ -78,12 +84,15 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
   - libcurl4-openssl-dev  
 - Added Composer to the PHP container (copied from composer:2 image)
 
-## Updated
+### Updated
+
 - Ensured tokenizer, curl, and pdo are **not** installed manually (already built into PHP 8.5)
 - Cleaned up Dockerfile to avoid unnecessary layers and reduce image size
 
-## Result
+### Result
+
 The PHP container is now fully Laravel‑ready and supports:
+
 - Composer installation
 - Laravel framework installation
 - All required PHP extensions for Laravel 10/11/12
@@ -91,60 +100,180 @@ The PHP container is now fully Laravel‑ready and supports:
 
 ---
 
-# 🎨 Commit 6 – TailwindCSS einrichten
+## 🎨 Commit 6 – Switch Node container to secure Alpine base image
 
-**Zweck:** Frontend-Build-Pipeline vorbereiten.
+### Added
 
-**Inhalt:**
-- `package.json`  
-- `tailwind.config.js`  
-- `postcss.config.js`  
-- `resources/css/app.css`  
-- Build‑Pipeline vorbereitet  
+- Updated Node Dockerfile to use the lightweight and security‑focused `node:20-alpine` base image.
+- Set `/var/www/html` as the working directory for all Node/Tailwind build operations.
 
----
+### Updated
 
-# 🧭 Commit 7 – Basis-Views & Routing
+- Replaced previous Node image (`node:20`) due to multiple known CVEs in the Debian-based variant.
+- Ensured the Node container remains minimal, containing only what is required for TailwindCSS builds.
+- No global npm packages or additional system dependencies installed to keep the attack surface minimal.
 
-**Zweck:** UI‑Grundgerüst erstellen.
+### Result
 
-**Inhalt:**
-- `routes/web.php` mit GET `/` und POST `/analyze`  
-- `resources/views/layout.blade.php`  
-- `resources/views/analysis.blade.php`  
-- Minimaler HTML‑Rahmen  
+The Node container is now:
 
----
+- significantly smaller,
+- more secure (Alpine base),
+- fully compatible with npm and npx,
+- ready for TailwindCSS setup in the upcoming commit.
 
-# 🧠 Commit 8 – AnalysisEngine Skeleton
-
-**Zweck:** Kernarchitektur anlegen.
-
-**Inhalt:**
-- `app/Services/AnalysisEngine.php`  
-- `app/Services/Extractors/JobExtractor.php`  
-- `app/Services/Extractors/ResumeExtractor.php`  
-- `app/Services/Matcher.php`  
-- `app/Services/Tagger.php`  
-- Leere Methoden, nur Struktur  
+No changes were made to docker-compose.yml in this commit.
 
 ---
 
-# 🛡️ Commit 9 – Validierung hinzufügen
+## 🧭 Commit 7 – Finalize docker-compose configuration for all services
 
-**Zweck:** Eingaben absichern.
+### Added
 
-**Inhalt:**
-- Validierung für `job_text` und `resume_text`  
-- Entweder via FormRequest oder Controller  
+- Completed `docker-compose.yml` with fully defined services:
+  - **php** (Laravel backend, built from `docker/php`)
+  - **nginx** (webserver, built from `docker/nginx`)
+  - **node** (Tailwind build environment, built from `docker/node`)
+  - **mailpit** (local mail testing environment)
+
+### Updated
+
+- Mounted project source directory (`./src`) into all relevant containers at `/var/www/html`.
+- Added consistent container names:
+  - `resumehaven-php`
+  - `resumehaven-nginx`
+  - `resumehaven-node`
+  - `resumehaven-mailpit`
+- Configured nginx to depend on php for correct startup order.
+- Exposed required ports:
+  - `8080:80` for nginx
+  - `8025:8025` and `1025:1025` for Mailpit
+
+### Result
+
+The complete development environment can now be started with:
+
+```bash
+docker-compose up --build
+```
+
+All containers start correctly and interact as intended:
+
+- nginx forwards requests to php-fpm  
+- php has access to the application code  
+- node is ready for Tailwind builds  
+- Mailpit is available for email testing  
+
+Laravel installation can proceed in the next commit.
 
 ---
 
-# 📊 Commit 10 – Ergebnisdarstellung (UI)
+## 🧠 Commit 8 – Install Laravel application into /src
+
+### Added
+
+- Installed a fresh Laravel application into the `/src` directory using:
+
+  ```bash
+  composer create-project laravel/laravel .
+  ```
+
+- Generated a new `.env` file based on `.env.example`.
+- Executed `php artisan key:generate` to create a valid application key.
+
+### Updated
+
+- Ensured the `/src` directory was empty before installation.
+- Verified that the PHP container (from previous commits) supports all required Laravel extensions.
+- Confirmed that nginx correctly serves the Laravel `public` directory.
+
+### Not Committed
+
+- `.env` (kept local, excluded via `.gitignore`)
+- `vendor/` (excluded via `.gitignore`)
+
+### Result
+
+Laravel is now fully installed and operational inside the Docker environment.
+The application is accessible via nginx at:
+
+```bash
+http://localhost:8080
+```
+
+This completes the framework setup and prepares the project for TailwindCSS integration in the next commit.
+
+---
+
+## 🛡️ Commit 9 – Integrate TailwindCSS into the Laravel application
+
+### Added
+
+- Initialized Node environment inside the `resumehaven-node` container:
+  - `npm init -y`
+  - Installed TailwindCSS, PostCSS, and Autoprefixer as dev dependencies:
+
+    ```bash
+    npm install -D tailwindcss postcss autoprefixer
+    ```
+
+  - Generated Tailwind and PostCSS configuration files via:
+
+    ```bash
+    npx tailwindcss init -p
+    ```
+
+- Created Tailwind entrypoint at:
+  - `resources/css/app.css` containing:
+
+    ```bash
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    ```
+
+- Added build directory:
+  - `public/build/`
+
+### Updated
+
+- Configured `tailwind.config.js` to scan Laravel view and resource files:
+
+  ```js
+  content: [
+      "./resources/**/*.blade.php",
+      "./resources/**/*.js",
+      "./resources/**/*.vue",
+  ]
+  ```
+
+- Added npm scripts to `package.json`:
+
+  ```json
+  "scripts": {
+      "dev": "tailwindcss -i ./resources/css/app.css -o ./public/build/app.css --watch",
+      "build": "tailwindcss -i ./resources/css/app.css -o ./public/build/app.css --minify"
+  }
+  ```
+
+- Updated Laravel layout (or `welcome.blade.php`) to load the generated stylesheet:
+
+  ```html
+  <link rel="stylesheet" href="/build/app.css">
+  ```
+
+### Result
+
+TailwindCSS is now fully integrated
+
+---
+
+## 📊 Commit 10 – Ergebnisdarstellung (UI)
 
 **Zweck:** Analyseergebnisse visuell darstellen.
 
 **Inhalt:**
+
 - Panels für:  
   - Anforderungen  
   - Erfahrungen  
@@ -156,21 +285,23 @@ The PHP container is now fully Laravel‑ready and supports:
 
 ---
 
-# 📧 Commit 11 – Mailpit-Konfiguration
+## 📧 Commit 11 – Mailpit-Konfiguration
 
 **Zweck:** Lokale Mailumgebung aktivieren.
 
 **Inhalt:**
+
 - `.env` angepasst  
 - Mailpit‑Service in docker-compose aktiviert  
 
 ---
 
-# 🧹 Commit 12 – Cleanup & Dokumentation
+## 🧹 Commit 12 – Cleanup & Dokumentation
 
 **Zweck:** Projekt abrunden.
 
 **Inhalt:**
+
 - Kommentare ergänzt  
 - `ARCHITECTURE.md` verlinkt  
 - `CONTRIBUTING.md` verlinkt  
@@ -179,7 +310,7 @@ The PHP container is now fully Laravel‑ready and supports:
 
 ---
 
-# 🎯 Ergebnis
+## 🎯 Ergebnis
 
 Nach diesem Commit‑Plan hast du:
 

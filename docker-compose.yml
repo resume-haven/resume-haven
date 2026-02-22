@@ -13,6 +13,7 @@ services:
       - "8080:80"
     volumes:
       - ./src:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
     container_name: resumehaven-nginx
@@ -23,6 +24,7 @@ services:
     volumes:
       - ./src:/var/www/html
     container_name: resumehaven-node
+    command: ["tail", "-f", "/dev/null"]
 
   mailpit:
     image: axllent/mailpit:latest
