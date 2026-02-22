@@ -1,0 +1,56 @@
+# ---------------------------------------
+# Laravel defaults
+# ---------------------------------------
+/vendor/
+/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Laravel environment files
+.env
+.env.backup
+.env.local
+.env.production
+.env.staging
+
+# Laravel specific
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/testing/*
+/bootstrap/cache/*.php
+
+# ---------------------------------------
+# Composer
+# ---------------------------------------
+composer.phar
+
+# ---------------------------------------
+# Node / Frontend
+# ---------------------------------------
+/public/build/
+/public/hot
+/public/mix-manifest.json
+
+# ---------------------------------------
+# IDE / Editor
+# ---------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ---------------------------------------
+# OS files
+# ---------------------------------------
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------
+# Docker artifacts (if any)
+# ---------------------------------------
+docker/*.log
