@@ -57,16 +57,37 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 ---
 
-# 🐘 Commit 5 – Laravel installieren
+# 🐘 Commit 5 – Finalize PHP container for Laravel
+## Added
+- Completed PHP 8.5 Dockerfile with all required Laravel extensions:
+  - pdo_mysql  
+  - mbstring  
+  - xml  
+  - zip  
+  - intl  
+  - gd  
+  - bcmath  
+- Installed required system packages:
+  - git  
+  - unzip  
+  - libzip-dev  
+  - libpng-dev  
+  - libonig-dev  
+  - libxml2-dev  
+  - libicu-dev  
+  - libcurl4-openssl-dev  
+- Added Composer to the PHP container (copied from composer:2 image)
 
-**Zweck:** Laravel-Grundsystem einrichten.
+## Updated
+- Ensured tokenizer, curl, and pdo are **not** installed manually (already built into PHP 8.5)
+- Cleaned up Dockerfile to avoid unnecessary layers and reduce image size
 
-**Inhalt:**
-- Docker gestartet  
-- Laravel in `/src` installiert  
-- `.env` angelegt  
-- `php artisan key:generate` ausgeführt  
-- Basis-Laravel-Struktur committed  
+## Result
+The PHP container is now fully Laravel‑ready and supports:
+- Composer installation
+- Laravel framework installation
+- All required PHP extensions for Laravel 10/11/12
+- Clean and reproducible builds
 
 ---
 
