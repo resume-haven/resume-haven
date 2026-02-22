@@ -1,0 +1,8 @@
+services:
+  mariadb:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pimcore
+    ports:
+      - "3306:3306"

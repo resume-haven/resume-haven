@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+/**
+* This source file is available under the terms of the
+* Pimcore Open Core License (POCL)
+* Full copyright and license information is available in
+* LICENSE.md which is distributed with this source code.
+*
+*  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.com)
+*  @license    Pimcore Open Core License (POCL)
+*/
+
+use Pimcore\Bootstrap;
+use Pimcore\Console\Application;
+
+if (file_exists($a = getcwd() . '/vendor/autoload_runtime.php')) {
+    require_once $a;
+} elseif (file_exists($a = __DIR__ . '/../vendor/autoload_runtime.php')) {
+    require_once $a;
+} elseif (file_exists($a = __DIR__ . '/../../../../vendor/autoload_runtime.php')) {
+    require_once $a;
+} elseif (file_exists($a = __DIR__ . '/../autoload_runtime.php')) {
+    require_once $a;
+} else {
+    throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
+}
+
+define('PIMCORE_CONSOLE', true);
+
+Bootstrap::setProjectRoot();
+
+return function (array $context) {
+    $kernel = Bootstrap::startupCli();
+
+    return new Application($kernel);
+};

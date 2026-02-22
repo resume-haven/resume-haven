@@ -1,0 +1,23 @@
+name: Sync changes scheduled from skeleton to paas-skeleton
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '30 21 * * *'
+
+jobs:
+  sync-branches:
+    uses: pimcore/workflows-collection-public/.github/workflows/reusable-sync-changes.yaml@main
+    if: github.repository == 'pimcore/skeleton'
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: [{'base': '2025.x', 'destination': '2025.x'}]
+    with:
+      base_ref: ${{ matrix.ref.base }}
+      ref_name: ${{ matrix.ref.destination }}
+      target_repo: 'paas-skeleton'
+      auto_merge: true
+    secrets:
+      SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+      GIT_NAME: ${{ secrets.GIT_NAME }}
+      GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
