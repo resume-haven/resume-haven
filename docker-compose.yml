@@ -1,0 +1,26 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./src:/var/www/html
+
+  nginx:
+    build:
+      context: ./docker/nginx
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "8080:80"
+
+  node:
+    build:
+      context: ./docker/node
+    volumes:
+      - ./src:/var/www/html
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
