@@ -1,56 +1,182 @@
-project: 
-  name: MeinProjekt 
-  language: php 
-  framework: laravel 
-  style: strict 
-  architecture: 
-    - domain-driven
-    - modular
-    - cqrs
-    - SOLID
-coding:
-  php_version: "8.5"
-  strict_types: true
-  formatting: pint
-  static_analysis: phpstan
-  test_framework: pest
-rules:
-  forbidden:
-    - global functions
-    - static state
-    - facades
-    - direct database access
-  allowed:
-    - dependency injection
-    - value objects
-    - DTOs
-structure:
-  domain: app/Domain
-  application: app/Application
-  infrastructure: app/Infrastructure
-  ui: app/UI
-  documentation: docs
-  tests: tests
-tests:
-  framework: pest
-  naming: "*Test.php"
-  coverage_required: true
-  mutation_testing: pest
-  test_types:
-    - unit
-    - integration
-    - functional
-    - acceptance
-    - architecture
-docs:
-  format: markdown
-  generate_readme: true
-  generate_architecture_diagrams: true
-  include_code_examples: true
-agent:
-  verbosity: high
-  reasoning: deep
-  refactor_safely: true
-  ask_before_large_changes: true
-  generate_commits: false
-  cli: wsl
+# ResumeHaven – Projektkontext für KI‑Agenten & GitHub Copilot
+
+Dieses Dokument dient als zentraler Kontext für alle KI‑gestützten Entwicklungswerkzeuge (z. B. GitHub Copilot).  
+Es beschreibt die Ziele, Architektur, Regeln und Designprinzipien des ResumeHaven‑MVP.
+
+---
+
+# 🎯 Projektziel
+
+ResumeHaven ist ein leichtgewichtiges, textbasiertes Analyse‑Tool, das:
+
+- Stellenausschreibungen
+- Lebensläufe
+
+miteinander vergleicht und strukturiert auswertet.
+
+Die Analyse ist **rein regelbasiert**, **ohne KI**.
+
+---
+
+# 🧱 MVP‑Funktionsumfang
+
+- Anforderungen aus Stellenausschreibungen extrahieren  
+- Erfahrungen aus Lebensläufen extrahieren  
+- Matches zwischen Anforderungen und Erfahrungen finden  
+- Lücken identifizieren  
+- Erfahrungen taggen  
+- Irrelevante Punkte erkennen  
+- Ergebnisse strukturiert anzeigen  
+- Keine Speicherung von Nutzerdaten  
+
+---
+
+# 🧠 Architektur (Kurzüberblick)
+
+ResumeHaven besteht aus folgenden Kernkomponenten:
+
+## AnalysisEngine
+- zentrale Steuereinheit  
+- orchestriert Extraktion, Matching, Tagging  
+- liefert ein `AnalysisResult`  
+
+## JobExtractor
+- extrahiert Anforderungen aus dem Jobtext  
+
+## ResumeExtractor
+- extrahiert Erfahrungen und Skills aus dem Lebenslauf  
+
+## Matcher
+- findet Übereinstimmungen zwischen Anforderungen und Erfahrungen  
+
+## Tagger
+- ordnet Erfahrungen passenden Anforderungen zu  
+
+## AnalysisResult
+- strukturiertes Ergebnisobjekt  
+- enthält: requirements, experiences, skills, matches, gaps, taggedExperiences, irrelevant  
+
+## Controller
+- GET `/` → Formular  
+- POST `/analyze` → Validierung + Engine  
+
+## Views (Blade + Tailwind)
+- minimalistisch  
+- Panels für Ergebnisse  
+
+---
+
+# 📦 Datenstrukturen (Kurzform)
+
+## Requirement
+```json
+{ "text": "Projektmanagement" }
+```
+
+## Experience
+```json
+{
+  "text": "Leitung eines CRM-Migrationsprojekts",
+  "tags": ["Projektmanagement", "CRM"]
+}
+```
+
+## Match
+```json
+{
+  "requirement": "Projektmanagement",
+  "experience": "Leitung eines CRM-Migrationsprojekts"
+}
+```
+
+## Gap
+```json
+{ "requirement": "Erfahrung mit CRM-Systemen" }
+```
+
+## AnalysisResult
+```json
+{
+  "requirements": [],
+  "experiences": [],
+  "skills": [],
+  "matches": [],
+  "gaps": [],
+  "taggedExperiences": [],
+  "irrelevant": []
+}
+```
+
+---
+
+# 🛡️ Validierungsregeln
+
+## job_text
+- required  
+- string  
+- min: 20  
+- max: 20000  
+
+## resume_text
+- required  
+- string  
+- min: 20  
+- max: 20000  
+
+---
+
+# 🎨 UI/UX‑Prinzipien
+
+- minimalistisch  
+- klar  
+- professionell  
+- keine Ablenkung  
+- Fokus auf Textanalyse  
+
+## Komponenten
+- Panels (rounded-lg, shadow-sm, p-6)  
+- Buttons (bg-blue-600, hover:bg-blue-700, text-white)  
+- Tags (bg-blue-100, text-blue-700)  
+
+## Hinweise
+- „Es werden keine Daten gespeichert.“  
+- „Analyse wird durchgeführt …“  
+
+---
+
+# 🐳 Docker‑Kontext
+
+ResumeHaven nutzt folgende Services:
+
+- php-fpm (PHP 8.5)  
+- nginx  
+- node (Tailwind Build)  
+- mailpit (lokaler SMTP‑Testserver)  
+
+---
+
+# 🚫 Was das MVP **nicht** enthält
+
+- keine KI‑Analyse  
+- keine Datenbank  
+- keine Accounts  
+- keine Speicherung von Nutzerdaten  
+- kein E‑Mail‑Versand (nur Mailpit für Tests)  
+- keine API  
+- keine PDF‑Generierung  
+
+---
+
+# 📌 Zweck dieses Dokuments
+
+Dieses Dokument soll KI‑Agenten helfen:
+
+- Code konsistent zu generieren  
+- Architekturentscheidungen einzuhalten  
+- UI/UX‑Vorgaben zu respektieren  
+- keine Features zu erfinden  
+- keine KI‑Analyse vorzuschlagen  
+- keine Datenbank einzuführen  
+- keine unnötige Komplexität einzubauen  
+
+Es dient als **Single Source of Truth** für alle automatisierten Entwicklungswerkzeuge.
