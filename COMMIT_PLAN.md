@@ -516,28 +516,395 @@ Du solltest das neue Layout sehen.
 
 ---
 
-## 📧 Commit 11 – Mailpit-Konfiguration
+## 📧 Commit 11 – Eingabemaske & Logo‑Integration
 
-**Zweck:** Lokale Mailumgebung aktivieren.
+### Ziel
 
-**Inhalt:**
-
-- `.env` angepasst  
-- Mailpit‑Service in docker-compose aktiviert  
+Die Startseite bleibt als Landing Page bestehen.  
+Die eigentliche Analyse‑Maske wird unter `/analyze` bereitgestellt.  
+Zusätzlich wurde das ResumeHaven‑Logo (Light & Dark Mode) in das Layout integriert.
 
 ---
 
-## 🧹 Commit 12 – Cleanup & Dokumentation
+## Änderungen
 
-**Zweck:** Projekt abrunden.
+### 1. Routing
 
-**Inhalt:**
+- `/` zeigt weiterhin auf `home.blade.php` (Landing Page)
+- Neue Route `/analyze` für die Eingabemaske
+- POST‑Route `/analyze` für spätere Analyse‑Logik
 
-- Kommentare ergänzt  
-- `ARCHITECTURE.md` verlinkt  
-- `CONTRIBUTING.md` verlinkt  
-- `ROADMAP.md` verlinkt  
-- kleinere Aufräumarbeiten  
+---
+
+### 2. Layout-Anpassungen
+
+- Logo in den Header integriert (Light‑ und Dark‑Mode‑Varianten)
+- Wortmarke „ResumeHaven“ bleibt bestehen
+- Navigation erweitert: Home · Analyse · About
+- Farben und Typografie an das definierte Branding angepasst
+
+---
+
+### 3. Landing Page (Home)
+
+- Text überarbeitet, um den Nutzen von ResumeHaven klar zu kommunizieren
+- Primärer CTA „Analyse starten“ als Button gestaltet
+- Button führt zu `/analyze`
+
+---
+
+### 4. Analyse-Seite
+
+- Neue View `analyze.blade.php`
+- Zwei große Textfelder:
+  - Stellenausschreibung
+  - Lebenslauf
+- CTA‑Button „Analysieren“
+- Styling gemäß Branding (Farben, Abstände, Dark Mode)
+
+---
+
+### 5. Branding & Design
+
+- Logo‑Farben und UI‑Farben gemäß definiertem Konzept:
+  - primary: `#2D6CDF`
+  - primary-dark: `#1e40af`
+  - neutral-light: `#f3f4f6`
+  - neutral-dark: `#2B2B2B`
+- Dark‑Mode‑Unterstützung vorbereitet (`dark:`‑Klassen)
+- Einheitliche Typografie und Abstände
+
+---
+
+## Ergebnis
+
+- ResumeHaven hat jetzt eine professionelle Landing Page
+- Die Analyse‑Maske ist klar strukturiert und nutzerfreundlich
+- Das Logo ist integriert und unterstützt Light & Dark Mode
+- Die UI wirkt schlicht, modern und markenkonsistent
+
+---
+
+## 🧹 Commit 12 – Analyse‑Controller & Request‑Validation
+
+### Ziel
+
+Die Analyse‑Eingaben (Stellenausschreibung & Lebenslauf) sollen serverseitig validiert und verarbeitet werden.  
+Die spätere KI‑Analyse wird vorbereitet, aber noch nicht implementiert.
+
+---
+
+### Änderungen
+
+#### 1. Neuer Controller: `AnalyzeController`
+
+- Methode `analyze()` erstellt
+- Validierung der Felder:
+  - `job_text`: required, min:30
+  - `cv_text`: required, min:30
+- Bei Validierungsfehlern: Redirect zurück zur Eingabemaske
+- Bei Erfolg: Weiterleitung auf eine neue Ergebnis‑View
+- Platzhalter für spätere KI‑Analyse eingefügt
+
+---
+
+#### 2. Routing
+
+- POST‑Route `/analyze` zeigt jetzt auf `AnalyzeController@analyze`
+
+---
+
+#### 3. Analyse‑View (`analyze.blade.php`)
+
+- Validierungsfehler werden angezeigt
+- Alte Eingaben werden wiederhergestellt (`old()`)
+
+---
+
+#### 4. Neue Ergebnis‑View (`result.blade.php`)
+
+- Platzhalter‑Seite für spätere Analyse‑Ergebnisse
+- Wird vom Controller nach erfolgreicher Validierung geladen
+
+---
+
+### Ergebnis
+
+- Die Analyse‑Eingaben werden jetzt korrekt validiert
+- Fehler werden sauber an die UI zurückgegeben
+- Die Struktur für die spätere KI‑Analyse ist vorbereitet
+- ResumeHaven hat nun einen vollständigen Analyse‑Flow (ohne KI‑Logik)
+
+---
+
+## Commit 13 – KI‑Analyse (OpenAI‑Integration, Parsing, Matching‑Logik)
+
+### Ziel
+
+Die Analyse‑Logik wird implementiert.  
+ResumeHaven kann jetzt Stellenausschreibung und Lebenslauf an OpenAI senden, strukturierte Daten zurückerhalten und diese in einer Ergebnis‑View darstellen.
+
+---
+
+### Änderungen
+
+#### 1. OpenAI‑Integration
+
+- Installation des offiziellen OpenAI‑PHP‑Clients
+- API‑Key in `.env` hinterlegt
+- OpenAI‑Client im `AnalyzeController` verwendet
+
+---
+
+#### 2. Prompt‑Engineering
+
+- KI erhält eine klar definierte Aufgabe:
+  - Anforderungen aus der Stellenausschreibung extrahieren
+  - Erfahrungen aus dem Lebenslauf extrahieren
+  - Matches (Anforderung ↔ Erfahrung) identifizieren
+  - Gaps (fehlende Anforderungen) identifizieren
+- KI muss **ausschließlich JSON** zurückgeben
+- JSON‑Schema definiert:
+  - `requirements`
+  - `experiences`
+  - `matches`
+  - `gaps`
+
+---
+
+#### 3. Parsing & Fehlerbehandlung
+
+- KI‑Antwort wird als JSON geparst
+- Falls Parsing fehlschlägt:
+  - Fehlermeldung an Nutzer
+  - Eingaben bleiben erhalten
+- Strukturierte Daten werden an die Ergebnis‑View übergeben
+
+---
+
+#### 4. Ergebnis‑View (`result.blade.php`)
+
+- Erste Darstellung der Analyse:
+  - Anforderungen
+  - Erfahrungen
+  - Matches
+  - Gaps
+- Noch ohne visuelle Hervorhebung (folgt in Commit 14)
+
+---
+
+### Ergebnis
+
+ResumeHaven kann jetzt:
+
+- Stellenausschreibung + Lebenslauf an die KI senden
+- Anforderungen und Erfahrungen extrahieren
+- Matches und Gaps identifizieren
+- Ergebnisse strukturiert anzeigen
+
+Die Grundlage für die spätere visuelle Darstellung (Commit 14) ist geschaffen.
+
+---
+
+## Commit 14 – Ergebnis‑UI (Matches, Gaps, Tags, Farben, Panels)
+
+### Ziel
+
+Die rohe KI‑Analyse aus Commit 13 wird in eine klare, visuell strukturierte Ergebnis‑UI überführt.  
+Nutzer erkennen sofort, welche Anforderungen erfüllt sind (Matches) und welche fehlen (Gaps).
+
+---
+
+### Änderungen
+
+#### 1. Ergebnis‑View (`result.blade.php`)
+
+- Vier Panels implementiert:
+  - **Anforderungen** (requirements)
+  - **Erfahrungen** (experiences)
+  - **Matches** (Anforderung ↔ Erfahrung)
+  - **Gaps** (fehlende Anforderungen)
+- Panels mit einheitlichem Styling:
+  - abgerundete Ecken
+  - dezenter Schatten
+  - Light/Dark‑Mode‑Unterstützung
+  - großzügige Abstände
+
+---
+
+#### 2. Tag‑Design
+
+- **Matches**: grüne Tags (`#16a34a`)
+- **Gaps**: rote Tags (`#dc2626`)
+- **Neutrale Tags**: Logo‑Blau (`#2D6CDF`)
+- Tags als kleine, abgerundete Elemente mit klarer Typografie
+
+---
+
+#### 3. Farb- und Layout‑Integration
+
+- Nutzung der definierten Design‑Tokens:
+  - primary, primary-dark
+  - neutral-light, neutral-dark
+  - text-light, text-dark
+- Panels und Tags passen sich automatisch an Light/Dark‑Mode an
+
+---
+
+#### 4. Datenbindung
+
+- Die vom Controller gelieferten Arrays (`requirements`, `experiences`, `matches`, `gaps`) werden in der UI ausgegeben
+- Saubere Schleifenstruktur
+- Keine Logik in der View (MVP‑Konformität)
+
+---
+
+### Ergebnis
+
+ResumeHaven zeigt jetzt eine professionelle, klar strukturierte Analyse‑Ansicht:
+
+- Anforderungen und Erfahrungen sind übersichtlich dargestellt
+- Matches und Gaps sind farblich hervorgehoben
+- Die UI ist markenkonsistent und modern
+- Grundlage für spätere Erweiterungen (Score, Empfehlungen, Tagging) ist geschaffen
+
+---
+
+## Commit 15 – Score‑Berechnung & visuelle Bewertung (Prozent, Balken, Farbcodierung)
+
+### Ziel
+
+Die Analyse‑Ergebnisse werden um eine numerische Bewertung ergänzt.  
+Nutzer sehen nun auf einen Blick, wie gut ihr Profil zur Stellenausschreibung passt.
+
+---
+
+### Änderungen
+
+#### 1. Score‑Berechnung
+
+- Neue Formel implementiert:
+  - Score = Matches / (Matches + Gaps) * 100
+- Ergebnis wird als Prozentwert gerundet
+- Grundlage für spätere Gewichtungen geschaffen
+
+---
+
+#### 2. Farbskala
+
+- Score‑abhängige Farbcodierung:
+  - 0–40 % → Rot (`#dc2626`)
+  - 40–70 % → Gelb (`#f59e0b`)
+  - 70–100 % → Grün (`#16a34a`)
+- Farben sind vollständig markenkonsistent
+
+---
+
+#### 3. Fortschrittsbalken
+
+- Horizontaler Balken zeigt den Score visuell an
+- Farbe abhängig vom Score
+- Balken animiert (optional)
+
+---
+
+#### 4. Zusammenfassungspanel
+
+- Neues Panel am Anfang der Ergebnis‑Seite:
+  - großer Score‑Wert (z. B. „72 % Match“)
+  - farbiger Fortschrittsbalken
+  - kurze Bewertung („Gute Übereinstimmung“ etc.)
+  - Anzahl Matches und Gaps
+- Panel nutzt bestehende UI‑Tokens (Panels, Farben, Typografie)
+
+---
+
+#### 5. Integration in die Ergebnis‑UI
+
+- Score‑Panel wird oberhalb der bisherigen vier Panels angezeigt
+- Reihenfolge der Ergebnis‑Darstellung optimiert
+- UI wirkt klarer, professioneller und nutzerfreundlicher
+
+---
+
+### Ergebnis
+
+ResumeHaven bietet jetzt eine vollständige visuelle Bewertung:
+
+- Prozent‑Score
+- Farbkodierung
+- Fortschrittsbalken
+- Zusammenfassung der Stärken und Lücken
+
+Die Analyse wirkt dadurch deutlich verständlicher und professioneller.
+
+---
+
+## Commit 16 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+
+### Ziel
+
+Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.  
+Nutzer erhalten jetzt klare Hinweise, wie sie ihren Lebenslauf optimieren können, um besser zur Stellenausschreibung zu passen.
+
+---
+
+### Änderungen
+
+#### 1. Erweiterung des KI‑Prompts
+
+- Neuer Abschnitt im Prompt:
+  - Empfehlungen zu fehlenden Anforderungen
+  - Priorisierung (hoch, mittel, niedrig)
+  - Beispiel‑Formulierungen für den Lebenslauf
+- KI muss die Empfehlungen als strukturiertes JSON zurückgeben
+
+---
+
+#### 2. Controller‑Erweiterung
+
+- Parsing der neuen Felder:
+  - `recommendations`
+- Fehlerbehandlung für unvollständige KI‑Antworten
+- Weitergabe der Daten an die Ergebnis‑View
+
+---
+
+#### 3. Ergebnis‑UI
+
+- Neues Panel „Empfehlungen & Verbesserungsvorschläge“
+- Darstellung pro Empfehlung:
+  - Gap‑Titel
+  - Empfehlungstext
+  - Priorität (farblich codiert)
+  - Beispiel‑Formulierung in einem eigenen Kasten
+- Farben gemäß Branding:
+  - hoch → Rot
+  - mittel → Gelb
+  - niedrig → Grün
+
+---
+
+#### 4. UX‑Verbesserungen
+
+- Einheitliche Panels
+- Tags und Farben im ResumeHaven‑Stil
+- Klare Typografie und Abstände
+- Light/Dark‑Mode‑Unterstützung
+
+---
+
+### Ergebnis
+
+ResumeHaven bietet jetzt nicht nur eine Analyse, sondern auch konkrete, umsetzbare Empfehlungen.  
+Nutzer sehen:
+
+- welche Anforderungen fehlen
+- wie sie diese Lücken schließen können
+- welche Formulierungen sie verwenden können
+- welche Punkte besonders wichtig sind
+
+Damit wird ResumeHaven zu einem echten Karriere‑Coach.
 
 ---
 
