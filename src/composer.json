@@ -46,8 +46,15 @@
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "@php artisan test",
+            "@test:pest-all",
+            "@pint:analyse"
         ],
+        "test:pest-all": "vendor/bin/pest",
+        "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
+        "test:feature": "vendor/bin/pest --testsuite=Feature",
+        "pint:analyse": "vendor/bin/pint --config pint.json --test .",
+        "pint:fix": "vendor/bin/pint --config pint.json .",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
