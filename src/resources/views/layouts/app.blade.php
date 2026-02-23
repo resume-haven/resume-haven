@@ -12,9 +12,22 @@
     <!-- Header -->
     <header class="bg-white border-b">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold tracking-tight text-primary">
-                ResumeHaven
+            <a href="/" class="flex items-center gap-3">
+                <!-- Light Mode Logo -->
+                <img src="/assets/logo-light.svg"
+                    alt="ResumeHaven Logo"
+                    class="h-10 block dark:hidden">
+
+                <!-- Dark Mode Logo -->
+                <img src="/assets/logo-dark.svg"
+                    alt="ResumeHaven Logo"
+                    class="h-10 hidden dark:block">
+
+                <span class="text-2xl font-bold tracking-tight text-primary dark:text-white">
+                    ResumeHaven
+                </span>
             </a>
+
 
             <nav class="flex gap-6 text-gray-700 dark:text-text-dark">
                 <a href="/" class="hover:text-primary transition">Home</a>
