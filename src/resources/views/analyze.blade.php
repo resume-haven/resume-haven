@@ -12,6 +12,16 @@
             welche Erfahrungen zu welchen Anforderungen passen.
         </p>
 
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="/analyze" method="POST" class="space-y-8">
             @csrf
 
@@ -25,7 +35,7 @@
                     rows="10"
                     class="w-full p-4 rounded-lg border border-gray-300 bg-white dark:bg-neutral-dark dark:border-neutral-dark dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Füge hier die Stellenausschreibung ein..."
-                ></textarea>
+                >{{ old('job_text') }}</textarea>
             </div>
 
             <!-- Lebenslauf -->
@@ -38,7 +48,7 @@
                     rows="10"
                     class="w-full p-4 rounded-lg border border-gray-300 bg-white dark:bg-neutral-dark dark:border-neutral-dark dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Füge hier deinen Lebenslauf ein..."
-                ></textarea>
+                >{{ old('cv_text') }}</textarea>
             </div>
 
             <!-- CTA -->
