@@ -24,6 +24,9 @@ coding:
   formatting: pint
   static_analysis: phpstan
   test_framework: pest
+  create_tests: true
+  run_pint_on_tests: true
+  run_pint_on_code: true
 rules:
   forbidden:
     - global functions
