@@ -1,13 +1,23 @@
-project: 
-  name: MeinProjekt 
-  language: php 
-  framework: laravel 
-  style: strict 
-  architecture: 
+project:
+  name: ResumeHaven
+  description: >
+    ResumeHaven unterstützt Menschen dabei, hochwertige und passgenaue Bewerbungsunterlagen zu erstellen,
+    indem es Stellenausschreibungen und persönliche Profile intelligent analysiert. Im MVP stellt ResumeHaven Anforderungen
+    der Stelle einer strukturierten Liste passender Erfahrungen gegenüber, wobei Tags Mehrfachzuordnungen transparent machen.
+    Ergänzend bietet ResumeHaven eine kompakte Übersicht über Skill‑Matches, Skill‑Gaps und nicht relevante Informationen.
+    Diese einfache, klare Darstellung bildet die Grundlage für spätere Erweiterungen wie alternative Perspektiven, visuelle Analysen und automatisierte Erstellungsschritte.
+    Die Analyse nutzt KI-Methoden (NLP), um Textinhalte automatisiert zu extrahieren, zu vergleichen und zu bewerten.
+  language: php
+  framework: laravel
+  fraimwork-minimum-version: "12.0"
+  style: strict
+  architecture:
     - domain-driven
     - modular
     - cqrs
     - SOLID
+    - rulebased
+    - KI-gestützte Textanalyse (NLP)
 coding:
   php_version: "8.5"
   strict_types: true
@@ -25,14 +35,11 @@ rules:
     - value objects
     - DTOs
 structure:
-  domain: app/Domain
-  application: app/Application
-  infrastructure: app/Infrastructure
-  ui: app/UI
   documentation: docs
   tests: tests
 tests:
   framework: pest
+  configuration: phpunit.xml
   naming: "*Test.php"
   coverage_required: true
   mutation_testing: pest
