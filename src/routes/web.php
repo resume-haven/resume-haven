@@ -9,3 +9,9 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 });
+
+Route::get('/analyze', function () {
+    return view('analyze');
+});
+
+Route::post('/analyze', [\App\Http\Controllers\AnalyzeController::class, 'analyze']);

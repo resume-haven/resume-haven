@@ -16,8 +16,9 @@
                 ResumeHaven
             </a>
 
-            <nav class="flex gap-6 text-gray-700">
+            <nav class="flex gap-6 text-gray-700 dark:text-text-dark">
                 <a href="/" class="hover:text-primary transition">Home</a>
+                <a href="/analyze" class="hover:text-primary transition">Analyse</a>
                 <a href="/about" class="hover:text-primary transition">About</a>
             </nav>
         </div>
