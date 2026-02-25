@@ -23,13 +23,13 @@ dev: ## Lokalen Entwicklungsserver und Assets starten
 
 # --- TESTS ---
 test: ## Alle Tests ausführen (Pest)
-	docker exec -it resumehaven-php composer run test:all
+	docker exec -it resumehaven-php composer run test:pest-all
 
 test-unit: ## Nur Unit-Tests ausführen
-	docker exec -it resumehaven-php composer run test:unit
+	docker exec -it resumehaven-php composer run test:pest-unit
 
 test-feature: ## Nur Feature-Tests ausführen
-	docker exec -it resumehaven-php composer run test:feature
+	docker exec -it resumehaven-php composer run test:pest-feature
 
 test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance

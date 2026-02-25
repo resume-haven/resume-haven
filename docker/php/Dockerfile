@@ -28,5 +28,15 @@ WORKDIR /var/www/html
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["entrypoint.sh"]
 
+# Eigene PHP-Konfiguration für Timeouts und Limits
+COPY custom.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Stelle sicher, dass der Container mit dem gewünschten User läuft
+ARG UID=1000
+ARG GID=1000
+RUN addgroup --gid $GID appgroup && \
+    adduser --disabled-password --gecos '' --uid $UID --gid $GID appuser
+USER appuser
+
+ENTRYPOINT ["entrypoint.sh"]

@@ -2,6 +2,11 @@ services:
   php:
     build:
       context: ./docker/php
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    user: "${UID}:${GID}"
     volumes:
       - ./src:/var/www/html
     container_name: resumehaven-php

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -13,7 +15,8 @@ return [
     |
     */
 
-    'default' => 'openai',
+    // 'default' => 'openai',
+    'default' => 'gemini',
     'default_for_images' => 'gemini',
     'default_for_audio' => 'openai',
     'default_for_transcription' => 'openai',
@@ -82,6 +85,7 @@ return [
         'gemini' => [
             'driver' => 'gemini',
             'key' => env('GEMINI_API_KEY'),
+            'api_version' => env('gemini-2.5-flash', 'gemini-3-flash'),
         ],
 
         'groq' => [

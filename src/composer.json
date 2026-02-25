@@ -18,6 +18,8 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.2",
         "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
@@ -53,7 +55,7 @@
         ],
         "test:pest-all": "vendor/bin/pest",
         "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
-        "test:feature": "vendor/bin/pest --testsuite=Feature",
+        "test:pest-feature": "vendor/bin/pest --testsuite=Feature",
         "pint:analyse": "vendor/bin/pint --config pint.json --test .",
         "pint:fix": "vendor/bin/pint --config pint.json .",
         "post-autoload-dump": [
