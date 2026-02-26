@@ -12,11 +12,15 @@
     <div class="grid grid-cols-1 gap-6 mt-8">
         <div class="bg-white dark:bg-neutral-dark rounded shadow p-4">
             <h4 class="font-bold mb-2">Stellenausschreibung</h4>
-            <pre class="bg-neutral-light p-2 rounded whitespace-pre-wrap break-words">{{ $job_text }}</pre>
+            <div class="w-full text-base text-gray-900 dark:text-gray-100" style="white-space:pre-wrap; word-break:break-word;">
+                {{ $job_text }}
+            </div>
         </div>
         <div class="bg-white dark:bg-neutral-dark rounded shadow p-4">
             <h4 class="font-bold mb-2">Lebenslauf</h4>
-            <pre class="bg-neutral-light p-2 rounded whitespace-pre-wrap break-words">{{ $cv_text }}</pre>
+            <div class="w-full text-base text-gray-900 dark:text-gray-100" style="white-space:pre-wrap; word-break:break-word;">
+                {{ $cv_text }}
+            </div>
         </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
