@@ -74,4 +74,7 @@ node-shell: ## Node-Container Shell öffnen
 nginx-shell: ## Nginx-Container Shell öffnen
 	docker exec -it resumehaven-nginx sh
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix docker-up docker-down docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell
+php-cache-clear: ## Laravel Cache leeren (php artisan cache:clear)
+	docker exec -it resumehaven-php php artisan cache:clear
+
+.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix docker-up docker-down docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear
