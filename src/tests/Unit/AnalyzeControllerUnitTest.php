@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-
 use App\Http\Controllers\AnalyzeController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+
+uses(RefreshDatabase::class);
 
 it('AnalyzeController besitzt die Methode analyze', function () {
     $controller = new AnalyzeController();
@@ -32,6 +33,10 @@ describe('AnalyzeController::analyze', function () {
 
     it('liefert eine View mit Ergebnis bei gültigen Eingaben (Mock)', function () {
         $controller = new AnalyzeController();
+        $mockCacheService = \Mockery::mock(\App\Services\AnalysisCacheService::class);
+        $mockCacheService->shouldReceive('getByDto')->andReturn(null);
+        $mockCacheService->shouldReceive('putByDto')->andReturnNull();
+        app()->instance(\App\Services\AnalysisCacheService::class, $mockCacheService);
         $mockService = \Mockery::mock(\App\Services\AnalyzeApplicationService::class);
         $mockService->shouldReceive('analyze')->andReturn(
             new \App\Dto\AnalyzeResultDto(
@@ -144,6 +149,7 @@ describe('AnalyzeController::analyze', function () {
         $data = $view->getData();
         expect($data['result'])->toBeArray();
         expect($data['result']['requirements'])->toBe([]);
-        expect($data['error'])->toContain('AI-Analyse fehlgeschlagen');
+        expect($data['error'])->not()->toBeNull();
+        expect((string) $data['error'])->toContain('AI-Analyse fehlgeschlagen');
     });
 });

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AnalyzeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,4 +17,4 @@ Route::get('/analyze', function () {
     return view('analyze');
 });
 
-Route::post('/analyze', [\App\Http\Controllers\AnalyzeController::class, 'analyze']);
+Route::post('/analyze', [AnalyzeController::class, 'analyze']);

@@ -6,8 +6,8 @@ namespace App\Dto;
 
 class AnalyzeRequestDto
 {
-    public string $job_text;
-    public string $cv_text;
+    private string $job_text;
+    private string $cv_text;
 
     public function __construct(string $job_text, string $cv_text)
     {
@@ -29,5 +29,20 @@ class AnalyzeRequestDto
             'job_text' => $this->job_text,
             'cv_text' => $this->cv_text,
         ];
+    }
+
+    public function jobText(): string
+    {
+        return $this->job_text;
+    }
+
+    public function cvText(): string
+    {
+        return $this->cv_text;
+    }
+
+    public function requestHash(): string
+    {
+        return hash('sha256', $this->job_text.$this->cv_text);
     }
 }
