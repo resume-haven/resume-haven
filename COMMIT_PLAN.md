@@ -729,15 +729,20 @@ Nutzer erkennen sofort, welche Anforderungen erfüllt sind (Matches) und welche 
   - dezenter Schatten
   - Light/Dark‑Mode‑Unterstützung
   - großzügige Abstände
+  - Hintergrund der Boxen ist weiß
+  - Abstände zwischen den Boxen sind definiert
+  - Sortierung der Bereiche ist angepasst
 
 ---
 
-#### 2. Tag‑Design
+#### 2. Tag‑Design (Verschoben & Erweiterungsvorschlag)
 
-- **Matches**: grüne Tags (`#16a34a`)
-- **Gaps**: rote Tags (`#dc2626`)
-- **Neutrale Tags**: Logo‑Blau (`#2D6CDF`)
-- Tags als kleine, abgerundete Elemente mit klarer Typografie
+- Die Darstellung als Tags/Badges wird als späterer Punkt behandelt.
+- Geplant: Separate, kompakte Bereiche für Match-Tags und Gap-Tags, die die bisherigen Panels ersetzen können.
+- Details zu einzelnen Matches/Gaps werden erst bei Bedarf eingeblendet (z.B. per Klick oder Button).
+- Ziel: Übersichtliche, moderne UI mit reduzierter visueller Überladung und nutzerfreundlicher Interaktion.
+- Analog für Requirements und Experiences: Tag-Darstellung mit optionalen Details.
+- Die Panel-Struktur bleibt erhalten, Tags/Badges werden später als interaktive Bereiche ergänzt.
 
 ---
 
@@ -767,14 +772,63 @@ ResumeHaven zeigt jetzt eine professionelle, klar strukturierte Analyse‑Ansich
 - Matches und Gaps sind farblich hervorgehoben
 - Die UI ist markenkonsistent und modern
 - Grundlage für spätere Erweiterungen (Score, Empfehlungen, Tagging) ist geschaffen
+- Die Anordnung und das Layout der Bereiche sind optimiert
+- Tag/Badge-Darstellung wird später ergänzt
 
 ---
 
-## Commit 15 – Score‑Berechnung & visuelle Bewertung (Prozent, Balken, Farbcodierung)
+## Commit 15 – Analyseergebnis-Caching in der Datenbank (Entwicklung)
 
 ### Ziel
 
-Die Analyse‑Ergebnisse werden um eine numerische Bewertung ergänzt.  
+Während der Entwicklung sollen Analyseergebnisse gecacht werden, um Kosten und Rechenzeit für KI-Requests zu sparen. Da auf dem Webspace keine In-Memory-Caches wie Valkey oder Memcache zur Verfügung stehen, wird das Caching in der MySQL-Datenbank realisiert.
+
+---
+
+### Änderungen
+
+#### 1. Migration für Cache-Tabelle
+
+- Neue Tabelle `analysis_cache` mit Feldern:
+  - id (PK)
+  - job_text (Text, ggf. Hash)
+  - cv_text (Text, ggf. Hash)
+  - result (JSON)
+  - created_at, updated_at
+
+#### 2. Service/Repository für Cache-Logik
+
+- Prüft vor jedem KI-Request, ob ein passender Eintrag existiert
+- Gibt bei Treffer das gespeicherte Ergebnis zurück
+- Führt bei Miss einen KI-Request aus und speichert das Ergebnis
+
+#### 3. Controller-Anpassung
+
+- Vor dem Aufruf der KI wird der Cache geprüft
+- Nach erfolgreichem KI-Request wird das Ergebnis gespeichert
+- Während der Entwicklung werden so Tokens und Rechenzeit gespart
+
+#### 4. Hinweise
+
+- Die Lösung ist nicht hochperformant, aber für Einzelentwickler und Entwicklung ausreichend
+- Später kann das Caching auf Redis oder andere Systeme umgestellt werden
+- Die Datenbanklösung simuliert das spätere Produktionsverhalten besser als Session-Caching
+
+---
+
+### Ergebnis
+
+- Analyseergebnisse werden während der Entwicklung effizient wiederverwendet
+- Kosten und Wartezeiten werden reduziert
+- Die Lösung ist kompatibel mit dem späteren Hosting (MySQL)
+
+---
+
+## Commit 16 – Score‑Berechnung & visuelle Bewertung (Prozent, Balken, Farbcodierung)
+
+### Ziel
+
+Die Analyse‑Ergebnisse werden um eine numerische Bewertung ergänzt.
 Nutzer sehen nun auf einen Blick, wie gut ihr Profil zur Stellenausschreibung passt.
 
 ---
@@ -840,11 +894,11 @@ Die Analyse wirkt dadurch deutlich verständlicher und professioneller.
 
 ---
 
-## Commit 16 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+## Commit 17 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
 
 ### Ziel
 
-Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.  
+Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.
 Nutzer erhalten jetzt klare Hinweise, wie sie ihren Lebenslauf optimieren können, um besser zur Stellenausschreibung zu passen.
 
 ---
@@ -896,7 +950,7 @@ Nutzer erhalten jetzt klare Hinweise, wie sie ihren Lebenslauf optimieren könne
 
 ### Ergebnis
 
-ResumeHaven bietet jetzt nicht nur eine Analyse, sondern auch konkrete, umsetzbare Empfehlungen.  
+ResumeHaven bietet jetzt nicht nur eine Analyse, sondern auch konkrete, umsetzbare Empfehlungen.
 Nutzer sehen:
 
 - welche Anforderungen fehlen
@@ -907,12 +961,12 @@ Nutzer sehen:
 Damit wird ResumeHaven zu einem echten Karriere‑Coach.
 
 ---
-
 ## 🎯 Ergebnis
 
 Nach diesem Commit‑Plan hast du:
 
-- eine saubere, nachvollziehbare Git‑History  
-- ein strukturiertes Projekt  
-- eine klare Grundlage für Copilot  
-- eine perfekte Basis für spätere Erweiterungen  
+- eine saubere, nachvollziehbare Git‑History
+- ein strukturiertes Projekt
+- eine klare Grundlage für Copilot
+- eine perfekte Basis für spätere Erweiterungen
+
