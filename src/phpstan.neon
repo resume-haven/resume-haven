@@ -1,0 +1,26 @@
+parameters:
+    level: 9
+    paths:
+        - app
+        - routes
+        - config
+        - bootstrap
+
+    excludePaths:
+        - tests
+        - vendor
+        - storage
+        - bootstrap/cache
+
+    tmpDir: storage/phpstan
+
+    # Fehlermeldungen detailliert anzeigen
+    reportUnmatchedIgnoredErrors: false
+
+    # Ignorieren von bestimmten Fehlertypen oder Dateien
+    ignoreErrors: []
+
+
+
+
+
