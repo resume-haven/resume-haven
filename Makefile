@@ -48,6 +48,18 @@ docker-up: ## Docker-Container bauen und starten
 docker-down: ## Docker-Container stoppen
 	docker compose down
 
+docker-stop: ## Docker-Container stoppen (Alias für docker-down)
+	docker compose stop
+
+docker-start: ## Docker-Container starten
+	docker compose start
+
+docker-build: ## Docker-Container bauen
+	docker compose build
+
+docker-clean: ## Docker-Container und Volumes löschen
+	docker compose down -v
+
 docker-logs: ## Docker-Logs anzeigen
 	docker compose logs -f
 
@@ -77,4 +89,4 @@ nginx-shell: ## Nginx-Container Shell öffnen
 php-cache-clear: ## Laravel Cache leeren (php artisan cache:clear)
 	docker exec -it resumehaven-php php artisan cache:clear
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix docker-up docker-down docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear
+.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix docker-up docker-down docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear
