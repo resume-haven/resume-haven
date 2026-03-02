@@ -101,6 +101,41 @@ Für das MVP wird ein klassisches Laravel‑Deployment genutzt:
 
 ---
 
+# 💾 Datenbank-Setup
+
+## Automatisches Setup (Docker - empfohlen)
+
+Die Datenbank-Migrationen werden beim Container-Start automatisch ausgeführt:
+
+1. **Beim ersten Start**: `entrypoint.sh` erstellt die SQLite-Datei und führt Migrationen durch
+2. **Bei jedem Neustart**: Migrationen werden erneut aufgerufen (idempotent - keine Duplikate)
+3. **Seeding** (optional): Kann manuell mit `php artisan db:seed` ausgeführt werden
+
+## Migrationen manuell ausführen
+
+```bash
+# Status der Migrationen prüfen
+docker exec -it resumehaven-php php artisan migrate:status
+
+# Migrationen ausführen
+docker exec -it resumehaven-php php artisan migrate
+
+# Migrationen rückgängig machen
+docker exec -it resumehaven-php php artisan migrate:rollback
+
+# Alle Tabellen löschen und neu migrieren
+docker exec -it resumehaven-php php artisan migrate:refresh
+```
+
+## Datenbank-Strategie
+
+- **Entwicklung**: SQLite (in-app, keine externe DB nötig)
+- **Production**: MySQL/PostgreSQL (via `.env`)
+- **Migrationen**: Versioniert, automatisch idempotent
+- **Seeds**: Optional, manuell auslösbar
+
+---
+
 # 🧪 Tests
 
 ```bash
@@ -138,4 +173,3 @@ Alle Rechte vorbehalten.
 
 Pull Requests sind willkommen, sobald das MVP stabil ist.  
 Bis dahin dient dieses Repository der initialen Entwicklung.
-

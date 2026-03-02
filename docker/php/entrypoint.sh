@@ -7,6 +7,12 @@ chown -R appuser:appgroup /var/www/html/storage /var/www/html/bootstrap/cache 2>
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
 # SQLite database
+if [ ! -f /var/www/html/database/database.sqlite ]; then
+    echo "📁 Creating SQLite database file..."
+    touch /var/www/html/database/database.sqlite
+    chmod 666 /var/www/html/database/database.sqlite
+fi
+
 if [ -f /var/www/html/database/database.sqlite ]; then
     echo "🔧 Fixing SQLite permissions..."
     chown appuser:appgroup /var/www/html/database/database.sqlite 2>/dev/null || true
