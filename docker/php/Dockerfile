@@ -40,6 +40,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Eigene PHP-Konfiguration für Timeouts und Limits
 COPY custom.ini /usr/local/etc/php/conf.d/custom.ini
 
+# PHP-FPM Konfiguration
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+
 # Stelle sicher, dass der appuser und appgroup existieren
 ARG UID=1000
 ARG GID=1000

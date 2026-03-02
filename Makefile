@@ -41,6 +41,12 @@ pint-analyse: ## Pint: Nur Analyse (kein Fix)
 pint-fix: ## Pint: Automatische Korrektur
 	docker exec -it resumehaven-php composer run pint:fix
 
+phpstan: ## PHPStan: Statische Code-Analyse
+	docker exec -it resumehaven-php composer run phpstan
+
+phpstan-baseline: ## PHPStan: Baseline generieren
+	docker exec -it resumehaven-php composer run phpstan:baseline
+
 # --- DOCKER ---
 docker-up: ## Docker-Container bauen und starten
 	docker compose up -d --build
@@ -89,4 +95,4 @@ nginx-shell: ## Nginx-Container Shell öffnen
 php-cache-clear: ## Laravel Cache leeren (php artisan cache:clear)
 	docker exec -it resumehaven-php php artisan cache:clear
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix docker-up docker-down docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear
+.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear
