@@ -1,3 +1,6 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
     level: 9
     paths:
@@ -18,7 +21,21 @@ parameters:
     reportUnmatchedIgnoredErrors: false
 
     # Ignorieren von bestimmten Fehlertypen oder Dateien
-    ignoreErrors: []
+    ignoreErrors:
+        # Laravel Eloquent Magic Methods
+        - '#Call to an undefined static method App\\Models\\.*::where\(\)#'
+        - '#Call to an undefined static method App\\Models\\.*::updateOrCreate\(\)#'
+        - '#Call to an undefined static method App\\Models\\.*::create\(\)#'
+        - '#Call to an undefined static method App\\Models\\.*::find\(\)#'
+        - '#Call to an undefined static method App\\Models\\.*::first\(\)#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder.*#'
+        # Artisan Command Closures
+        - '#Undefined variable: \$this#'
+        - path: routes/console.php
+          message: '#Variable \$this#'
+
+
+
 
 
 

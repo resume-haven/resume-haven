@@ -11,6 +11,8 @@ class AnalysisCacheService
 {
     /**
      * Gibt das gecachte Analyseergebnis zurück oder null.
+     *
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, error?: string|null}|null
      */
     public function getByDto(AnalyzeRequestDto $dto): ?array
     {
@@ -21,6 +23,8 @@ class AnalysisCacheService
 
     /**
      * Speichert das Analyseergebnis im Cache.
+     *
+     * @param array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, error?: string|null} $result
      */
     public function putByDto(AnalyzeRequestDto $dto, array $result): void
     {

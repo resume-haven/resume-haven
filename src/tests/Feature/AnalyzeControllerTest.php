@@ -30,14 +30,19 @@ test('akzeptiert gültige Eingaben und zeigt die Ergebnis-View', function () {
 
 
 test('zeigt Fehler bei ungültiger KI-Antwort', function () {
-    $mock = Mockery::mock(App\Ai\Agents\Analyzer::class);
-    $mock->shouldReceive('prompt')->andReturn(new class () {
-        public function toArray()
-        {
-            return ['foo' => 'bar'];
-        }
-    });
-    app()->instance(App\Ai\Agents\Analyzer::class, $mock);
+    $mock = Mockery::mock(App\Services\AnalyzeApplicationService::class);
+    $mockDto = new App\Dto\AnalyzeResultDto(
+        str_repeat('A', 31),
+        str_repeat('B', 31),
+        [],
+        [],
+        [],
+        [],
+        'AI-Analyse fehlgeschlagen: Ungültige KI-Antwort'
+    );
+    $mock->shouldReceive('analyze')->andReturn($mockDto);
+    app()->instance(App\Services\AnalyzeApplicationService::class, $mock);
+
     $response = \Pest\Laravel\post('/analyze', [
         'job_text' => str_repeat('A', 31),
         'cv_text' => str_repeat('B', 31),
@@ -46,15 +51,16 @@ test('zeigt Fehler bei ungültiger KI-Antwort', function () {
     $response->assertViewIs('result');
     $response->assertViewHas('error');
     $errorText = $response->viewData('error');
-    expect($errorText)->toContain('AI-Analyse fehlgeschlagen');
+    expect($errorText)->toBeString()->and($errorText)->toContain('AI-Analyse fehlgeschlagen');
     // Teste nur auf generischen Fehlertext, da die KI-Fehlermeldung dynamisch ist
 });
 
 
 test('zeigt Fehler bei Exception (z.B. Timeout)', function () {
-    $mock = Mockery::mock(App\Ai\Agents\Analyzer::class);
-    $mock->shouldReceive('prompt')->andThrow(new Exception('Timeout!'));
-    app()->instance(App\Ai\Agents\Analyzer::class, $mock);
+    $mock = Mockery::mock(App\Services\AnalyzeApplicationService::class);
+    $mock->shouldReceive('analyze')->andThrow(new Exception('Timeout!'));
+    app()->instance(App\Services\AnalyzeApplicationService::class, $mock);
+
     $response = \Pest\Laravel\post('/analyze', [
         'job_text' => str_repeat('A', 31),
         'cv_text' => str_repeat('B', 31),
@@ -63,6 +69,6 @@ test('zeigt Fehler bei Exception (z.B. Timeout)', function () {
     $response->assertViewIs('result');
     $response->assertViewHas('error');
     $errorText = $response->viewData('error');
-    expect($errorText)->toContain('AI-Analyse fehlgeschlagen');
+    expect($errorText)->toBeString()->and($errorText)->toContain('AI-Analyse fehlgeschlagen');
     // Teste nur auf generischen Fehlertext, da die Exception-Meldung dynamisch ist
 });
