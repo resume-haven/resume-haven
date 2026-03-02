@@ -34,5 +34,10 @@ php artisan cache:clear 2>/dev/null || true
 php artisan view:clear 2>/dev/null || true
 php artisan route:clear 2>/dev/null || true
 
+echo "📊 Running database migrations..."
+php artisan migrate --force 2>/dev/null || {
+    echo "⚠️  Migrations had issues, but continuing..."
+}
+
 echo "🚀 Starting PHP-FPM..."
 exec php-fpm
