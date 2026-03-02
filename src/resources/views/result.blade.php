@@ -11,6 +11,36 @@
         </div>
     @endif
 
+    @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']) && $score)
+        {{-- Score Panel (oberste Position) --}}
+        <div class="mb-6 {{ $score->bgColor }} border-l-4 {{ str_replace('bg-', 'border-', $score->barColor) }} rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold {{ $score->textColor }} uppercase tracking-wide">Übereinstimmung</p>
+                    <p class="text-5xl font-bold {{ $score->textColor }} mt-2">{{ $score->percentage }}%</p>
+                    <p class="text-lg {{ $score->textColor }} mt-2">{{ $score->rating }}</p>
+                    <p class="text-sm {{ $score->textColor }} mt-4">
+                        ✓ {{ $score->matchCount }} Match{{ $score->matchCount !== 1 ? 'es' : '' }} •
+                        ✗ {{ $score->gapCount }} Gap{{ $score->gapCount !== 1 ? 's' : '' }}
+                    </p>
+                </div>
+                <div class="w-24 h-24">
+                    {{-- Kreisförmiger Progress-Indicator --}}
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        {{-- Hintergrund-Kreis --}}
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" class="opacity-10 {{ $score->textColor }}"></circle>
+                        {{-- Progress-Kreis --}}
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="{{ $score->percentage * 2.827 }} 282.7" class="{{ $score->barColor }}"></circle>
+                    </svg>
+                </div>
+            </div>
+            {{-- Fortschrittsbalken --}}
+            <div class="mt-6 bg-white dark:bg-neutral-dark rounded-full h-2 overflow-hidden">
+                <div class="h-full {{ $score->barColor }} transition-all duration-500" style="width: {{ $score->percentage }}%"></div>
+            </div>
+        </div>
+    @endif
+
     @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']))
         {{-- Group 1: Matches & Gaps --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

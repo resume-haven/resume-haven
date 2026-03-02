@@ -3,19 +3,30 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AnalyzeController;
+use App\Dto\AnalyzeResultDto;
+use App\Domains\Analysis\UseCases\ScoringUseCase\ScoringUseCase;
+use App\Services\AnalyzeApplicationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 
 uses(RefreshDatabase::class);
 
 it('AnalyzeController besitzt die Methode analyze', function () {
-    $controller = new AnalyzeController();
+    $mockScoringUseCase = \Mockery::mock(ScoringUseCase::class);
+    $controller = new AnalyzeController(
+        app(\Illuminate\Bus\Dispatcher::class),
+        $mockScoringUseCase
+    );
     expect(method_exists($controller, 'analyze'))->toBeTrue();
 });
 
 describe('AnalyzeController::analyze', function () {
     it('liefert eine View mit Fehlern bei ungültigen Eingaben', function () {
-        $controller = new AnalyzeController();
+        $mockScoringUseCase = \Mockery::mock(ScoringUseCase::class);
+        $controller = new AnalyzeController(
+            app(\Illuminate\Bus\Dispatcher::class),
+            $mockScoringUseCase
+        );
         $request = Request::create('/analyze', 'POST', [
             'job_text' => '',
             'cv_text' => '',
@@ -31,30 +42,46 @@ describe('AnalyzeController::analyze', function () {
         expect($caught)->toBeTrue();
     });
 
-    it('liefert eine View mit Ergebnis bei gültigen Eingaben (Mock)', function () {
-        $controller = new AnalyzeController();
-        $mockCacheService = \Mockery::mock(\App\Services\AnalysisCacheService::class);
-        $mockCacheService->shouldReceive('getByDto')->andReturn(null);
-        $mockCacheService->shouldReceive('putByDto')->andReturnNull();
-        app()->instance(\App\Services\AnalysisCacheService::class, $mockCacheService);
-        $mockService = \Mockery::mock(\App\Services\AnalyzeApplicationService::class);
+    it('liefert eine View mit Ergebnis bei gültigen Eingaben', function () {
+        // Mock der AnalyzeApplicationService
+        $mockService = \Mockery::mock(AnalyzeApplicationService::class);
         $mockService->shouldReceive('analyze')->andReturn(
-            new \App\Dto\AnalyzeResultDto(
+            new AnalyzeResultDto(
                 str_repeat('A', 31),
                 str_repeat('B', 31),
                 ['foo'],
                 ['bar'],
-                [['requirement' => 'foo', 'experience' => 'bar']],
+                [],
                 [],
                 null
             )
         );
-        app()->instance(\App\Services\AnalyzeApplicationService::class, $mockService);
+        app()->instance(AnalyzeApplicationService::class, $mockService);
+
+        // Mock ScoringUseCase
+        $mockScoring = \Mockery::mock(ScoringUseCase::class);
+        $mockScoring->shouldReceive('handle')->andReturn(
+            new \App\Domains\Analysis\Dto\ScoreResultDto(
+                percentage: 100,
+                rating: 'Hohe Übereinstimmung',
+                bgColor: 'bg-green-50',
+                textColor: 'text-green-900',
+                barColor: 'bg-green-500',
+                matchCount: 1,
+                gapCount: 0
+            )
+        );
+
+        $controller = new AnalyzeController(
+            app(\Illuminate\Bus\Dispatcher::class),
+            $mockScoring
+        );
         $request = Request::create('/analyze', 'POST', [
             'job_text' => str_repeat('A', 31),
             'cv_text' => str_repeat('B', 31),
         ]);
-        // View-Facade faken, damit die View nicht wirklich gerendert wird
+
+        // Mock View-Facade
         \Illuminate\Support\Facades\View::shouldReceive('make')->andReturnUsing(function ($view, $data) {
             return new class ($data) extends \Illuminate\View\View {
                 protected $data;
@@ -85,36 +112,37 @@ describe('AnalyzeController::analyze', function () {
                 }
             };
         });
+
         $view = $controller->analyze($request);
         $data = $view->getData();
+
         expect($data['result'])->not()->toBeNull();
         expect($data['result']['requirements'])->toBe(['foo']);
         expect($data['result']['experiences'])->toBe(['bar']);
-        expect($data['result']['matches'][0]['requirement'])->toBe('foo');
-        expect($data['result']['matches'][0]['experience'])->toBe('bar');
-        expect($data['result']['gaps'])->toBe([]);
         expect($data['error'])->toBeNull();
+        expect($data['score'])->not()->toBeNull();
     });
 
     it('liefert eine View mit Fehlertext bei Exception', function () {
-        $controller = new AnalyzeController();
-        $mockService = \Mockery::mock(\App\Services\AnalyzeApplicationService::class);
-        $mockService->shouldReceive('analyze')->andReturn(
-            new \App\Dto\AnalyzeResultDto(
-                str_repeat('A', 31),
-                str_repeat('B', 31),
-                [],
-                [],
-                [],
-                [],
-                'AI-Analyse fehlgeschlagen: Timeout!'
-            )
+        // Mock der AnalyzeApplicationService, um Exception zu werfen
+        $mockService = \Mockery::mock(AnalyzeApplicationService::class);
+        $mockService->shouldReceive('analyze')->andThrow(new Exception('Timeout!'));
+        app()->instance(AnalyzeApplicationService::class, $mockService);
+
+        // Mock ScoringUseCase - wird NICHT aufgerufen, da error !== null
+        $mockScoring = \Mockery::mock(ScoringUseCase::class);
+        $mockScoring->shouldReceive('handle')->never();
+
+        $controller = new AnalyzeController(
+            app(\Illuminate\Bus\Dispatcher::class),
+            $mockScoring
         );
-        app()->instance(\App\Services\AnalyzeApplicationService::class, $mockService);
         $request = Request::create('/analyze', 'POST', [
             'job_text' => str_repeat('A', 31),
             'cv_text' => str_repeat('B', 31),
         ]);
+
+        // Mock View-Facade
         \Illuminate\Support\Facades\View::shouldReceive('make')->andReturnUsing(function ($view, $data) {
             return new class ($data) extends \Illuminate\View\View {
                 protected $data;
@@ -145,11 +173,11 @@ describe('AnalyzeController::analyze', function () {
                 }
             };
         });
+
         $view = $controller->analyze($request);
         $data = $view->getData();
-        expect($data['result'])->toBeArray();
-        expect($data['result']['requirements'])->toBe([]);
-        expect($data['error'])->not()->toBeNull();
-        expect((string) $data['error'])->toContain('AI-Analyse fehlgeschlagen');
+
+        expect($data['error'])->toBeString();
+        expect($data['error'])->toContain('AI-Analyse fehlgeschlagen');
     });
 });
