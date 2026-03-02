@@ -54,6 +54,14 @@ docker-up: ## Docker-Container bauen und starten
 docker-down: ## Docker-Container stoppen
 	docker compose down
 
+docker-restart: ## Docker-Container neu starten (schnell, ohne Rebuild)
+	docker compose restart
+
+docker-rebuild: ## Docker-Container komplett neu bauen (nach Config-Änderungen)
+	docker compose down
+	docker compose build --no-cache php
+	docker compose up -d
+
 docker-stop: ## Docker-Container stoppen (Alias für docker-down)
 	docker compose stop
 
@@ -111,4 +119,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

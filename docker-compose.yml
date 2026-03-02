@@ -9,6 +9,8 @@ services:
     volumes:
       - ./src:/var/www/html
     container_name: resumehaven-php
+    networks:
+      - resumehaven
 
   nginx:
     build:
@@ -21,6 +23,8 @@ services:
     depends_on:
       - php
     container_name: resumehaven-nginx
+    networks:
+      - resumehaven
 
   node:
     build:
@@ -29,6 +33,8 @@ services:
       - ./src:/var/www/html
     container_name: resumehaven-node
     command: ["tail", "-f", "/dev/null"]
+    networks:
+      - resumehaven
 
   mailpit:
     image: axllent/mailpit:latest
@@ -36,3 +42,9 @@ services:
       - "8025:8025"
       - "1025:1025"
     container_name: resumehaven-mailpit
+    networks:
+      - resumehaven
+
+networks:
+  resumehaven:
+    driver: bridge
