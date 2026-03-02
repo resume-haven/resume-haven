@@ -1,0 +1,24 @@
+# Jekyll Configuration for docs/ directory
+# ResumeHaven Documentation
+
+title: ResumeHaven Documentation
+description: Technische Dokumentation für das ResumeHaven-Projekt
+
+# Theme
+theme: jekyll-theme-cayman
+
+# Markdown
+markdown: kramdown
+
+# Plugins (automatisch von GitHub Pages aktiviert)
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+
+# Settings
+relative_links:
+  enabled: true
+
+# Show/Hide
+show_downloads: false
+

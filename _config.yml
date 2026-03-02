@@ -1,0 +1,98 @@
+# Jekyll Configuration for GitHub Pages
+# ResumeHaven Documentation
+
+title: ResumeHaven Documentation
+description: >-
+  Technische Dokumentation für ResumeHaven - Ein Domain-driven Laravel-Projekt
+  mit Command/Handler Pattern, CQRS-Light und Single Action Controllers.
+
+# Theme
+theme: jekyll-theme-cayman
+# Alternative themes:
+# - jekyll-theme-minimal
+# - jekyll-theme-slate
+# - jekyll-theme-architect
+
+# URL Configuration
+baseurl: "" # Wird von GitHub automatisch gesetzt
+url: "" # Wird von GitHub automatisch gesetzt
+
+# Markdown
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Plugins
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+
+# Plugin Configuration
+relative_links:
+  enabled: true
+  collections: false
+
+optional_front_matter:
+  remove_originals: false
+
+titles_from_headings:
+  enabled: true
+  strip_title: false
+  collections: false
+
+# File Exclusions
+exclude:
+  - vendor/
+  - node_modules/
+  - .git/
+  - .github/
+  - docker/
+  - src/vendor/
+  - src/node_modules/
+  - Makefile
+  - docker-compose.yml
+  - "*.log"
+
+# Include files
+include:
+  - .htaccess
+  - _pages
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+
+# Default values
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Navigation (optional - für Themes die das unterstützen)
+navigation:
+  - title: Home
+    url: /
+  - title: Architektur
+    url: /docs/ARCHITECTURE
+  - title: Coding Guidelines
+    url: /docs/CODING_GUIDELINES
+  - title: Contributing
+    url: /docs/CONTRIBUTING
+
+# Show/Hide elements
+show_downloads: false
+github:
+  is_project_page: true
+  repository_url: https://github.com/username/resume-haven
+

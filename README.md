@@ -22,19 +22,38 @@ Dieses Repository enthält den **Produktivcode** des MVP.
 
 # 📐 Architektur
 
-Die Anwendung folgt einer klaren, modularen Struktur:
+Die Anwendung folgt einer **Domain-driven, Command/Query-orientierten Architektur**:
 
-- **AnalysisEngine**  
-- **JobExtractor**  
-- **ResumeExtractor**  
-- **Matcher**  
-- **Tagger**  
-- **Controller**  
-- **Blade Views**  
-- **TailwindCSS Build Pipeline**  
+- **Domain-Driven Design** (modulare Geschäftsbereiche)
+- **CQRS-Light** (Command/Handler Pattern)
+- **Single Action Controllers** (Controller sind dünn, ~34 Zeilen)
+- **Repository Pattern** (Persistence-Abstraktion)
+- **UseCase Pattern** (Business-Logic-Orchestrierung)
 
-Eine vollständige Architekturdokumentation befindet sich im Repository  
-👉 `resume-haven-ideas/`
+### Struktur
+
+```
+app/Domains/Analysis/
+├── Commands/        # Request-Objekte
+├── Handlers/        # Command-Handler
+├── UseCases/        # Business-Logic
+│   ├── ExtractDataUseCase/
+│   ├── MatchingUseCase/
+│   └── GapAnalysisUseCase/
+├── Cache/           # Cache-Layer
+│   ├── Actions/
+│   └── Repositories/
+└── Dto/             # Data Transfer Objects
+```
+
+Eine vollständige Architekturdokumentation befindet sich hier:  
+👉 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+
+Coding Guidelines und Best Practices:  
+👉 [`docs/CODING_GUIDELINES.md`](docs/CODING_GUIDELINES.md)
+
+Alle Dokumentationen:  
+👉 [`docs/index.md`](docs/index.md)
 
 ---
 
@@ -147,18 +166,20 @@ php artisan test
 
 # 📁 Dokumentation
 
-Die vollständige technische und konzeptionelle Dokumentation befindet sich im Repository:
+Die vollständige technische Dokumentation befindet sich im `docs/` Verzeichnis:
 
-👉 `resume-haven-ideas/`
+👉 **[Dokumentations-Index](docs/index.md)** (oder online: [GitHub Pages](https://username.github.io/resume-haven/))
 
-Dort findest du:
-- Architektur  
-- Datenstrukturen  
-- UI‑Design  
-- UX‑Texte  
-- Docker‑Konzept  
-- Validierungsregeln  
-- Wireframes  
+Wichtige Dokumente:
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** – Technische Architektur & Design Patterns
+- **[CODING_GUIDELINES.md](docs/CODING_GUIDELINES.md)** – Best Practices & Standards
+- **[REFACTORING_SUMMARY.md](docs/REFACTORING_SUMMARY.md)** – Architektur-Refactoring Zusammenfassung
+- **[AGENTS.md](docs/AGENTS.md)** – AI-Agenten Dokumentation
+- **[ROADMAP.md](docs/ROADMAP.md)** – Feature-Roadmap & Vision
+- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** – Contribution Guidelines
+
+Entwicklungsplan:
+- **[COMMIT_PLAN.md](COMMIT_PLAN.md)** – Detaillierter Commit-by-Commit Plan
 
 ---
 
@@ -172,4 +193,6 @@ Alle Rechte vorbehalten.
 # 🤝 Mitwirken
 
 Pull Requests sind willkommen, sobald das MVP stabil ist.  
+Bitte lies die **[Contribution Guidelines](docs/CONTRIBUTING.md)** vor dem Beitragen.  
 Bis dahin dient dieses Repository der initialen Entwicklung.
+
