@@ -41,33 +41,80 @@
         </div>
     @endif
 
-    @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']))
-        {{-- Group 1: Matches & Gaps --}}
+    @if ($result && is_array($result) && isset($result['tags']) && is_array($result['tags']))
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {{-- Matches Panel --}}
             <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-6">
-                <h3 class="text-xl font-bold mb-4">Matches ({{ count($result['matches']) }})</h3>
-                <ul class="list-disc pl-5 space-y-2">
-                    @foreach ($result['matches'] as $match)
-                        <li>
-                            <span class="text-green-700 dark:text-green-400 font-semibold">{{ $match['requirement'] ?? '' }}</span>
-                            &rarr;
-                            <span class="text-blue-700 dark:text-blue-400">{{ $match['experience'] ?? '' }}</span>
-                        </li>
-                    @endforeach
-                </ul>
+                <h3 class="text-xl font-bold mb-4">Match-Tags</h3>
+                @if (isset($result['tags']['matches']) && is_array($result['tags']['matches']) && count($result['tags']['matches']) > 0)
+                    <div class="space-y-3">
+                        @foreach ($result['tags']['matches'] as $tag)
+                            <div class="rounded-md border border-green-200 bg-green-50 p-3">
+                                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
+                                    {{ $tag['requirement'] ?? 'Unbekannt' }}
+                                </span>
+                                @if (isset($tag['experience']) && is_array($tag['experience']) && count($tag['experience']) > 0)
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        @foreach ($tag['experience'] as $expTag)
+                                            <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+                                                {{ $expTag }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500">Keine Match-Tags vorhanden.</p>
+                @endif
             </div>
 
-            {{-- Gaps Panel --}}
             <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-6">
-                <h3 class="text-xl font-bold mb-4">Gaps ({{ count($result['gaps']) }})</h3>
-                <ul class="list-disc pl-5 space-y-2">
-                    @foreach ($result['gaps'] as $gap)
-                        <li class="text-red-700 dark:text-red-400">{{ $gap }}</li>
-                    @endforeach
-                </ul>
+                <h3 class="text-xl font-bold mb-4">Gap-Tags</h3>
+                @if (isset($result['tags']['gaps']) && is_array($result['tags']['gaps']) && count($result['tags']['gaps']) > 0)
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($result['tags']['gaps'] as $gapTag)
+                            <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                                {{ $gapTag }}
+                            </span>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500">Keine Gap-Tags vorhanden.</p>
+                @endif
             </div>
         </div>
+    @endif
+
+    @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']))
+        <details class="mt-4 bg-white dark:bg-neutral-dark rounded-lg shadow p-4" open>
+            <summary class="cursor-pointer text-base font-semibold">Details: Matches & Gaps</summary>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                {{-- Matches Panel --}}
+                <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-6">
+                    <h3 class="text-xl font-bold mb-4">Matches ({{ count($result['matches']) }})</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        @foreach ($result['matches'] as $match)
+                            <li>
+                                <span class="text-green-700 dark:text-green-400 font-semibold">{{ $match['requirement'] ?? '' }}</span>
+                                &rarr;
+                                <span class="text-blue-700 dark:text-blue-400">{{ $match['experience'] ?? '' }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                {{-- Gaps Panel --}}
+                <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-6">
+                    <h3 class="text-xl font-bold mb-4">Gaps ({{ count($result['gaps']) }})</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        @foreach ($result['gaps'] as $gap)
+                            <li class="text-red-700 dark:text-red-400">{{ $gap }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </details>
 
         {{-- Group 2: Requirements & Experiences --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
