@@ -69,35 +69,40 @@ class AnalyzeJobAndResumeHandler
             );
         }
 
-        // 3. Perform matching
-        $matchingResult = $this->matchingUseCase->handle(
-            $analyzeResult->requirements,
-            $analyzeResult->experiences
-        );
+        // 3) Primär: vom Service gelieferte Matches/Gaps verwenden
+        $finalMatches = $analyzeResult->matches;
+        $finalGaps = $analyzeResult->gaps;
 
-        // 4. Find gaps
-        $gapResult = $this->gapAnalysisUseCase->handle(
-            $analyzeResult->requirements,
-            $matchingResult->matches
-        );
-
-        // 5. Ensure tags exist (use AI tags if present, otherwise generate fallback)
-        $tags = $analyzeResult->tags;
-        if ($tags === null) {
-            $tags = $this->generateTagsAction->execute(
-                $matchingResult->matches,
-                $gapResult->gaps
+        // 4) Fallback: nur neu berechnen, wenn Service nichts geliefert hat
+        if ($finalMatches === [] && $finalGaps === [] && $analyzeResult->requirements !== [] && $analyzeResult->experiences !== []) {
+            $matchingResult = $this->matchingUseCase->handle(
+                $analyzeResult->requirements,
+                $analyzeResult->experiences
             );
+
+            $gapResult = $this->gapAnalysisUseCase->handle(
+                $analyzeResult->requirements,
+                $matchingResult->matches
+            );
+
+            $finalMatches = $matchingResult->matches;
+            $finalGaps = $gapResult->gaps;
         }
 
-        // 6. Combine results
+        // 5) Tags übernehmen oder aus finalen Daten erzeugen
+        $tags = $analyzeResult->tags;
+        if ($tags === null) {
+            $tags = $this->generateTagsAction->execute($finalMatches, $finalGaps);
+        }
+
+        // 6) Combine results
         $result = new AnalyzeResultDto(
             $request->jobText(),
             $request->cvText(),
             $analyzeResult->requirements,
             $analyzeResult->experiences,
-            $matchingResult->matches,
-            $gapResult->gaps,
+            $finalMatches,
+            $finalGaps,
             null,
             $tags
         );
