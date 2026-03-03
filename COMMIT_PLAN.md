@@ -824,7 +824,7 @@ Während der Entwicklung sollen Analyseergebnisse gecacht werden, um Kosten und 
 
 ---
 
-## Commit 16 – Score‑Berechnung & visuelle Bewertung (Prozent, Balken, Farbcodierung)
+## ✅ Commit 16 – Score‑Berechnung & visuelle Bewertung (ABGESCHLOSSEN)
 
 ### Ziel
 
@@ -835,49 +835,71 @@ Nutzer sehen nun auf einen Blick, wie gut ihr Profil zur Stellenausschreibung pa
 
 ### Änderungen
 
-#### 1. Score‑Berechnung
+#### 1. Score‑Berechnung ✅
 
 - Neue Formel implementiert:
   - Score = Matches / (Matches + Gaps) * 100
 - Ergebnis wird als Prozentwert gerundet
 - Grundlage für spätere Gewichtungen geschaffen
+- **Implementiert**: `ScoreResultDto`, `CalculateScoreAction`, `ScoringUseCase`
 
 ---
 
-#### 2. Farbskala
+#### 2. Farbskala ✅
 
 - Score‑abhängige Farbcodierung:
-  - 0–40 % → Rot (`#dc2626`)
-  - 40–70 % → Gelb (`#f59e0b`)
-  - 70–100 % → Grün (`#16a34a`)
+  - 0–40 % → Rot (`#dc2626`)
+  - 40–70 % → Gelb (`#f59e0b`)
+  - 70–100 % → Grün (`#16a34a`)
 - Farben sind vollständig markenkonsistent
 
 ---
 
-#### 3. Fortschrittsbalken
+#### 3. Fortschrittsbalken ✅
 
 - Horizontaler Balken zeigt den Score visuell an
 - Farbe abhängig vom Score
-- Balken animiert (optional)
+- Balken animiert (Transition: 500ms)
+- **BONUS**: SVG-Kreisindikator hinzugefügt
 
 ---
 
-#### 4. Zusammenfassungspanel
+#### 4. Zusammenfassungspanel ✅
 
 - Neues Panel am Anfang der Ergebnis‑Seite:
-  - großer Score‑Wert (z. B. „72 % Match“)
+  - großer Score‑Wert (z. B. „72 % Match")
   - farbiger Fortschrittsbalken
-  - kurze Bewertung („Gute Übereinstimmung“ etc.)
+  - kurze Bewertung („Hohe/Mittlere/Geringe Übereinstimmung")
   - Anzahl Matches und Gaps
 - Panel nutzt bestehende UI‑Tokens (Panels, Farben, Typografie)
 
 ---
 
-#### 5. Integration in die Ergebnis‑UI
+#### 5. Integration in die Ergebnis‑UI ✅
 
 - Score‑Panel wird oberhalb der bisherigen vier Panels angezeigt
 - Reihenfolge der Ergebnis‑Darstellung optimiert
 - UI wirkt klarer, professioneller und nutzerfreundlicher
+- Error-Handling: Score wird nur berechnet wenn Analyse erfolgreich
+
+---
+
+#### 6. Tests & Code Quality ✅
+
+- 5 neue Unit-Tests für `CalculateScoreAction`
+- PHPStan Level 9: 0 Errors
+- Pint Code-Style: sauber
+- Feature-Tests angepasst
+
+---
+
+#### 7. Docker-Fix (BONUS) ✅
+
+- PHP-FPM `www.conf`: Listen auf allen Interfaces (`9000`)
+- Explizites Docker-Netzwerk hinzugefügt
+- Makefile erweitert: `docker-restart`, `docker-rebuild`
+- `restart-containers.bat` erstellt
+- 502 Bad Gateway Problem behoben
 
 ---
 
@@ -885,12 +907,191 @@ Nutzer sehen nun auf einen Blick, wie gut ihr Profil zur Stellenausschreibung pa
 
 ResumeHaven bietet jetzt eine vollständige visuelle Bewertung:
 
-- Prozent‑Score
-- Farbkodierung
-- Fortschrittsbalken
-- Zusammenfassung der Stärken und Lücken
+- ✅ Prozent‑Score mit intelligenter Berechnung
+- ✅ Farbkodierung (Rot/Gelb/Grün)
+- ✅ Fortschrittsbalken (horizontal + SVG-Kreis)
+- ✅ Zusammenfassung der Stärken und Lücken
+- ✅ Responsive Design
+- ✅ Error-Handling
+- ✅ Vollständige Test-Abdeckung
 
 Die Analyse wirkt dadurch deutlich verständlicher und professioneller.
+
+**Domain-Architektur**: Controller von 94 → 34 Zeilen reduziert (63% kleiner)
+
+---
+
+## Commit 16a – AI Mock Strategy Pattern (für Entwicklung ohne API-Limits)
+
+### Ziel
+
+Während der Entwicklung sollen AI-Analysen ohne API-Kosten möglich sein. Dazu wird ein sauberes **Strategy Pattern** implementiert, das zwischen Production (Gemini) und Development (Mock) umschalten kann - gesteuert über Config/Env.
+
+**Problem gelöst**: Entwickler hat API-Limits erreicht und kann nicht mehr entwickeln/testen.
+
+---
+
+### Änderungen
+
+#### 1. Interface für AI-Analyzer
+
+**Neue Datei**: `app/Services/AiAnalyzer/Contracts/AiAnalyzerInterface.php`
+
+```php
+interface AiAnalyzerInterface {
+    public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto;
+    public function isAvailable(): bool;
+    public function getProviderName(): string;
+}
+```
+
+- Definiert Contract für alle AI-Provider
+- Ermöglicht einfachen Wechsel zwischen Implementierungen
+- Basis für Dependency Injection
+
+---
+
+#### 2. Gemini Implementation (Refactored)
+
+**Neue Datei**: `app/Services/AiAnalyzer/GeminiAiAnalyzer.php`
+
+- Bestehender Code aus `AnalyzeApplicationService` extrahiert
+- Implementiert `AiAnalyzerInterface`
+- Verwendet Laravel AI Package
+- Production-ready
+
+---
+
+#### 3. Mock Implementation (NEU)
+
+**Neue Datei**: `app/Services/AiAnalyzer/MockAiAnalyzer.php`
+
+- Implementiert `AiAnalyzerInterface`
+- Gibt vordefinierte, realistische Test-Daten zurück
+- **Verschiedene Szenarien**:
+  - `realistic`: Ausgeglichenes Ergebnis (60% Score)
+  - `high_score`: Sehr gute Übereinstimmung (90% Score)
+  - `low_score`: Geringe Übereinstimmung (25% Score)
+  - `no_match`: Keine Übereinstimmungen (0% Score)
+- Konfigurierbar über `.env`
+- Simuliert API-Delay (konfigurierbar)
+
+**Mock-Response Beispiel** (realistic scenario):
+```json
+{
+  "requirements": ["PHP 8+", "Laravel", "RESTful API", "MySQL", "Git"],
+  "experiences": ["5 Jahre PHP", "Laravel Projekte", "API Entwicklung"],
+  "matches": [
+    {"requirement": "PHP 8+", "experience": "5 Jahre PHP"},
+    {"requirement": "Laravel", "experience": "Laravel Projekte"}
+  ],
+  "gaps": ["MySQL", "Git"]
+}
+```
+
+---
+
+#### 4. Config-Erweiterung
+
+**Update**: `config/ai.php`
+
+```php
+return [
+    'provider' => env('AI_PROVIDER', 'mock'), // mock | gemini
+    
+    'mock' => [
+        'scenario' => env('AI_MOCK_SCENARIO', 'realistic'),
+        'delay_ms' => env('AI_MOCK_DELAY', 500), // Simuliere API-Delay
+    ],
+    
+    'gemini' => [
+        // ...existing config...
+    ],
+];
+```
+
+---
+
+#### 5. Service Provider Binding
+
+**Update**: `app/Providers/AppServiceProvider.php`
+
+```php
+public function register(): void
+{
+    $this->app->bind(AiAnalyzerInterface::class, function ($app) {
+        $provider = config('ai.provider', 'mock');
+        
+        return match($provider) {
+            'gemini' => $app->make(GeminiAiAnalyzer::class),
+            'mock' => $app->make(MockAiAnalyzer::class),
+            default => throw new \InvalidArgumentException("Unknown AI provider: {$provider}"),
+        };
+    });
+}
+```
+
+---
+
+#### 6. AnalyzeApplicationService Refactoring
+
+**Update**: `app/Services/AnalyzeApplicationService.php`
+
+- Constructor-Injection: `AiAnalyzerInterface`
+- Delegiert an injizierte Implementation
+- **Keine Änderung der Public API**
+- Bestehender Code funktioniert weiter
+
+---
+
+#### 7. Environment Configuration
+
+**Update**: `.env` und `.env.example`
+
+```env
+# AI Provider Configuration
+AI_PROVIDER=mock
+AI_MOCK_SCENARIO=realistic
+AI_MOCK_DELAY=500
+
+# Gemini (für Production)
+GEMINI_API_KEY=your-key-here
+GEMINI_API_MODEL=gemini-2.5-flash
+```
+
+---
+
+#### 8. Tests
+
+- Unit-Tests für `MockAiAnalyzer`
+- Tests für verschiedene Szenarien
+- Tests für Provider-Switching
+- Integration-Tests
+
+---
+
+### Vorteile
+
+✅ **Entwicklung ohne API-Kosten**: Mock-Daten für lokale Entwicklung
+✅ **Schnelles Feedback**: Keine Wartezeit auf API-Responses
+✅ **Testbarkeit**: Verschiedene Szenarien einfach testbar
+✅ **Saubere Architektur**: Strategy Pattern, SOLID Principles
+✅ **Flexibilität**: Einfach neue Provider hinzufügen (OpenAI, Claude, etc.)
+✅ **Production-Ready**: Einfaches Umschalten via `.env`
+
+---
+
+### Ergebnis
+
+Entwickler können jetzt:
+
+- ✅ Ohne API-Limits entwickeln und testen
+- ✅ Verschiedene Szenarien durchspielen (high/low/no match)
+- ✅ Schneller iterieren (kein API-Delay)
+- ✅ Mit einem Env-Switch auf Production umschalten
+- ✅ Neue AI-Provider einfach integrieren
+
+Die Architektur ist sauber, erweiterbar und production-ready.
 
 ---
 
