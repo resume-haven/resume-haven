@@ -266,4 +266,3 @@ class MockAiAnalyzer implements AiAnalyzerInterface
         ];
     }
 }
-

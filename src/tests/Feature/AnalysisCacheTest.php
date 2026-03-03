@@ -8,13 +8,24 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('AnalysisCacheService speichert und findet Einträge', function () {
+test('AnalysisCacheService speichert und findet Einträge mit Tags', function () {
     $service = new AnalysisCacheService();
     $dto = new AnalyzeRequestDto('Test Job', 'Test CV');
-    $result = ['requirements' => ['foo'], 'experiences' => ['bar'], 'matches' => [], 'gaps' => []];
+    $result = [
+        'requirements' => ['foo'],
+        'experiences' => ['bar'],
+        'matches' => [],
+        'gaps' => [],
+        'tags' => [
+            'matches' => [],
+            'gaps' => [],
+        ],
+    ];
     $service->putByDto($dto, $result);
     $found = $service->getByDto($dto);
     expect($found)->toBe($result);
+    expect($found['tags'])->toHaveKey('matches');
+    expect($found['tags'])->toHaveKey('gaps');
 });
 
 test('AnalysisCacheService gibt null zurück, wenn kein Eintrag existiert', function () {
