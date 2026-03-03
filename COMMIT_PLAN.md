@@ -1001,7 +1001,7 @@ return [
     
     'mock' => [
         'scenario' => env('AI_MOCK_SCENARIO', 'realistic'),
-        'delay_ms' => env('AI_MOCK_DELAY', 500), // Simuliere API-Delay
+        'delay' => env('AI_MOCK_DELAY', 500), // Simuliere API-Delay
     ],
     
     'gemini' => [

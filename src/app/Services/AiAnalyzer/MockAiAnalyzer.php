@@ -21,12 +21,16 @@ class MockAiAnalyzer implements AiAnalyzerInterface
 
     public function __construct()
     {
-        /** @var string $scenario */
         $scenario = config('ai.mock.scenario', 'realistic');
+        if (!is_string($scenario)) {
+            $scenario = 'realistic';
+        }
         $this->scenario = $scenario;
 
-        /** @var int $delay */
         $delay = config('ai.mock.delay_ms', 500);
+        if (!is_int($delay)) {
+            $delay = (int)$delay;
+        }
         $this->delayMs = $delay;
     }
 
@@ -266,3 +270,5 @@ class MockAiAnalyzer implements AiAnalyzerInterface
         ];
     }
 }
+
+

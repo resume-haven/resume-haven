@@ -102,7 +102,7 @@ it('MockAiAnalyzer gibt no_match scenario zurück', function () {
 });
 
 it('MockAiAnalyzer simuliert API-Delay', function () {
-    config(['ai.mock.delay_ms' => 100]);
+    config(['ai.mock.delay' => 100]);
     $analyzer = new MockAiAnalyzer();
 
     $request = new AnalyzeRequestDto('Job Text', 'CV Text');
@@ -116,7 +116,7 @@ it('MockAiAnalyzer simuliert API-Delay', function () {
 });
 
 it('MockAiAnalyzer funktioniert ohne Delay', function () {
-    config(['ai.mock.delay_ms' => 0]);
+    config(['ai.mock.delay' => 0]);
     $analyzer = new MockAiAnalyzer();
 
     $request = new AnalyzeRequestDto('Job Text', 'CV Text');
