@@ -164,6 +164,42 @@ php artisan test
 
 ---
 
+# 🔧 Artisan Commands
+
+## Cache Management
+
+### Analysis Cache leeren
+
+```bash
+# Alle Cache-Einträge löschen
+php artisan cache:clear-analysis
+
+# Nur Einträge älter als N Tage löschen
+php artisan cache:clear-analysis --older-than=30
+```
+
+**Verwendung mit Makefile**:
+```bash
+make cache-clear-analysis
+```
+
+**Cronjob-Integration** (optional, für Production):
+```php
+// In app/Console/Kernel.php
+$schedule->command('cache:clear-analysis --older-than=30')
+    ->dailyAt('03:00');
+```
+
+**Optionen**:
+- `--older-than=N` – Löscht nur Einträge, die älter als N Tage sind (basierend auf `updated_at`)
+
+**Beispiele**:
+- `✓ Cleared 42 cache entries.` (alle gelöscht)
+- `✓ Deleted 15 cache entries older than 30 days.` (alte gelöscht)
+- `✓ Cache table is already empty.` (kein Cache vorhanden)
+
+---
+
 # 📁 Dokumentation
 
 Die vollständige technische Dokumentation befindet sich im `docs/` Verzeichnis:

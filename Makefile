@@ -103,6 +103,9 @@ nginx-shell: ## Nginx-Container Shell öffnen
 php-cache-clear: ## Laravel Cache leeren (php artisan cache:clear)
 	docker exec -it resumehaven-php php artisan cache:clear
 
+cache-clear-analysis: ## Analysis Cache leeren (php artisan cache:clear-analysis)
+	docker exec -it resumehaven-php php artisan cache:clear-analysis
+
 # --- DATABASE ---
 db-migrate: ## Datenbank-Migrationen ausführen
 	docker exec -it resumehaven-php php artisan migrate
@@ -119,4 +122,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear cache-clear-analysis db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
