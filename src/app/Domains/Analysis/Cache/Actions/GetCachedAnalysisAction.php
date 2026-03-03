@@ -32,7 +32,8 @@ class GetCachedAnalysisAction
             $cached['experiences'],
             $cached['matches'],
             $cached['gaps'],
-            $cached['error'] ?? null
+            $cached['error'] ?? null,
+            $cached['tags'] ?? null
         );
     }
 }

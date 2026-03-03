@@ -8,6 +8,7 @@ use App\Domains\Analysis\Commands\AnalyzeJobAndResumeCommand;
 // use App\Domains\Analysis\UseCases\ExtractDataUseCase\ExtractDataUseCase; // TODO: Für zukünftige Separation
 use App\Domains\Analysis\UseCases\MatchingUseCase\MatchingUseCase;
 use App\Domains\Analysis\UseCases\GapAnalysisUseCase\GapAnalysisUseCase;
+use App\Domains\Analysis\UseCases\GenerateTagsUseCase\GenerateTagsAction;
 use App\Domains\Analysis\Cache\Actions\GetCachedAnalysisAction;
 use App\Domains\Analysis\Cache\Actions\StoreCachedAnalysisAction;
 use App\Dto\AnalyzeResultDto;
@@ -30,6 +31,7 @@ class AnalyzeJobAndResumeHandler
     public function __construct(
         private MatchingUseCase $matchingUseCase,
         private GapAnalysisUseCase $gapAnalysisUseCase,
+        private GenerateTagsAction $generateTagsAction,
         private GetCachedAnalysisAction $getCachedAnalysis,
         private StoreCachedAnalysisAction $storeCachedAnalysis,
         private AnalyzeApplicationService $analyzeService,
@@ -79,7 +81,16 @@ class AnalyzeJobAndResumeHandler
             $matchingResult->matches
         );
 
-        // 5. Combine results
+        // 5. Ensure tags exist (use AI tags if present, otherwise generate fallback)
+        $tags = $analyzeResult->tags;
+        if ($tags === null) {
+            $tags = $this->generateTagsAction->execute(
+                $matchingResult->matches,
+                $gapResult->gaps
+            );
+        }
+
+        // 6. Combine results
         $result = new AnalyzeResultDto(
             $request->jobText(),
             $request->cvText(),
@@ -87,10 +98,11 @@ class AnalyzeJobAndResumeHandler
             $analyzeResult->experiences,
             $matchingResult->matches,
             $gapResult->gaps,
-            null
+            null,
+            $tags
         );
 
-        // 6. Cache result (unless in demo mode)
+        // 7. Cache result (unless in demo mode)
         if (! $command->demoMode) {
             $this->storeCachedAnalysis->execute($request, $result);
         }

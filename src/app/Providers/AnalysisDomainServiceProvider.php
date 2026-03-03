@@ -16,6 +16,7 @@ use App\Domains\Analysis\UseCases\GapAnalysisUseCase\GapAnalysisUseCase;
 use App\Domains\Analysis\UseCases\GapAnalysisUseCase\FindGapsAction;
 use App\Domains\Analysis\UseCases\ScoringUseCase\ScoringUseCase;
 use App\Domains\Analysis\UseCases\ScoringUseCase\CalculateScoreAction;
+use App\Domains\Analysis\UseCases\GenerateTagsUseCase\GenerateTagsAction;
 use App\Domains\Analysis\Cache\Actions\GetCachedAnalysisAction;
 use App\Domains\Analysis\Cache\Actions\StoreCachedAnalysisAction;
 use App\Domains\Analysis\Cache\Repositories\AnalysisCacheRepository;
@@ -37,6 +38,7 @@ class AnalysisDomainServiceProvider extends ServiceProvider
         $this->app->singleton(MatchAction::class);
         $this->app->singleton(FindGapsAction::class);
         $this->app->singleton(CalculateScoreAction::class);
+        $this->app->singleton(GenerateTagsAction::class);
 
         // UseCases
         // TODO: ExtractDataUseCase wird später wieder verwendet, wenn Extraction aus der AI herausgenommen wird
