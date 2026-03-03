@@ -48,6 +48,16 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
             /** @var array<int, string> $gaps */
             $gaps = $data['gaps'];
 
+            // Parse Tags falls vorhanden
+            $tags = null;
+            if (isset($data['tags']) && is_array($data['tags'])) {
+                // Prüfe dass tags die richtige Struktur hat
+                if (isset($data['tags']['matches']) && isset($data['tags']['gaps'])) {
+                    /** @var array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>} $tags */
+                    $tags = $data['tags'];
+                }
+            }
+
             return new AnalyzeResultDto(
                 $request->jobText(),
                 $request->cvText(),
@@ -55,7 +65,8 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 $experiences,
                 $matches,
                 $gaps,
-                null
+                null,
+                $tags
             );
         } catch (\Throwable $e) {
             return new AnalyzeResultDto(
@@ -65,7 +76,8 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 [],
                 [],
                 [],
-                'AI-Analyse fehlgeschlagen: '.$e->getMessage()
+                'AI-Analyse fehlgeschlagen: '.$e->getMessage(),
+                null
             );
         }
     }
@@ -80,3 +92,5 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
         return 'gemini';
     }
 }
+
+

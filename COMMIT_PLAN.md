@@ -1095,6 +1095,159 @@ Die Architektur ist sauber, erweiterbar und production-ready.
 
 ---
 
+## Commit 16b – AI Response Format erweitern (Tags-Struktur)
+
+### Ziel
+
+Die AI-Response wird um eine strukturierte **Tags-Section** erweitert. Tags ermöglichen eine bessere Gruppierung und Darstellung von Matches und Gaps für die spätere UI-Komponenten-Implementierung (Commit 16c).
+
+**Key Insight**: Während `matches` und `gaps` Details bleiben, bieten `tags` eine elegantere, gruppierte Ansicht für die UI.
+
+---
+
+### Änderungen
+
+#### 1. DTOs erweitern
+
+**Update**: `app/Dto/AnalyzeResultDto.php`
+
+- Füge optionales `tags` Field hinzu:
+  ```php
+  public readonly ?array $tags = null;
+  ```
+- Tags-Struktur:
+  ```php
+  [
+    'matches' => [ // Gruppierte Matches
+      ['requirement' => '...', 'experience' => ['...', '...']]
+    ],
+    'gaps' => ['...', '...'] // Array von Strings
+  ]
+  ```
+
+**Neue Datei**: `app/Domains/Analysis/Dto/TagMatchDto.php`
+- `requirement: string` (z.B. "Frontend")
+- `experience: array<string>` (z.B. ["React", "Vue"])
+- Immutable mit PHPDoc
+
+---
+
+#### 2. AI Response Parsing anpassen
+
+**Update**: `app/Services/AiAnalyzer/GeminiAiAnalyzer.php`
+
+- Parse `tags` Section aus AI-Response (falls vorhanden)
+- Type-Safe Array-Handling mit PHPDoc-Assertions
+- Fallback zu `null` wenn Tags nicht vorhanden
+
+**Update**: `app/Services/AiAnalyzer/MockAiAnalyzer.php`
+
+- Alle 4 Szenarien mit `tags` Section erweitern
+- Nutze scratch_4.json als Vorlage für realistische Daten
+- Mock-Response mit vollständiger Tags-Struktur
+
+---
+
+#### 3. Tag-Generierungs-Service (Fallback)
+
+**Neue Datei**: `app/Domains/Analysis/UseCases/GenerateTagsUseCase/GenerateTagsAction.php`
+
+- **Fallback**: Falls AI keine Tags liefert, generiere sie programmatisch
+- Logik:
+  1. Grupiere `matches` nach Requirement
+  2. Sammle alle Experiences für jedes Requirement
+  3. Verwende Gaps 1:1 (sind ohnehin Strings)
+- Keine Extra-AI-Anfrage nötig (Algorithmic Fallback)
+
+---
+
+#### 4. Handler erweitern
+
+**Update**: `app/Domains/Analysis/Handlers/AnalyzeJobAndResumeHandler.php`
+
+- Nach Analyse: Prüfe ob `tags` im Response vorhanden
+- Falls nicht: Rufe `GenerateTagsAction` auf (Fallback)
+- Speichere `tags` in DTO
+
+---
+
+#### 5. Controller anpassen
+
+**Update**: `app/Http/Controllers/AnalyzeController.php`
+
+- Übergebe `tags` an View via `->with('tags', $result->tags)`
+- Tags werden als `$tags` in result.blade.php verfügbar (noch nicht gerendert)
+
+---
+
+#### 6. Tests
+
+**Neue Datei**: `tests/Unit/GenerateTagsActionTest.php`
+- Test für Gruppierung von Matches
+- Test für Gaps 1:1 Übernahme
+- Test für leere Arrays
+- Test für Edge Cases
+
+**Update**: `tests/Unit/MockAiAnalyzerTest.php`
+- Prüfe dass Tags in Mock-Response vorhanden sind
+- Prüfe dass Tags-Struktur korrekt ist (requirement + experience[])
+
+---
+
+### Mock-Daten Struktur (aus scratch_4.json)
+
+#### **Realistic Scenario**:
+```json
+{
+  "tags": {
+    "matches": [
+      {"requirement": "Softwareentwicklung", "experience": ["20 Jahre Erfahrung"]},
+      {"requirement": "Frontend", "experience": ["React"]},
+      {"requirement": "Webtechnologien", "experience": ["JavaScript", "HTML", "CSS"]},
+      {"requirement": "Agile Methoden", "experience": ["Scrum", "Kanban"]}
+    ],
+    "gaps": [
+      "Lead", "Java", "Spring Boot", "Angular", "Vue",
+      "AI‑Tools", "Microservices", "APIs", "Docker", "Cloud"
+    ]
+  }
+}
+```
+
+#### **High Score, Low Score, No Match**: Analog angepasst
+
+---
+
+### Backward Compatibility
+
+✅ **Alte Fields bleiben bestehen**:
+- `matches` Array: Bleibt unverändert (1:1 Mapping)
+- `gaps` Array: Bleibt unverändert (einfache Strings)
+- `tags`: Neue optionale Section (falls vorhanden)
+
+✅ **Fallback-Logik**:
+- Wenn AI keine Tags liefert: `tags` wird programmatisch generiert
+- Garantiert dass `tags` immer vorhanden sind
+- View kann sicher auf `$tags` zugreifen
+
+---
+
+### Ergebnis
+
+ResumeHaven hat jetzt:
+
+- ✅ Erweiterte AI-Response mit strukturierten Tags
+- ✅ Backward Compatibility (alte Fields + neue Tags)
+- ✅ Intelligente Fallback-Generierung ohne Extra-Requests
+- ✅ Gruppierte Ansicht für elegante UI-Darstellung
+- ✅ Vorbereitung für Commit 16c (Tag/Badge UI)
+- ✅ Vollständige Test-Abdeckung
+- ✅ PHPStan Level 9 clean
+
+Die Architektur ist bereit für die UI-Komponenten in Commit 16c.
+
+---
+
 ## Commit 17 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
 
 ### Ziel

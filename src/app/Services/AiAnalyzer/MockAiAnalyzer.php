@@ -52,7 +52,8 @@ class MockAiAnalyzer implements AiAnalyzerInterface
             experiences: $data['experiences'],
             matches: $data['matches'],
             gaps: $data['gaps'],
-            error: null
+            error: null,
+            tags: $data['tags']
         );
     }
 
@@ -69,7 +70,7 @@ class MockAiAnalyzer implements AiAnalyzerInterface
     /**
      * Realistic Scenario: Ausgeglichenes Ergebnis (60% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
      */
     private function getRealisticScenario(): array
     {
@@ -96,13 +97,24 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                 'MySQL/PostgreSQL Datenbanken',
                 'Git Versionskontrolle',
             ],
+            'tags' => [
+                'matches' => [
+                    ['requirement' => 'Softwareentwicklung', 'experience' => ['5 Jahre PHP Entwicklung']],
+                    ['requirement' => 'Backend', 'experience' => ['Laravel Projekte', 'API Entwicklung']],
+                    ['requirement' => 'Datenbanken', 'experience' => ['Datenbank-Design']],
+                ],
+                'gaps' => [
+                    'MySQL/PostgreSQL',
+                    'Git',
+                ],
+            ],
         ];
     }
 
     /**
      * High Score Scenario: Sehr gute Übereinstimmung (90% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
      */
     private function getHighScoreScenario(): array
     {
@@ -144,13 +156,25 @@ class MockAiAnalyzer implements AiAnalyzerInterface
             'gaps' => [
                 'Code Reviews',
             ],
+            'tags' => [
+                'matches' => [
+                    ['requirement' => 'Backend', 'experience' => ['8 Jahre PHP', 'Senior Laravel', 'API Architekt']],
+                    ['requirement' => 'Datenbanken', 'experience' => ['MySQL Performance']],
+                    ['requirement' => 'DevOps', 'experience' => ['Docker', 'Kubernetes']],
+                    ['requirement' => 'Qualität', 'experience' => ['TDD', 'Clean Architecture']],
+                    ['requirement' => 'Methoden', 'experience' => ['Agile/Scrum']],
+                ],
+                'gaps' => [
+                    'Code Reviews',
+                ],
+            ],
         ];
     }
 
     /**
      * Low Score Scenario: Geringe Übereinstimmung (25% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
      */
     private function getLowScoreScenario(): array
     {
@@ -182,13 +206,27 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                 'TDD/Testing',
                 'Microservices Architektur',
             ],
+            'tags' => [
+                'matches' => [
+                    ['requirement' => 'PHP', 'experience' => ['WordPress']],
+                    ['requirement' => 'Version Control', 'experience' => ['Git Basics']],
+                ],
+                'gaps' => [
+                    'Laravel',
+                    'APIs',
+                    'Datenbanken',
+                    'Docker',
+                    'Testing',
+                    'Microservices',
+                ],
+            ],
         ];
     }
 
     /**
      * No Match Scenario: Keine Übereinstimmungen (0% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
      */
     private function getNoMatchScenario(): array
     {
@@ -214,6 +252,18 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                 'Data Science',
                 'AWS Cloud Infrastructure',
             ],
+            'tags' => [
+                'matches' => [],
+                'gaps' => [
+                    'Python',
+                    'Django',
+                    'ML',
+                    'TensorFlow',
+                    'Data Science',
+                    'AWS',
+                ],
+            ],
         ];
     }
 }
+

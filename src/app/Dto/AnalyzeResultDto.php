@@ -21,13 +21,19 @@ class AnalyzeResultDto
     /** @var array<int, string> */
     public array $gaps;
 
+    /**
+     * @var array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null
+     */
+    public ?array $tags;
+
     public ?string $error;
 
     /**
-     * @param array<int, string>                                         $requirements
-     * @param array<int, string>                                         $experiences
-     * @param array<int, array{requirement: string, experience: string}> $matches
-     * @param array<int, string>                                         $gaps
+     * @param array<int, string>                                                                                               $requirements
+     * @param array<int, string>                                                                                               $experiences
+     * @param array<int, array{requirement: string, experience: string}>                                                       $matches
+     * @param array<int, string>                                                                                               $gaps
+     * @param array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null $tags
      */
     public function __construct(
         string $job_text,
@@ -36,7 +42,8 @@ class AnalyzeResultDto
         array $experiences,
         array $matches,
         array $gaps,
-        ?string $error = null
+        ?string $error = null,
+        ?array $tags = null
     ) {
         $this->job_text = $job_text;
         $this->cv_text = $cv_text;
@@ -45,12 +52,13 @@ class AnalyzeResultDto
         $this->matches = $matches;
         $this->gaps = $gaps;
         $this->error = $error;
+        $this->tags = $tags;
     }
 
     /**
      * Konvertiert das DTO zu einem Array.
      *
-     * @return array{job_text: string, cv_text: string, requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, error: string|null}
+     * @return array{job_text: string, cv_text: string, requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, error: string|null, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null}
      */
     public function toArray(): array
     {
@@ -62,6 +70,7 @@ class AnalyzeResultDto
             'matches' => $this->matches,
             'gaps' => $this->gaps,
             'error' => $this->error,
+            'tags' => $this->tags,
         ];
     }
 }

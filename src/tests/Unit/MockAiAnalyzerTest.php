@@ -33,6 +33,21 @@ it('MockAiAnalyzer gibt realistic scenario zurück', function () {
     expect(count($result->gaps))->toBeGreaterThan(0);
 });
 
+it('MockAiAnalyzer gibt realistic scenario mit Tags zurück', function () {
+    config(['ai.mock.scenario' => 'realistic']);
+    $analyzer = new MockAiAnalyzer();
+
+    $request = new AnalyzeRequestDto('Job Text', 'CV Text');
+    $result = $analyzer->analyze($request);
+
+    expect($result->error)->toBeNull();
+    expect($result->tags)->not()->toBeNull();
+    expect($result->tags)->toHaveKey('matches');
+    expect($result->tags)->toHaveKey('gaps');
+    expect($result->tags['matches'])->toBeArray();
+    expect($result->tags['gaps'])->toBeArray();
+});
+
 it('MockAiAnalyzer gibt high_score scenario zurück', function () {
     config(['ai.mock.scenario' => 'high_score']);
     $analyzer = new MockAiAnalyzer();
