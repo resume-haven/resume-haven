@@ -1390,12 +1390,71 @@ protected function schedule(Schedule $schedule)
 
 ---
 
-## Commit 19 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+## Commit 19 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt, Kategorie + Confidence)
 
 ### Ziel
 
-Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.
-Nutzer erhalten jetzt klare Hinweise, wie sie ihren Lebenslauf optimieren können, um besser zur Stellenausschreibung zu passen.
+Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.  
+Nutzer erhalten klare Hinweise, wie sie ihren Lebenslauf optimieren können.
+
+Empfehlungen enthalten **Kategorien** und **Confidence-Werte** für präzisere Gewichtung.
+
+---
+
+### Datenmodell (Option C + B)
+
+**Pro Empfehlung**:
+```php
+[
+    'gap' => string,                // "Docker"
+    'recommendation' => string,     // "Erlernen Sie Docker Basics..."
+    'example' => string,            // "Verfassen Sie: 'Docker Basics'"
+    'category' => string,           // "tools" (skills|tools|architecture|process|leadership|general)
+    'priority' => string,           // "high" (critical|high|medium|low)
+    'confidence' => float,          // 0.85 (0.0 - 1.0, Default: 0.5)
+]
+```
+
+---
+
+### Implementierung
+
+#### 1. Analyzer erweitern (`app/Ai/Agents/Analyzer.php`)
+- Prompt um Empfehlungs-Sektion ergänzen
+- Priority-Levels: `critical|high|medium|low`
+- Confidence: 0.0 bis 1.0
+- Schema aktualisieren
+
+#### 2. AnalyzeResultDto erweitern (`app/Dto/AnalyzeResultDto.php`)
+- `recommendations` Field (optional, Array<object>)
+- PHPDoc mit strikter Shape
+
+#### 3. Parsing (`GeminiAiAnalyzer.php` + `MockAiAnalyzer.php`)
+- Parse & validiere Recommendations
+- Fallback zu `null` wenn ungültig
+
+#### 4. Fallback im Handler (`AnalyzeJobAndResumeHandler.php`)
+- Algorithmen-basierte Defaults wenn AI-Recommendations fehlen
+- Defensive Programmierung
+
+#### 5. UI (`result.blade.php`)
+- Neues Panel „Empfehlungen"
+- Priority-Farb-Mapping (critical→Rot, high→Orange, medium→Gelb, low→Grün)
+- Confidence-Bar, Category-Badge
+
+#### 6. Tests (Unit + Feature)
+- Validation, Normalisierung, Fallback
+- UI-Integration
+
+---
+
+### Ergebnis
+
+- ✅ Empfehlungen mit Priority & Category
+- ✅ Confidence für Gewichtung  
+- ✅ Robuster Fallback
+- ✅ Moderne UI
+- ✅ Backward-Compatible
 
 ---
 

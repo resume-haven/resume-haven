@@ -58,6 +58,12 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 }
             }
 
+            // Parse Recommendations falls vorhanden (optional)
+            $recommendations = null;
+            if (isset($data['recommendations']) && is_array($data['recommendations'])) {
+                $recommendations = $this->validateRecommendations($data['recommendations']);
+            }
+
             return new AnalyzeResultDto(
                 $request->jobText(),
                 $request->cvText(),
@@ -66,7 +72,8 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 $matches,
                 $gaps,
                 null,
-                $tags
+                $tags,
+                $recommendations
             );
         } catch (\Throwable $e) {
             return new AnalyzeResultDto(
@@ -77,9 +84,71 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 [],
                 [],
                 'AI-Analyse fehlgeschlagen: '.$e->getMessage(),
+                null,
                 null
             );
         }
+    }
+
+    /**
+     * Validiere und normalisiere Recommendations aus der AI-Response
+     *
+     * @param array<mixed> $recommendations
+     * @return array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>|null
+     */
+    private function validateRecommendations(array $recommendations): ?array
+    {
+        $validated = [];
+        $validPriorities = ['critical', 'high', 'medium', 'low'];
+        $validCategories = ['skills', 'tools', 'architecture', 'process', 'leadership', 'general'];
+
+        foreach ($recommendations as $rec) {
+            if (! is_array($rec)) {
+                continue;
+            }
+
+            if (! isset($rec['gap'], $rec['recommendation'], $rec['example'], $rec['category'], $rec['priority'], $rec['confidence'])) {
+                continue;
+            }
+
+            if (! is_string($rec['gap']) || ! is_string($rec['recommendation']) || ! is_string($rec['example']) || ! is_string($rec['category']) || ! is_string($rec['priority'])) {
+                continue;
+            }
+
+            if (! is_numeric($rec['confidence'])) {
+                continue;
+            }
+
+            $gap = $rec['gap'];
+            $recommendation = $rec['recommendation'];
+            $example = $rec['example'];
+            $category = $rec['category'];
+            $priority = $rec['priority'];
+            $confidence = (float) $rec['confidence'];
+
+            if (! in_array($category, $validCategories, true)) {
+                $category = 'general';
+            }
+
+            if (! in_array($priority, $validPriorities, true)) {
+                $priority = 'medium';
+            }
+
+            $confidence = max(0.0, min(1.0, $confidence));
+
+            if ($gap !== '' && $recommendation !== '') {
+                $validated[] = [
+                    'gap' => $gap,
+                    'recommendation' => $recommendation,
+                    'example' => $example,
+                    'category' => $category,
+                    'priority' => $priority,
+                    'confidence' => $confidence,
+                ];
+            }
+        }
+
+        return count($validated) > 0 ? $validated : null;
     }
 
     public function isAvailable(): bool
@@ -92,3 +161,4 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
         return 'gemini';
     }
 }
+

@@ -159,4 +159,58 @@
             </div>
         </div>
     </div>
+
+    @if ($result && is_array($result) && isset($result['recommendations']) && is_array($result['recommendations']) && count($result['recommendations']) > 0)
+        <div class="mt-4 bg-white dark:bg-neutral-dark rounded-lg shadow p-6">
+            <h3 class="text-xl font-bold mb-4">Empfehlungen & Verbesserungsvorschläge</h3>
+            <div class="space-y-4">
+                @foreach ($result['recommendations'] as $rec)
+                    @php
+                        $priority = $rec['priority'] ?? 'medium';
+                        $priorityClasses = match ($priority) {
+                            'critical' => 'bg-red-100 text-red-800',
+                            'high' => 'bg-orange-100 text-orange-800',
+                            'medium' => 'bg-yellow-100 text-yellow-800',
+                            'low' => 'bg-green-100 text-green-800',
+                            default => 'bg-gray-100 text-gray-800',
+                        };
+                        $category = $rec['category'] ?? 'general';
+                        $confidence = isset($rec['confidence']) ? (float) $rec['confidence'] : 0.5;
+                        $confidencePercent = max(0, min(100, (int) round($confidence * 100)));
+                    @endphp
+
+                    <div class="rounded-lg border border-gray-200 p-4">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $rec['gap'] ?? 'Unbekannte Gap' }}</span>
+                            <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold {{ $priorityClasses }}">
+                                {{ strtoupper($priority) }}
+                            </span>
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                                {{ strtoupper($category) }}
+                            </span>
+                        </div>
+
+                        <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                            {{ $rec['recommendation'] ?? '' }}
+                        </p>
+
+                        <div class="rounded bg-gray-50 dark:bg-neutral-dark p-3 mb-2">
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Beispiel</p>
+                            <p class="text-sm text-gray-800 dark:text-gray-200">{{ $rec['example'] ?? '' }}</p>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
+                                <span>Confidence</span>
+                                <span>{{ $confidencePercent }}%</span>
+                            </div>
+                            <div class="h-2 rounded-full bg-gray-200 overflow-hidden">
+                                <div class="h-full bg-indigo-500" style="width: {{ $confidencePercent }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 @endsection

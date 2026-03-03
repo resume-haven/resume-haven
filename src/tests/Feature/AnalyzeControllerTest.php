@@ -30,6 +30,7 @@ test('akzeptiert gültige Eingaben und zeigt die Ergebnis-View', function () {
     $viewResult = $response->viewData('result');
     expect($viewResult)->toBeArray();
     expect($viewResult)->toHaveKey('tags');
+    expect($viewResult)->toHaveKey('recommendations');
 });
 
 

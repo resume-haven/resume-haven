@@ -60,7 +60,8 @@ class MockAiAnalyzer implements AiAnalyzerInterface
             matches: $data['matches'],
             gaps: $data['gaps'],
             error: null,
-            tags: $data['tags']
+            tags: $data['tags'],
+            recommendations: $data['recommendations']
         );
     }
 
@@ -77,7 +78,7 @@ class MockAiAnalyzer implements AiAnalyzerInterface
     /**
      * Realistic Scenario: Ausgeglichenes Ergebnis (60% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>}
      */
     private function getRealisticScenario(): array
     {
@@ -115,13 +116,31 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Git',
                 ],
             ],
+            'recommendations' => [
+                [
+                    'gap' => 'MySQL/PostgreSQL Datenbanken',
+                    'recommendation' => 'Vertiefen Sie Ihr Wissen in SQL und Datenbank-Optimierung durch praktische Projekte oder Online-Kurse.',
+                    'example' => 'Verfassen Sie im Lebenslauf: "Spezialisierung auf PostgreSQL-Optimierung und komplexe SQL-Queries"',
+                    'category' => 'skills',
+                    'priority' => 'high',
+                    'confidence' => 0.85,
+                ],
+                [
+                    'gap' => 'Git Versionskontrolle',
+                    'recommendation' => 'Lernen Sie Git Best Practices und erweiterte Workflows wie Git Flow oder GitHub Flow.',
+                    'example' => 'Verfassen Sie: "Erfahrung mit Git, GitHub und Continuous Integration"',
+                    'category' => 'tools',
+                    'priority' => 'medium',
+                    'confidence' => 0.75,
+                ],
+            ],
         ];
     }
 
     /**
      * High Score Scenario: Sehr gute Übereinstimmung (90% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>}
      */
     private function getHighScoreScenario(): array
     {
@@ -175,13 +194,23 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Code Reviews',
                 ],
             ],
+            'recommendations' => [
+                [
+                    'gap' => 'Code Reviews',
+                    'recommendation' => 'Übernehmen Sie aktiv Review-Verantwortung in Pull-Requests und dokumentieren Sie Standards.',
+                    'example' => 'Verfassen Sie: "Regelmäßige Durchführung von Code Reviews und Qualitäts-Gates"',
+                    'category' => 'process',
+                    'priority' => 'low',
+                    'confidence' => 0.72,
+                ],
+            ],
         ];
     }
 
     /**
      * Low Score Scenario: Geringe Übereinstimmung (25% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>}
      */
     private function getLowScoreScenario(): array
     {
@@ -227,13 +256,39 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Microservices',
                 ],
             ],
+            'recommendations' => [
+                [
+                    'gap' => 'Laravel Framework',
+                    'recommendation' => 'Belegen Sie einen Laravel-Kurs oder arbeiten Sie an Laravel-Projekten für praktische Erfahrung.',
+                    'example' => 'Verfassen Sie: "Laravel 10 Entwicklung: Authentifizierung, Middleware, Eloquent ORM"',
+                    'category' => 'skills',
+                    'priority' => 'critical',
+                    'confidence' => 0.95,
+                ],
+                [
+                    'gap' => 'RESTful API Design',
+                    'recommendation' => 'Erlernen Sie RESTful Architektur-Patterns und API-Design Best Practices.',
+                    'example' => 'Verfassen Sie: "Design und Implementierung von RESTful APIs mit Laravel"',
+                    'category' => 'architecture',
+                    'priority' => 'critical',
+                    'confidence' => 0.9,
+                ],
+                [
+                    'gap' => 'MySQL Datenbanken',
+                    'recommendation' => 'Vertiefen Sie SQL-Kenntnisse und Datenbank-Design durch praktische Übungen.',
+                    'example' => 'Verfassen Sie: "MySQL-Optimierung und komplexe SQL-Queries"',
+                    'category' => 'skills',
+                    'priority' => 'high',
+                    'confidence' => 0.85,
+                ],
+            ],
         ];
     }
 
     /**
      * No Match Scenario: Keine Übereinstimmungen (0% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>}
      */
     private function getNoMatchScenario(): array
     {
@@ -268,6 +323,24 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'TensorFlow',
                     'Data Science',
                     'AWS',
+                ],
+            ],
+            'recommendations' => [
+                [
+                    'gap' => 'Python Django Framework',
+                    'recommendation' => 'Diese Stelle erfordert einen Technologie-Stack, den Sie nicht haben. Erwägen Sie Umschulung oder alternative Positionen.',
+                    'example' => 'Verfassen Sie: "Bereit für Umstieg in Python/Django Entwicklung"',
+                    'category' => 'general',
+                    'priority' => 'critical',
+                    'confidence' => 0.95,
+                ],
+                [
+                    'gap' => 'Machine Learning & Data Science',
+                    'recommendation' => 'Machine Learning erfordert spezialisierten Skill-Stack (Python, Statistics, etc.). Intensive Kurse sind notwendig.',
+                    'example' => 'Verfassen Sie: "Absolvierung von ML-Bootcamps oder Spezialisierungskursen"',
+                    'category' => 'skills',
+                    'priority' => 'critical',
+                    'confidence' => 0.9,
                 ],
             ],
         ];
