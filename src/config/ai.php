@@ -3,6 +3,40 @@
 declare(strict_types=1);
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | AI Provider Strategy
+    |--------------------------------------------------------------------------
+    |
+    | This option controls which AI provider implementation to use.
+    | Available options: 'mock', 'gemini'
+    |
+    | - mock: Development mode, no API calls, predefined test data
+    | - gemini: Production mode, real AI requests via Gemini
+    |
+    */
+
+    'provider' => env('AI_PROVIDER', 'mock'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mock Provider Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for MockAiAnalyzer during development.
+    |
+    | Scenarios:
+    | - realistic: Balanced result (~60% score)
+    | - high_score: Very good match (~90% score)
+    | - low_score: Low match (~25% score)
+    | - no_match: No matches (0% score)
+    |
+    */
+
+    'mock' => [
+        'scenario' => env('AI_MOCK_SCENARIO', 'realistic'),
+        'delay_ms' => env('AI_MOCK_DELAY', 500), // Simulate API delay
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -129,5 +163,4 @@ return [
             'key' => env('XAI_API_KEY'),
         ],
     ],
-
 ];
