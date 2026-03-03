@@ -27,7 +27,7 @@ class AnalysisCacheRepository
     /**
      * Speichere Analyse-Ergebnisse im Cache
      *
-     * @param array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags?: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, error?: string|null} $result
+     * @param array<string, mixed> $result
      */
     public function store(string $hash, string $jobText, string $cvText, array $result): void
     {
@@ -41,3 +41,4 @@ class AnalysisCacheRepository
         );
     }
 }
+
