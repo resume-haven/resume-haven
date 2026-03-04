@@ -8,6 +8,7 @@ use App\Ai\Agents\Analyzer;
 use App\Dto\AnalyzeRequestDto;
 use App\Dto\AnalyzeResultDto;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
+use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 
 /**
@@ -82,6 +83,12 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 $tags
             );
         } catch (\Throwable $e) {
+            // Log the error for debugging
+            $this->logError($e, $request);
+
+            // Return user-friendly error message
+            $userMessage = $this->getUserFriendlyErrorMessage($e);
+
             return new AnalyzeResultDto(
                 $request->jobText(),
                 $request->cvText(),
@@ -89,10 +96,53 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
                 [],
                 [],
                 [],
-                'AI-Analyse fehlgeschlagen: '.$e->getMessage(),
+                $userMessage,
                 null
             );
         }
+    }
+
+    /**
+     * Log error with context for debugging.
+     */
+    private function logError(\Throwable $exception, AnalyzeRequestDto $request): void
+    {
+        Log::error('AI Analysis failed', [
+            'provider' => 'gemini',
+            'exception_class' => $exception::class,
+            'exception_message' => $exception->getMessage(),
+            'job_text_length' => strlen($request->jobText()),
+            'cv_text_length' => strlen($request->cvText()),
+            'timestamp' => now()->toIso8601String(),
+        ]);
+    }
+
+    /**
+     * Convert exception to user-friendly error message.
+     */
+    private function getUserFriendlyErrorMessage(\Throwable $exception): string
+    {
+        $message = $exception->getMessage();
+
+        // Detect specific error types and provide helpful messages
+        if (str_contains(strtolower($message), 'timeout')) {
+            return 'Die KI-Analyse hat zu lange gedauert (Timeout). Bitte versuchen Sie es später erneut.';
+        }
+
+        if (str_contains(strtolower($message), 'json')) {
+            return 'Die KI-Antwort war ungültig. Bitte versuchen Sie es erneut.';
+        }
+
+        if (str_contains(strtolower($message), 'connection') || str_contains(strtolower($message), 'network')) {
+            return 'Netzwerkfehler bei der Verbindung zur KI. Bitte prüfen Sie Ihre Internetverbindung.';
+        }
+
+        if (str_contains(strtolower($message), 'api')) {
+            return 'Die KI-API antwortet nicht. Bitte versuchen Sie es später erneut.';
+        }
+
+        // Default message
+        return 'Die Analyse ist fehlgeschlagen. Bitte versuchen Sie es erneut.';
     }
 
     public function isAvailable(): bool
