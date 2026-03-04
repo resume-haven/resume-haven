@@ -1565,40 +1565,500 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 
 ## 🏆 Commit 21 – Code-Qualität Level 9 (MVP-Abschluss Phase 3a)
 
-**Zweck:** Maximale Robustheit und Wartbarkeit
+**Zweck:** Maximale Robustheit und Wartbarkeit durch SOLID-Prinzipien, PHPStan Level 9 und >90% Test-Coverage
 
-### Updated
+**Datum:** 05.03.2026 (geplant)  
+**Geschätzter Aufwand:** 4-6 Stunden  
+**Status:** 🔄 In Planung
 
-#### 1. PHPStan Level 9 erreichen
-- Alle Type-Hints vollständig
-- Alle Variablen typisiert
-- Union Types wo sinnvoll
-- Strict nullability checks
+---
 
-#### 2. Test-Coverage > 90%
-- Zusätzliche Edge-Case Tests
-- Error-Path Tests
-- Integration Tests für kritische Flows
+### 📊 IST-Analyse (aktueller Stand)
 
-#### 3. Mutation Testing
-- Mit Pest Mutation Plugin
-- Ziel: >80% Mutation-Score
+#### ✅ Bereits SOLID-konform:
+- ✅ Domain-Driven Architecture (Commands, Handlers, UseCases, Actions)
+- ✅ Single Responsibility in Actions
+- ✅ DTOs sind immutable
+- ✅ Repository Pattern (kein Raw SQL)
+- ✅ Dependency Injection überall
 
-#### 4. Code-Refactoring
-- Eliminerung von Dead Code
-- Simplification komplexer Funktionen
-- Verbesserung von Variable-Namen
+#### ⚠️ Verbesserungspotenzial:
 
-#### 5. Performance-Audit
-- Database Query Analysis (N+1 Queries?)
-- Caching-Effektivität überprüfen
+**1. AnalyzeController (78 Zeilen)**
+- **Problem:** `analyze()` Methode mit 50+ Zeilen, mehrere Responsibilities
+- **SRP-Verletzung:** Validation + Dispatching + View-Building in einer Methode
+- **Lösung:** Single-Action-Controller mit `__invoke()` + private Helper-Methoden
+
+**2. ValidateInputAction (144 Zeilen)**
+- **Problem:** `execute()` mit 40+ Zeilen, Pattern-Detection und Sanitization gemischt
+- **Lösung:** Zwei separate Services (`PatternDetectorService`, `InputSanitizerService`)
+
+**3. GeminiAiAnalyzer (160 Zeilen)**
+- **Problem:** `analyze()` mit 50+ Zeilen, viele Responsibilities
+- **Lösung:** Response-Parsing und Validation in separate Actions extrahieren
+
+**4. Fehlende Type-Hints**
+- **Problem:** Einige `@param`/`@return` ohne strikte Type-Hints
+- **Lösung:** PHPStan Level 9 = vollständige Typisierung
+
+**5. Test-Coverage Gaps**
+- **Problem:** Edge-Cases nicht getestet (Unicode, sehr große Inputs)
+- **Lösung:** >90% Coverage mit zusätzlichen Tests
+
+---
+
+### 🚀 Umsetzungsplan (6 Phasen)
+
+#### Phase 1: Controller-Refactoring (Single-Action-Pattern)
+
+**Ziel:** AnalyzeController zu Single-Action-Controller umbauen
+
+**Änderungen:**
+```php
+// VORHER (78 Zeilen, analyze() mit 50+ Zeilen)
+class AnalyzeController extends Controller
+{
+    public function analyze(Request $request): View
+    {
+        // Validation, Dispatching, Score, View-Building...
+    }
+}
+
+// NACHHER (60 Zeilen, __invoke() mit ~15 Zeilen)
+class AnalyzeController extends Controller
+{
+    public function __invoke(Request $request): View
+    {
+        $dto = $this->validateAndSanitizeInput($request);
+        $result = $this->dispatchAnalysis($dto);
+        $score = $this->calculateScore($result);
+        return $this->buildView($result, $score);
+    }
+    
+    private function validateAndSanitizeInput(Request $request): AnalyzeRequestDto { }
+    private function dispatchAnalysis(AnalyzeRequestDto $dto): AnalyzeResultDto { }
+    private function calculateScore(AnalyzeResultDto $result): ?ScoreResultDto { }
+    private function buildView(AnalyzeResultDto $result, ?ScoreResultDto $score): View { }
+}
+```
+
+**Route-Änderung:**
+```php
+// routes/web.php
+Route::post('/analyze', AnalyzeController::class); // statt @analyze
+```
+
+**Erwartetes Ergebnis:**
+- `__invoke()`: ~15 Zeilen (Orchestrierung only)
+- Jede private Methode: < 15 Zeilen
+- Cyclomatic Complexity: < 5
+
+---
+
+#### Phase 2: ValidateInputAction Refactoring
+
+**Ziel:** Pattern-Detection und Input-Sanitization in separate Services extrahieren
+
+**Neue Services:**
+
+1. **PatternDetectorService**
+```php
+namespace App\Domains\Analysis\UseCases\ValidateInputUseCase;
+
+class PatternDetectorService
+{
+    public function detect(string $input): array
+    {
+        $detected = [];
+        if ($this->isSqlPattern($input)) $detected[] = 'SQL Keywords';
+        if ($this->isXssPattern($input)) $detected[] = 'Script Tags';
+        if ($this->isEventHandlerPattern($input)) $detected[] = 'Event Handlers';
+        return $detected;
+    }
+    
+    private function isSqlPattern(string $input): bool { }
+    private function isXssPattern(string $input): bool { }
+    private function isEventHandlerPattern(string $input): bool { }
+}
+```
+
+2. **InputSanitizerService**
+```php
+namespace App\Domains\Analysis\UseCases\ValidateInputUseCase;
+
+class InputSanitizerService
+{
+    public function sanitize(string $input): string
+    {
+        return $this->normalizeLineEndings(
+            $this->trimWhitespace(
+                $this->removeNullBytes($input)
+            )
+        );
+    }
+    
+    private function removeNullBytes(string $input): string { }
+    private function trimWhitespace(string $input): string { }
+    private function normalizeLineEndings(string $input): string { }
+}
+```
+
+**Vereinfachte ValidateInputAction:**
+```php
+class ValidateInputAction
+{
+    public function __construct(
+        private PatternDetectorService $patternDetector,
+        private InputSanitizerService $sanitizer,
+    ) {}
+    
+    public function execute(string $input, string $fieldName = 'input'): ValidatedInputDto
+    {
+        $this->validateLength($input, $fieldName);
+        $patterns = $this->patternDetector->detect($input);
+        $sanitized = $this->sanitizer->sanitize($input);
+        $this->validateNotEmpty($sanitized);
+        
+        return new ValidatedInputDto($input, $sanitized, strlen($sanitized), !empty($patterns), $patterns);
+    }
+    
+    private function validateLength(string $input, string $fieldName): void { }
+    private function validateNotEmpty(string $sanitized): void { }
+}
+```
+
+**Erwartetes Ergebnis:**
+- `execute()`: ~20 Zeilen (statt 40+)
+- Zwei neue Services mit je < 50 Zeilen
+- Cyclomatic Complexity < 5 pro Methode
+
+---
+
+#### Phase 3: GeminiAiAnalyzer Refactoring
+
+**Ziel:** Response-Parsing und Validation in separate Actions extrahieren
+
+**Neue Actions:**
+
+1. **ValidateAiResponseAction**
+```php
+namespace App\Services\AiAnalyzer\Actions;
+
+class ValidateAiResponseAction
+{
+    public function execute(string $rawResponse): array
+    {
+        $this->validateLength($rawResponse);
+        $this->validateJsonStructure($rawResponse);
+        $this->validateSecurity($rawResponse);
+        
+        return json_decode($rawResponse, true);
+    }
+}
+```
+
+2. **ParseAiResponseAction**
+```php
+namespace App\Services\AiAnalyzer\Actions;
+
+class ParseAiResponseAction
+{
+    public function execute(array $data, AnalyzeRequestDto $request): AnalyzeResultDto
+    {
+        $this->validateStructure($data);
+        
+        $requirements = $this->extractRequirements($data);
+        $experiences = $this->extractExperiences($data);
+        $matches = $this->extractMatches($data);
+        $gaps = $this->extractGaps($data);
+        $tags = $this->extractTags($data);
+        
+        return new AnalyzeResultDto(
+            $request->jobText(),
+            $request->cvText(),
+            $requirements,
+            $experiences,
+            $matches,
+            $gaps,
+            null,
+            $tags
+        );
+    }
+}
+```
+
+**Vereinfachter GeminiAiAnalyzer:**
+```php
+class GeminiAiAnalyzer implements AiAnalyzerInterface
+{
+    public function __construct(
+        private ParseAiResponseAction $parseResponse,
+        private ValidateAiResponseAction $validateResponse,
+    ) {}
+    
+    public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto
+    {
+        try {
+            $sanitized = $this->sanitizeInput($request);
+            $response = $this->callApi($sanitized);
+            $validated = $this->validateResponse->execute($response);
+            return $this->parseResponse->execute($validated, $request);
+        } catch (\Throwable $e) {
+            $this->logError($e, $request);
+            return $this->buildErrorDto($request, $e);
+        }
+    }
+}
+```
+
+**Erwartetes Ergebnis:**
+- `analyze()`: ~15 Zeilen (statt 50+)
+- Zwei neue Actions mit klaren Responsibilities
+- Bessere Testbarkeit durch Separation
+
+---
+
+#### Phase 4: PHPStan Level 9
+
+**Aktuelle Aufgaben:**
+
+1. **Type-Hints vervollständigen:**
+```php
+// VORHER
+public function getByHash(string $hash): ?array
+
+// NACHHER
+/**
+ * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags?: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, error?: string|null}|null
+ */
+public function getByHash(string $hash): ?array
+```
+
+2. **Union-Types korrekt annotieren:**
+```php
+// VORHER
+public function handle($command)
+
+// NACHHER
+public function handle(AnalyzeJobAndResumeCommand $command): AnalyzeResultDto
+```
+
+3. **Nullable-Types korrekt:**
+```php
+// VORHER
+public $score;
+
+// NACHHER
+public readonly ?ScoreResultDto $score;
+```
+
+4. **PHPStan-Konfiguration verschärfen:**
+```yaml
+# phpstan.neon
+parameters:
+    level: 9
+    paths:
+        - app
+        - tests
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+```
+
+**Erwartetes Ergebnis:**
+- PHPStan Level 9: 0 Errors
+- Alle Properties, Parameter und Return-Types vollständig typisiert
+
+---
+
+#### Phase 5: Test-Coverage > 90%
+
+**Fehlende Tests identifizieren:**
+
+1. **ValidateInputAction - Edge-Cases:**
+   - Unicode-Zeichen (Emoji: 😀, Umlaute: äöü)
+   - Sehr lange Strings (49KB, 50KB, 51KB)
+   - Mehrfache Patterns gleichzeitig
+   - Null-Bytes in verschiedenen Positionen
+
+2. **GeminiAiAnalyzer - Error-Paths:**
+   - Timeout-Simulation
+   - Ungültiges JSON
+   - Fehlende Response-Felder
+   - API-Rate-Limit
+
+3. **AnalyzeController - Validation-Failures:**
+   - Zu kurze Inputs (<30 chars)
+   - Zu lange Inputs (>50KB)
+   - XSS/SQL-Injection in Inputs
+
+4. **PatternDetectorService (neu):**
+   - Alle Patterns einzeln testen
+   - Kombinationen von Patterns
+   - Case-Insensitivity
+
+5. **InputSanitizerService (neu):**
+   - Alle Sanitization-Schritte isoliert
+   - Kombinationen von problematischen Zeichen
+
+**Neue Tests (15+):**
+- `PatternDetectorServiceTest.php` (8 Tests)
+- `InputSanitizerServiceTest.php` (6 Tests)
+- `ValidateAiResponseActionTest.php` (5 Tests)
+- `ParseAiResponseActionTest.php` (5 Tests)
+- Erweiterte Edge-Case-Tests in bestehenden Test-Suites
+
+**Coverage-Ziel:**
+```bash
+make test -- --coverage
+# Ziel: >90% Coverage (aktuell ~85%)
+```
+
+**Mutation-Testing (optional):**
+```bash
+vendor/bin/pest --mutate
+# Ziel: >80% Mutation-Score
+```
+
+---
+
+#### Phase 6: Final Validation & Performance-Audit
+
+**1. Test-Validierung:**
+```bash
+make test              # Alle Tests grün (100+ Tests)
+make phpstan           # Level 9, 0 Errors
+make pint              # Code-Formatting clean
+```
+
+**2. Performance-Audit:**
+
+**N+1 Query Detection:**
+- `AnalysisCacheRepository::getByHash()` → Single Query ✓
+- Eloquent-Relations → Eager Loading checken
+
+**Caching-Effektivität:**
+- Cache-Hit-Rate messen
+- Durchschnittliche Response-Zeit mit/ohne Cache
+
+**Code-Duplication:**
+```bash
+vendor/bin/phpcpd app/
+# Ziel: < 5% Duplikation
+```
+
+**3. Dokumentation aktualisieren:**
+- `docs/CODING_GUIDELINES.md` mit neuen Services ergänzen
+- `docs/ARCHITECTURE.md` mit Refactoring-Entscheidungen
+- `COMMIT_PLAN.md` mit Ergebnissen
+
+---
 
 ### Tests Added
-- Additional Unit Tests für Edge Cases
-- Performance Benchmarks (optional)
+
+**Neue Test-Dateien:**
+- `PatternDetectorServiceTest.php` (8 Unit-Tests)
+- `InputSanitizerServiceTest.php` (6 Unit-Tests)
+- `ValidateAiResponseActionTest.php` (5 Unit-Tests)
+- `ParseAiResponseActionTest.php` (5 Unit-Tests)
+- Erweiterte Tests in bestehenden Suites (10+ Tests)
+
+**Test-Metriken:**
+- **Total Tests:** 100+ (vorher: 85)
+- **Assertions:** 320+ (vorher: 265)
+- **Coverage:** >90% (vorher: ~85%)
+
+---
+
+### 📊 Erwartete Metriken nach Commit 21
+
+| Metrik | Vor Commit 21 | Nach Commit 21 | Verbesserung |
+|--------|---------------|----------------|--------------|
+| **Tests** | 85 | 100+ | +15+ Tests |
+| **Assertions** | 265 | 320+ | +55+ |
+| **PHPStan Level** | 7-8 | 9 | +1-2 Levels |
+| **Test-Coverage** | ~85% | >90% | +5% |
+| **Controller Zeilen** | 78 | ~60 | -18 Zeilen |
+| **Längste Methode** | 50 Zeilen | <20 Zeilen | -60% |
+| **Cyclomatic Complexity** | 8-10 | <5 | -50% |
+
+---
 
 ### Result
-Code ist Production-Ready mit höchster Quality.
+
+Code ist Production-Ready mit höchster Quality:
+
+- ✅ **SOLID-Prinzipien:** Alle Klassen < 200 Zeilen, Methoden < 20 Zeilen
+- ✅ **Single-Action-Controller:** `AnalyzeController::__invoke()`
+- ✅ **Kleine Methoden:** Cyclomatic Complexity < 5
+- ✅ **PHPStan Level 9:** 0 Errors, vollständige Typisierung
+- ✅ **Test-Coverage:** > 90%
+- ✅ **Performance:** N+1 Queries vermieden, Caching optimiert
+- ✅ **Wartbarkeit:** Code-Duplication < 5%
+
+---
+
+### 🎯 Definition of Done
+
+Commit 21 gilt als **complete**, wenn:
+
+1. ✅ **PHPStan Level 9**: 0 Errors
+2. ✅ **Test-Coverage**: > 90%
+3. ✅ **Tests**: Alle grün (100+ Tests, 320+ Assertions)
+4. ✅ **SOLID**: Alle Klassen < 200 Zeilen, Methoden < 20 Zeilen
+5. ✅ **Single-Action-Controller**: `AnalyzeController::__invoke()`
+6. ✅ **Kleine Methoden**: Cyclomatic Complexity < 5
+7. ✅ **Pint**: Code-Formatting clean
+8. ✅ **Dokumentation**: CODING_GUIDELINES.md und ARCHITECTURE.md aktualisiert
+
+---
+
+### ✅ Checkliste für Umsetzung (05.03.2026)
+
+#### Vor Start:
+- [ ] Branch `feature/commit-21-code-quality` erstellen
+- [ ] Tests ausführen (Baseline: 85 Tests, alle grün)
+- [ ] PHPStan Level aktuell prüfen (`make phpstan`)
+
+#### Phase 1: Controller-Refactoring
+- [ ] AnalyzeController zu Single-Action umbauen
+- [ ] Private Methoden extrahieren (4 Methoden)
+- [ ] Route anpassen (`::class` statt `@analyze`)
+- [ ] Tests aktualisieren
+- [ ] PHPStan: 0 Errors
+
+#### Phase 2: ValidateInputAction
+- [ ] PatternDetectorService erstellen + Tests (8 Tests)
+- [ ] InputSanitizerService erstellen + Tests (6 Tests)
+- [ ] ValidateInputAction refactoren
+- [ ] Tests aktualisieren (18+ Tests total)
+- [ ] PHPStan: 0 Errors
+
+#### Phase 3: GeminiAiAnalyzer
+- [ ] ValidateAiResponseAction erstellen + Tests (5 Tests)
+- [ ] ParseAiResponseAction erstellen + Tests (5 Tests)
+- [ ] GeminiAiAnalyzer refactoren
+- [ ] Tests aktualisieren
+- [ ] PHPStan: 0 Errors
+
+#### Phase 4: PHPStan Level 9
+- [ ] `make phpstan` ausführen
+- [ ] Alle Type-Hints ergänzen
+- [ ] Nullability korrekt annotieren
+- [ ] PHPStan Level 9: 0 Errors
+
+#### Phase 5: Test-Coverage > 90%
+- [ ] Coverage-Report generieren (`make test -- --coverage`)
+- [ ] Fehlende Tests identifizieren
+- [ ] Edge-Case-Tests schreiben (15+ neue Tests)
+- [ ] Coverage > 90% erreichen
+
+#### Phase 6: Final Validation
+- [ ] `make test`: Alle Tests grün (100+ Tests)
+- [ ] `make phpstan`: Level 9, 0 Errors
+- [ ] `make pint`: Code-Formatting clean
+- [ ] Performance-Audit durchführen
+- [ ] CODING_GUIDELINES.md aktualisieren
+- [ ] ARCHITECTURE.md aktualisieren
 
 ---
 
