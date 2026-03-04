@@ -39,6 +39,10 @@ class MockAiAnalyzer implements AiAnalyzerInterface
 
     public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto
     {
+        // Security: Sanitize inputs (consistent with Gemini)
+        $sanitizedJobText = $this->sanitizeInput($request->jobText());
+        $sanitizedCvText = $this->sanitizeInput($request->cvText());
+
         // Simuliere API-Delay
         if ($this->delayMs > 0) {
             usleep($this->delayMs * 1000);
@@ -271,5 +275,22 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                 ],
             ],
         ];
+    }
+
+    /**
+     * Sanitizes input to prevent prompt injection (consistent with Gemini).
+     */
+    private function sanitizeInput(string $input): string
+    {
+        // Remove null bytes
+        $input = str_replace("\0", '', $input);
+
+        // Trim whitespace
+        $input = trim($input);
+
+        // Normalize line endings
+        $input = str_replace("\r\n", "\n", $input);
+
+        return $input;
     }
 }

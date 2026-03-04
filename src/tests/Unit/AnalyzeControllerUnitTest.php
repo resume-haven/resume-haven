@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\AnalyzeController;
 use App\Dto\AnalyzeResultDto;
 use App\Domains\Analysis\UseCases\ScoringUseCase\ScoringUseCase;
+use App\Domains\Analysis\UseCases\ValidateInputUseCase\ValidateInputAction;
+use App\Domains\Analysis\UseCases\ValidateInputUseCase\ValidatedInputDto;
 use App\Services\AnalyzeApplicationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
@@ -13,9 +15,11 @@ uses(RefreshDatabase::class);
 
 it('AnalyzeController besitzt die Methode analyze', function () {
     $mockScoringUseCase = \Mockery::mock(ScoringUseCase::class);
+    $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
     $controller = new AnalyzeController(
         app(\Illuminate\Bus\Dispatcher::class),
-        $mockScoringUseCase
+        $mockScoringUseCase,
+        $mockValidateInput
     );
     expect(method_exists($controller, 'analyze'))->toBeTrue();
 });
@@ -23,9 +27,11 @@ it('AnalyzeController besitzt die Methode analyze', function () {
 describe('AnalyzeController::analyze', function () {
     it('liefert eine View mit Fehlern bei ungültigen Eingaben', function () {
         $mockScoringUseCase = \Mockery::mock(ScoringUseCase::class);
+        $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
         $controller = new AnalyzeController(
             app(\Illuminate\Bus\Dispatcher::class),
-            $mockScoringUseCase
+            $mockScoringUseCase,
+            $mockValidateInput
         );
         $request = Request::create('/analyze', 'POST', [
             'job_text' => '',
@@ -72,9 +78,21 @@ describe('AnalyzeController::analyze', function () {
             )
         );
 
+        $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
+        $mockValidateInput->shouldReceive('execute')->andReturn(
+            new ValidatedInputDto(
+                originalInput: str_repeat('A', 31),
+                sanitizedInput: str_repeat('A', 31),
+                lengthBytes: 31,
+                hasSuspiciousPatterns: false,
+                suspiciousPatterns: []
+            )
+        );
+
         $controller = new AnalyzeController(
             app(\Illuminate\Bus\Dispatcher::class),
-            $mockScoring
+            $mockScoring,
+            $mockValidateInput
         );
         $request = Request::create('/analyze', 'POST', [
             'job_text' => str_repeat('A', 31),
@@ -133,9 +151,21 @@ describe('AnalyzeController::analyze', function () {
         $mockScoring = \Mockery::mock(ScoringUseCase::class);
         $mockScoring->shouldReceive('handle')->never();
 
+        $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
+        $mockValidateInput->shouldReceive('execute')->andReturn(
+            new ValidatedInputDto(
+                originalInput: str_repeat('A', 31),
+                sanitizedInput: str_repeat('A', 31),
+                lengthBytes: 31,
+                hasSuspiciousPatterns: false,
+                suspiciousPatterns: []
+            )
+        );
+
         $controller = new AnalyzeController(
             app(\Illuminate\Bus\Dispatcher::class),
-            $mockScoring
+            $mockScoring,
+            $mockValidateInput
         );
         $request = Request::create('/analyze', 'POST', [
             'job_text' => str_repeat('A', 31),

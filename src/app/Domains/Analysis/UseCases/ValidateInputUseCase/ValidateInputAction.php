@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
  * - Input-Bereinigung durchführen
  * - Security-Warnungen loggen
  */
-final class ValidateInputAction
+class ValidateInputAction
 {
     // Konfigurierbare Sicherheitslimits
     private const MAX_LENGTH_BYTES = 50 * 1024; // 50KB
