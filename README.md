@@ -1,4 +1,4 @@
- und Ga# ResumeHaven – MVP
+# ResumeHaven – MVP
 
 ResumeHaven ist ein leichtgewichtiges, textbasiertes Analyse‑Tool, das Stellenausschreibungen und Lebensläufe miteinander vergleicht und strukturiert auswertet.  
 Das Projekt basiert auf Laravel 12, TailwindCSS und einer modularen Analyse‑Engine.
@@ -230,5 +230,6 @@ Alle Rechte vorbehalten.
 
 Pull Requests sind willkommen, sobald das MVP stabil ist.  
 Bitte lies die **[Contribution Guidelines](docs/CONTRIBUTING.md)** vor dem Beitragen.  
+
 Bis dahin dient dieses Repository der initialen Entwicklung.
 

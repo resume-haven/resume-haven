@@ -1142,7 +1142,7 @@ Die AI-Response wird um eine strukturierte **Tags-Section** erweitert. Tags erm�
 
 **Update**: `app/Services/AiAnalyzer/MockAiAnalyzer.php`
 
-- Alle 4 Szenarien mit `tags` Section erweitern
+- Alle 4 Szenarien mit `tags` Section erweitert
 - Nutze scratch_4.json als Vorlage für realistische Daten
 - Mock-Response mit vollständiger Tags-Struktur
 
@@ -1390,71 +1390,12 @@ protected function schedule(Schedule $schedule)
 
 ---
 
-## Commit 19 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt, Kategorie + Confidence)
+## Commit 19 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
 
 ### Ziel
 
-Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.  
-Nutzer erhalten klare Hinweise, wie sie ihren Lebenslauf optimieren können.
-
-Empfehlungen enthalten **Kategorien** und **Confidence-Werte** für präzisere Gewichtung.
-
----
-
-### Datenmodell (Option C + B)
-
-**Pro Empfehlung**:
-```php
-[
-    'gap' => string,                // "Docker"
-    'recommendation' => string,     // "Erlernen Sie Docker Basics..."
-    'example' => string,            // "Verfassen Sie: 'Docker Basics'"
-    'category' => string,           // "tools" (skills|tools|architecture|process|leadership|general)
-    'priority' => string,           // "high" (critical|high|medium|low)
-    'confidence' => float,          // 0.85 (0.0 - 1.0, Default: 0.5)
-]
-```
-
----
-
-### Implementierung
-
-#### 1. Analyzer erweitern (`app/Ai/Agents/Analyzer.php`)
-- Prompt um Empfehlungs-Sektion ergänzen
-- Priority-Levels: `critical|high|medium|low`
-- Confidence: 0.0 bis 1.0
-- Schema aktualisieren
-
-#### 2. AnalyzeResultDto erweitern (`app/Dto/AnalyzeResultDto.php`)
-- `recommendations` Field (optional, Array<object>)
-- PHPDoc mit strikter Shape
-
-#### 3. Parsing (`GeminiAiAnalyzer.php` + `MockAiAnalyzer.php`)
-- Parse & validiere Recommendations
-- Fallback zu `null` wenn ungültig
-
-#### 4. Fallback im Handler (`AnalyzeJobAndResumeHandler.php`)
-- Algorithmen-basierte Defaults wenn AI-Recommendations fehlen
-- Defensive Programmierung
-
-#### 5. UI (`result.blade.php`)
-- Neues Panel „Empfehlungen"
-- Priority-Farb-Mapping (critical→Rot, high→Orange, medium→Gelb, low→Grün)
-- Confidence-Bar, Category-Badge
-
-#### 6. Tests (Unit + Feature)
-- Validation, Normalisierung, Fallback
-- UI-Integration
-
----
-
-### Ergebnis
-
-- ✅ Empfehlungen mit Priority & Category
-- ✅ Confidence für Gewichtung  
-- ✅ Robuster Fallback
-- ✅ Moderne UI
-- ✅ Backward-Compatible
+Die Analyse wird um konkrete, KI‑gestützte Verbesserungsvorschläge erweitert.
+Nutzer erhalten jetzt klare Hinweise, wie sie ihren Lebenslauf optimieren können, um besser zur Stellenausschreibung zu passen.
 
 ---
 
@@ -1516,12 +1457,282 @@ Nutzer sehen:
 Damit wird ResumeHaven zu einem echten Karriere‑Coach.
 
 ---
-## 🎯 Ergebnis
+## 🔒 Commit 19 – Security Härtung (MVP-Abschluss Phase 1)
 
-Nach diesem Commit‑Plan hast du:
+**Zweck:** Anwendung gegen gängige Sicherheitsrisiken hardenen
 
-- eine saubere, nachvollziehbare Git‑History
-- ein strukturiertes Projekt
-- eine klare Grundlage für Copilot
-- eine perfekte Basis für spätere Erweiterungen
+### Added
+
+#### 1. Prompt-Injection-Schutz im AI-Analyzer
+- Strikte Prompt-Struktur mit Separatoren (###)
+- Input-Bereinigung vor KI-Anfrage
+- Output-Validierung nach KI-Response
+- Unit-Tests für malicious inputs
+
+#### 2. Input-Validierung (Preliminary)
+- Maximale Längen: Job-Text (50KB), CV-Text (50KB)
+- Erlaubte Zeichen: ASCII + UTF-8 Umlaute/Sonderzeichen
+- Warnung/Rejection für verdächtige Patterns (z.B. SQL-Befehle, Script-Tags)
+
+#### 3. Error-Handling für API-Failures
+- Graceful Degradation bei KI-Timeout
+- Sprechende Error-Messages (user-facing)
+- Logging von Fehlern für Debugging
+
+#### 4. CSRF-Protection Review
+- Validierung, dass `@csrf` in allen POST-Forms vorhanden ist
+- Token-Refresh-Logik überprüfen
+
+#### 5. SQL-Injection-Prävention
+- Audit: Repository-Pattern nutzt bereits Prepared Statements
+- Keine Raw-Queries in Domain-Logic
+
+### Tests Added
+- `SecurityPromptInjectionTest.php` (Pest Feature Test)
+- `InputValidationTest.php` (Pest Feature Test)
+- `ApiErrorHandlingTest.php` (Pest Feature Test)
+
+### Result
+Anwendung ist resistent gegen bekannte Top-10-Sicherheitsrisiken (OWASP).
+
+---
+
+## 🎨 Commit 20 – Responsive Layout & Mobile-First Design (MVP-Abschluss Phase 2a)
+
+**Zweck:** UI für alle Geräte optimieren
+
+### Updated
+
+#### 1. Tailwind-Breakpoints aktivieren
+- `sm:` (640px) für Tablets
+- `md:` (768px) für große Tablets
+- `lg:` (1024px) für Desktops
+- `xl:` (1280px) für große Desktops
+
+#### 2. Layout-Anpassungen
+- Input-Form: Single-Column auf Mobile, 2-Column auf Desktop
+- Result-Panels: Stack vertikal < 768px, 2-Column > 768px
+- Navigation/Header: Hamburger-Menu auf Mobile
+
+#### 3. Typography-Verbesserungen
+- Responsive Font-Sizes (`text-sm:`, `text-base:`, `text-lg:`)
+- Bessere Line-Heights auf Mobile
+- Improved Spacing (padding/margin Responsiveness)
+
+#### 4. Accessibility (WCAG 2.1 AA Preparation)
+- Color Contrast Ratio überprüft
+- Focus States für alle interaktiven Elemente
+- Semantic HTML (`<main>`, `<section>`, `<nav>`)
+
+### Tests Added
+- Visual Regression Tests (optional mit Percy/Chromatic)
+- Manual Mobile Device Testing (Checklist in Docs)
+
+### Result
+UI ist usable auf Phones (320px) bis 4K Desktops (2560px).
+
+---
+
+## 🌙 Commit 20a – Dark-Mode Support (MVP-Abschluss Phase 2b)
+
+**Zweck:** Dunkle Benutzeroberfläche für Augen-Komfort
+
+### Added
+
+#### 1. Tailwind Dark-Mode aktivieren
+- `dark:` Prefix für Dark-Mode Styles in Blade-Templates
+- System-Preference respektieren (`prefers-color-scheme`)
+- Toggle-Button im Header (optional)
+
+#### 2. Farb-Anpassungen
+- Hintergrund: `white` → `dark:bg-slate-900`
+- Text: `black` → `dark:text-slate-100`
+- Panels: `bg-white` → `dark:bg-slate-800`
+- Borders: `border-gray-200` → `dark:border-slate-700`
+
+#### 3. Storage-Preference
+- LocalStorage für User-Preference speichern
+- Script im Head prüft Preference vor Page-Paint
+
+### Tests Added
+- CSS-Audit für Dark-Mode Contrast
+- Manual Testing auf verschiedenen Systemen
+
+### Result
+Benutzer mit Dark-Mode-Preference bekommen passende UI.
+
+---
+
+## 🏆 Commit 21 – Code-Qualität Level 9 (MVP-Abschluss Phase 3a)
+
+**Zweck:** Maximale Robustheit und Wartbarkeit
+
+### Updated
+
+#### 1. PHPStan Level 9 erreichen
+- Alle Type-Hints vollständig
+- Alle Variablen typisiert
+- Union Types wo sinnvoll
+- Strict nullability checks
+
+#### 2. Test-Coverage > 90%
+- Zusätzliche Edge-Case Tests
+- Error-Path Tests
+- Integration Tests für kritische Flows
+
+#### 3. Mutation Testing
+- Mit Pest Mutation Plugin
+- Ziel: >80% Mutation-Score
+
+#### 4. Code-Refactoring
+- Eliminerung von Dead Code
+- Simplification komplexer Funktionen
+- Verbesserung von Variable-Namen
+
+#### 5. Performance-Audit
+- Database Query Analysis (N+1 Queries?)
+- Caching-Effektivität überprüfen
+
+### Tests Added
+- Additional Unit Tests für Edge Cases
+- Performance Benchmarks (optional)
+
+### Result
+Code ist Production-Ready mit höchster Quality.
+
+---
+
+## 📝 Commit 21a – Umfassende Test-Suite & Dokumentation (MVP-Abschluss Phase 3b)
+
+**Zweck:** Dokumentation aller kritischen Schnittstellen
+
+### Added
+
+#### 1. Zusätzliche Pest Tests
+- Architecture Tests (Namespace-Struktur, Dependency-Rules)
+- Integration Tests für alle UseCases
+- Acceptance Tests für kritische User-Flows
+
+#### 2. Dokumentation
+- PHPDoc Comments für alle Public Methods
+- Architecture Decision Records (ADRs) für wichtige Entscheidungen
+- Setup-Anleitung für neue Entwickler
+
+#### 3. Test-Beispiele im `tests/README.md`
+- Wie schreibe ich Unit Tests?
+- Wie schreibe ich Feature Tests?
+- Wie nutze ich Mocks/Stubs?
+
+### Tests Added
+- 20+ weitere Pest Tests
+- Minimal 90% Coverage
+
+### Result
+Codebase ist selbst-dokumentiert und einfach zu erweitern.
+
+---
+
+## 💾 Commit 22 – CV-Speicherung (DB-basiert, anonym)
+
+**Zweck:** Lebensläufe speichern & wiederverwenden (GDPR-konform, ohne Auth)
+
+### Added
+
+#### 1. Database Migration
+```
+app/Domains/Resume/
+├── Models/
+│   └── StoredResume.php
+├── Repositories/
+│   └── StoredResumeRepository.php
+├── Actions/
+│   ├── GetOrCreateResumeAction.php
+│   └── DeleteResumeAction.php
+└── Dto/
+    └── StoredResumeDto.php
+```
+
+Migration `create_stored_resumes_table`:
+- `id` (UUID)
+- `content_hash` (SHA256 des CV-Texts)
+- `resume_text` (longText)
+- `session_id` (für Tracking, optional)
+- `created_at`, `updated_at`
+
+#### 2. Controller-Erweiterung
+- CV-Form: Checkbox "Gespeicherten CV verwenden?"
+- GET `/` pre-fills CV-Textarea wenn gespeichert
+- POST `/analyze`: Speichert CV wenn neu/geändert
+
+#### 3. Actions
+- `GetOrCreateResumeAction`: Prüft Hash, gibt bestehenden CV zurück
+- `DeleteResumeAction`: Löscht CV (anonym, ohne Auth)
+
+#### 4. UI
+- Checkbox im Form
+- "Gespeicherte CVs ansehen/löschen"-Link im Footer
+- Einfacher "Delete"-Button neben jedem CV
+
+#### 5. Privacy & GDPR
+- Keine PII speichern (nur Text)
+- Delete-Link für User (selbst-Löschung)
+- Keine Tracking / Email / Namen gespeichert
+
+### Tests Added
+- `StoredResumeRepositoryTest.php` (Unit)
+- `GetOrCreateResumeActionTest.php` (Unit)
+- `ResumeStorageFeatureTest.php` (Feature)
+
+### Result
+Nutzer können ihre CVs speichern & wiederverwenden, ohne sich anzumelden.
+
+---
+
+## 🧹 Commit 22a – Resume Cleanup-Cronjob (Optional)
+
+**Zweck:** Alte CVs automatisch löschen (Speicherplatz, Datenschutz)
+
+### Added
+
+#### 1. Artisan Command
+```bash
+php artisan resume:cleanup --older-than=90
+```
+
+- Löscht CVs älter als N Tage (default: 90)
+- Output: "Deleted 42 stored resumes."
+
+#### 2. Cronjob-Integration
+```php
+// In app/Console/Kernel.php
+$schedule->command('resume:cleanup --older-than=90')
+    ->dailyAt('03:00');
+```
+
+#### 3. Logging
+- Log in `storage/logs/resume-cleanup.log`
+- Anzahl gelöschter Einträge
+- Timestamp
+
+### Tests Added
+- `ResumeCleanupCommandTest.php` (Feature)
+
+### Result
+Alte CVs werden automatisch gelöscht (Data Minimization GDPR).
+
+---
+
+## 🎯 MVP-Abschluss-Checkliste
+
+Nach Commit 22a ist das **MVP complete**:
+
+- ✅ **Funktionalität:** Analysen, Tags, Caching, CV-Speicherung funktionieren
+- ✅ **Sicherheit:** Prompt-Injection, Input-Validation, Error-Handling (Commit 19)
+- ✅ **UX:** Responsive, Dark-Mode, Accessibility (Commits 20–20a)
+- ✅ **Qualität:** PHPStan Level 9, >90% Coverage (Commits 21–21a)
+- ✅ **Dokumentation:** Vollständig, selbst-dokumentierter Code
+- ✅ **Privacy:** GDPR-konform, Daten-Minimization, Delete-Option
+- ✅ **Deployment:** Lauffähig auf IONOS Webspace
+
+**Next:** v1.0.0 Release + Englische Dokumentation (Phase 2)
 
