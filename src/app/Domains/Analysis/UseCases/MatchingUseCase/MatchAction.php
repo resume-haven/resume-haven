@@ -10,8 +10,8 @@ namespace App\Domains\Analysis\UseCases\MatchingUseCase;
 class MatchAction
 {
     /**
-     * @param array<int, string> $requirements
-     * @param array<int, string> $experiences
+     * @param  array<int, string>                                         $requirements
+     * @param  array<int, string>                                         $experiences
      * @return array<int, array{requirement: string, experience: string}>
      */
     public function execute(array $requirements, array $experiences): array
@@ -21,4 +21,3 @@ class MatchAction
         return [];
     }
 }
-

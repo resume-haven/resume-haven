@@ -92,5 +92,3 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
         return 'gemini';
     }
 }
-
-

@@ -16,8 +16,8 @@ class GenerateTagsAction
     /**
      * Generiere Tags aus Matches und Gaps
      *
-     * @param array<int, array{requirement: string, experience: string}> $matches
-     * @param array<int, string> $gaps
+     * @param  array<int, array{requirement: string, experience: string}>                                                  $matches
+     * @param  array<int, string>                                                                                          $gaps
      * @return array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}
      */
     public function execute(array $matches, array $gaps): array
@@ -31,7 +31,7 @@ class GenerateTagsAction
     /**
      * Gruppiere Matches nach Requirement
      *
-     * @param array<int, array{requirement: string, experience: string}> $matches
+     * @param  array<int, array{requirement: string, experience: string}>        $matches
      * @return array<int, array{requirement: string, experience: array<string>}>
      */
     private function generateMatchTags(array $matches): array
@@ -63,4 +63,3 @@ class GenerateTagsAction
         return $result;
     }
 }
-

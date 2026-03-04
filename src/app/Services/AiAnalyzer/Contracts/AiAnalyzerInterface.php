@@ -20,8 +20,8 @@ interface AiAnalyzerInterface
     /**
      * Analysiere Job-Ausschreibung und Lebenslauf
      *
-     * @param AnalyzeRequestDto $request Job-Text und CV-Text
-     * @return AnalyzeResultDto Analyse-Ergebnis mit requirements, experiences, matches, gaps
+     * @param  AnalyzeRequestDto $request Job-Text und CV-Text
+     * @return AnalyzeResultDto  Analyse-Ergebnis mit requirements, experiences, matches, gaps
      */
     public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto;
 
@@ -35,4 +35,3 @@ interface AiAnalyzerInterface
      */
     public function getProviderName(): string;
 }
-

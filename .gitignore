@@ -64,3 +64,4 @@ vendor/bundle/
 # ---------------------------------------
 docker/*.log
 /identifier.sqlite
+/resume-haven-ideas/

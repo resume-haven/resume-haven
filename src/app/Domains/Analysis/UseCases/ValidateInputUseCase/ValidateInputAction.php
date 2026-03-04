@@ -36,9 +36,10 @@ final class ValidateInputAction
     /**
      * Validiert Input gegen Sicherheitsrisiken.
      *
-     * @param string $input Zu validierender Text
-     * @param string $fieldName Name des Feldes (für Logging)
+     * @param  string            $input     Zu validierender Text
+     * @param  string            $fieldName Name des Feldes (für Logging)
      * @return ValidatedInputDto Validierter Input mit Metadaten
+     *
      * @throws InputValidationException Bei kritischen Validierungsfehlern
      */
     public function execute(string $input, string $fieldName = 'input'): ValidatedInputDto
@@ -51,13 +52,13 @@ final class ValidateInputAction
                 'actual_bytes' => strlen($input),
             ]);
             throw new InputValidationException(
-                __('Der Eingabetext ist zu lang. Maximum: 50 KB')
+                'Der Eingabetext ist zu lang. Maximum: 50 KB'
             );
         }
 
         // 2. Verdächtige Patterns prüfen (warning, nicht blocking)
         $suspiciousPatterns = $this->detectSuspiciousPatterns($input);
-        if (!empty($suspiciousPatterns)) {
+        if (! empty($suspiciousPatterns)) {
             Log::warning('Suspicious patterns detected in input', [
                 'field' => $fieldName,
                 'patterns' => $suspiciousPatterns,
@@ -71,7 +72,7 @@ final class ValidateInputAction
         // 4. Leere Input Prüfung
         if (empty(trim($sanitized))) {
             throw new InputValidationException(
-                __('Die Eingabe darf nicht leer sein')
+                'Die Eingabe darf nicht leer sein'
             );
         }
 
@@ -79,7 +80,7 @@ final class ValidateInputAction
             originalInput: $input,
             sanitizedInput: $sanitized,
             lengthBytes: strlen($sanitized),
-            hasSuspiciousPatterns: !empty($suspiciousPatterns),
+            hasSuspiciousPatterns: ! empty($suspiciousPatterns),
             suspiciousPatterns: $suspiciousPatterns,
         );
     }
@@ -87,7 +88,6 @@ final class ValidateInputAction
     /**
      * Erkennt verdächtige Patterns im Input.
      *
-     * @param string $input
      * @return array<int, string> Array von erkannten Patterns
      */
     private function detectSuspiciousPatterns(string $input): array
@@ -107,9 +107,6 @@ final class ValidateInputAction
 
     /**
      * Konvertiert Regex-Pattern in lesbare Beschreibung.
-     *
-     * @param string $pattern
-     * @return string
      */
     private function patternToReadable(string $pattern): string
     {
@@ -126,9 +123,6 @@ final class ValidateInputAction
 
     /**
      * Bereinigt den Input.
-     *
-     * @param string $input
-     * @return string
      */
     private function sanitizeInput(string $input): string
     {
@@ -147,4 +141,3 @@ final class ValidateInputAction
         return $input;
     }
 }
-

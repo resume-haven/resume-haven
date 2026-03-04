@@ -9,7 +9,6 @@ describe('ValidateInputAction', function () {
     $action = new ValidateInputAction();
 
     describe('execute()', function () use ($action) {
-
         test('valides Input wird akzeptiert', function () use ($action) {
             $input = 'Dies ist ein valider Text ohne verdächtige Patterns.';
 
@@ -105,7 +104,7 @@ describe('ValidateInputAction', function () {
 
             $result = $action->execute($input, 'test_field');
 
-            expect($result->sanitizedInput)->toBe('Textwithbullbytes');
+            expect($result->sanitizedInput)->toBe('Textwithnullbytes');
             expect(strpos($result->sanitizedInput, "\0"))->toBeFalse();
         });
 
@@ -142,11 +141,9 @@ describe('ValidateInputAction', function () {
             expect($result->summary())->toContain('suspicious patterns');
             expect($result->summary())->toContain('SQL Keywords');
         });
-
     });
 
     describe('Pattern-Detection Edge Cases', function () use ($action) {
-
         test('case-insensitive SQL-Pattern-Matching', function () use ($action) {
             $inputs = [
                 'select * from users',
@@ -180,8 +177,5 @@ describe('ValidateInputAction', function () {
             expect($result->hasSuspiciousPatterns)->toBeTrue();
             expect($result->suspiciousPatterns)->toContain('SQL Keywords');
         });
-
     });
-
 });
-

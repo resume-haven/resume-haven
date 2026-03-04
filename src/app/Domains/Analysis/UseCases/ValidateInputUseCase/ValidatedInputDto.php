@@ -12,11 +12,11 @@ namespace App\Domains\Analysis\UseCases\ValidateInputUseCase;
 final class ValidatedInputDto
 {
     /**
-     * @param string $originalInput Der ursprüngliche Input
-     * @param string $sanitizedInput Der bereinigte Input
-     * @param int $lengthBytes Länge des bereinigten Inputs in Bytes
-     * @param bool $hasSuspiciousPatterns Ob verdächtige Patterns gefunden wurden
-     * @param array<int, string> $suspiciousPatterns Array der erkannten Patterns
+     * @param string             $originalInput         Der ursprüngliche Input
+     * @param string             $sanitizedInput        Der bereinigte Input
+     * @param int                $lengthBytes           Länge des bereinigten Inputs in Bytes
+     * @param bool               $hasSuspiciousPatterns Ob verdächtige Patterns gefunden wurden
+     * @param array<int, string> $suspiciousPatterns    Array der erkannten Patterns
      */
     public function __construct(
         public readonly string $originalInput,
@@ -28,18 +28,14 @@ final class ValidatedInputDto
 
     /**
      * Gibt an, ob der Input als sicher gilt (keine verdächtigen Patterns).
-     *
-     * @return bool
      */
     public function isSafe(): bool
     {
-        return !$this->hasSuspiciousPatterns;
+        return ! $this->hasSuspiciousPatterns;
     }
 
     /**
      * Gibt eine lesbare Zusammenfassung zurück.
-     *
-     * @return string
      */
     public function summary(): string
     {
@@ -54,4 +50,3 @@ final class ValidatedInputDto
         );
     }
 }
-

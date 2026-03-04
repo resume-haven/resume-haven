@@ -25,7 +25,7 @@ class AnalyzeRequestDto
         $jobText = $data['job_text'] ?? '';
         $cvText = $data['cv_text'] ?? '';
 
-        if (!is_string($jobText) || !is_string($cvText)) {
+        if (! is_string($jobText) || ! is_string($cvText)) {
             throw new \InvalidArgumentException('job_text und cv_text müssen Strings sein');
         }
 

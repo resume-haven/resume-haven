@@ -22,7 +22,7 @@ class MockAiAnalyzer implements AiAnalyzerInterface
     public function __construct()
     {
         $scenario = config('ai.mock.scenario', 'realistic');
-        if (!is_string($scenario)) {
+        if (! is_string($scenario)) {
             $scenario = 'realistic';
         }
         $this->scenario = $scenario;
@@ -273,6 +273,3 @@ class MockAiAnalyzer implements AiAnalyzerInterface
         ];
     }
 }
-
-
-

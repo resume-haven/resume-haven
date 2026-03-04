@@ -12,8 +12,8 @@ namespace App\Domains\Analysis\Dto;
 readonly class TagMatchDto
 {
     /**
-     * @param string $requirement Die Anforderung (z.B. "Frontend")
-     * @param array<int, string> $experience Die entsprechenden Erfahrungen (z.B. ["React", "Vue"])
+     * @param string             $requirement Die Anforderung (z.B. "Frontend")
+     * @param array<int, string> $experience  Die entsprechenden Erfahrungen (z.B. ["React", "Vue"])
      */
     public function __construct(
         public string $requirement,
@@ -33,4 +33,3 @@ readonly class TagMatchDto
         ];
     }
 }
-

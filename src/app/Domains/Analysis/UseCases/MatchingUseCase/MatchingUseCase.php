@@ -27,4 +27,3 @@ class MatchingUseCase
         return new MatchingResultDto($matches);
     }
 }
-

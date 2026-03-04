@@ -10,8 +10,8 @@ namespace App\Domains\Analysis\UseCases\GapAnalysisUseCase;
 class FindGapsAction
 {
     /**
-     * @param array<int, string> $requirements
-     * @param array<int, array{requirement: string, experience: string}> $matches
+     * @param  array<int, string>                                         $requirements
+     * @param  array<int, array{requirement: string, experience: string}> $matches
      * @return array<int, string>
      */
     public function execute(array $requirements, array $matches): array
@@ -21,4 +21,3 @@ class FindGapsAction
         return [];
     }
 }
-

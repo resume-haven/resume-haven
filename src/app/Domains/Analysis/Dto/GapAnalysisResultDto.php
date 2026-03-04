@@ -24,4 +24,3 @@ class GapAnalysisResultDto
         return ['gaps' => $this->gaps];
     }
 }
-

@@ -129,4 +129,3 @@ it('MockAiAnalyzer funktioniert ohne Delay', function () {
     // Sollte schneller sein als mit 100ms künstlichem Delay (< 600ms ist realistisch für Business-Logik)
     expect($duration)->toBeLessThan(600);
 });
-

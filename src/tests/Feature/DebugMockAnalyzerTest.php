@@ -58,5 +58,3 @@ test('MockAiAnalyzer no_match Szenario', function () {
     expect($result->matches)->toBeEmpty();
     expect($result->gaps)->not()->toBeEmpty();
 });
-
-

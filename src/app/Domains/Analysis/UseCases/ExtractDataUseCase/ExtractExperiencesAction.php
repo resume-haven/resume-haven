@@ -19,4 +19,3 @@ class ExtractExperiencesAction
         return [];
     }
 }
-

@@ -19,4 +19,3 @@ class ExtractRequirementsAction
         return [];
     }
 }
-

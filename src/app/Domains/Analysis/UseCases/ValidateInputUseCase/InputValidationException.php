@@ -16,4 +16,3 @@ final class InputValidationException extends Exception
         parent::__construct($message, $code);
     }
 }
-

@@ -29,10 +29,10 @@ class AnalyzeResultDto
     public ?string $error;
 
     /**
-     * @param array<int, string>                                         $requirements
-     * @param array<int, string>                                         $experiences
-     * @param array<int, array{requirement: string, experience: string}> $matches
-     * @param array<int, string>                                         $gaps
+     * @param array<int, string>                                                                                               $requirements
+     * @param array<int, string>                                                                                               $experiences
+     * @param array<int, array{requirement: string, experience: string}>                                                       $matches
+     * @param array<int, string>                                                                                               $gaps
      * @param array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null $tags
      */
     public function __construct(
