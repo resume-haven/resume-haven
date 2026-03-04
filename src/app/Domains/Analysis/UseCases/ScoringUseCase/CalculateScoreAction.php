@@ -17,7 +17,7 @@ class CalculateScoreAction
 {
     /**
      * @param array<int, array{requirement: string, experience: string}> $matches
-     * @param array<int, string>                                         $gaps
+     * @param array<int, string> $gaps
      */
     public function execute(array $matches, array $gaps): ScoreResultDto
     {
@@ -77,3 +77,4 @@ class CalculateScoreAction
         }
     }
 }
+

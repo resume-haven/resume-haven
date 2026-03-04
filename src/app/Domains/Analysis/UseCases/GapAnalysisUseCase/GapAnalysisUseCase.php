@@ -17,7 +17,7 @@ class GapAnalysisUseCase
     ) {}
 
     /**
-     * @param array<int, string>                                         $requirements
+     * @param array<int, string> $requirements
      * @param array<int, array{requirement: string, experience: string}> $matches
      */
     public function handle(array $requirements, array $matches): GapAnalysisResultDto
@@ -27,3 +27,4 @@ class GapAnalysisUseCase
         return new GapAnalysisResultDto($gaps);
     }
 }
+

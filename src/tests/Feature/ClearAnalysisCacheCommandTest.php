@@ -95,3 +95,5 @@ test('cache:clear-analysis --older-than mit keinen alten Einträgen gibt Nachric
     // Eintrag sollte noch da sein
     expect(AnalysisCache::count())->toBe(1);
 });
+
+

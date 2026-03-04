@@ -18,10 +18,11 @@ class ScoringUseCase
 
     /**
      * @param array<int, array{requirement: string, experience: string}> $matches
-     * @param array<int, string>                                         $gaps
+     * @param array<int, string> $gaps
      */
     public function handle(array $matches, array $gaps): ScoreResultDto
     {
         return $this->calculateScoreAction->execute($matches, $gaps);
     }
 }
+

@@ -36,14 +36,10 @@ AUFGABE:
 - Extrahiere aus `cv_text` relevante Erfahrungen in `experiences`.
 - Erzeuge `matches` als 1:1-Zuordnung: {"requirement": string, "experience": string}.
 - Erzeuge `gaps` als fehlende Anforderungen.
-- Erzeuge `tags` mit gruppierter Ansicht (matches je Requirement mit mehreren Experiences).
-- Erzeuge `recommendations` für jede Gap:
-  - `gap`: die Anforderung (string)
-  - `recommendation`: konkrete Empfehlung (string)
-  - `example`: Beispiel-Formulierung (string)
-  - `category`: Kategorisierung (skills|tools|architecture|process|leadership|general)
-  - `priority`: Wichtigkeit (critical|high|medium|low)
-  - `confidence`: Sicherheitswert (0.0 bis 1.0)
+- Erzeuge zusätzlich `tags`:
+  - `tags.matches`: gruppierte Zuordnung je Requirement mit mehreren Experiences
+    {"requirement": string, "experience": string[]}
+  - `tags.gaps`: string[]
 
 AUSGABEFORMAT (exakt):
 {
@@ -54,17 +50,7 @@ AUSGABEFORMAT (exakt):
   "tags": {
     "matches": [{"requirement": "...", "experience": ["..."]}],
     "gaps": ["..."]
-  },
-  "recommendations": [
-    {
-      "gap": "...",
-      "recommendation": "...",
-      "example": "...",
-      "category": "skills|tools|architecture|process|leadership|general",
-      "priority": "critical|high|medium|low",
-      "confidence": 0.5
-    }
-  ]
+  }
 }
 PROMPT;
     }
@@ -111,16 +97,6 @@ PROMPT;
                 )->required(),
                 'gaps' => $schema->array()->items($schema->string())->required(),
             ])->required(),
-            'recommendations' => $schema->array()->items(
-                $schema->object([
-                    'gap' => $schema->string()->required(),
-                    'recommendation' => $schema->string()->required(),
-                    'example' => $schema->string()->required(),
-                    'category' => $schema->string()->required(),
-                    'priority' => $schema->string()->required(),
-                    'confidence' => $schema->number()->required(),
-                ])
-            )->required(),
         ];
     }
 }

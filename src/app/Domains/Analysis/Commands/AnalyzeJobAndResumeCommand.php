@@ -26,3 +26,5 @@ class AnalyzeJobAndResumeCommand
         return $handler->handle($this);
     }
 }
+
+

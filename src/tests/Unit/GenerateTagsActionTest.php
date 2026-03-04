@@ -81,3 +81,4 @@ it('GenerateTagsAction behält Reihenfolge der Gaps bei', function () {
 
     expect($result['gaps'])->toBe(['Docker', 'Kubernetes', 'AWS', 'CI/CD']);
 });
+

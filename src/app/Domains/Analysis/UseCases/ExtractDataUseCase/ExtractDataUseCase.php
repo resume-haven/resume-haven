@@ -25,3 +25,4 @@ class ExtractDataUseCase
         return new ExtractDataResultDto($requirements, $experiences);
     }
 }
+

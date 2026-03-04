@@ -79,3 +79,4 @@ it('gibt korrekte Farben für verschiedene Scores', function () {
     expect($lowScore->percentage)->toBe(20);
     expect($lowScore->barColor)->toBe('bg-red-500');
 });
+

@@ -26,20 +26,14 @@ class AnalyzeResultDto
      */
     public ?array $tags;
 
-    /**
-     * @var array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>|null
-     */
-    public ?array $recommendations;
-
     public ?string $error;
 
     /**
-     * @param array<int, string>                                                                                               $requirements
-     * @param array<int, string>                                                                                               $experiences
-     * @param array<int, array{requirement: string, experience: string}>                                                       $matches
-     * @param array<int, string>                                                                                               $gaps
+     * @param array<int, string>                                         $requirements
+     * @param array<int, string>                                         $experiences
+     * @param array<int, array{requirement: string, experience: string}> $matches
+     * @param array<int, string>                                         $gaps
      * @param array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null $tags
-     * @param array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>|null $recommendations
      */
     public function __construct(
         string $job_text,
@@ -49,8 +43,7 @@ class AnalyzeResultDto
         array $matches,
         array $gaps,
         ?string $error = null,
-        ?array $tags = null,
-        ?array $recommendations = null
+        ?array $tags = null
     ) {
         $this->job_text = $job_text;
         $this->cv_text = $cv_text;
@@ -60,13 +53,12 @@ class AnalyzeResultDto
         $this->gaps = $gaps;
         $this->error = $error;
         $this->tags = $tags;
-        $this->recommendations = $recommendations;
     }
 
     /**
      * Konvertiert das DTO zu einem Array.
      *
-     * @return array{job_text: string, cv_text: string, requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, error: string|null, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null, recommendations: array<int, array{gap: string, recommendation: string, example: string, category: string, priority: string, confidence: float}>|null}
+     * @return array{job_text: string, cv_text: string, requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, error: string|null, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}|null}
      */
     public function toArray(): array
     {
@@ -79,7 +71,6 @@ class AnalyzeResultDto
             'gaps' => $this->gaps,
             'error' => $this->error,
             'tags' => $this->tags,
-            'recommendations' => $this->recommendations,
         ];
     }
 }

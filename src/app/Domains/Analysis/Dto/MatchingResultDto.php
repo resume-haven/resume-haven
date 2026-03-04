@@ -24,3 +24,4 @@ class MatchingResultDto
         return ['matches' => $this->matches];
     }
 }
+
