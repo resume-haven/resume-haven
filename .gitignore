@@ -65,3 +65,13 @@ vendor/bundle/
 docker/*.log
 /identifier.sqlite
 /resume-haven-ideas/
+/src/AGENTS.md
+/src/boost.json
+/src/.junie/mcp/mcp.json
+/src/.junie/guidelines.md
+/src/.github/skills/developing-with-ai-sdk/SKILL.md
+/src/.github/skills/pest-testing/SKILL.md
+/src/.github/skills/tailwindcss-development/SKILL.md
+/src/.junie/skills/developing-with-ai-sdk/SKILL.md
+/src/.junie/skills/pest-testing/SKILL.md
+/src/.junie/skills/tailwindcss-development/SKILL.md

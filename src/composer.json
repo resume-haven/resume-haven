@@ -13,6 +13,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "v2.2",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
@@ -20,8 +21,8 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2",
-        "phpunit/phpunit": "^11.5.3",
-        "phpstan/phpstan": "^1.11"
+        "phpstan/phpstan": "2.1.40",
+        "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
         "psr-4": {
