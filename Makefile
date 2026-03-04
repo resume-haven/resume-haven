@@ -1,0 +1,123 @@
+# ResumeHaven Makefile (WSL)
+#
+# Übersicht: make <ziel>
+#
+# Gruppen:
+#   setup      – Projekt initialisieren und Abhängigkeiten installieren
+#   dev        – Entwicklung und lokaler Server
+#   test       – Tests (alle, Unit, Feature, Acceptance)
+#   lint       – Code-Analyse und Formatierung
+#   docker     – Docker-Kommandos
+#
+# Hilfe anzeigen:
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+# --- SETUP ---
+setup: ## Projekt initialisieren (Composer, NPM, .env, Migration, Build)
+	docker exec -it resumehaven-php composer run setup
+
+# --- DEV ---
+dev: ## Lokalen Entwicklungsserver und Assets starten
+	docker exec -it resumehaven-php composer run dev
+
+# --- TESTS ---
+test: ## Alle Tests ausführen (Pest)
+	docker exec -it resumehaven-php composer run test:pest-all
+
+test-unit: ## Nur Unit-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-unit
+
+test-feature: ## Nur Feature-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-feature
+
+test-acceptance: ## Nur Acceptance-Tests ausführen
+	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
+
+# --- LINT / FORMAT ---
+pint-analyse: ## Pint: Nur Analyse (kein Fix)
+	docker exec -it resumehaven-php composer run pint:analyse
+
+pint-fix: ## Pint: Automatische Korrektur
+	docker exec -it resumehaven-php composer run pint:fix
+
+phpstan: ## PHPStan: Statische Code-Analyse
+	docker exec -it resumehaven-php composer run phpstan
+
+phpstan-baseline: ## PHPStan: Baseline generieren
+	docker exec -it resumehaven-php composer run phpstan:baseline
+
+# --- DOCKER ---
+docker-up: ## Docker-Container bauen und starten
+	docker compose up -d --build
+
+docker-down: ## Docker-Container stoppen
+	docker compose down
+
+docker-restart: ## Docker-Container neu starten (schnell, ohne Rebuild)
+	docker compose restart
+
+docker-rebuild: ## Docker-Container komplett neu bauen (nach Config-Änderungen)
+	docker compose down
+	docker compose build --no-cache php
+	docker compose up -d
+
+docker-stop: ## Docker-Container stoppen (Alias für docker-down)
+	docker compose stop
+
+docker-start: ## Docker-Container starten
+	docker compose start
+
+docker-build: ## Docker-Container bauen
+	docker compose build
+
+docker-clean: ## Docker-Container und Volumes löschen
+	docker compose down -v
+
+docker-logs: ## Docker-Logs anzeigen
+	docker compose logs -f
+
+docker-pint: ## Pint im PHP-Container ausführen
+	docker exec -it resumehaven-php vendor/bin/pint --config pint.json .
+
+docker-test: ## Tests im PHP-Container ausführen
+	docker exec -it resumehaven-php vendor/bin/pest
+
+# --- NPM / NODE ---
+npm-build: ## Assets bauen (npm run build im Node-Container)
+	docker exec -it resumehaven-node npm run build
+
+npm-dev: ## Assets im Watch-Modus (npm run dev im Node-Container)
+	docker exec -it resumehaven-node npm run dev
+
+# --- SHELLS ---
+php-shell: ## PHP-Container Shell öffnen
+	docker exec -it resumehaven-php bash
+
+node-shell: ## Node-Container Shell öffnen
+	docker exec -it resumehaven-node sh
+
+nginx-shell: ## Nginx-Container Shell öffnen
+	docker exec -it resumehaven-nginx sh
+
+php-cache-clear: ## Laravel Cache leeren (php artisan cache:clear)
+	docker exec -it resumehaven-php php artisan cache:clear
+
+
+# --- DATABASE ---
+db-migrate: ## Datenbank-Migrationen ausführen
+	docker exec -it resumehaven-php php artisan migrate
+
+db-migrate-status: ## Status der Datenbank-Migrationen anzeigen
+	docker exec -it resumehaven-php php artisan migrate:status
+
+db-migrate-rollback: ## Letzte Datenbank-Migration rückgängig machen
+	docker exec -it resumehaven-php php artisan migrate:rollback
+
+db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
+	docker exec -it resumehaven-php php artisan migrate:refresh
+
+db-seed: ## Datenbank mit Seeds befüllen
+	docker exec -it resumehaven-php php artisan db:seed
+
+.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

@@ -1,0 +1,55 @@
+skills:
+  projekt_analyse:
+    - name: projektstruktur_analysieren
+      prompt: >
+        @workspace analysiere die gesamte Projektstruktur. Identifiziere doppelte Logik,
+        unklare Verantwortlichkeiten, fehlende Services, zu große Klassen oder Verletzungen
+        des Single Responsibility Principle.
+
+    - name: architekturvorschlaege
+      prompt: >
+        Analysiere dieses Modul und schlage eine saubere Architektur vor
+        (Services, Actions, DTOs, Repositories, Events).
+
+  laravel:
+    - name: eloquent_optimierer
+      prompt: >
+        Analysiere diese Eloquent-Query und schlage Optimierungen vor.
+        Prüfe N+1-Probleme, fehlende Indexe und mögliche Caching-Strategien.
+
+    - name: migration_generator
+      prompt: >
+        Erstelle eine Laravel-Migration basierend auf diesem SQL-Schema.
+        Nutze passende Datentypen, Indexe und Foreign Keys.
+
+    - name: api_endpoint_generator
+      prompt: >
+        Erstelle einen vollständigen Laravel-API-Endpoint (Route, Controller,
+        Request-Validation, Resource) für diese Anforderung.
+
+    - name: policy_generator
+      prompt: >
+        Erstelle eine Laravel-Policy für dieses Model inklusive aller relevanten Methoden.
+
+    - name: test_generator
+      prompt: >
+        Erstelle vollständige Tests für diese Klasse inklusive Mocking,
+        Edge Cases und Datenbank-Interaktionen.
+
+  php:
+    - name: refactoring_assistent
+      prompt: >
+        Refaktoriere diese PHP-Klasse nach Best Practices. Entferne Code-Duplikate,
+        verbessere Lesbarkeit und wende SOLID-Prinzipien an.
+
+    - name: typisierung_verbessern
+      prompt: >
+        Analysiere diese PHP-Datei und ergänze strikte Typisierung,
+        Return Types und PHPDoc, wo sinnvoll.
+
+    - name: fehleranalyse
+      prompt: >
+        Analysiere diesen Fehler-Stacktrace und schlage mögliche Ursachen und Lösungen vor.
+
+  docker:
+    - name: dockerfile

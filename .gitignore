@@ -1,0 +1,77 @@
+udem haben wir# ---------------------------------------
+# Laravel defaults
+# ---------------------------------------
+/vendor/
+/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Laravel environment files
+.env
+.env.backup
+.env.local
+.env.production
+.env.staging
+
+# Laravel specific
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/testing/*
+/bootstrap/cache/*.php
+
+# ---------------------------------------
+# Composer
+# ---------------------------------------
+composer.phar
+
+# ---------------------------------------
+# Node / Frontend
+# ---------------------------------------
+/public/build/
+/public/hot
+/public/mix-manifest.json
+
+# ---------------------------------------
+# IDE / Editor
+# ---------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ---------------------------------------
+# OS files
+# ---------------------------------------
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------
+# Jekyll / GitHub Pages
+# ---------------------------------------
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+vendor/bundle/
+
+# ---------------------------------------
+# Docker artifacts (if any)
+# ---------------------------------------
+docker/*.log
+/identifier.sqlite
+/resume-haven-ideas/
+/src/AGENTS.md
+/src/boost.json
+/src/.junie/mcp/mcp.json
+/src/.junie/guidelines.md
+/src/.github/skills/developing-with-ai-sdk/SKILL.md
+/src/.github/skills/pest-testing/SKILL.md
+/src/.github/skills/tailwindcss-development/SKILL.md
+/src/.junie/skills/developing-with-ai-sdk/SKILL.md
+/src/.junie/skills/pest-testing/SKILL.md
+/src/.junie/skills/tailwindcss-development/SKILL.md

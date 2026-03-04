@@ -1,0 +1,50 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    volumes:
+      - ./src:/var/www/html
+    container_name: resumehaven-php
+    networks:
+      - resumehaven
+
+  nginx:
+    build:
+      context: ./docker/nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    container_name: resumehaven-nginx
+    networks:
+      - resumehaven
+
+  node:
+    build:
+      context: ./docker/node
+    volumes:
+      - ./src:/var/www/html
+    container_name: resumehaven-node
+    command: ["tail", "-f", "/dev/null"]
+    networks:
+      - resumehaven
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    container_name: resumehaven-mailpit
+    networks:
+      - resumehaven
+
+networks:
+  resumehaven:
+    driver: bridge

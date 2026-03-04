@@ -1,0 +1,6 @@
+- read instructions from the files: 
+  - .github/agents/default.yaml
+  - README.md
+  - docs/ARCHITECTURE.md
+  - docs/CODING_GUIDELINES.md
+  - COMMIT_PLAN.md
