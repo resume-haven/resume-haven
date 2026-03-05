@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Dto\AnalyzeRequestDto;
+use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
+
+describe('ParseAiResponseAction', function () {
+    test('parst valide Response zu AnalyzeResultDto', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP', 'Laravel'],
+            'experiences' => ['5 years PHP'],
+            'matches' => [
+                ['requirement' => 'PHP', 'experience' => '5 years PHP'],
+            ],
+            'gaps' => ['Docker'],
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->requirements)->toBe(['PHP', 'Laravel']);
+        expect($result->experiences)->toBe(['5 years PHP']);
+        expect($result->error)->toBeNull();
+    });
+
+    test('lehnt Response ohne erforderliche Felder ab', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = ['requirements' => ['PHP']]; // Fehlen: experiences, matches, gaps
+
+        expect(fn () => $action->execute($data, $request))
+            ->toThrow(\RuntimeException::class);
+    });
+
+    test('lehnt Response ab, wenn Feld kein Array ist', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => 'PHP',  // Sollte Array sein
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => [],
+        ];
+
+        expect(fn () => $action->execute($data, $request))
+            ->toThrow(\RuntimeException::class);
+    });
+
+    test('extrahiert Tags aus Response falls vorhanden', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years PHP'],
+            'matches' => [],
+            'gaps' => [],
+            'tags' => [
+                'matches' => [['requirement' => 'PHP', 'experience' => ['5 years']]],
+                'gaps' => ['Docker'],
+            ],
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->tags)->not()->toBeNull();
+        expect($result->tags['matches'])->toHaveCount(1);
+    });
+});
