@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 use App\Domains\Analysis\UseCases\ValidateInputUseCase\ValidateInputAction;
 use App\Domains\Analysis\UseCases\ValidateInputUseCase\InputValidationException;
+use App\Domains\Analysis\UseCases\ValidateInputUseCase\InputSanitizerService;
+use App\Domains\Analysis\UseCases\ValidateInputUseCase\PatternDetectorService;
 
 describe('ValidateInputAction', function () {
-    $action = new ValidateInputAction();
+    $action = new ValidateInputAction(
+        new PatternDetectorService(),
+        new InputSanitizerService(),
+    );
 
     describe('execute()', function () use ($action) {
         test('valides Input wird akzeptiert', function () use ($action) {

@@ -20,124 +20,76 @@ class ValidateInputAction
     // Konfigurierbare Sicherheitslimits
     private const MAX_LENGTH_BYTES = 50 * 1024; // 50KB
 
-    // Verdächtige Patterns (Case-Insensitive Regex)
-    private const SUSPICIOUS_PATTERNS = [
-        // SQL-Injection-Patterns
-        '/\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|EXECUTE|EXEC)\b/i',
-        // JavaScript-Injection
-        '/<script[^>]*>.*?<\/script>/is',
-        '/on\w+\s*=/i', // Event-Handler (onclick=, onload=, etc.)
-        // HTML-Injection
-        '/<iframe/i',
-        '/<object/i',
-        '/<embed/i',
-    ];
+    public function __construct(
+        private PatternDetectorService $patternDetector,
+        private InputSanitizerService $inputSanitizer,
+    ) {}
 
     /**
      * Validiert Input gegen Sicherheitsrisiken.
      *
      * @param  string            $input     Zu validierender Text
-     * @param  string            $fieldName Name des Feldes (für Logging)
+     * @param  string            $fieldName Name des Feldes (fuer Logging)
      * @return ValidatedInputDto Validierter Input mit Metadaten
      *
      * @throws InputValidationException Bei kritischen Validierungsfehlern
      */
     public function execute(string $input, string $fieldName = 'input'): ValidatedInputDto
     {
-        // 1. Längenprüfung (hard limit)
-        if (strlen($input) > self::MAX_LENGTH_BYTES) {
-            Log::warning('Input exceeds maximum length', [
-                'field' => $fieldName,
-                'max_bytes' => self::MAX_LENGTH_BYTES,
-                'actual_bytes' => strlen($input),
-            ]);
-            throw new InputValidationException(
-                'Der Eingabetext ist zu lang. Maximum: 50 KB'
-            );
-        }
+        $this->validateLength($input, $fieldName);
 
-        // 2. Verdächtige Patterns prüfen (warning, nicht blocking)
-        $suspiciousPatterns = $this->detectSuspiciousPatterns($input);
-        if (! empty($suspiciousPatterns)) {
-            Log::warning('Suspicious patterns detected in input', [
-                'field' => $fieldName,
-                'patterns' => $suspiciousPatterns,
-                'length_bytes' => strlen($input),
-            ]);
-        }
+        $suspiciousPatterns = $this->patternDetector->detect($input);
+        $this->logSuspiciousPatterns($fieldName, $input, $suspiciousPatterns);
 
-        // 3. Input-Bereinigung (Whitespace trimmen, null-bytes entfernen)
-        $sanitized = $this->sanitizeInput($input);
-
-        // 4. Leere Input Prüfung
-        if (empty(trim($sanitized))) {
-            throw new InputValidationException(
-                'Die Eingabe darf nicht leer sein'
-            );
-        }
+        $sanitized = $this->inputSanitizer->sanitize($input);
+        $this->validateNotEmpty($sanitized);
 
         return new ValidatedInputDto(
             originalInput: $input,
             sanitizedInput: $sanitized,
             lengthBytes: strlen($sanitized),
-            hasSuspiciousPatterns: ! empty($suspiciousPatterns),
+            hasSuspiciousPatterns: $suspiciousPatterns !== [],
             suspiciousPatterns: $suspiciousPatterns,
         );
     }
 
-    /**
-     * Erkennt verdächtige Patterns im Input.
-     *
-     * @return array<int, string> Array von erkannten Patterns
-     */
-    private function detectSuspiciousPatterns(string $input): array
+    private function validateLength(string $input, string $fieldName): void
     {
-        $detected = [];
-
-        foreach (self::SUSPICIOUS_PATTERNS as $pattern) {
-            if (preg_match($pattern, $input)) {
-                // Pattern in lesbare Form konvertieren
-                $readablePattern = $this->patternToReadable($pattern);
-                $detected[] = $readablePattern;
-            }
+        if (strlen($input) <= self::MAX_LENGTH_BYTES) {
+            return;
         }
 
-        return array_unique($detected);
+        Log::warning('Input exceeds maximum length', [
+            'field' => $fieldName,
+            'max_bytes' => self::MAX_LENGTH_BYTES,
+            'actual_bytes' => strlen($input),
+        ]);
+
+        throw new InputValidationException('Der Eingabetext ist zu lang. Maximum: 50 KB');
     }
 
     /**
-     * Konvertiert Regex-Pattern in lesbare Beschreibung.
+     * @param array<int, string> $suspiciousPatterns
      */
-    private function patternToReadable(string $pattern): string
+    private function logSuspiciousPatterns(string $fieldName, string $input, array $suspiciousPatterns): void
     {
-        return match ($pattern) {
-            '/\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|EXECUTE|EXEC)\b/i' => 'SQL Keywords',
-            '/<script[^>]*>.*?<\/script>/is' => 'Script Tags',
-            '/on\w+\s*=/i' => 'Event Handlers',
-            '/<iframe/i' => 'iFrame Tags',
-            '/<object/i' => 'Object Tags',
-            '/<embed/i' => 'Embed Tags',
-            default => 'Unknown Pattern',
-        };
+        if ($suspiciousPatterns === []) {
+            return;
+        }
+
+        Log::warning('Suspicious patterns detected in input', [
+            'field' => $fieldName,
+            'patterns' => $suspiciousPatterns,
+            'length_bytes' => strlen($input),
+        ]);
     }
 
-    /**
-     * Bereinigt den Input.
-     */
-    private function sanitizeInput(string $input): string
+    private function validateNotEmpty(string $sanitized): void
     {
-        // 1. Null-Bytes entfernen (Security)
-        $input = str_replace("\0", '', $input);
+        if (! empty(trim($sanitized))) {
+            return;
+        }
 
-        // 2. Trim Whitespace (User Experience)
-        $input = trim($input);
-
-        // 3. Mehrfache Newlines zu Einfachen konvertieren
-        $input = preg_replace('/\n\n+/', "\n", $input) ?? $input;
-
-        // 4. Carriage Returns normalisieren (Windows <-> Unix)
-        $input = str_replace("\r\n", "\n", $input);
-
-        return $input;
+        throw new InputValidationException('Die Eingabe darf nicht leer sein');
     }
 }
