@@ -17,4 +17,4 @@ Route::get('/analyze', function () {
     return view('analyze');
 });
 
-Route::post('/analyze', [AnalyzeController::class, 'analyze']);
+Route::post('/analyze', AnalyzeController::class);
