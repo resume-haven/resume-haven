@@ -49,6 +49,14 @@ coverage-open: ## Öffnet den HTML-Coverage-Report im Standardbrowser
 		exit 1; \
 	fi
 
+coverage-clean: ## Löscht lokale Coverage-Report-Dateien (src/coverage-report/)
+	@if [ -d src/coverage-report ]; then \
+		rm -rf src/coverage-report; \
+		echo "Coverage-Report gelöscht: src/coverage-report"; \
+	else \
+		echo "Kein Coverage-Report vorhanden."; \
+	fi
+
 # --- LINT / FORMAT ---
 pint-analyse: ## Pint: Nur Analyse (kein Fix)
 	docker exec -it resumehaven-php composer run pint:analyse
@@ -176,4 +184,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance test-coverage test-coverage-report coverage-open pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
