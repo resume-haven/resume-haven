@@ -66,4 +66,3 @@ describe('ExecuteAnalyzeFlowAction Edge Cases', function () {
         expect($result->error)->toContain('Sicherheitsvalidierung fehlgeschlagen');
     });
 });
-

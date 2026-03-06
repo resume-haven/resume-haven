@@ -70,4 +70,3 @@ describe('BuildAnalyzeViewDataAction', function () {
         expect($array)->toHaveKeys(['job_text', 'cv_text', 'result', 'error', 'score', 'tags']);
     });
 });
-
