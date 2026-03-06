@@ -67,4 +67,45 @@ describe('ParseAiResponseAction', function () {
         expect($result->tags)->not()->toBeNull();
         expect($result->tags['matches'])->toHaveCount(1);
     });
+
+    test('behandelt fehlende Tags-Struktur korrekt', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => [],
+            'tags' => ['invalid' => 'structure'], // Fehlt matches/gaps
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->tags)->toBeNull();
+    });
+
+    test('behandelt tags als nicht-Array', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => [],
+            'tags' => 'not an array',
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->tags)->toBeNull();
+    });
+
+    test('lehnt Response mit mehreren fehlenden Feldern ab', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = ['requirements' => ['PHP'], 'experiences' => []]; // Fehlen: matches, gaps
+
+        expect(fn () => $action->execute($data, $request))
+            ->toThrow(\RuntimeException::class, 'Feld \'matches\' fehlt');
+    });
 });

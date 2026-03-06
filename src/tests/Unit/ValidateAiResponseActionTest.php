@@ -37,4 +37,46 @@ describe('ValidateAiResponseAction', function () {
         expect(fn () => $action->execute($response))
             ->toThrow(\RuntimeException::class);
     });
+
+    test('lehnt alle verdächtigen Patterns ab', function () {
+        $action = new ValidateAiResponseAction();
+
+        $suspiciousPatterns = [
+            'eval()',
+            'exec()',
+            'system()',
+            'shell_exec',
+            '<script>',
+            'javascript:',
+        ];
+
+        foreach ($suspiciousPatterns as $pattern) {
+            expect(fn () => $action->execute(json_encode(['data' => $pattern])))
+                ->toThrow(\RuntimeException::class);
+        }
+    });
+
+    test('akzeptiert JSON mit harmlosen Sonderzeichen', function () {
+        $action = new ValidateAiResponseAction();
+        $response = json_encode([
+            'text' => 'äöü ßẞ 🚀',
+            'special' => '!@#$%^&*()',
+        ]);
+
+        expect(fn () => $action->execute($response))->not()->toThrow(\Exception::class);
+    });
+
+    test('lehnt leeren String ab', function () {
+        $action = new ValidateAiResponseAction();
+
+        expect(fn () => $action->execute(''))
+            ->toThrow(\RuntimeException::class);
+    });
+
+    test('lehnt nur Whitespace ab', function () {
+        $action = new ValidateAiResponseAction();
+
+        expect(fn () => $action->execute('   '))
+            ->toThrow(\RuntimeException::class);
+    });
 });
