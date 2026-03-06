@@ -1925,7 +1925,7 @@ vendor/bin/pest --mutate
 
 **1. Test-Validierung:**
 ```bash
-make test              # Alle Tests grün (100+ Tests)
+make test              # Alle Tests grün (100+ Tests, alle grün)
 make phpstan           # Level 9, 0 Errors
 make pint              # Code-Formatting clean
 ```
@@ -2092,107 +2092,117 @@ Codebase ist selbst-dokumentiert und einfach zu erweitern.
 
 ---
 
-## 💾 Commit 22 – CV-Speicherung (DB-basiert, anonym)
+## 🐛 Commit 21.5 – Xdebug Integration für lokale Entwicklung
 
-**Zweck:** Lebensläufe speichern & wiederverwenden (GDPR-konform, ohne Auth)
+**Zweck:** Saubere Debugging-Infrastruktur mit optionalem Xdebug-Support
 
-### Added
-
-#### 1. Database Migration
-```
-app/Domains/Resume/
-├── Models/
-│   └── StoredResume.php
-├── Repositories/
-│   └── StoredResumeRepository.php
-├── Actions/
-│   ├── GetOrCreateResumeAction.php
-│   └── DeleteResumeAction.php
-└── Dto/
-    └── StoredResumeDto.php
-```
-
-Migration `create_stored_resumes_table`:
-- `id` (UUID)
-- `content_hash` (SHA256 des CV-Texts)
-- `resume_text` (longText)
-- `session_id` (für Tracking, optional)
-- `created_at`, `updated_at`
-
-#### 2. Controller-Erweiterung
-- CV-Form: Checkbox "Gespeicherten CV verwenden?"
-- GET `/` pre-fills CV-Textarea wenn gespeichert
-- POST `/analyze`: Speichert CV wenn neu/geändert
-
-#### 3. Actions
-- `GetOrCreateResumeAction`: Prüft Hash, gibt bestehenden CV zurück
-- `DeleteResumeAction`: Löscht CV (anonym, ohne Auth)
-
-#### 4. UI
-- Checkbox im Form
-- "Gespeicherte CVs ansehen/löschen"-Link im Footer
-- Einfacher "Delete"-Button neben jedem CV
-
-#### 5. Privacy & GDPR
-- Keine PII speichern (nur Text)
-- Delete-Link für User (selbst-Löschung)
-- Keine Tracking / Email / Namen gespeichert
-
-### Tests Added
-- `StoredResumeRepositoryTest.php` (Unit)
-- `GetOrCreateResumeActionTest.php` (Unit)
-- `ResumeStorageFeatureTest.php` (Feature)
-
-### Result
-Nutzer können ihre CVs speichern & wiederverwenden, ohne sich anzumelden.
-
----
-
-## 🧹 Commit 22a – Resume Cleanup-Cronjob (Optional)
-
-**Zweck:** Alte CVs automatisch löschen (Speicherplatz, Datenschutz)
+**Status:** ✅ Completed
 
 ### Added
 
-#### 1. Artisan Command
+#### 1. Dockerfile-Erweiterung
+- `ARG INSTALL_XDEBUG=false` für conditionale Installation
+- Xdebug via `pecl install` (nur wenn ARG=true)
+- Xdebug-ini Konfiguration wird conditional geladen
+- Kompilierungs-Overhead nur im Debug-Modus
+
+#### 2. Xdebug-Konfiguration
+- `docker/php/xdebug.ini` — Server-Mode Setup
+  - `xdebug.mode=debug,develop`
+  - `xdebug.client_port=9003`
+  - Automatische Client-Host-Detection
+
+#### 3. Runtime-Strategie
+- `docker-compose.override.yml` für Dev-Umgebung (git-ignored)
+- `docker-compose.override.example.yml` als Template
+- Umgebungsvariablen gesetzt automatisch via override file
+- Keine manuellen `export XDEBUG_CONFIG` nötig
+
+#### 4. Makefile-Kommandos (5 neue)
+- `make debug-on` — Xdebug aktivieren + rebuild (2-3 Min)
+- `make debug-off` — Xdebug deaktivieren + rebuild (schneller Mode)
+- `make debug-status` — Status prüfen (installiert? aktiv?)
+- `make debug-test` — Test-Request mit XDEBUG_SESSION Cookie
+- `make debug-logs` — Xdebug-Logs anzeigen
+
+#### 5. IDE-Konfiguration
+- `.vscode/launch.json` template erstellt
+- PhpStorm manual guide in Dokumentation
+- Path-Mapping vorkonfiguriert (`/var/www/html` → `./src`)
+
+#### 6. Dokumentation
+- **`docs/DEBUGGING.md`** (vollständig)
+  - Quick Start
+  - VSCode + PhpStorm Anleitung
+  - CLI-Debugging mit env-vars
+  - Troubleshooting & Performance-Tipps
+- **`docs/DEVELOPMENT.md`** (neu)
+  - Local Development Setup
+  - Häufige Kommandos
+  - Docker Troubleshooting
+- **`README.md`** aktualisiert
+  - "Local Development" Sektion
+  - Debug-Aktivierung Hinweis
+  - Make-Kommandos-Übersicht
+
+### Neue Dateien
+- `docker/php/xdebug.ini`
+- `docker-compose.override.example.yml`
+- `docs/DEBUGGING.md`
+- `docs/DEVELOPMENT.md`
+- `.vscode/launch.json` (template)
+
+### Geänderte Dateien
+- `docker/php/Dockerfile` — ARG INSTALL_XDEBUG, conditional pecl
+- `Makefile` — 5 neue debug-* Kommandos
+- `README.md` — Installation & Development Sections
+- `.gitignore` — Bestätigung docker-compose.override.yml
+
+### Workflow nach Umsetzung
+
 ```bash
-php artisan resume:cleanup --older-than=90
+# Debugging aktivieren (einmalig)
+make debug-on                   # Build mit Xdebug (2-3 Min)
+
+# Debuggen
+make php-shell                  # XDEBUG_CONFIG ist bereits in Env!
+php artisan test --filter="Xyz" # Debugger stoppt bei Breakpoint
+
+# Normalentwicklung (schnell)
+make debug-off  # Xdebug deaktiviert (schneller Mode)
+make test       # Tests laufen 2x schneller
 ```
 
-- Löscht CVs älter als N Tage (default: 90)
-- Output: "Deleted 42 stored resumes."
+### Performance-Impact
 
-#### 2. Cronjob-Integration
-```php
-// In app/Console/Kernel.php
-$schedule->command('resume:cleanup --older-than=90')
-    ->dailyAt('03:00');
-```
+| Modus | Speed | Coverage | Debugger |
+|-------|-------|----------|----------|
+| `debug-off` | ✅ 1x | ❌ | ❌ |
+| `debug-on` | 🐢 0.5x | ✅ | ✅ |
 
-#### 3. Logging
-- Log in `storage/logs/resume-cleanup.log`
-- Anzahl gelöschter Einträge
-- Timestamp
+### Tests & Validation
+- ✅ Container mit `INSTALL_XDEBUG=false` baut fehlerlos
+- ✅ Container mit `INSTALL_XDEBUG=true` baut + Xdebug funktioniert
+- ✅ `make debug-on` erstellt override.yml + rebuild successful
+- ✅ `make debug-off` entfernt override.yml + rebuild schneller
+- ✅ `make debug-status` zeigt korrekten Status
+- ✅ IDE kann auf Port 9003 verbinden
+- ✅ Breakpoints funktionieren
+- ✅ CLI-Env hat XDEBUG_CONFIG gesetzt
 
-### Tests Added
-- `ResumeCleanupCommandTest.php` (Feature)
+### Documentation Checklist
+- [x] `docs/DEBUGGING.md` — Vollständig
+- [x] `docs/DEVELOPMENT.md` — Neu
+- [x] `README.md` — Updated
+- [x] `COMMIT_PLAN.md` — Updated
+- [x] `.gitignore` — Verified
 
-### Result
-Alte CVs werden automatisch gelöscht (Data Minimization GDPR).
+### Edge Cases & Notes
+- **WSL2 Performance:** `host.docker.internal` funktioniert auf Windows/Mac, Linux muss ggf. Docker-IP nutzen (nicht im MVP-Scope)
+- **Port 9003 Konflikt:** Falls belegt, kann in xdebug.ini + VSCode geändert werden (selten in Praxis)
+- **Erste Aktivierung:** Xdebug-Kompilierung dauert 2-3 Min (nur einmal)
+- **Entwickler-Onboarding:** Dokumentation deckt alles ab, keine zusätzliche Setup nötig
 
 ---
 
-## 🎯 MVP-Abschluss-Checkliste
-
-Nach Commit 22a ist das **MVP complete**:
-
-- ✅ **Funktionalität:** Analysen, Tags, Caching, CV-Speicherung funktionieren
-- ✅ **Sicherheit:** Prompt-Injection, Input-Validation, Error-Handling (Commit 19)
-- ✅ **UX:** Responsive, Dark-Mode, Accessibility (Commits 20–20a)
-- ✅ **Qualität:** PHPStan Level 9, >90% Coverage (Commits 21–21a)
-- ✅ **Dokumentation:** Vollständig, selbst-dokumentierter Code
-- ✅ **Privacy:** GDPR-konform, Daten-Minimization, Delete-Option
-- ✅ **Deployment:** Lauffähig auf IONOS Webspace
-
-**Next:** v1.0.0 Release + Englische Dokumentation (Phase 2)
-
+## 💾 Commit 22 – CV-Speicherung (DB-basiert, anonym)
