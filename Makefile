@@ -34,6 +34,9 @@ test-feature: ## Nur Feature-Tests ausführen
 test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
 
+test-coverage: ## Testabdeckung mit Xdebug anzeigen
+	docker exec -it resumehaven-php composer run test:pest-coverage
+
 # --- LINT / FORMAT ---
 pint-analyse: ## Pint: Nur Analyse (kein Fix)
 	docker exec -it resumehaven-php composer run pint:analyse
@@ -112,7 +115,7 @@ debug-on: ## 🐛 Xdebug aktivieren (mit override + rebuild)
 		 echo "      args:" >> docker-compose.override.yml && \
 		 echo "        INSTALL_XDEBUG: 'true'" >> docker-compose.override.yml && \
 		 echo "    environment:" >> docker-compose.override.yml && \
-		 echo "      XDEBUG_MODE: debug,develop" >> docker-compose.override.yml && \
+		 echo "      XDEBUG_MODE: debug,coverage" >> docker-compose.override.yml && \
 		 echo "      XDEBUG_CONFIG: \"client_host=host.docker.internal client_port=9003 idekey=resumehaven\"" >> docker-compose.override.yml); \
 	fi
 	docker compose down
@@ -161,4 +164,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-acceptance test-coverage pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

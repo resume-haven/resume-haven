@@ -36,10 +36,21 @@ php artisan tinker  # Debuggen!
    - PHP-Container mit `INSTALL_XDEBUG=true` gebaut
    - Xdebug wird via `pecl install xdebug` kompiliert
 
-2. **Runtime (nach `make debug-on`):**
-   - `XDEBUG_CONFIG` Env-Variable ist gesetzt
-   - Xdebug lauscht auf Port 9003
-   - IDE verbindet sich zu Port 9003 (Server-Modus)
+2. **Xdebug-Konfiguration (nur wenn installiert):**
+```ini
+[xdebug]
+; Modi: debug (Debugger), coverage (Code-Coverage)
+xdebug.mode=debug
+xdebug.start_with_request=yes
+xdebug.discover_client_host=true
+xdebug.client_host=host.docker.internal
+xdebug.client_port=9003
+xdebug.idekey=resumehaven
+```
+
+**Runtime-Config:**
+- `XDEBUG_MODE=debug,coverage` (für Debugging + Coverage)
+- Umgebungsvariable wird automatisch gesetzt via `docker-compose.override.yml`
 
 3. **Deaktivieren (`make debug-off`):**
    - `docker-compose.override.yml` wird gelöscht
@@ -205,22 +216,35 @@ vendor/bin/pest tests/Feature/AnalyzeControllerTest.php
 ### **Coverage-Reports generieren:**
 
 ```bash
+make debug-on              # Xdebug mit coverage-Mode aktivieren
+make test-coverage         # Coverage-Report (min 80%)
+
+# oder manuell im Container:
+make php-shell
+vendor/bin/pest --coverage --min=80
+```
+
+**Coverage-Report in HTML:**
+```bash
 make debug-on
-vendor/bin/pest --coverage --min=90
+make php-shell
+vendor/bin/pest --coverage --coverage-html=coverage-report
+# Report öffnen: src/coverage-report/index.html
 ```
 
 ---
 
 ## 📊 Performance-Vergleich
 
-| Modus | Speed | Code Coverage | Debugger |
-|-------|-------|---------------|----------|
-| **debug-off** | ✅ 1x (normal) | ❌ Nein | ❌ Nein |
-| **debug-on** | 🐢 0.5x (50% langsamer) | ✅ Ja | ✅ Ja |
+| Modus | Speed | Code Coverage | Debugger | Verwendung |
+|-------|-------|---------------|----------|------------|
+| **debug-off** | ✅ 1x (normal) | ❌ Nein | ❌ Nein | Normale Entwicklung |
+| **debug-on** | 🐢 0.5x (50% langsamer) | ✅ Ja | ✅ Ja | Debugging + Coverage |
 
 **Empfehlung:**
 - Normale Entwicklung & Tests: `make debug-off`
 - Debugging nötig: `make debug-on`
+- Coverage-Reports: `make debug-on` + `make test-coverage`
 
 ---
 
@@ -284,4 +308,7 @@ make debug-logs
 - [ ] Script ausgeführt → Debugger stoppt
 
 **Viel Spaß beim Debuggen!** 🎉
+
+
+
 

@@ -112,6 +112,7 @@ Siehe [Debugging Guide](./docs/DEBUGGING.md) für Details.
 ```bash
 make help           # Alle Kommandos anzeigen
 make test           # Tests ausführen
+make test-coverage  # Tests mit Coverage (benötigt Xdebug)
 make pint-fix       # Code formatieren
 make phpstan        # Statische Analyse
 make php-shell      # Bash im PHP-Container

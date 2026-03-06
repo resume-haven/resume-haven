@@ -47,6 +47,7 @@ docker compose logs # Logs anzeigen
 make test           # Alle Tests (Pest)
 make test-unit      # Unit-Tests nur
 make test-feature   # Feature-Tests nur
+make test-coverage  # Tests mit Coverage (benötigt Xdebug)
 ```
 
 ### **Code-Qualität**
@@ -90,9 +91,15 @@ Siehe **[Debugging Guide](./DEBUGGING.md)** für vollständige Anleitung.
 
 **Quick Start:**
 ```bash
-make debug-on       # Xdebug aktivieren
+make debug-on       # Xdebug aktivieren (debug + coverage)
 make debug-status   # Status prüfen
 make php-shell      # Shell (XDEBUG_CONFIG ist bereits gesetzt)
+```
+
+**Coverage-Reports:**
+```bash
+make debug-on           # Xdebug aktivieren
+make test-coverage      # Coverage-Report (min 80%)
 ```
 
 Dann in IDE auf Port 9003 Breakpoint setzen und Script ausführen!
@@ -188,4 +195,6 @@ make docker-up              # Neu starten (frisch!)
 - [ ] `make test` laufen die Tests grün
 
 **Viel Erfolg beim Entwickeln!** 🚀
+
+
 

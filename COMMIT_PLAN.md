@@ -2108,7 +2108,7 @@ Codebase ist selbst-dokumentiert und einfach zu erweitern.
 
 #### 2. Xdebug-Konfiguration
 - `docker/php/xdebug.ini` — Server-Mode Setup
-  - `xdebug.mode=debug,develop`
+  - `xdebug.mode=debug,coverage`
   - `xdebug.client_port=9003`
   - Automatische Client-Host-Detection
 
@@ -2116,6 +2116,7 @@ Codebase ist selbst-dokumentiert und einfach zu erweitern.
 - `docker-compose.override.yml` für Dev-Umgebung (git-ignored)
 - `docker-compose.override.example.yml` als Template
 - Umgebungsvariablen gesetzt automatisch via override file
+- `XDEBUG_MODE=debug,coverage` für Debugging + Coverage-Reports
 - Keine manuellen `export XDEBUG_CONFIG` nötig
 
 #### 4. Makefile-Kommandos (5 neue)
@@ -2124,6 +2125,7 @@ Codebase ist selbst-dokumentiert und einfach zu erweitern.
 - `make debug-status` — Status prüfen (installiert? aktiv?)
 - `make debug-test` — Test-Request mit XDEBUG_SESSION Cookie
 - `make debug-logs` — Xdebug-Logs anzeigen
+- `make test-coverage` — Tests mit Coverage-Report (min 80%)
 
 #### 5. IDE-Konfiguration
 - `.vscode/launch.json` template erstellt
@@ -2168,6 +2170,10 @@ make debug-on                   # Build mit Xdebug (2-3 Min)
 make php-shell                  # XDEBUG_CONFIG ist bereits in Env!
 php artisan test --filter="Xyz" # Debugger stoppt bei Breakpoint
 
+# Coverage-Reports
+make debug-on                   # Falls noch nicht aktiv
+make test-coverage              # Coverage mit min 80%
+
 # Normalentwicklung (schnell)
 make debug-off  # Xdebug deaktiviert (schneller Mode)
 make test       # Tests laufen 2x schneller
@@ -2175,10 +2181,10 @@ make test       # Tests laufen 2x schneller
 
 ### Performance-Impact
 
-| Modus | Speed | Coverage | Debugger |
-|-------|-------|----------|----------|
-| `debug-off` | ✅ 1x | ❌ | ❌ |
-| `debug-on` | 🐢 0.5x | ✅ | ✅ |
+| Modus | Speed | Coverage | Debugger | Verwendung |
+|-------|-------|----------|----------|------------|
+| `debug-off` | ✅ 1x | ❌ | ❌ | Normale Entwicklung |
+| `debug-on` | 🐢 0.5x | ✅ | ✅ | Debugging + Coverage |
 
 ### Tests & Validation
 - ✅ Container mit `INSTALL_XDEBUG=false` baut fehlerlos
