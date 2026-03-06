@@ -44,12 +44,19 @@ docker compose logs # Logs anzeigen
 ### **Tests**
 
 ```bash
-make test           # Alle Tests (Pest)
-make test-unit      # Unit-Tests nur
-make test-feature   # Feature-Tests nur
-make test-coverage  # Tests mit Coverage (benötigt Xdebug)
-make test-coverage-report  # Coverage-Dateien (clover+xml/html)
+make test                   # Alle Tests (Pest)
+make test-unit              # Unit-Tests nur
+make test-feature           # Feature-Tests nur
+make test-coverage          # Tests mit Coverage (benötigt Xdebug, min 95%)
+make test-coverage-report   # Coverage-Dateien (clover+xml/html)
+make coverage-open          # Öffnet HTML-Coverage-Report im Browser
+make coverage-clean         # Löscht alte Coverage-Reports
 ```
+
+**Code Coverage Anforderungen:**
+- **Minimum:** 95% Total Coverage
+- **GeminiAiAnalyzer.php:** ≥80%
+- **Aktueller Stand:** 98.2% Total ✅
 
 ### **Code-Qualität**
 
@@ -100,8 +107,10 @@ make php-shell      # Shell (XDEBUG_CONFIG ist bereits gesetzt)
 **Coverage-Reports:**
 ```bash
 make debug-on               # Xdebug aktivieren
-make test-coverage          # Coverage-Check (min 80%)
+make test-coverage          # Coverage-Check (min 95%)
 make test-coverage-report   # Coverage-Dateien unter src/coverage-report/
+make coverage-open          # HTML-Report im Browser öffnen
+make coverage-clean         # Alte Reports löschen
 ```
 
 Dann in IDE auf Port 9003 Breakpoint setzen und Script ausführen!
@@ -197,3 +206,6 @@ make docker-up              # Neu starten (frisch!)
 - [ ] `make test` laufen die Tests grün
 
 **Viel Erfolg beim Entwickeln!** 🚀
+
+
+

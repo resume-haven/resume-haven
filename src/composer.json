@@ -58,10 +58,10 @@
         "test:pest-all": "vendor/bin/pest",
         "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
         "test:pest-feature": "vendor/bin/pest --testsuite=Feature",
-        "test:pest-coverage": "vendor/bin/pest --coverage --min=80",
+        "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
         "test:pest-coverage-report": [
             "@php -r \"is_dir('coverage-report') || mkdir('coverage-report', 0777, true);\"",
-            "vendor/bin/pest --coverage --coverage-clover=coverage-report/clover.xml --coverage-html=coverage-report/html --min=80"
+            "vendor/bin/pest --coverage --coverage-clover=coverage-report/clover.xml --coverage-html=coverage-report/html --min=90"
         ],
         "pint:analyse": "vendor/bin/pint --config pint.json --test .",
         "pint:fix": "vendor/bin/pint --config pint.json .",

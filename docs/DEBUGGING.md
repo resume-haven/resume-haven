@@ -219,8 +219,10 @@ vendor/bin/pest tests/Feature/AnalyzeControllerTest.php
 
 ```bash
 make debug-on                      # Xdebug mit coverage-Mode aktivieren
-make test-coverage                 # Coverage-Check in Konsole (min 80%)
+make test-coverage                 # Coverage-Check in Konsole (min 95%)
 make test-coverage-report          # Dateien erzeugen (Clover + HTML)
+make coverage-open                 # HTML-Report im Browser öffnen
+make coverage-clean                # Alte Reports löschen
 ```
 
 **Coverage-Dateien im Dateisystem:**
@@ -228,12 +230,9 @@ make test-coverage-report          # Dateien erzeugen (Clover + HTML)
 - `src/coverage-report/clover.xml`
 - `src/coverage-report/html/index.html`
 
-HTML-Report im Browser öffnen:
-
-```bash
-# Windows PowerShell
-start src\coverage-report\html\index.html
-```
+**Aktuelle Coverage:**
+- **Total:** 98.2% ✅
+- **Minimum:** 95%
 
 ---
 
@@ -312,3 +311,5 @@ make debug-logs
 - [ ] Script ausgeführt → Debugger stoppt
 
 **Viel Spaß beim Debuggen!** 🎉
+
+

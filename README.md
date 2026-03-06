@@ -112,12 +112,18 @@ Siehe [Debugging Guide](./docs/DEBUGGING.md) für Details.
 ```bash
 make help                 # Alle Kommandos anzeigen
 make test                 # Tests ausführen
-make test-coverage        # Coverage-Check in Konsole (min 80%)
+make test-coverage        # Coverage-Check in Konsole (min 95%)
 make test-coverage-report # Coverage-Dateien unter src/coverage-report/
+make coverage-open        # HTML-Coverage-Report im Browser öffnen
+make coverage-clean       # Alte Coverage-Reports löschen
 make pint-fix             # Code formatieren
 make phpstan              # Statische Analyse
 make php-shell            # Bash im PHP-Container
 ```
+
+**Code Coverage Anforderungen:**
+- **Minimum:** 95% Total Coverage
+- **Aktueller Stand:** 98.2% ✅
 
 Vollständige Übersicht: [Development Setup](./docs/DEVELOPMENT.md)
 
