@@ -48,6 +48,7 @@ make test           # Alle Tests (Pest)
 make test-unit      # Unit-Tests nur
 make test-feature   # Feature-Tests nur
 make test-coverage  # Tests mit Coverage (benötigt Xdebug)
+make test-coverage-report  # Coverage-Dateien (clover+xml/html)
 ```
 
 ### **Code-Qualität**
@@ -98,8 +99,9 @@ make php-shell      # Shell (XDEBUG_CONFIG ist bereits gesetzt)
 
 **Coverage-Reports:**
 ```bash
-make debug-on           # Xdebug aktivieren
-make test-coverage      # Coverage-Report (min 80%)
+make debug-on               # Xdebug aktivieren
+make test-coverage          # Coverage-Check (min 80%)
+make test-coverage-report   # Coverage-Dateien unter src/coverage-report/
 ```
 
 Dann in IDE auf Port 9003 Breakpoint setzen und Script ausführen!
@@ -195,6 +197,3 @@ make docker-up              # Neu starten (frisch!)
 - [ ] `make test` laufen die Tests grün
 
 **Viel Erfolg beim Entwickeln!** 🚀
-
-
-

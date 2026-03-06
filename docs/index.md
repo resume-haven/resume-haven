@@ -102,6 +102,29 @@ Langfristige Vision und Feature-Roadmap für ResumeHaven.
 
 ---
 
+### 🛠️ Entwicklung & Debugging
+
+#### [**DEVELOPMENT.md**](DEVELOPMENT.md)
+Lokales Entwicklungs-Setup mit Docker, Makefile-Kommandos und Workflow-Empfehlungen.
+
+**Inhalt:**
+- Setup & Start der Container
+- Tests, Linting, PHPStan
+- Shell-/DB-Kommandos
+- Xdebug-Quickstart und Coverage-Workflows
+
+#### [**DEBUGGING.md**](DEBUGGING.md)
+Vollständige Xdebug-Anleitung für VSCode/PhpStorm inkl. Coverage-Reports.
+
+**Inhalt:**
+- `make debug-on/off/status`
+- IDE-Setup (Port 9003, Path-Mapping)
+- CLI-Debugging
+- Coverage in Konsole und als Dateien (`coverage-report/`)
+- Troubleshooting
+
+---
+
 ### 🤝 Contributing
 
 #### [**CONTRIBUTING.md**](CONTRIBUTING.md)
@@ -188,5 +211,4 @@ Richtlinien für Beiträge zum Projekt.
 
 **Letzte Aktualisierung**: 2026-03-02  
 **Version**: 1.0 (nach Domain-Architektur Refactoring)
-
 

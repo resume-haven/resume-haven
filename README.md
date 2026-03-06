@@ -110,12 +110,13 @@ Siehe [Debugging Guide](./docs/DEBUGGING.md) für Details.
 ## 📚 Häufige Kommandos
 
 ```bash
-make help           # Alle Kommandos anzeigen
-make test           # Tests ausführen
-make test-coverage  # Tests mit Coverage (benötigt Xdebug)
-make pint-fix       # Code formatieren
-make phpstan        # Statische Analyse
-make php-shell      # Bash im PHP-Container
+make help                 # Alle Kommandos anzeigen
+make test                 # Tests ausführen
+make test-coverage        # Coverage-Check in Konsole (min 80%)
+make test-coverage-report # Coverage-Dateien unter src/coverage-report/
+make pint-fix             # Code formatieren
+make phpstan              # Statische Analyse
+make php-shell            # Bash im PHP-Container
 ```
 
 Vollständige Übersicht: [Development Setup](./docs/DEVELOPMENT.md)

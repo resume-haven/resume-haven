@@ -37,6 +37,18 @@ test-acceptance: ## Nur Acceptance-Tests ausführen
 test-coverage: ## Testabdeckung mit Xdebug anzeigen
 	docker exec -it resumehaven-php composer run test:pest-coverage
 
+test-coverage-report: ## Coverage-Report im Dateisystem erzeugen (coverage-report/)
+	docker exec -it resumehaven-php composer run test:pest-coverage-report
+
+coverage-open: ## Öffnet den HTML-Coverage-Report im Standardbrowser
+	@if [ -f src/coverage-report/html/index.html ]; then \
+		powershell -NoProfile -Command "Start-Process \"$$(Resolve-Path 'src/coverage-report/html/index.html')\""; \
+		echo "Coverage-Report geöffnet: src/coverage-report/html/index.html"; \
+	else \
+		echo "Coverage-Report nicht gefunden. Bitte zuerst 'make test-coverage-report' ausführen."; \
+		exit 1; \
+	fi
+
 # --- LINT / FORMAT ---
 pint-analyse: ## Pint: Nur Analyse (kein Fix)
 	docker exec -it resumehaven-php composer run pint:analyse
@@ -164,4 +176,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance test-coverage pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-acceptance test-coverage test-coverage-report coverage-open pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

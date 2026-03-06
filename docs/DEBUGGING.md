@@ -24,6 +24,8 @@ php artisan tinker  # Debuggen!
 | `make debug-status` | Xdebug-Status prüfen |
 | `make debug-test` | Test-Request mit XDEBUG_SESSION Cookie senden |
 | `make debug-logs` | Xdebug-Logs anzeigen |
+| `make test-coverage` | Coverage in Konsole prüfen (min 80%) |
+| `make test-coverage-report` | Coverage-Dateien erzeugen (`src/coverage-report/`) |
 
 ---
 
@@ -40,7 +42,7 @@ php artisan tinker  # Debuggen!
 ```ini
 [xdebug]
 ; Modi: debug (Debugger), coverage (Code-Coverage)
-xdebug.mode=debug
+xdebug.mode=debug,coverage
 xdebug.start_with_request=yes
 xdebug.discover_client_host=true
 xdebug.client_host=host.docker.internal
@@ -216,20 +218,21 @@ vendor/bin/pest tests/Feature/AnalyzeControllerTest.php
 ### **Coverage-Reports generieren:**
 
 ```bash
-make debug-on              # Xdebug mit coverage-Mode aktivieren
-make test-coverage         # Coverage-Report (min 80%)
-
-# oder manuell im Container:
-make php-shell
-vendor/bin/pest --coverage --min=80
+make debug-on                      # Xdebug mit coverage-Mode aktivieren
+make test-coverage                 # Coverage-Check in Konsole (min 80%)
+make test-coverage-report          # Dateien erzeugen (Clover + HTML)
 ```
 
-**Coverage-Report in HTML:**
+**Coverage-Dateien im Dateisystem:**
+
+- `src/coverage-report/clover.xml`
+- `src/coverage-report/html/index.html`
+
+HTML-Report im Browser öffnen:
+
 ```bash
-make debug-on
-make php-shell
-vendor/bin/pest --coverage --coverage-html=coverage-report
-# Report öffnen: src/coverage-report/index.html
+# Windows PowerShell
+start src\coverage-report\html\index.html
 ```
 
 ---
@@ -244,7 +247,8 @@ vendor/bin/pest --coverage --coverage-html=coverage-report
 **Empfehlung:**
 - Normale Entwicklung & Tests: `make debug-off`
 - Debugging nötig: `make debug-on`
-- Coverage-Reports: `make debug-on` + `make test-coverage`
+- Coverage-Check: `make test-coverage`
+- Coverage-Dateien: `make test-coverage-report`
 
 ---
 
@@ -308,7 +312,3 @@ make debug-logs
 - [ ] Script ausgeführt → Debugger stoppt
 
 **Viel Spaß beim Debuggen!** 🎉
-
-
-
-
