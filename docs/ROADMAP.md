@@ -50,6 +50,12 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 - kontextbasierte Tags  
 - Mehrfachzuordnungen  
 
+## 4. Engineering & Qualität
+- GitHub Workflow etablieren (CI, PR‑Checks, Review‑Gate)  
+- Dokumentationsstruktur nach **arc42** ausbauen  
+- Anforderungen strukturiert über **req42** pflegen  
+- Acceptance‑Tests für Kern-User‑Flows definieren und automatisieren  
+
 ---
 
 # 🎨 Phase 3 – UI/UX‑Optimierung
