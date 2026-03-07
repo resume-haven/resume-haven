@@ -193,10 +193,12 @@ make docker-up              # Neu starten (frisch!)
 
 | Thema | Link |
 |-------|------|
-| **Debugging** | [docs/DEBUGGING.md](./DEBUGGING.md) |
-| **Architektur** | [docs/ARCHITECTURE.md](./ARCHITECTURE.md) |
-| **Coding Guidelines** | [docs/CODING_GUIDELINES.md](./CODING_GUIDELINES.md) |
-| **Contributing** | [docs/CONTRIBUTING.md](./CONTRIBUTING.md) |
+| **Roadmap** | [docs/ROADMAP.md](./docs/ROADMAP.md) |
+| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
+| **Debugging** | [docs/DEBUGGING.md](./docs/DEBUGGING.md) |
+| **Architektur** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) |
+| **Coding Guidelines** | [docs/CODING_GUIDELINES.md](./docs/CODING_GUIDELINES.md) |
+| **Contributing** | [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) |
 
 ---
 
@@ -258,4 +260,3 @@ make test-security-gate
 - `tests/Feature/SecurityAccessControlTest.php`
 
 ---
-

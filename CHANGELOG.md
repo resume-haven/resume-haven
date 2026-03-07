@@ -1,0 +1,156 @@
+# Changelog
+
+Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+
+Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
+und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
+
+---
+
+## [Unreleased]
+
+### Added
+- *Noch keine Änderungen für nächste Version*
+
+### Changed
+- *Noch keine Änderungen*
+
+### Fixed
+- *Noch keine Änderungen*
+
+---
+
+## [0.3.0] - 2026-03-08
+
+### Added - Security & Quality Gates
+- **Security-Testing**: OWASP-orientierte Testinfrastruktur
+  - `make test-security` für grundlegende Security-Tests
+  - `make test-security-strict` mit erweitertem Filter und stop-on-failure
+  - `make test-security-gate` kombiniert Security + PHPStan + Pint
+  - Composer-Scripts: `test:pest-security` und `test:pest-security-strict`
+- **OWASP-Mapping-Tabelle** in `docs/CODING_GUIDELINES.md`
+  - Mapping von OWASP Top 10 zu konkreten Projektmaßnahmen
+  - Test-/Review-Checks für jedes Risiko
+- **Security-Test-Template** in `docs/DEVELOPMENT.md`
+  - PR-Checkliste Security
+  - OWASP-Kurzcheck
+  - Empfohlene Testdatei-Namen
+- **Legal-Seiten-Planung** in `COMMIT_PLAN.md` (Commit 20b)
+  - Impressum, Datenschutz, Kontakt, Lizenzen
+  - Kontaktformular ohne mailto-Fallback (Option A)
+  - Lizenzen automatisiert aus Lockfiles (Option B)
+
+### Changed
+- **Roadmap aktualisiert** (`docs/ROADMAP.md`)
+  - Status-Markierungen für alle Phasen
+  - Security-Testing als "✅ umgesetzt" markiert
+  - "Aktueller Stand"-Sektion hinzugefügt
+  - Make-Kommandos-Übersicht ergänzt
+- **Makefile erweitert**
+  - Neue Targets: `test-security`, `test-security-strict`, `test-security-gate`
+  - `.PHONY` aktualisiert
+- **Coding Guidelines erweitert**
+  - OWASP Security by Design als verbindliches Prinzip
+  - Interface-based Design detailliert dokumentiert
+  - SOLID-Gate, CQRS-Enforcement, DDD-Enforcement ergänzt
+
+### Documentation
+- Alle Engineering-Dokumentationen konsolidiert:
+  - `docs/ai/AGENT_CONTEXT.md` (zentrale Arbeitsregeln)
+  - `docs/ai/PROJECT_OVERVIEW.md` (Projektüberblick)
+  - `docs/ai/TECH_STACK.md` (Versionen, Docker, Config)
+  - `.github/PULL_REQUEST_TEMPLATE.md` (SOLID-Gate-Checkliste)
+
+---
+
+## [0.2.0] - 2026-03-05
+
+### Added - Domain Architecture & CQRS
+- **Domain-Driven Design**: Vollständige Refaktorierung zu DDD-Architektur
+  - Bounded Context: `Analysis`
+  - Commands: `AnalyzeJobAndResumeCommand`
+  - Handlers: `AnalyzeJobAndResumeHandler`
+  - UseCases: `MatchingUseCase`, `GapAnalysisUseCase`, `ScoringUseCase`, `GenerateTagsUseCase`, `ValidateInputUseCase`
+  - Actions: Granulare Business-Logic in einzelnen Actions
+- **CQRS-Pattern**: Phase 1 abgeschlossen
+  - Commands für Write-Operationen
+  - Queries für Read-Operationen (Phase 2 geplant)
+- **Interface-based Design**: `AiAnalyzerInterface`
+  - `GeminiAiAnalyzer` (Production)
+  - `MockAiAnalyzer` (Development mit verschiedenen Szenarien)
+- **Analysis Cache Management**: `cache:clear-analysis` Artisan-Command
+  - Optionaler `--older-than` Filter
+  - Makefile-Target: `cache-clear-analysis`
+- **Tag-Struktur erweitert**: AI-Response mit strukturierten Tags
+  - `tags.matches` (gruppierte Matches)
+  - `tags.gaps` (Array von Strings)
+  - Fallback-Generierung via `GenerateTagsAction`
+- **Score-Berechnung**: `CalculateScoreAction` mit farbkodierter Anzeige
+  - SVG-Kreisindikator
+  - Farbskala: Rot (0-40%), Gelb (40-70%), Grün (70-100%)
+- **Xdebug-Integration**: Vollständige Debug- und Coverage-Unterstützung
+  - `make debug-on/debug-off/debug-status`
+  - Coverage-Reports mit 98.2% (Minimum: 95%)
+
+### Changed
+- **AnalyzeController** von 94 auf 34 Zeilen reduziert (63% kleiner)
+- **Test-Coverage** von ~85% auf 98.2% erhöht
+- **PHPStan Level** von 5 auf 9 angehoben (0 Errors)
+
+### Fixed
+- Docker-Permissions-Issue: PHP-Container mit korrekter UID/GID
+- 502 Bad Gateway Problem behoben
+- PHP-FPM `www.conf` auf alle Interfaces konfiguriert
+
+---
+
+## [0.1.0] - 2026-02-28
+
+### Added - MVP Foundation
+- **Projekt initialisiert**: Docker-Setup mit PHP 8.5, Laravel 12, Nginx, Node, Mailpit
+- **TailwindCSS 3** integriert mit Dark-Mode-Support
+- **Basis-UI**: Landing Page, Analyse-Formular, Ergebnis-Seite
+- **AnalyzeController**: Grundlegende Validierung und Routing
+- **Laravel AI Integration**: Gemini 2.5 Flash für Analyse
+- **Ergebnis-Darstellung**: Anforderungen, Erfahrungen, Matches, Gaps
+- **Basis-Tests**: Feature-Tests und Unit-Tests mit Pest 3
+- **Code-Quality**: Laravel Pint für PSR-12 Formatting
+
+### Documentation
+- `README.md` mit Setup-Anleitung
+- `docs/ARCHITECTURE.md` mit Grundstruktur
+- `docs/DEVELOPMENT.md` mit lokaler Setup-Anleitung
+- `COMMIT_PLAN.md` mit detailliertem Entwicklungsplan
+
+---
+
+## Kategorien
+
+- **Added**: Neue Features
+- **Changed**: Änderungen an bestehenden Features
+- **Deprecated**: Bald zu entfernende Features
+- **Removed**: Entfernte Features
+- **Fixed**: Bugfixes
+- **Security**: Sicherheitsrelevante Änderungen
+- **Documentation**: Dokumentationsänderungen
+
+---
+
+## Version-Schema
+
+**MAJOR.MINOR.PATCH** (Semantic Versioning)
+
+- **MAJOR**: Breaking Changes (API-Änderungen, Architektur-Refactorings)
+- **MINOR**: Neue Features (abwärtskompatibel)
+- **PATCH**: Bugfixes (abwärtskompatibel)
+
+**Beispiel**:
+- `0.1.0` → MVP Foundation
+- `0.2.0` → Domain Architecture
+- `0.3.0` → Security & Quality Gates
+- `1.0.0` → Production-Ready Release
+
+---
+
+**Letzte Aktualisierung**: 2026-03-08
+

@@ -384,4 +384,7 @@ Jeder Commit ist erst "Done", wenn:
 - **Architektur:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
 - **Commit-Plan:** `COMMIT_PLAN.md`
+- **Roadmap:** `docs/ROADMAP.md`
+- **Changelog:** `CHANGELOG.md`
 - **Laravel Boost:** `src/AGENTS.md`
+
