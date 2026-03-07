@@ -256,6 +256,11 @@ class AnalyzeJobAndResumeHandler {
 - **Typen:** Unit + Feature
 - **Prüfung:** `make test`
 
+### OWASP-Compliance
+- **Regel:** Sicherheitsrelevante Änderungen müssen OWASP-orientiert geprüft werden
+- **Mindestens:** Input-Validation, Output-Encoding, AuthZ/CSRF, Secret-Handling
+- **Prüfung:** Security-Tests + Review gegen OWASP Top 10
+
 ---
 
 ## 🚫 Verbotene Patterns
@@ -358,6 +363,13 @@ Jeder Commit ist erst "Done", wenn:
 - [ ] Edge-Cases getestet?
 - [ ] Coverage ≥95%?
 
+### Security (OWASP)
+- [ ] Input als untrusted behandelt?
+- [ ] Output kontextgerecht escaped/encoded?
+- [ ] AuthN/AuthZ/CSRF berücksichtigt?
+- [ ] Keine Secrets im Code?
+- [ ] Security-Tests bei sicherheitsrelevanten Änderungen?
+
 ### Dokumentation
 - [ ] PHPDoc für Public Methods?
 - [ ] Komplexe Logik kommentiert?
@@ -373,5 +385,3 @@ Jeder Commit ist erst "Done", wenn:
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
 - **Commit-Plan:** `COMMIT_PLAN.md`
 - **Laravel Boost:** `src/AGENTS.md`
-
-

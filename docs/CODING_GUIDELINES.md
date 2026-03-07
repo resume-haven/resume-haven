@@ -33,6 +33,32 @@ Wir folgen den **SOLID-Prinzipien**:
 - **I**nterface Segregation Principle: Kleine, fokussierte Interfaces
 - **D**ependency Inversion Principle: Abhängigkeiten auf Abstraktionen
 
+### OWASP Security by Design
+
+Sicherheitsanforderungen sind **Pflicht** und werden nach OWASP-Empfehlungen umgesetzt.
+
+- Eingaben grundsätzlich als untrusted behandeln
+- Output Context-Aware escapen/encoden
+- AuthN/AuthZ strikt trennen und prüfen
+- Secrets niemals im Code, nur via Config/Env
+- Security-Regression-Tests bei sicherheitsrelevanten Änderungen
+- Prompt-/Input-Injection explizit abwehren
+
+#### OWASP Mapping (Top 10 -> Projektregeln)
+
+| OWASP Top 10 | Risiko im Projekt | Verbindliche Maßnahme | Test-/Review-Check |
+|---|---|---|---|
+| A01 Broken Access Control | Unberechtigter Zugriff auf Endpunkte | Route-/Policy-Prüfung, keine impliziten Admin-Pfade | Feature-Tests für erlaubte/verbotene Zugriffe |
+| A02 Cryptographic Failures | Unsichere Speicherung/Übertragung | Keine Secrets im Code, sichere Defaults, HTTPS in Prod | Secret-Scan + Config-Review |
+| A03 Injection | SQL/XSS/Prompt-Injection | Input-Validierung, Prepared Statements, Output-Encoding, Prompt-Härtung | Security-Tests (SQL/XSS/Prompt-Patterns) |
+| A04 Insecure Design | Fehlende Sicherheitsanforderungen | Threat-aware Design in UseCases + Review-Checkliste | PR-Check gegen OWASP-Tabelle |
+| A05 Security Misconfiguration | Unsichere Defaults | Sichere Env-/Config-Werte, Debug nur lokal | Config-Review + Smoke-Tests |
+| A06 Vulnerable Components | Verwundbare Dependencies | Regelmäßige Updates via Renovate + CVE-Checks | Dependency-Update-PRs + CVE-Report |
+| A07 Identification/Auth Failures | Schwache Auth-Mechanik | Laravel Auth/Policies, keine Eigenbau-Auth | Feature-Tests für Login/Authorization |
+| A08 Software/Data Integrity Failures | Manipulierte Abhängigkeiten/Builds | Lockfiles, reproduzierbare Builds, signierte Releases (später) | CI-Checks auf Lockfile-Änderungen |
+| A09 Logging/Monitoring Failures | Sicherheitsvorfälle unentdeckt | Strukturierte Security-Logs ohne Secrets | Log-Review in Security-Tests |
+| A10 SSRF | Externe Calls auf interne Ziele | Whitelisting/Timeouts bei externen Requests | Tests für blockierte Ziel-Hosts |
+
 ### DRY (Don't Repeat Yourself)
 
 - Keine Code-Duplizierung
@@ -729,7 +755,7 @@ $this->app->bind(AiAnalyzerInterface::class, function ($app) {
 #### Dependency Inversion Principle (DIP)
 **Checkliste:**
 - [ ] Dependencies via Constructor Injection
-- [ ] Abhängigkeiten zu Abstractions (Interfaces), nicht zu Konkretionen
+- [ ] Abhängigkeiten zu Abstraktionen (Interfaces), nicht zu Konkretionen
 - [ ] Kein `new` in Business-Logic (außer DTOs)
 
 **Beispiel:**
@@ -1002,6 +1028,7 @@ class RecommendationService {
 ### Tests & Quality
 - [ ] Unit-Tests geschrieben
 - [ ] Feature-Tests geschrieben
+- [ ] Security-Tests für sicherheitsrelevante Änderungen (OWASP-orientiert)
 - [ ] Coverage ≥95%
 - [ ] PHPStan Level 9 ohne Fehler
 - [ ] Pint ohne Style-Issues
@@ -1015,4 +1042,3 @@ class RecommendationService {
 ---
 
 **Letzte Aktualisierung**: 2026-03-07
-

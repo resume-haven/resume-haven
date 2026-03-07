@@ -163,4 +163,3 @@ describe('AnalyzeJobAndResumeHandler Error Paths', function () {
         expect($result->error)->toBeNull();
     });
 });
-

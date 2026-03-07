@@ -47,6 +47,9 @@ docker compose logs # Logs anzeigen
 make test                   # Alle Tests (Pest)
 make test-unit              # Unit-Tests nur
 make test-feature           # Feature-Tests nur
+make test-security          # OWASP-orientierte Security-Tests
+make test-security-strict   # Erweiterte Security-Tests (stop-on-failure)
+make test-security-gate     # Security-Tests + PHPStan + Pint-Analyse
 make test-coverage          # Tests mit Coverage (benötigt Xdebug, min 95%)
 make test-coverage-report   # Coverage-Dateien (clover+xml/html)
 make coverage-open          # Öffnet HTML-Coverage-Report im Browser
@@ -207,5 +210,52 @@ make docker-up              # Neu starten (frisch!)
 
 **Viel Erfolg beim Entwickeln!** 🚀
 
+## 🛡️ Security-Test-Template (OWASP-orientiert)
 
+Nutze dieses Template bei sicherheitsrelevanten Änderungen (Input-Validierung, Auth, externe Requests, Prompting).
+
+### 1) Minimaler Sicherheits-Testlauf
+
+```bash
+# Basis-Qualitätsgates
+make test
+make phpstan
+make pint-analyse
+
+# gezielte Security-Tests
+make test-security
+
+# optional: strikter Lauf
+make test-security-strict
+
+# empfohlen vor Merge
+make test-security-gate
+```
+
+### 2) PR-Checkliste Security
+
+- [ ] Eingaben als untrusted behandelt (Validation + Sanitization)
+- [ ] Output kontextgerecht escaped/encoded (kein unescaped HTML/JS)
+- [ ] CSRF für alle POST-Formulare vorhanden (`@csrf`)
+- [ ] Keine Secrets im Code (nur Config/Env)
+- [ ] Externe Requests mit Timeouts/Allowlist abgesichert
+- [ ] Prompt-/Input-Injection berücksichtigt
+- [ ] Security-Regression-Tests ergänzt/aktualisiert
+
+### 3) OWASP-Mapping Kurzcheck
+
+- **A01 Access Control**: Unauthorized Access Tests vorhanden
+- **A03 Injection**: SQL/XSS/Prompt-Injection Tests vorhanden
+- **A05 Misconfiguration**: Sichere Defaults geprüft
+- **A06 Vulnerable Components**: Dependency-Update/CVE-Check berücksichtigt
+- **A09 Logging/Monitoring**: Sicherheitsrelevante Fehler werden ohne Secrets geloggt
+
+### 4) Empfohlene Testdatei-Namen
+
+- `tests/Feature/SecurityPromptInjectionTest.php`
+- `tests/Feature/InputValidationTest.php`
+- `tests/Feature/ApiErrorHandlingTest.php`
+- `tests/Feature/SecurityAccessControlTest.php`
+
+---
 

@@ -75,5 +75,3 @@ describe('GetCachedAnalysisAction', function () {
         expect($result?->tags)->toBeNull();
     });
 });
-
-

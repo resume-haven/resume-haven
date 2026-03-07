@@ -58,6 +58,8 @@
         "test:pest-all": "vendor/bin/pest",
         "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
         "test:pest-feature": "vendor/bin/pest --testsuite=Feature",
+        "test:pest-security": "vendor/bin/pest --filter=\"Security|InputValidation|PromptInjection|ApiErrorHandling\"",
+        "test:pest-security-strict": "vendor/bin/pest --filter=\"Security|InputValidation|PromptInjection|ApiErrorHandling|AccessControl|Csrf|Authorization\" --stop-on-failure",
         "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
         "test:pest-coverage-report": [
             "@php -r \"is_dir('coverage-report') || mkdir('coverage-report', 0777, true);\"",

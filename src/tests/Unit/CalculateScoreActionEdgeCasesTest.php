@@ -112,4 +112,3 @@ describe('CalculateScoreAction Edge Cases', function () {
         expect($result->percentage)->toBe(29);
     });
 });
-

@@ -37,7 +37,7 @@ describe('GeminiAiAnalyzer', function () {
     test('sanitizeInput entfernt Null-Bytes, trimmt und normalisiert Zeilenumbrüche', function () {
         $target = analyzer();
         $method = new ReflectionMethod($target, 'sanitizeInput');
-         $method->setAccessible(true);
+        $method->setAccessible(true);
 
         $raw = "  foo\0bar\r\nline2  ";
         $sanitized = $method->invoke($target, $raw);
@@ -160,4 +160,3 @@ describe('GeminiAiAnalyzer', function () {
         expect($result->experiences)->toBe([]);
     });
 });
-

@@ -55,6 +55,10 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 - Dokumentationsstruktur nach **arc42** ausbauen  
 - Anforderungen strukturiert über **req42** pflegen  
 - Acceptance‑Tests für Kern-User‑Flows definieren und automatisieren  
+- **renovate.js** für automatisierte Dependency-Updates einführen  
+- **Mutation-Testing** als zusätzlicher Quality-Gate (z. B. Pest Mutate / Infection)  
+- **Architecture-Testing** für Layer-Regeln, Dependency-Rules und Namespace-Compliance  
+- **Security-Testing** (OWASP-orientierte Checks, Input-/Prompt-/Auth-Tests)  
 
 ---
 
@@ -64,6 +68,13 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 - bessere Panels  
 - mobile Optimierung  
 - Export der Analyse (ohne PDF‑Generierung)  
+
+## 1. Legal‑Seiten & Compliance
+- Impressum erstellen  
+- Datenschutzseite (DSGVO-konform) hinzufügen  
+- Kontaktseite mit rechtlich sauberem Kontaktweg ergänzen  
+- Lizenzen / Third‑Party‑Notices transparent darstellen  
+- Verlinkung der Legal‑Seiten im Footer jeder Seite  
 
 ---
 

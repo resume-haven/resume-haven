@@ -47,4 +47,3 @@ describe('AnalyzeRequestDto', function () {
         expect($dto->requestHash())->toBe(hash('sha256', 'jobcv'));
     });
 });
-

@@ -13,7 +13,7 @@ describe('User model', function () {
     });
 
     test('casts enthalten datetime und hashed', function () {
-        $user = new class extends User {
+        $user = new class () extends User {
             public function exposeCasts(): array
             {
                 return $this->casts();
@@ -26,4 +26,3 @@ describe('User model', function () {
         expect($casts['password'])->toBe('hashed');
     });
 });
-

@@ -32,4 +32,3 @@ describe('AnalyzeApplicationService', function () {
         expect($service->getProviderName())->toBe('mock');
     });
 });
-

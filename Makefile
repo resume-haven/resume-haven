@@ -31,6 +31,17 @@ test-unit: ## Nur Unit-Tests ausführen
 test-feature: ## Nur Feature-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-feature
 
+test-security: ## OWASP-orientierte Security-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-security
+
+test-security-strict: ## Striktere Security-Tests (erweiterter Filter, stop-on-failure)
+	docker exec -it resumehaven-php composer run test:pest-security-strict
+
+test-security-gate: ## Kombiniertes Security-Quality-Gate (strict tests + phpstan + pint)
+	docker exec -it resumehaven-php composer run test:pest-security-strict
+	docker exec -it resumehaven-php composer run phpstan
+	docker exec -it resumehaven-php composer run pint:analyse
+
 test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
 
@@ -184,4 +195,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

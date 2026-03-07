@@ -100,4 +100,3 @@ describe('Low Coverage Domain UseCases/Actions', function () {
         expect($result->toArray())->toBe(['gaps' => []]);
     });
 });
-
