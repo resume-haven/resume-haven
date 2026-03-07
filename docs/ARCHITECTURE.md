@@ -9,12 +9,101 @@ Dieses Dokument beschreibt die technische Architektur des ResumeHaven‑MVP.
 ResumeHaven ist ein **Domain-driven, Command/Query-orientiertes** Analyse‑Tool.  
 Die Architektur folgt modernen Best Practices:
 
-- **Domain-Driven Design** (modulare Geschäftsbereiche)
-- **CQRS-Light** (Command/Handler Pattern)
-- **Single Action Controllers** (Controller sind dünn)
+- **Domain-Driven Design (DDD)** (modulare Geschäftsbereiche, Bounded Contexts)
+- **CQRS (Strict Mode)** (Command/Query strikt getrennt, phasenweise Einführung)
+- **SOLID-Prinzipien** (Pflicht-Gate in jedem Commit)
+- **Single Action Controllers** (Controller sind dünn, ~34 Zeilen)
 - **Repository Pattern** (Persistence-Abstraktion)
 - **UseCase Pattern** (Business-Logic-Orchestrierung)
 - **Wartbarkeit, Testbarkeit, Erweiterbarkeit**
+
+---
+
+# 🎯 1.1 Architektur-Prinzipien
+
+## CQRS (Command Query Responsibility Segregation) — Strict Mode
+
+**Regel:** Commands (Write) und Queries (Read) sind **strikt getrennt**.
+
+### Aktueller Stand (Phasenweise Einführung)
+
+#### ✅ Phase 1 (abgeschlossen)
+- Commands implementiert: `AnalyzeJobAndResumeCommand`
+- Handlers implementiert: `AnalyzeJobAndResumeHandler`
+- Struktur: `app/Domains/Analysis/Commands/` + `Handlers/`
+
+#### 🔄 Phase 2 (in Arbeit)
+- Queries für Cache-Zugriffe: `GetCachedAnalysisQuery`
+- Query-Handler: `GetCachedAnalysisQueryHandler`
+- Struktur: `app/Domains/Analysis/Queries/` + `Handlers/`
+
+#### ⏳ Phase 3 (geplant)
+- Alle Read-Operationen auf Queries umstellen
+- Reporting-Queries (`GetAnalysisHistoryQuery`)
+- Statistics-Queries (`GetUserStatisticsQuery`)
+
+### CQRS-Regeln
+
+**Commands:**
+- ✅ Ändern Zustand (Write Operations)
+- ✅ Geben `void` oder Bestätigungs-DTO zurück
+- ✅ Beispiel: `AnalyzeJobAndResumeCommand` → erstellt Analyse-Ergebnis
+
+**Queries:**
+- ✅ Lesen Daten (Read Operations)
+- ✅ Ändern **keinen** Zustand
+- ✅ Geben DTO oder Collection zurück
+- ✅ Beispiel: `GetCachedAnalysisQuery` → liest Cache-Eintrag
+
+---
+
+## DDD (Domain-Driven Design)
+
+**Regel:** Code ist nach fachlichen Domänen strukturiert.
+
+### Aktueller Bounded Context
+
+#### `Analysis` (Haupt-Domain)
+- **Verantwortlichkeit:** Job-/CV-Analyse, Matching, Gap-Analysis, Scoring, Cache
+- **Ubiquitous Language:** Requirements, Experiences, Matches, Gaps, Score, Tags
+- **Struktur:** `app/Domains/Analysis/`
+
+### Geplante Bounded Contexts (Roadmap)
+
+#### `Profile` (Phase 3, ~Commit 22+)
+- **Verantwortlichkeit:** Lebenslauf-Speicherung, User-Präferenzen
+- **Ubiquitous Language:** Profile, Resume, Preferences, Templates
+- **Integration:** Via DTOs/Events mit `Analysis`
+
+#### `Recommendations` (Phase 4, ~Commit 30+)
+- **Verantwortlichkeit:** KI-Empfehlungen, Verbesserungsvorschläge
+- **Ubiquitous Language:** Recommendation, Suggestion, Priority, Example
+- **Integration:** Konsumiert `Analysis`-Ergebnisse
+
+#### `Reporting` (Phase 5, ~Commit 35+)
+- **Verantwortlichkeit:** Analyse-Historie, Statistiken, Exports
+- **Ubiquitous Language:** Report, History, Statistics, Export
+- **Integration:** Read-Only Zugriff auf `Analysis` + `Profile`
+
+### DDD-Regeln
+
+- ✅ **Bounded Context Isolation:** Keine direkten Dependencies zwischen Contexts
+- ✅ **Communication:** Nur via DTOs, Events oder Shared Kernel
+- ✅ **Ubiquitous Language:** Code verwendet fachliche Begriffe
+- ✅ **Aggregate Roots:** Models sind Aggregate Roots ihres Contexts
+
+---
+
+## SOLID-Prinzipien (Pflicht-Gate)
+
+Siehe `docs/ai/AGENT_CONTEXT.md` und `.github/PULL_REQUEST_TEMPLATE.md` für Details.
+
+**Kurzform:**
+- **SRP:** Eine Klasse = Eine Verantwortlichkeit
+- **OCP:** Erweiterbar ohne Änderung
+- **LSP:** Interfaces sind austauschbar
+- **ISP:** Kleine, fokussierte Interfaces
+- **DIP:** Dependencies via Constructor Injection
 
 ---
 
@@ -177,8 +266,21 @@ Services:
 - Mock nur externe Services (AI)
 
 ## Test-Coverage
-- Ziel: >80%
-- Aktuell: 18 Tests, 45 Assertions
+- **Minimum:** 95% (enforced via `make test-coverage`)
+- **Aktuell:** 98.2% ✅
+- **Tests:** 128 (100+ Unit, 20+ Feature)
+- **Assertions:** 335+
+
+## Testing-Framework
+- **Pest 3** (Primary Framework)
+- **PHPUnit 11** (Underlying)
+- **Mockery** (Mocking)
+
+## Quality-Gates
+- ✅ **PHPStan:** Level 9, 0 Errors
+- ✅ **Pint:** PSR-12 + Laravel Style
+- ✅ **Coverage:** ≥95%
+- ✅ **Tests:** Alle grün
 
 ---
 
@@ -201,6 +303,15 @@ Services:
 - **I**nterface Segregation: Kleine, fokussierte Interfaces
 - **D**ependency Inversion: Abhängigkeiten auf Abstraktionen
 
+## Interface-based Design
+- **"Program to an Interface, not an Implementation"**
+- Dependencies zu Interfaces statt zu Konkretionen
+- Austauschbarkeit über Service Provider
+- Testbarkeit durch Mocking
+- **Beispiele im Projekt:**
+  - `AiAnalyzerInterface` (Gemini, Mock)
+  - `CacheRepositoryInterface` (geplant: Database, Redis)
+
 ## DRY (Don't Repeat Yourself)
 - Wiederverwendbare Actions
 - Zentrale DTOs
@@ -215,18 +326,48 @@ Services:
 
 # 🔮 10. Zukunft / Erweiterbarkeit
 
-## Geplante Erweiterungen
+## Geplante Bounded Contexts (DDD-Erweiterung)
+
+### Phase 3: `Profile` Context
+- **Commit:** ~22+
+- **Features:**
+  - Lebenslauf-Speicherung (anonym)
+  - User-Präferenzen
+  - Template-Verwaltung
+- **Struktur:** `app/Domains/Profile/`
+- **Integration:** Via DTOs mit `Analysis`
+
+### Phase 4: `Recommendations` Context
+- **Commit:** ~30+
+- **Features:**
+  - KI-Empfehlungen
+  - Verbesserungsvorschläge
+  - Beispiel-Formulierungen
+- **Struktur:** `app/Domains/Recommendations/`
+- **Integration:** Konsumiert `Analysis`-Ergebnisse
+
+### Phase 5: `Reporting` Context
+- **Commit:** ~35+
+- **Features:**
+  - Analyse-Historie
+  - Statistiken
+  - PDF/Word-Export
+- **Struktur:** `app/Domains/Reporting/`
+- **Integration:** Read-Only auf `Analysis` + `Profile`
+
+## Weitere Erweiterungen
 1. **Events & Listeners** (Notification-System)
 2. **API-Layer** (RESTful API)
 3. **Queue-Processing** (Async AI-Analysen)
 4. **Multi-Tenancy** (User-Accounts)
-5. **PDF-Export** (Analyse-Berichte)
 
 ## Wie erweitern?
-- Neue Domain hinzufügen: `app/Domains/NewDomain/`
-- Neue UseCase hinzufügen: In bestehende Domain
-- Neue Action hinzufügen: In UseCase-Unterordner
-- Neuer Command: Mit eigenem Handler
+- **Neue Domain hinzufügen:** `app/Domains/NewDomain/`
+  - Commands, Queries, Handlers, UseCases, DTOs
+- **Neue UseCase hinzufügen:** In bestehende Domain
+- **Neue Action hinzufügen:** In UseCase-Unterordner
+- **Neuer Command/Query:** Mit eigenem Handler
+- **Context-Integration:** Via DTOs, Events oder Shared Kernel
 
 ---
 

@@ -69,6 +69,45 @@ Zusammenfassung der Domain-Architektur-Refaktorierung (Commit 15a).
 
 ### 🤖 AI & Agenten
 
+#### [**ai/AGENT_CONTEXT.md**](ai/AGENT_CONTEXT.md)
+Zentrale Arbeitsregeln für KI-Agenten (GitHub Copilot, etc.)
+
+**Inhalt:**
+- CQRS (strict mode, phasenweise Einführung)
+- SOLID-Prinzipien (Pflicht-Review-Gate)
+- Domain-Driven Design (Bounded Contexts)
+- Quality-Gates (Tests, Coverage, PHPStan, Pint)
+- Definition of Done
+- Code-Review-Checkliste
+
+**Für wen:** KI-Agenten, Entwickler, die die Architekturprinzipien verstehen wollen
+
+#### [**ai/PROJECT_OVERVIEW.md**](ai/PROJECT_OVERVIEW.md)
+Projektüberblick und MVP-Scope
+
+**Inhalt:**
+- Was ist ResumeHaven?
+- MVP-Funktionsumfang
+- Architektur-Kurzform
+- Datenstrukturen (Kern-DTOs)
+- Request-Flow
+- Roadmap
+
+**Für wen:** Neue Entwickler, Product Owner, KI-Agenten
+
+#### [**ai/TECH_STACK.md**](ai/TECH_STACK.md)
+Technologie-Stack und Konfiguration
+
+**Inhalt:**
+- Versionen (PHP, Laravel, Pest, PHPStan, etc.)
+- Docker-Services
+- Make-Kommandos
+- Konfiguration (.env)
+- URLs
+- Update-Strategie
+
+**Für wen:** DevOps, Entwickler, KI-Agenten
+
 #### [**AGENTS.md**](AGENTS.md)
 Dokumentation der AI-Agenten und deren Verwendung.
 
@@ -78,6 +117,7 @@ Dokumentation der AI-Agenten und deren Verwendung.
 - Prompt-Engineering
 - Integration mit Laravel AI
 - Verwendung von Structured Outputs
+- **Verweis auf neue Kontext-Struktur**
 
 **Für wen:** Entwickler, die mit den AI-Agenten arbeiten
 
@@ -145,6 +185,13 @@ Richtlinien für Beiträge zum Projekt.
 
 ## 🚀 Schnelleinstieg
 
+### Für KI-Agenten (Copilot, Windsurf, etc.)
+
+1. **Einstieg**: Lies [`.github/copilot-instructions.md`](../.github/copilot-instructions.md)
+2. **Arbeitsregeln**: Lies [`ai/AGENT_CONTEXT.md`](ai/AGENT_CONTEXT.md)
+3. **Projektüberblick**: Lies [`ai/PROJECT_OVERVIEW.md`](ai/PROJECT_OVERVIEW.md)
+4. **Architektur**: Lies [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
 ### Für Entwickler
 
 1. **Start**: Lies [`../README.md`](../README.md) für Installation & Setup
@@ -185,19 +232,23 @@ Richtlinien für Beiträge zum Projekt.
 
 | Thema | Datei |
 |-------|-------|
-| **Domain-Driven Design** | `ARCHITECTURE.md`, `CODING_GUIDELINES.md` |
+| **CQRS (Command Query)** | `ai/AGENT_CONTEXT.md`, `ARCHITECTURE.md` (Kap. 2.1) |
+| **SOLID-Prinzipien** | `ai/AGENT_CONTEXT.md`, `CODING_GUIDELINES.md` (Kap. 2) |
+| **Interface-based Design** | `ai/AGENT_CONTEXT.md`, `CODING_GUIDELINES.md`, `ARCHITECTURE.md` (Kap. 9) |
+| **Domain-Driven Design (DDD)** | `ai/AGENT_CONTEXT.md`, `ARCHITECTURE.md`, `CODING_GUIDELINES.md` |
 | **Command/Handler Pattern** | `ARCHITECTURE.md` (Kap. 2.1), `CODING_GUIDELINES.md` (Kap. 5) |
 | **UseCase & Actions** | `CODING_GUIDELINES.md` (Kap. 6) |
-| **DTOs** | `CODING_GUIDELINES.md` (Kap. 7) |
+| **DTOs** | `CODING_GUIDELINES.md` (Kap. 7), `ai/PROJECT_OVERVIEW.md` |
 | **Repositories** | `CODING_GUIDELINES.md` (Kap. 8) |
 | **Controller Best Practices** | `CODING_GUIDELINES.md` (Kap. 9) |
-| **Testing** | `CODING_GUIDELINES.md` (Kap. 10) |
-| **PHPStan & Code Quality** | `CODING_GUIDELINES.md` (Kap. 11) |
+| **Testing** | `CODING_GUIDELINES.md` (Kap. 10), `ai/AGENT_CONTEXT.md` |
+| **PHPStan & Code Quality** | `CODING_GUIDELINES.md` (Kap. 11), `ai/TECH_STACK.md` |
 | **Error Handling** | `CODING_GUIDELINES.md` (Kap. 12) |
 | **Refactoring-Geschichte** | `REFACTORING_SUMMARY.md` |
-| **AI-Integration** | `AGENTS.md` |
-| **Feature-Roadmap** | `ROADMAP.md` |
-| **Contribution Process** | `CONTRIBUTING.md` |
+| **AI-Integration** | `AGENTS.md`, `ai/PROJECT_OVERVIEW.md` |
+| **Tech Stack & Versionen** | `ai/TECH_STACK.md` |
+| **Feature-Roadmap** | `ROADMAP.md`, `../COMMIT_PLAN.md` |
+| **Contribution Process** | `CONTRIBUTING.md`, `../.github/PULL_REQUEST_TEMPLATE.md` |
 
 ---
 
@@ -209,6 +260,7 @@ Richtlinien für Beiträge zum Projekt.
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-02  
-**Version**: 1.0 (nach Domain-Architektur Refactoring)
+**Letzte Aktualisierung**: 2026-03-07  
+**Version**: 2.0 (nach Kontext-Konsolidierung + CQRS/SOLID/DDD-Integration)
+
 
