@@ -29,4 +29,3 @@ Route::get('/lizenzen', [LegalController::class, 'lizenzen'])->name('legal.lizen
 // Contact
 Route::get('/kontakt', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.submit');
-

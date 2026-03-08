@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\View\View;
 
 /**
  * Controller für rechtliche Seiten (Impressum, Datenschutz, Lizenzen)
@@ -43,18 +43,21 @@ class LegalController extends Controller
         ];
 
         if (Storage::exists('licenses.json')) {
-            $data = json_decode(Storage::get('licenses.json'), true);
+            $raw = Storage::get('licenses.json');
 
-            if (is_array($data)) {
-                $licenses = [
-                    'php' => $data['php'] ?? [],
-                    'node' => $data['node'] ?? [],
-                    'generated_at' => $data['generated_at'] ?? null,
-                ];
+            if (is_string($raw) && $raw !== '') {
+                $data = json_decode($raw, true);
+
+                if (is_array($data)) {
+                    $licenses = [
+                        'php' => $data['php'] ?? [],
+                        'node' => $data['node'] ?? [],
+                        'generated_at' => $data['generated_at'] ?? null,
+                    ];
+                }
             }
         }
 
         return view('legal.lizenzen', $licenses);
     }
 }
-
