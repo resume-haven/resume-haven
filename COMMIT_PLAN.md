@@ -1392,7 +1392,41 @@ protected function schedule(Schedule $schedule)
 
 ## Commit 17 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
 
-**Status:** ✅ **Vollständig umgesetzt**
+**Status:** ✅ **Vollständig umgesetzt & committed (2026-03-08)**
+
+### Implementierte Features
+
+#### Backend
+- ✅ `RecommendationDto` (immutable, typed mit `priority: 'high'|'medium'|'low'`)
+- ✅ AI-Prompt erweitert um `recommendations`-Feld mit strukturiertem Output
+- ✅ JSON-Schema-Validierung für recommendations
+- ✅ `ParseAiResponseAction`: Parst recommendations mit Type-Guards und priority-Validierung
+- ✅ `AnalyzeResultDto`: Erweitert um `recommendations`-Array
+- ✅ `AnalyzeJobAndResumeHandler`: Leitet recommendations von AI-Analyse durch
+- ✅ `MockAiAnalyzer`: Alle 4 Szenarien mit realistischen Empfehlungen
+  - Realistic: 2 Empfehlungen (high, medium)
+  - High Score: 1 Empfehlung (low)
+  - Low Score: 6 Empfehlungen (3× high, 2× medium, 1× low)
+  - No Match: 5 Empfehlungen (4× high, 1× medium)
+- ✅ Cache-Integration: `GetCachedAnalysisAction` rekonstruiert recommendations als DTOs
+- ✅ Cache-Typisierung: PHPDoc in `AnalysisCacheRepository` und `AnalysisCache` Model
+
+#### Frontend
+- ✅ `result.blade.php`: Neues Panel "💡 Empfehlungen & Verbesserungsvorschläge"
+- ✅ Prioritäts-Badges (farbcodiert: high=rot, medium=gelb, low=grün)
+- ✅ Gap-Namen, Verbesserungsvorschläge, Beispiel-Formulierungen
+- ✅ Robustes Rendering (akzeptiert DTO und Array-Formate)
+- ✅ Responsive Design + Dark-Mode-Support
+
+#### Tests
+- ✅ `RecommendationDtoTest.php` (6 Unit-Tests)
+- ✅ `ParseAiResponseActionTest.php` (+3 Tests für recommendations)
+- ✅ `RecommendationsUiTest.php` (5 Feature-Tests)
+
+#### Quality Gates
+- ✅ PHPStan Level 9: 0 Errors
+- ✅ Pint: Code-Style konform
+- ✅ Tests: 176 passed (496 assertions)
 
 ### Ziel
 
@@ -1463,7 +1497,7 @@ Damit wird ResumeHaven zu einem echten Karriere‑Coach.
 
 **Zweck:** Anwendung gegen gängige Sicherheitsrisiken hardenen
 
-**Status:** ✅ **Vollständig umgesetzt**
+**Status:** ✅ **Vollständig umgesetzt & committed (2026-03-08)**
 
 ### Added
 

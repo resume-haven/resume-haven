@@ -10,6 +10,20 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- *Bereit für Commit 20b (Legal-Seiten)*
+
+### Changed
+- *Noch keine Änderungen*
+
+### Fixed
+- *Noch keine Änderungen*
+
+---
+
+## [0.4.0] - 2026-03-08
+
+### Added - Recommendations & Security Hardening
+
 - **Commit 17 – Empfehlungen & Verbesserungsvorschläge**
   - `RecommendationDto` (immutable, typed mit priority: high|medium|low)
   - AI-Prompt erweitert um `recommendations`-Feld
@@ -19,6 +33,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
     - Prioritäts-Badges (farbcodiert: high=rot, medium=gelb, low=grün)
     - Verbesserungsvorschläge mit Beispiel-Formulierungen
   - Tests: `RecommendationDtoTest`, `ParseAiResponseActionTest` (erweitert), `RecommendationsUiTest`
+  - Cache-Integration: `GetCachedAnalysisAction` rekonstruiert recommendations als DTOs
 
 - **Commit 18a – Security Härtung**
   - Prompt-Injection-Schutz im Analyzer-Prompt (explizite Anti-Injection-Anweisungen)
@@ -30,11 +45,15 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - `composer.json`: Security-Test-Scripts korrigiert (Filter → Dateinamen)
   - **Fix:** `test:pest-security` hängte nicht mehr (Timeout-Problem behoben)
 - `ARCHITECTURE.md`: Security-Sektion hinzugefügt, Recommendations-Status aktualisiert
+- `AnalyzeJobAndResumeHandler`: Leitet recommendations von AI-Analyse durch
+- Cache-Struktur: PHPDoc in `AnalysisCacheRepository` und `AnalysisCache` erweitert
 
 ### Fixed
 - PHPStan Level 9 Errors behoben:
   - RecommendationDto: default-Cases in match-Expressions entfernt (Type-Hints vollständig)
   - ParseAiResponseAction: Type-Guards für recommendation-Parsing
+  - GetCachedAnalysisAction: Redundante Runtime-Checks entfernt (PHPDoc-basierte Typisierung)
+- Feature-Tests: `RecommendationsUiTest` (4 Tests) - Recommendations werden jetzt korrekt durch Handler und Cache durchgereicht
 
 ---
 
@@ -171,5 +190,6 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ---
 
 **Letzte Aktualisierung**: 2026-03-08
+
 
 
