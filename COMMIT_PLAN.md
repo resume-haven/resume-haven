@@ -1605,50 +1605,422 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 
 **Zweck:** Rechtliche Mindestanforderungen für den MVP erfüllen und Vertrauen durch transparente Informationen stärken.
 
-**Status:** 🔄 Geplant
+**Status:** 🔄 In Planung (2026-03-08)
 
-### Added
+---
 
-#### 1. Rechtliche Seiten (öffentlich erreichbar)
-- Route + Seite `impressum`
-- Route + Seite `datenschutz`
-- Route + Seite `kontakt`
-- Route + Seite `lizenzen`
+### 📋 Implementierungsplan
 
-#### 2. Footer-Navigation (site-wide)
-- Sichtbare Links auf allen öffentlichen Seiten: Impressum, Datenschutz, Kontakt, Lizenzen
-- Mobile- und Desktop-kompatible Darstellung (Commit-20-Breakpoints)
+#### Phase 1: Routes & Controller-Struktur
 
-#### 3. Kontakt-Seite (MVP-sicher) — Option 1A
-- Kontaktformular mit Pflichtfeldern (Name, E-Mail, Nachricht)
-- CSRF-Schutz und serverseitige Validierung
-- Klare Erfolgs-/Fehlerzustände in der UI
-- **Kein zusätzlicher `mailto:`-Fallback im MVP**
+**1.1 Routes definieren** (`routes/web.php`)
+```php
+// Legal Pages (GET only)
+Route::get('/impressum', [LegalController::class, 'impressum'])->name('legal.impressum');
+Route::get('/datenschutz', [LegalController::class, 'datenschutz'])->name('legal.datenschutz');
+Route::get('/lizenzen', [LegalController::class, 'lizenzen'])->name('legal.lizenzen');
 
-#### 4. Lizenzen-Seite — Option 2B
-- Lizenzdaten werden automatisiert aus `composer.lock` und `package-lock.json` generiert
-- Darstellung pro Eintrag: Paketname, Version, Lizenztyp
-- Trennung mindestens nach PHP- und Node-Abhängigkeiten
-- Hinweis auf Quelle und Generierungszeitpunkt
+// Contact (GET + POST)
+Route::get('/kontakt', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.submit');
+```
 
-### Tests Added
-- Feature-Tests für Status 200 je Legal-Seite
-- Feature-Test: Footer enthält alle vier Legal-Links
-- Feature-Tests für Kontaktformular (valid/invalid, CSRF, Validation Errors)
-- Feature-Test: Lizenzen-Seite enthält mindestens einen erwarteten Lizenz-Eintrag
+**1.2 Controller erstellen**
+- `app/Http/Controllers/LegalController.php` (Single-Action aufteilen in named methods für Legal)
+- `app/Http/Controllers/ContactController.php` (show + submit)
 
-### Akzeptanzkriterien
-- Alle vier Seiten sind per GET erreichbar und liefern `200 OK`
-- Footer-Links zu Impressum/Datenschutz/Kontakt/Lizenzen sind auf allen öffentlichen Hauptseiten vorhanden
-- Kontaktformular validiert Pflichtfelder serverseitig und schützt vor fehlendem CSRF-Token
-- Lizenzen-Seite zeigt pro Eintrag mindestens `Paketname`, `Version`, `Lizenz`
-- Seiten sind responsive gemäß Commit 20 und funktionieren in Dark-Mode gemäß Commit 20a
-- Alle neuen Tests sind grün (Pest)
-- PHPStan bleibt auf Level 9 ohne neue Errors
-- Pint läuft ohne verbleibende Formatierungsfehler
+**Architektur-Entscheidung:**
+- **LegalController**: Named Methods (nicht Single-Action), da statische Content-Seiten
+- **ContactController**: 2 Methods (show/submit), da CRUD-Pattern
+- **Begründung**: Single-Action-Prinzip gilt primär für Business-Logic, nicht für simple View-Returns
 
-### Result
-ResumeHaven erfüllt die rechtlichen MVP-Basisanforderungen (Impressum, Datenschutz, Kontakt, Lizenzen) und erhöht Transparenz sowie Nutzervertrauen.
+---
+
+#### Phase 2: Views erstellen
+
+**2.1 Legal-Seiten** (`resources/views/legal/`)
+- `impressum.blade.php` - Anbieterkennzeichnung
+- `datenschutz.blade.php` - DSGVO-konform
+- `kontakt.blade.php` - Kontaktformular
+- `lizenzen.blade.php` - Automatisch generiert
+
+**2.2 Layout erweitern** (`resources/views/layouts/app.blade.php`)
+- Footer um Legal-Links erweitern
+- Responsive Footer (Stack vertikal < 768px, Horizontal > 768px)
+
+**Content-Struktur Legal-Seiten:**
+```blade
+@extends('layouts.app')
+@section('title', 'Impressum')
+@section('content')
+    <div class="prose dark:prose-invert max-w-3xl">
+        <h1>Impressum</h1>
+        <!-- Platzhalter-Content für MVP -->
+    </div>
+@endsection
+```
+
+---
+
+#### Phase 3: Kontaktformular
+
+**3.1 Backend-Struktur**
+
+**DTO:**
+```php
+// app/Dto/ContactRequestDto.php
+readonly class ContactRequestDto {
+    public function __construct(
+        public string $name,
+        public string $email,
+        public string $message,
+    ) {}
+}
+```
+
+**Validation:**
+```php
+// app/Http/Requests/ContactRequest.php (Form Request)
+- name: required, string, min:2, max:100
+- email: required, email, max:255
+- message: required, string, min:10, max:5000
+```
+
+**UseCase (optional):**
+```php
+// app/Domains/Contact/UseCases/SendContactMessageAction.php
+- Validiert Input
+- Speichert in DB (ContactMessage Model) ODER
+- Sendet E-Mail (MVP: nur Logging)
+- Returns Success/Error
+```
+
+**3.2 ContactController**
+```php
+public function show(): View
+{
+    return view('legal.kontakt');
+}
+
+public function submit(ContactRequest $request): RedirectResponse
+{
+    // Validierung via ContactRequest
+    // UseCase aufrufen
+    // Redirect mit Success-Message
+    return redirect()->route('contact.show')
+        ->with('success', 'Vielen Dank für Ihre Nachricht!');
+}
+```
+
+**3.3 View mit Validierungs-Feedback**
+```blade
+@if (session('success'))
+    <div class="alert-success">{{ session('success') }}</div>
+@endif
+
+@if ($errors->any())
+    <div class="alert-error">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </div>
+@endif
+
+<form method="POST" action="{{ route('contact.submit') }}">
+    @csrf
+    <!-- Formular-Felder -->
+</form>
+```
+
+---
+
+#### Phase 4: Lizenzen-Seite (automatisiert)
+
+**4.1 Artisan Command erstellen**
+```bash
+php artisan make:command GenerateLicenseData
+```
+
+**4.2 Command-Logik** (`app/Console/Commands/GenerateLicenseDataCommand.php`)
+```php
+class GenerateLicenseDataCommand extends Command
+{
+    protected $signature = 'licenses:generate';
+    protected $description = 'Generiert Lizenzdaten aus composer.lock und package-lock.json';
+
+    public function handle(): int
+    {
+        $phpLicenses = $this->parseComposerLock();
+        $nodeLicenses = $this->parsePackageLock();
+        
+        $data = [
+            'generated_at' => now()->toIso8601String(),
+            'php' => $phpLicenses,
+            'node' => $nodeLicenses,
+        ];
+        
+        Storage::put('licenses.json', json_encode($data, JSON_PRETTY_PRINT));
+        
+        $this->info('Lizenzen erfolgreich generiert!');
+        return 0;
+    }
+}
+```
+
+**4.3 LegalController::lizenzen()**
+```php
+public function lizenzen(): View
+{
+    $licenses = json_decode(Storage::get('licenses.json'), true);
+    
+    return view('legal.lizenzen', [
+        'php' => $licenses['php'] ?? [],
+        'node' => $licenses['node'] ?? [],
+        'generated_at' => $licenses['generated_at'] ?? null,
+    ]);
+}
+```
+
+**4.4 View** (`resources/views/legal/lizenzen.blade.php`)
+- Tabelle mit: Paket, Version, Lizenz
+- Trennung PHP/Node
+- Hinweis auf Generierungszeitpunkt
+
+**4.5 Composer-Integration**
+```json
+// composer.json - scripts
+"scripts": {
+    // ...existing scripts...
+    "licenses:generate": "@php artisan licenses:generate"
+}
+```
+
+**4.6 Makefile-Integration**
+```makefile
+# Makefile
+licenses: ## Lizenzen neu generieren
+    docker exec -it resumehaven-php composer run licenses:generate
+```
+
+**4.7 Build-Integration (Post-Update)**
+```json
+// composer.json - scripts
+"post-update-cmd": [
+    "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+    "@php artisan licenses:generate"
+]
+```
+
+---
+
+#### Phase 5: Footer-Navigation
+
+**5.1 Layout-Update** (`resources/views/layouts/app.blade.php`)
+```blade
+<footer class="bg-white dark:bg-neutral-dark border-t mt-16">
+    <div class="max-w-5xl mx-auto px-6 py-6">
+        <!-- Footer-Links -->
+        <nav class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <a href="{{ route('legal.impressum') }}" class="hover:text-primary">Impressum</a>
+            <span class="text-gray-300">•</span>
+            <a href="{{ route('legal.datenschutz') }}" class="hover:text-primary">Datenschutz</a>
+            <span class="text-gray-300">•</span>
+            <a href="{{ route('contact.show') }}" class="hover:text-primary">Kontakt</a>
+            <span class="text-gray-300">•</span>
+            <a href="{{ route('legal.lizenzen') }}" class="hover:text-primary">Lizenzen</a>
+        </nav>
+        
+        <!-- Copyright -->
+        <div class="text-sm text-gray-500 dark:text-gray-500">
+            © {{ date('Y') }} ResumeHaven — Bewerbungsanalyse leicht gemacht.
+        </div>
+    </div>
+</footer>
+```
+
+---
+
+#### Phase 6: Tests
+
+**6.1 Feature-Tests** (`tests/Feature/LegalPagesTest.php`)
+```php
+test('impressum ist erreichbar', function () {
+    $response = $this->get(route('legal.impressum'));
+    $response->assertStatus(200);
+    $response->assertSee('Impressum');
+});
+
+// Analog für datenschutz, lizenzen
+```
+
+**6.2 Contact-Form-Tests** (`tests/Feature/ContactFormTest.php`)
+```php
+test('kontakt-formular zeigt seite', function () {
+    $response = $this->get(route('contact.show'));
+    $response->assertStatus(200);
+    $response->assertSee('Kontaktformular');
+});
+
+test('kontakt-formular validiert pflichtfelder', function () {
+    $response = $this->post(route('contact.submit'), []);
+    $response->assertSessionHasErrors(['name', 'email', 'message']);
+});
+
+test('kontakt-formular akzeptiert valide eingabe', function () {
+    $response = $this->post(route('contact.submit'), [
+        'name' => 'Max Mustermann',
+        'email' => 'max@example.com',
+        'message' => 'Test-Nachricht mit mindestens 10 Zeichen',
+    ]);
+    
+    $response->assertRedirect(route('contact.show'));
+    $response->assertSessionHas('success');
+});
+
+test('kontakt-formular erfordert csrf-token', function () {
+    $response = $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class)
+        ->post(route('contact.submit'), []);
+    // Test für CSRF-Fehler
+});
+```
+
+**6.3 Footer-Test** (`tests/Feature/FooterNavigationTest.php`)
+```php
+test('footer enthält alle legal-links', function () {
+    $response = $this->get('/');
+    
+    $response->assertSee('Impressum');
+    $response->assertSee('Datenschutz');
+    $response->assertSee('Kontakt');
+    $response->assertSee('Lizenzen');
+});
+```
+
+**6.4 Licenses-Test** (`tests/Feature/LicensesPageTest.php`)
+```php
+test('lizenzen-seite zeigt php-pakete', function () {
+    Artisan::call('licenses:generate');
+    
+    $response = $this->get(route('legal.lizenzen'));
+    $response->assertStatus(200);
+    $response->assertSee('laravel/framework');
+});
+```
+
+---
+
+### 📦 Dateien-Struktur
+
+**Neu zu erstellen:**
+```
+src/
+├── app/
+│   ├── Console/Commands/
+│   │   └── GenerateLicenseDataCommand.php
+│   ├── Dto/
+│   │   └── ContactRequestDto.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── ContactController.php
+│   │   │   └── LegalController.php
+│   │   └── Requests/
+│   │       └── ContactRequest.php
+│   └── Domains/Contact/
+│       └── UseCases/
+│           └── SendContactMessageAction.php (optional)
+├── resources/views/legal/
+│   ├── impressum.blade.php
+│   ├── datenschutz.blade.php
+│   ├── kontakt.blade.php
+│   └── lizenzen.blade.php
+├── tests/Feature/
+│   ├── LegalPagesTest.php
+│   ├── ContactFormTest.php
+│   ├── FooterNavigationTest.php
+│   └── LicensesPageTest.php
+└── storage/app/
+    └── licenses.json (generiert)
+```
+
+**Zu ändern:**
+```
+src/
+├── routes/web.php
+├── resources/views/layouts/app.blade.php
+├── composer.json
+└── Makefile (Root-Verzeichnis)
+```
+
+---
+
+### ✅ Akzeptanzkriterien
+
+**Funktional:**
+- [ ] Alle vier Seiten (Impressum, Datenschutz, Kontakt, Lizenzen) sind erreichbar
+- [ ] Footer-Links funktionieren auf allen Seiten
+- [ ] Kontaktformular validiert serverseitig
+- [ ] Lizenzen werden automatisch generiert
+- [ ] Erfolgs-/Fehlermeldungen werden angezeigt
+
+**Technisch:**
+- [ ] Alle Tests grün (Pest)
+- [ ] PHPStan Level 9: 0 Errors
+- [ ] Pint: Code-Style konform
+- [ ] CSRF-Protection aktiv
+- [ ] Responsive Design (Mobile + Desktop)
+- [ ] Dark-Mode funktioniert
+
+**Content:**
+- [ ] Platzhalter-Texte für Impressum/Datenschutz (für MVP ausreichend)
+- [ ] Klarer Hinweis: "Muster-Content, vor Produktivbetrieb anpassen"
+
+---
+
+### 🎯 MVP-Entscheidungen
+
+**Was wird NICHT implementiert (für später):**
+- ❌ Echtes E-Mail-Versenden (nur Logging/DB-Speicherung)
+- ❌ Datenschutz-Cookie-Banner (kommt mit Analytics)
+- ❌ Multi-Language-Support
+- ❌ Admin-Interface für Kontakt-Messages
+- ❌ Rate-Limiting für Kontaktformular (später mit Redis)
+
+**Was wird als Platzhalter implementiert:**
+- ⚠️ Impressum-Content: "Muster-Impressum – bitte anpassen"
+- ⚠️ Datenschutz-Content: "Muster-Datenschutzerklärung – DSGVO-Vorlage"
+- ⚠️ Kontaktformular speichert nur in Log (kein E-Mail-Versand)
+
+---
+
+### 🚀 Implementierungsreihenfolge
+
+1. **Routes + LegalController** (statische Seiten)
+2. **Views für Legal-Seiten** (mit Platzhalter-Content)
+3. **Footer-Navigation** (Layout-Update)
+4. **Tests für statische Seiten + Footer**
+5. **ContactController + ContactRequest** (Formular-Backend)
+6. **Contact-View + Validation-UI**
+7. **Contact-Tests**
+8. **GenerateLicenseDataCommand** (Lizenzen-Generator)
+9. **Lizenzen-View**
+10. **Lizenzen-Tests**
+11. **PHPStan + Pint + Final Testing**
+
+---
+
+### ⏱️ Geschätzter Aufwand
+
+- **Phase 1-4 (Statische Seiten + Footer):** ~1h
+- **Phase 5-7 (Kontaktformular):** ~1.5h
+- **Phase 8-10 (Lizenzen):** ~1h
+- **Tests + Quality Gates:** ~0.5h
+- **Gesamt:** ~4h
+
+---
+
+### 📝 Result
+
+ResumeHaven erfüllt die rechtlichen MVP-Basisanforderungen (Impressum, Datenschutz, Kontakt, Lizenzen) und erhöht Transparenz sowie Nutzervertrauen. Alle Seiten sind responsive, Dark-Mode-fähig und DSGVO-bereit.
 
 ---
 
