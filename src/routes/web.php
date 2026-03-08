@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AnalyzeController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LegalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,3 +20,13 @@ Route::get('/analyze', function () {
 });
 
 Route::post('/analyze', AnalyzeController::class);
+
+// Legal Pages
+Route::get('/impressum', [LegalController::class, 'impressum'])->name('legal.impressum');
+Route::get('/datenschutz', [LegalController::class, 'datenschutz'])->name('legal.datenschutz');
+Route::get('/lizenzen', [LegalController::class, 'lizenzen'])->name('legal.lizenzen');
+
+// Contact
+Route::get('/kontakt', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.submit');
+
