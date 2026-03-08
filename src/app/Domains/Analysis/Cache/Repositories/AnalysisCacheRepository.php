@@ -15,7 +15,7 @@ class AnalysisCacheRepository
     /**
      * Hole gecachte Analyse-Ergebnisse nach Hash
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags?: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, error?: string|null}|null
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags?: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations?: array<int, array{gap: string, priority: 'high'|'medium'|'low', suggestion: string, example_phrase: string}>, error?: string|null}|null
      */
     public function getByHash(string $hash): ?array
     {

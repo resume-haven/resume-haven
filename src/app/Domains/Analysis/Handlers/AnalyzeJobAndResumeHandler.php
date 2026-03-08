@@ -65,7 +65,9 @@ class AnalyzeJobAndResumeHandler
                 [],
                 [],
                 [],
-                'AI-Analyse fehlgeschlagen: '.$e->getMessage()
+                'AI-Analyse fehlgeschlagen: '.$e->getMessage(),
+                null,
+                []
             );
         }
 
@@ -104,7 +106,8 @@ class AnalyzeJobAndResumeHandler
             $finalMatches,
             $finalGaps,
             null,
-            $tags
+            $tags,
+            $analyzeResult->recommendations
         );
 
         // 7. Cache result (unless in demo mode)

@@ -1390,7 +1390,9 @@ protected function schedule(Schedule $schedule)
 
 ---
 
-## Commit 19 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+## Commit 17 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+
+**Status:** ✅ **Vollständig umgesetzt**
 
 ### Ziel
 
@@ -1457,9 +1459,11 @@ Nutzer sehen:
 Damit wird ResumeHaven zu einem echten Karriere‑Coach.
 
 ---
-## 🔒 Commit 19 – Security Härtung (MVP-Abschluss Phase 1)
+## 🔒 Commit 18a – Security Härtung (MVP-Abschluss Phase 1)
 
 **Zweck:** Anwendung gegen gängige Sicherheitsrisiken hardenen
+
+**Status:** ✅ **Vollständig umgesetzt**
 
 ### Added
 
@@ -1613,4 +1617,5 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 ResumeHaven erfüllt die rechtlichen MVP-Basisanforderungen (Impressum, Datenschutz, Kontakt, Lizenzen) und erhöht Transparenz sowie Nutzervertrauen.
 
 ---
+
 

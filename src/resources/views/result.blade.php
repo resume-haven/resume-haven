@@ -90,6 +90,66 @@
             </div>
         @endif
 
+        <!-- Recommendations Section -->
+        @if ($result && is_array($result) && isset($result['recommendations']) && is_array($result['recommendations']) && count($result['recommendations']) > 0)
+            <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 mt-4 sm:mt-6">
+                <h3 class="text-lg sm:text-xl font-bold mb-4">💡 Empfehlungen &amp; Verbesserungsvorschläge</h3>
+                <div class="space-y-4">
+                    @foreach ($result['recommendations'] as $recommendation)
+                        @php
+                            $recDto = is_object($recommendation) && $recommendation instanceof \App\Domains\Analysis\Dto\RecommendationDto
+                                ? $recommendation
+                                : null;
+
+                            if ($recDto === null && is_array($recommendation)
+                                && isset($recommendation['gap'], $recommendation['priority'], $recommendation['suggestion'], $recommendation['example_phrase'])
+                                && is_string($recommendation['gap'])
+                                && in_array($recommendation['priority'], ['high', 'medium', 'low'], true)
+                                && is_string($recommendation['suggestion'])
+                                && is_string($recommendation['example_phrase'])) {
+                                /** @var 'high'|'medium'|'low' $priority */
+                                $priority = $recommendation['priority'];
+                                $recDto = new \App\Domains\Analysis\Dto\RecommendationDto(
+                                    gap: $recommendation['gap'],
+                                    priority: $priority,
+                                    suggestion: $recommendation['suggestion'],
+                                    examplePhrase: $recommendation['example_phrase'],
+                                );
+                            }
+                        @endphp
+                        @if ($recDto)
+                            <div class="border-l-4 {{ str_replace('bg-', 'border-', $recDto->getBadgeClasses()) }} bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                                <!-- Header mit Gap-Name und Priorität -->
+                                <div class="flex items-start justify-between gap-3 mb-3">
+                                    <h4 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex-1">
+                                        {{ $recDto->gap }}
+                                    </h4>
+                                    <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold {{ $recDto->getBadgeClasses() }}">
+                                        Priorität: {{ $recDto->getPriorityLabel() }}
+                                    </span>
+                                </div>
+
+                                <!-- Empfehlungs-Text -->
+                                <p class="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
+                                    {{ $recDto->suggestion }}
+                                </p>
+
+                                <!-- Beispiel-Formulierung -->
+                                <div class="bg-white dark:bg-gray-900 rounded-md p-3 border border-gray-200 dark:border-gray-700">
+                                    <p class="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                                        💬 Beispiel-Formulierung:
+                                    </p>
+                                    <p class="text-xs sm:text-sm italic text-gray-800 dark:text-gray-200">
+                                        "{{ $recDto->examplePhrase }}"
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <!-- Details Section -->
         @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']))
             <details class="mt-4 sm:mt-6 bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6" open>

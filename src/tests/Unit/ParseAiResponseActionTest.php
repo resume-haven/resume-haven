@@ -108,4 +108,71 @@ describe('ParseAiResponseAction', function () {
         expect(fn () => $action->execute($data, $request))
             ->toThrow(\RuntimeException::class, 'Feld \'matches\' fehlt');
     });
+
+    test('parst recommendations aus Response', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => ['Docker'],
+            'recommendations' => [
+                [
+                    'gap' => 'Docker',
+                    'priority' => 'high',
+                    'suggestion' => 'Lernen Sie Docker',
+                    'example_phrase' => 'Docker-Kenntnisse',
+                ],
+            ],
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->recommendations)->toHaveCount(1);
+        expect($result->recommendations[0])->toBeInstanceOf(\App\Domains\Analysis\Dto\RecommendationDto::class);
+        expect($result->recommendations[0]->gap)->toBe('Docker');
+        expect($result->recommendations[0]->priority)->toBe('high');
+    });
+
+    test('gibt leeres Array zurück wenn recommendations fehlen', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => [],
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->recommendations)->toBe([]);
+    });
+
+    test('überspringt ungültige recommendation-Einträge', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => ['Docker'],
+            'recommendations' => [
+                // Gültig
+                ['gap' => 'Docker', 'priority' => 'high', 'suggestion' => 'Test', 'example_phrase' => 'Example'],
+                // Ungültig: fehlendes Feld
+                ['gap' => 'Git', 'priority' => 'low', 'suggestion' => 'Test'],
+                // Ungültig: nicht-String-Werte
+                ['gap' => 123, 'priority' => 'medium', 'suggestion' => 'Test', 'example_phrase' => 'Example'],
+                // Ungültig: ungültige priority
+                ['gap' => 'MySQL', 'priority' => 'critical', 'suggestion' => 'Test', 'example_phrase' => 'Example'],
+            ],
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->recommendations)->toHaveCount(1);
+        expect($result->recommendations[0]->gap)->toBe('Docker');
+    });
 });

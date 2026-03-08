@@ -75,10 +75,16 @@ Die Architektur folgt modernen Best Practices:
 - **Ubiquitous Language:** Profile, Resume, Preferences, Templates
 - **Integration:** Via DTOs/Events mit `Analysis`
 
-#### `Recommendations` (Phase 4, ~Commit 30+)
+#### `Recommendations` (Phase 4, ~Commit 17+) — ✅ **Grundstruktur implementiert**
 - **Verantwortlichkeit:** KI-Empfehlungen, Verbesserungsvorschläge
 - **Ubiquitous Language:** Recommendation, Suggestion, Priority, Example
-- **Integration:** Konsumiert `Analysis`-Ergebnisse
+- **Integration:** Teil von `Analysis`-Domain (zunächst als Sub-Domain)
+- **Status:** 
+  - ✅ `RecommendationDto` implementiert (immutable, typed)
+  - ✅ AI-Prompt erweitert (recommendations-Feld)
+  - ✅ Parsing-Logic (ParseAiResponseAction)
+  - ✅ UI-Component (result.blade.php)
+  - ⏳ Separate Domain-Extraktion geplant (~Commit 30+)
 
 #### `Reporting` (Phase 5, ~Commit 35+)
 - **Verantwortlichkeit:** Analyse-Historie, Statistiken, Exports
@@ -321,6 +327,42 @@ Services:
 - Klare Namenskonventionen
 - Verständliche Struktur
 - Keine Over-Engineering
+
+---
+
+# 🔒 9. Security Architecture
+
+## 9.1 Input-Validierung
+
+### ValidateInputAction
+- **Location:** `app/Domains/Analysis/UseCases/ValidateInputUseCase/`
+- **Verantwortlichkeit:** Eingabe-Validierung mit Security-Checks
+- **Checks:**
+  - ✅ Mindestlänge (30 Zeichen)
+  - ✅ Maximallänge (50.000 Zeichen)
+  - ✅ Prompt-Injection-Pattern-Erkennung
+  - ✅ SQL-Injection-Pattern-Erkennung
+  - ✅ Input-Sanitization
+
+### PatternDetector & InputSanitizer
+- **Location:** `app/Domains/Analysis/UseCases/ValidateInputUseCase/Validators/` & `Sanitizers/`
+- **Patterns:** SQL-Injection, Prompt-Injection, Control-Characters
+
+## 9.2 AI-Prompt-Security (Commit 18a)
+- ✅ Explizite Anti-Prompt-Injection-Anweisungen
+- ✅ JSON-Schema-basierte Response-Validierung
+- ✅ Type-Guards in ParseAiResponseAction
+
+## 9.3 CSRF & SQL-Injection-Prevention
+- ✅ `@csrf`-Token in Forms + Security-Tests
+- ✅ Repository Pattern mit Eloquent (Prepared Statements)
+
+## 9.4 Error-Handling
+- ✅ AI-Timeouts, ungültige Responses gefangen
+- ✅ User-freundliche Fehlermeldungen
+
+## 9.5 Security-Tests
+- `SecurityAuditTest.php`, `ApiErrorHandlingTest.php`, `ValidateInputActionTest.php`
 
 ---
 

@@ -10,13 +10,31 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
-- *Noch keine Änderungen für nächste Version*
+- **Commit 17 – Empfehlungen & Verbesserungsvorschläge**
+  - `RecommendationDto` (immutable, typed mit priority: high|medium|low)
+  - AI-Prompt erweitert um `recommendations`-Feld
+  - `ParseAiResponseAction` parst recommendations mit Type-Guards
+  - MockAiAnalyzer: Alle Szenarien mit realistischen Empfehlungen
+  - UI: Neues Panel "💡 Empfehlungen & Verbesserungsvorschläge" in result.blade.php
+    - Prioritäts-Badges (farbcodiert: high=rot, medium=gelb, low=grün)
+    - Verbesserungsvorschläge mit Beispiel-Formulierungen
+  - Tests: `RecommendationDtoTest`, `ParseAiResponseActionTest` (erweitert), `RecommendationsUiTest`
+
+- **Commit 18a – Security Härtung**
+  - Prompt-Injection-Schutz im Analyzer-Prompt (explizite Anti-Injection-Anweisungen)
+  - Input-Validierung mit PatternDetector & InputSanitizer
+  - Error-Handling für AI-API-Timeouts und ungültige Responses
+  - Security-Tests: `SecurityAuditTest`, `ApiErrorHandlingTest`
 
 ### Changed
-- *Noch keine Änderungen*
+- `composer.json`: Security-Test-Scripts korrigiert (Filter → Dateinamen)
+  - **Fix:** `test:pest-security` hängte nicht mehr (Timeout-Problem behoben)
+- `ARCHITECTURE.md`: Security-Sektion hinzugefügt, Recommendations-Status aktualisiert
 
 ### Fixed
-- *Noch keine Änderungen*
+- PHPStan Level 9 Errors behoben:
+  - RecommendationDto: default-Cases in match-Expressions entfernt (Type-Hints vollständig)
+  - ParseAiResponseAction: Type-Guards für recommendation-Parsing
 
 ---
 
@@ -153,4 +171,5 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ---
 
 **Letzte Aktualisierung**: 2026-03-08
+
 
