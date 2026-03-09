@@ -1677,14 +1677,13 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 - Alle Tests grün, PHPStan Level 9: 0 Errors
 
 **Quality-Gates:**
-- ✅ Tests: 182 passed (509 assertions)
+- ✅ Tests: 184 passed (1471 assertions)
 - ✅ PHPStan Level 9: 0 Errors
 - ✅ Pint: Code-Style konform
 - ✅ Legal-Routes funktionieren: /impressum, /datenschutz, /kontakt, /lizenzen
-- Feature-Tests für Legal-Pages, Contact-Form, Footer, Licenses
-- PHPStan Level 9: 0 Errors
-- Pint: Code-Style konform
-- Alle Tests grün
+- ✅ `make licenses-generate` erstellt licenses.json (78 PHP + 203 Node Packages)
+- ✅ Feature-Tests für Legal-Pages, Contact-Form, Footer, Licenses
+- ✅ Lizenzen-Seite zeigt alle Pakete mit Links (wenn homepage vorhanden)
 
 ---
 

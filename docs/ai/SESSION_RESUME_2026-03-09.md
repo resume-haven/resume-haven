@@ -110,7 +110,7 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 ---
 
-### 7. Lizenzgenerator final umgesetzt
+### 7. Lizenzgenerator final umgesetzt & abgeschlossen ✅
 
 **Umgesetzt:**
 - `licenses:generate` Command implementiert (`GenerateLicenseDataCommand`)
@@ -119,11 +119,14 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 - `lizenzen.blade.php` auf Controller-Daten umgestellt (kein Dateizugriff in der View)
 - Paketname wird als klickbarer Link gerendert, wenn `homepage` vorhanden ist
 - Neue Feature-Tests: `GenerateLicenseDataCommandTest.php`
+- **Makefile-Target hinzugefügt:** `make licenses-generate` ✅
+- **Erstellt:** `storage/app/licenses.json` (78 PHP-Pakete, 203 Node-Pakete)
 
 **Verifikation:**
-- ✅ Tests: 184 passed
+- ✅ Tests: 184 passed (1471 assertions)
 - ✅ PHPStan: 0 Errors
 - ✅ Pint: PASS
+- ✅ Route `/lizenzen` funktioniert und zeigt alle Pakete an
 
 ---
 
