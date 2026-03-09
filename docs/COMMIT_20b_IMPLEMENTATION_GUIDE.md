@@ -40,7 +40,7 @@
 - Parst `composer.lock` und `package-lock.json`
 - Speichert in `storage/app/licenses.json`
 - Composer-Script: `composer run licenses:generate`
-- Makefile-Target: `make licenses-generate` ✅
+ - Makefile-Target: `make licenses-generate` ✅
 - **Status:** Erfolgreich generiert (78 PHP-Pakete, 203 Node-Pakete)
 
 #### Phase 6: Tests ✅
