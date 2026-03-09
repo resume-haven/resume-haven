@@ -2,212 +2,81 @@
 
 declare(strict_types=1);
 
+use App\Domains\Analysis\Dto\AnalyzeViewDataDto;
+use App\Domains\Analysis\UseCases\AnalyzeFlowUseCase\ExecuteAnalyzeFlowAction;
 use App\Http\Controllers\AnalyzeController;
-use App\Dto\AnalyzeResultDto;
-use App\Domains\Analysis\UseCases\ScoringUseCase\ScoringUseCase;
-use App\Domains\Analysis\UseCases\ValidateInputUseCase\ValidateInputAction;
-use App\Domains\Analysis\UseCases\ValidateInputUseCase\ValidatedInputDto;
-use App\Services\AnalyzeApplicationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 
 uses(RefreshDatabase::class);
 
-it('AnalyzeController besitzt die Methode analyze', function () {
-    $mockScoringUseCase = \Mockery::mock(ScoringUseCase::class);
-    $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
-    $controller = new AnalyzeController(
-        app(\Illuminate\Bus\Dispatcher::class),
-        $mockScoringUseCase,
-        $mockValidateInput
-    );
-    expect(method_exists($controller, 'analyze'))->toBeTrue();
+it('AnalyzeController besitzt die Methode __invoke', function () {
+    $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
+    $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
+
+    expect(method_exists($controller, '__invoke'))->toBeTrue();
 });
 
-describe('AnalyzeController::analyze', function () {
-    it('liefert eine View mit Fehlern bei ungültigen Eingaben', function () {
-        $mockScoringUseCase = \Mockery::mock(ScoringUseCase::class);
-        $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
-        $controller = new AnalyzeController(
-            app(\Illuminate\Bus\Dispatcher::class),
-            $mockScoringUseCase,
-            $mockValidateInput
-        );
-        $request = Request::create('/analyze', 'POST', [
-            'job_text' => '',
-            'cv_text' => '',
-        ]);
-        $caught = false;
-        try {
-            $controller->analyze($request);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $caught = true;
-            expect($e->errors())->toHaveKey('job_text');
-            expect($e->errors())->toHaveKey('cv_text');
-        }
-        expect($caught)->toBeTrue();
-    });
-
-    it('liefert eine View mit Ergebnis bei gültigen Eingaben', function () {
-        // Mock der AnalyzeApplicationService
-        $mockService = \Mockery::mock(AnalyzeApplicationService::class);
-        $mockService->shouldReceive('analyze')->andReturn(
-            new AnalyzeResultDto(
-                str_repeat('A', 31),
-                str_repeat('B', 31),
-                ['foo'],
-                ['bar'],
-                [],
-                [],
-                null
-            )
-        );
-        app()->instance(AnalyzeApplicationService::class, $mockService);
-
-        // Mock ScoringUseCase
-        $mockScoring = \Mockery::mock(ScoringUseCase::class);
-        $mockScoring->shouldReceive('handle')->andReturn(
-            new \App\Domains\Analysis\Dto\ScoreResultDto(
-                percentage: 100,
-                rating: 'Hohe Übereinstimmung',
-                bgColor: 'bg-green-50',
-                textColor: 'text-green-900',
-                barColor: 'bg-green-500',
-                matchCount: 1,
-                gapCount: 0
-            )
-        );
-
-        $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
-        $mockValidateInput->shouldReceive('execute')->andReturn(
-            new ValidatedInputDto(
-                originalInput: str_repeat('A', 31),
-                sanitizedInput: str_repeat('A', 31),
-                lengthBytes: 31,
-                hasSuspiciousPatterns: false,
-                suspiciousPatterns: []
-            )
-        );
-
-        $controller = new AnalyzeController(
-            app(\Illuminate\Bus\Dispatcher::class),
-            $mockScoring,
-            $mockValidateInput
-        );
+describe('AnalyzeController::__invoke', function () {
+    it('delegiert den Request an ExecuteAnalyzeFlowAction', function () {
         $request = Request::create('/analyze', 'POST', [
             'job_text' => str_repeat('A', 31),
             'cv_text' => str_repeat('B', 31),
         ]);
 
-        // Mock View-Facade
-        \Illuminate\Support\Facades\View::shouldReceive('make')->andReturnUsing(function ($view, $data) {
-            return new class ($data) extends \Illuminate\View\View {
-                protected $data;
+        $viewDataDto = new AnalyzeViewDataDto(
+            jobText: str_repeat('A', 31),
+            cvText: str_repeat('B', 31),
+            result: [
+                'requirements' => ['foo'],
+                'experiences' => ['bar'],
+                'matches' => [],
+                'gaps' => [],
+                'error' => null,
+                'tags' => null,
+            ],
+            error: null,
+            score: null,
+            tags: null,
+        );
 
-                public function __construct($data)
-                {
-                    $this->data = $data;
-                }
+        $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
+        $mockExecuteAnalyzeFlow
+            ->shouldReceive('execute')
+            ->once()
+            ->with(\Mockery::type(Request::class))
+            ->andReturn($viewDataDto);
 
-                public function getData()
-                {
-                    return $this->data;
-                }
+        $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
+        $response = $controller->__invoke($request);
 
-                public function name()
-                {
-                    return 'result';
-                }
-
-                public function render(?callable $callback = null): string
-                {
-                    return '';
-                }
-
-                public function with($key, $value = null)
-                {
-                    return $this;
-                }
-            };
-        });
-
-        $view = $controller->analyze($request);
-        $data = $view->getData();
-
-        expect($data['result'])->not()->toBeNull();
-        expect($data['result']['requirements'])->toBe(['foo']);
-        expect($data['result']['experiences'])->toBe(['bar']);
-        expect($data['error'])->toBeNull();
-        expect($data['score'])->not()->toBeNull();
+        expect($response)->toBeInstanceOf(\Illuminate\Contracts\View\View::class);
     });
 
-    it('liefert eine View mit Fehlertext bei Exception', function () {
-        // Mock der AnalyzeApplicationService, um Exception zu werfen
-        $mockService = \Mockery::mock(AnalyzeApplicationService::class);
-        $mockService->shouldReceive('analyze')->andThrow(new Exception('Timeout!'));
-        app()->instance(AnalyzeApplicationService::class, $mockService);
-
-        // Mock ScoringUseCase - wird NICHT aufgerufen, da error !== null
-        $mockScoring = \Mockery::mock(ScoringUseCase::class);
-        $mockScoring->shouldReceive('handle')->never();
-
-        $mockValidateInput = \Mockery::mock(ValidateInputAction::class);
-        $mockValidateInput->shouldReceive('execute')->andReturn(
-            new ValidatedInputDto(
-                originalInput: str_repeat('A', 31),
-                sanitizedInput: str_repeat('A', 31),
-                lengthBytes: 31,
-                hasSuspiciousPatterns: false,
-                suspiciousPatterns: []
-            )
-        );
-
-        $controller = new AnalyzeController(
-            app(\Illuminate\Bus\Dispatcher::class),
-            $mockScoring,
-            $mockValidateInput
-        );
+    it('gibt bei Action-Fehlerdaten weiterhin die result-View zurueck', function () {
         $request = Request::create('/analyze', 'POST', [
             'job_text' => str_repeat('A', 31),
             'cv_text' => str_repeat('B', 31),
         ]);
 
-        // Mock View-Facade
-        \Illuminate\Support\Facades\View::shouldReceive('make')->andReturnUsing(function ($view, $data) {
-            return new class ($data) extends \Illuminate\View\View {
-                protected $data;
+        $viewDataDto = new AnalyzeViewDataDto(
+            jobText: str_repeat('A', 31),
+            cvText: str_repeat('B', 31),
+            result: null,
+            error: 'Sicherheitsvalidierung fehlgeschlagen: Ungueltige Eingabe',
+            score: null,
+            tags: null,
+        );
 
-                public function __construct($data)
-                {
-                    $this->data = $data;
-                }
+        $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
+        $mockExecuteAnalyzeFlow
+            ->shouldReceive('execute')
+            ->once()
+            ->andReturn($viewDataDto);
 
-                public function getData()
-                {
-                    return $this->data;
-                }
+        $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
+        $response = $controller->__invoke($request);
 
-                public function name()
-                {
-                    return 'result';
-                }
-
-                public function render(?callable $callback = null): string
-                {
-                    return '';
-                }
-
-                public function with($key, $value = null)
-                {
-                    return $this;
-                }
-            };
-        });
-
-        $view = $controller->analyze($request);
-        $data = $view->getData();
-
-        expect($data['error'])->toBeString();
-        expect($data['error'])->toContain('AI-Analyse fehlgeschlagen');
+        expect($response)->toBeInstanceOf(\Illuminate\Contracts\View\View::class);
     });
 });

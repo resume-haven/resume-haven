@@ -31,8 +31,42 @@ test-unit: ## Nur Unit-Tests ausführen
 test-feature: ## Nur Feature-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-feature
 
+test-security: ## OWASP-orientierte Security-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-security
+
+test-security-strict: ## Striktere Security-Tests (erweiterter Filter, stop-on-failure)
+	docker exec -it resumehaven-php composer run test:pest-security-strict
+
+test-security-gate: ## Kombiniertes Security-Quality-Gate (strict tests + phpstan + pint)
+	docker exec -it resumehaven-php composer run test:pest-security-strict
+	docker exec -it resumehaven-php composer run phpstan
+	docker exec -it resumehaven-php composer run pint:analyse
+
 test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
+
+test-coverage: ## Testabdeckung mit Xdebug anzeigen
+	docker exec -it resumehaven-php composer run test:pest-coverage
+
+test-coverage-report: ## Coverage-Report im Dateisystem erzeugen (coverage-report/)
+	docker exec -it resumehaven-php composer run test:pest-coverage-report
+
+coverage-open: ## Öffnet den HTML-Coverage-Report im Standardbrowser
+	@if [ -f src/coverage-report/html/index.html ]; then \
+		powershell -NoProfile -Command "Start-Process \"$$(Resolve-Path 'src/coverage-report/html/index.html')\""; \
+		echo "Coverage-Report geöffnet: src/coverage-report/html/index.html"; \
+	else \
+		echo "Coverage-Report nicht gefunden. Bitte zuerst 'make test-coverage-report' ausführen."; \
+		exit 1; \
+	fi
+
+coverage-clean: ## Löscht lokale Coverage-Report-Dateien (src/coverage-report/)
+	@if [ -d src/coverage-report ]; then \
+		rm -rf src/coverage-report; \
+		echo "Coverage-Report gelöscht: src/coverage-report"; \
+	else \
+		echo "Kein Coverage-Report vorhanden."; \
+	fi
 
 # --- LINT / FORMAT ---
 pint-analyse: ## Pint: Nur Analyse (kein Fix)
@@ -100,9 +134,50 @@ node-shell: ## Node-Container Shell öffnen
 nginx-shell: ## Nginx-Container Shell öffnen
 	docker exec -it resumehaven-nginx sh
 
-php-cache-clear: ## Laravel Cache leeren (php artisan cache:clear)
-	docker exec -it resumehaven-php php artisan cache:clear
+# --- DEBUG (Xdebug) ---
+debug-on: ## 🐛 Xdebug aktivieren (mit override + rebuild)
+	@echo "🐛 Xdebug wird aktiviert..."
+	@if [ ! -f docker-compose.override.yml ]; then \
+		echo "  → Erstelle docker-compose.override.yml..."; \
+		cp docker-compose.override.example.yml docker-compose.override.yml || \
+		(echo "services:" > docker-compose.override.yml && \
+		 echo "  php:" >> docker-compose.override.yml && \
+		 echo "    build:" >> docker-compose.override.yml && \
+		 echo "      args:" >> docker-compose.override.yml && \
+		 echo "        INSTALL_XDEBUG: 'true'" >> docker-compose.override.yml && \
+		 echo "    environment:" >> docker-compose.override.yml && \
+		 echo "      XDEBUG_MODE: debug,coverage" >> docker-compose.override.yml && \
+		 echo "      XDEBUG_CONFIG: \"client_host=host.docker.internal client_port=9003 idekey=resumehaven\"" >> docker-compose.override.yml); \
+	fi
+	docker compose down
+	docker compose build --no-cache php
+	docker compose up -d
+	@sleep 2
+	@echo "✅ Xdebug aktiviert! Port 9003 bereit."
+	@echo "   IDE auf Port 9003 lauschen lassen."
+	@echo "   VSCode: F5 drücken"
+	@echo "   PhpStorm: Run → Break on first line"
 
+debug-off: ## 🚀 Xdebug deaktivieren (normal schnell)
+	@echo "🚀 Xdebug wird deaktiviert..."
+	@rm -f docker-compose.override.yml
+	docker compose down
+	docker compose build --no-cache php
+	docker compose up -d
+	@sleep 2
+	@echo "✅ Xdebug deaktiviert! Schneller Mode aktiv."
+
+debug-status: ## 📊 Xdebug-Status anzeigen
+	@docker exec resumehaven-php php -v
+	@docker exec resumehaven-php php -m | grep -i xdebug && echo "✅ Xdebug ist INSTALLIERT" || echo "❌ Xdebug ist NICHT installiert"
+	@docker exec resumehaven-php php -r "echo 'XDEBUG_MODE: ' . getenv('XDEBUG_MODE') . PHP_EOL;" 2>/dev/null || echo "  (Env nicht gesetzt)"
+
+debug-test: ## 🧪 Test-Request mit Xdebug-Cookie
+	@echo "Sende Request mit XDEBUG_SESSION cookie..."
+	@curl -s -b "XDEBUG_SESSION=resumehaven" http://localhost:8080 | head -20
+
+debug-logs: ## 📋 Xdebug-Logs anzeigen
+	docker compose logs -f resumehaven-php | grep -i xdebug || echo "Keine Xdebug-Logs"
 
 # --- DATABASE ---
 db-migrate: ## Datenbank-Migrationen ausführen
@@ -120,4 +195,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-acceptance pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell php-cache-clear db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

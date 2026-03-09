@@ -1,5 +1,8 @@
 FROM php:8.5-fpm
 
+# Build arguments
+ARG INSTALL_XDEBUG=false
+
 # System packages
 RUN apt-get update && apt-get install -y \
     git \
@@ -21,6 +24,16 @@ RUN apt-get update && apt-get install -y \
         bcmath \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Xdebug Installation (optional)
+RUN if [ "$INSTALL_XDEBUG" = "true" ]; then \
+        apt-get update && apt-get install -y \
+            autoconf g++ make && \
+        pecl install xdebug && \
+        docker-php-ext-enable xdebug && \
+        apt-get remove -y autoconf g++ make && \
+        apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    fi
+
 # gosu installieren (um zu appuser zu wechseln)
 RUN set -eux; \
     apt-get update; \
@@ -39,6 +52,12 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Eigene PHP-Konfiguration für Timeouts und Limits
 COPY custom.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Xdebug-Konfiguration (nur wenn installiert)
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+RUN if [ "$INSTALL_XDEBUG" != "true" ]; then \
+        rm /usr/local/etc/php/conf.d/xdebug.ini; \
+    fi
 
 # PHP-FPM Konfiguration
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf

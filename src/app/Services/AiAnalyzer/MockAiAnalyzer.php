@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\AiAnalyzer;
 
+use App\Domains\Analysis\Dto\RecommendationDto;
 use App\Dto\AnalyzeRequestDto;
 use App\Dto\AnalyzeResultDto;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
@@ -64,7 +65,8 @@ class MockAiAnalyzer implements AiAnalyzerInterface
             matches: $data['matches'],
             gaps: $data['gaps'],
             error: null,
-            tags: $data['tags']
+            tags: $data['tags'],
+            recommendations: $data['recommendations']
         );
     }
 
@@ -81,7 +83,7 @@ class MockAiAnalyzer implements AiAnalyzerInterface
     /**
      * Realistic Scenario: Ausgeglichenes Ergebnis (60% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, RecommendationDto>}
      */
     private function getRealisticScenario(): array
     {
@@ -119,13 +121,27 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Git',
                 ],
             ],
+            'recommendations' => [
+                new RecommendationDto(
+                    gap: 'MySQL/PostgreSQL Datenbanken',
+                    priority: 'high',
+                    suggestion: 'Ergänzen Sie praktische Erfahrungen mit MySQL oder PostgreSQL. Online-Kurse wie "MySQL for Developers" können helfen.',
+                    examplePhrase: 'Erweiterte Kenntnisse in MySQL-Datenbankdesign und -optimierung durch mehrere E-Commerce-Projekte'
+                ),
+                new RecommendationDto(
+                    gap: 'Git Versionskontrolle',
+                    priority: 'medium',
+                    suggestion: 'Zeigen Sie Ihre Erfahrung mit Git in Team-Projekten. Erwähnen Sie Pull Requests, Code Reviews oder Git-Flow.',
+                    examplePhrase: 'Tägliche Nutzung von Git für Versionskontrolle und Zusammenarbeit im Team (GitFlow, Pull Requests, Code Reviews)'
+                ),
+            ],
         ];
     }
 
     /**
      * High Score Scenario: Sehr gute Übereinstimmung (90% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, RecommendationDto>}
      */
     private function getHighScoreScenario(): array
     {
@@ -179,13 +195,21 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Code Reviews',
                 ],
             ],
+            'recommendations' => [
+                new RecommendationDto(
+                    gap: 'Code Reviews',
+                    priority: 'low',
+                    suggestion: 'Erwähnen Sie Ihre Erfahrung mit Code Reviews. Dies ist ein wichtiger Teil der Team-Zusammenarbeit.',
+                    examplePhrase: 'Regelmäßige Durchführung von Code Reviews und Mentoring von Junior-Entwicklern im Team'
+                ),
+            ],
         ];
     }
 
     /**
      * Low Score Scenario: Geringe Übereinstimmung (25% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, RecommendationDto>}
      */
     private function getLowScoreScenario(): array
     {
@@ -231,13 +255,51 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Microservices',
                 ],
             ],
+            'recommendations' => [
+                new RecommendationDto(
+                    gap: 'Laravel Framework',
+                    priority: 'high',
+                    suggestion: 'Laravel-Kenntnisse sind essentiell für diese Position. Absolvieren Sie den offiziellen Laracasts-Kurs und bauen Sie ein Demo-Projekt.',
+                    examplePhrase: 'Praktische Erfahrung mit Laravel durch mehrere erfolgreiche E-Commerce-Projekte (inkl. Authentifizierung, API-Entwicklung, Eloquent ORM)'
+                ),
+                new RecommendationDto(
+                    gap: 'RESTful API Design',
+                    priority: 'high',
+                    suggestion: 'API-Design ist eine Kernkompetenz. Studieren Sie REST-Prinzipien und bauen Sie eine dokumentierte API mit Laravel.',
+                    examplePhrase: 'Entwicklung und Dokumentation mehrerer RESTful APIs nach OpenAPI-Standard mit Authentifizierung und Rate-Limiting'
+                ),
+                new RecommendationDto(
+                    gap: 'MySQL Datenbanken',
+                    priority: 'high',
+                    suggestion: 'Vertiefen Sie Ihre MySQL-Kenntnisse. Lernen Sie Indexierung, Query-Optimierung und Datenbankdesign-Prinzipien.',
+                    examplePhrase: 'Umfangreiche MySQL-Erfahrung: Datenbankdesign, Indexierung, Query-Optimierung und Performance-Tuning'
+                ),
+                new RecommendationDto(
+                    gap: 'Docker Container',
+                    priority: 'medium',
+                    suggestion: 'Docker wird in modernen Projekten erwartet. Lernen Sie Dockerfile-Erstellung und Docker Compose.',
+                    examplePhrase: 'Containerisierung von PHP-Anwendungen mit Docker und Orchestrierung via Docker Compose'
+                ),
+                new RecommendationDto(
+                    gap: 'TDD/Testing',
+                    priority: 'medium',
+                    suggestion: 'Test-Driven Development ist ein Qualitätsmerkmal. Lernen Sie PHPUnit/Pest und schreiben Sie Tests für Ihre Projekte.',
+                    examplePhrase: 'Test-Driven Development mit PHPUnit/Pest: Unit-, Feature- und Integrationstests mit >90% Code Coverage'
+                ),
+                new RecommendationDto(
+                    gap: 'Microservices Architektur',
+                    priority: 'low',
+                    suggestion: 'Microservices sind ein fortgeschrittenes Thema. Studieren Sie Domain-Driven Design und Event-Sourcing.',
+                    examplePhrase: 'Erfahrung mit Microservices-Architektur: Service-Separation, Event-Driven Design, API-Gateway-Pattern'
+                ),
+            ],
         ];
     }
 
     /**
      * No Match Scenario: Keine Übereinstimmungen (0% Score)
      *
-     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}}
+     * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, recommendations: array<int, RecommendationDto>}
      */
     private function getNoMatchScenario(): array
     {
@@ -273,6 +335,38 @@ class MockAiAnalyzer implements AiAnalyzerInterface
                     'Data Science',
                     'AWS',
                 ],
+            ],
+            'recommendations' => [
+                new RecommendationDto(
+                    gap: 'Python Django Framework',
+                    priority: 'high',
+                    suggestion: 'Ihre Erfahrung liegt im PHP-Bereich. Für diese Position benötigen Sie fundierte Python- und Django-Kenntnisse. Erwägen Sie einen Karrierewechsel-Kurs.',
+                    examplePhrase: 'Umfassende Python/Django-Entwicklung: MVC-Pattern, ORM, REST Framework, Authentication'
+                ),
+                new RecommendationDto(
+                    gap: 'Machine Learning',
+                    priority: 'high',
+                    suggestion: 'Machine Learning erfordert mathematische Grundlagen und praktische Erfahrung. Absolvieren Sie Kurse wie "Machine Learning Specialization" (Coursera).',
+                    examplePhrase: 'Praktische ML-Erfahrung: Supervised/Unsupervised Learning, Feature Engineering, Model Training & Evaluation'
+                ),
+                new RecommendationDto(
+                    gap: 'TensorFlow',
+                    priority: 'high',
+                    suggestion: 'TensorFlow ist das Standard-Framework für Deep Learning. Bauen Sie praktische Projekte und dokumentieren Sie diese auf GitHub.',
+                    examplePhrase: 'TensorFlow/Keras-Entwicklung: Neuronale Netze, CNN, RNN, Transfer Learning'
+                ),
+                new RecommendationDto(
+                    gap: 'Data Science',
+                    priority: 'high',
+                    suggestion: 'Data Science kombiniert Statistik, Programmierung und Domain-Wissen. Lernen Sie Pandas, NumPy, Matplotlib und Jupyter Notebooks.',
+                    examplePhrase: 'Data Science Expertise: Datenanalyse, Visualisierung, statistische Modelle, Pandas/NumPy'
+                ),
+                new RecommendationDto(
+                    gap: 'AWS Cloud Infrastructure',
+                    priority: 'medium',
+                    suggestion: 'AWS-Kenntnisse sind für Cloud-basierte ML-Projekte wichtig. Lernen Sie SageMaker, EC2, S3 und Lambda.',
+                    examplePhrase: 'AWS-Infrastruktur: EC2, S3, SageMaker, Lambda – Deployment und Skalierung von ML-Modellen'
+                ),
             ],
         ];
     }

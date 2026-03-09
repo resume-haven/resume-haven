@@ -40,6 +40,11 @@ AUFGABE:
   - `tags.matches`: gruppierte Zuordnung je Requirement mit mehreren Experiences
     {"requirement": string, "experience": string[]}
   - `tags.gaps`: string[]
+- Erzeuge für jede Gap eine konkrete Empfehlung in `recommendations`:
+  - `gap`: Name der fehlenden Anforderung (aus gaps)
+  - `priority`: "high" | "medium" | "low" (basierend auf Wichtigkeit in job_text)
+  - `suggestion`: konkreter Verbesserungsvorschlag (1-2 Sätze)
+  - `example_phrase`: Beispiel-Formulierung für den Lebenslauf
 
 AUSGABEFORMAT (exakt):
 {
@@ -50,7 +55,15 @@ AUSGABEFORMAT (exakt):
   "tags": {
     "matches": [{"requirement": "...", "experience": ["..."]}],
     "gaps": ["..."]
-  }
+  },
+  "recommendations": [
+    {
+      "gap": "...",
+      "priority": "high|medium|low",
+      "suggestion": "...",
+      "example_phrase": "..."
+    }
+  ]
 }
 PROMPT;
     }
@@ -97,6 +110,14 @@ PROMPT;
                 )->required(),
                 'gaps' => $schema->array()->items($schema->string())->required(),
             ])->required(),
+            'recommendations' => $schema->array()->items(
+                $schema->object([
+                    'gap' => $schema->string()->required(),
+                    'priority' => $schema->string()->required(),
+                    'suggestion' => $schema->string()->required(),
+                    'example_phrase' => $schema->string()->required(),
+                ])
+            )->required(),
         ];
     }
 }

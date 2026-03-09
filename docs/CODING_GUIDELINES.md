@@ -33,6 +33,32 @@ Wir folgen den **SOLID-Prinzipien**:
 - **I**nterface Segregation Principle: Kleine, fokussierte Interfaces
 - **D**ependency Inversion Principle: Abhängigkeiten auf Abstraktionen
 
+### OWASP Security by Design
+
+Sicherheitsanforderungen sind **Pflicht** und werden nach OWASP-Empfehlungen umgesetzt.
+
+- Eingaben grundsätzlich als untrusted behandeln
+- Output Context-Aware escapen/encoden
+- AuthN/AuthZ strikt trennen und prüfen
+- Secrets niemals im Code, nur via Config/Env
+- Security-Regression-Tests bei sicherheitsrelevanten Änderungen
+- Prompt-/Input-Injection explizit abwehren
+
+#### OWASP Mapping (Top 10 -> Projektregeln)
+
+| OWASP Top 10 | Risiko im Projekt | Verbindliche Maßnahme | Test-/Review-Check |
+|---|---|---|---|
+| A01 Broken Access Control | Unberechtigter Zugriff auf Endpunkte | Route-/Policy-Prüfung, keine impliziten Admin-Pfade | Feature-Tests für erlaubte/verbotene Zugriffe |
+| A02 Cryptographic Failures | Unsichere Speicherung/Übertragung | Keine Secrets im Code, sichere Defaults, HTTPS in Prod | Secret-Scan + Config-Review |
+| A03 Injection | SQL/XSS/Prompt-Injection | Input-Validierung, Prepared Statements, Output-Encoding, Prompt-Härtung | Security-Tests (SQL/XSS/Prompt-Patterns) |
+| A04 Insecure Design | Fehlende Sicherheitsanforderungen | Threat-aware Design in UseCases + Review-Checkliste | PR-Check gegen OWASP-Tabelle |
+| A05 Security Misconfiguration | Unsichere Defaults | Sichere Env-/Config-Werte, Debug nur lokal | Config-Review + Smoke-Tests |
+| A06 Vulnerable Components | Verwundbare Dependencies | Regelmäßige Updates via Renovate + CVE-Checks | Dependency-Update-PRs + CVE-Report |
+| A07 Identification/Auth Failures | Schwache Auth-Mechanik | Laravel Auth/Policies, keine Eigenbau-Auth | Feature-Tests für Login/Authorization |
+| A08 Software/Data Integrity Failures | Manipulierte Abhängigkeiten/Builds | Lockfiles, reproduzierbare Builds, signierte Releases (später) | CI-Checks auf Lockfile-Änderungen |
+| A09 Logging/Monitoring Failures | Sicherheitsvorfälle unentdeckt | Strukturierte Security-Logs ohne Secrets | Log-Review in Security-Tests |
+| A10 SSRF | Externe Calls auf interne Ziele | Whitelisting/Timeouts bei externen Requests | Tests für blockierte Ziel-Hosts |
+
 ### DRY (Don't Repeat Yourself)
 
 - Keine Code-Duplizierung
@@ -605,24 +631,414 @@ class AnalyzeJobAndResumeHandler
 - **PHPStan**: https://phpstan.org/
 - **SOLID Principles**: https://en.wikipedia.org/wiki/SOLID
 - **DDD**: https://martinfowler.com/tags/domain%20driven%20design.html
+- **CQRS**: https://martinfowler.com/bliki/CQRS.html
+
+---
+
+## 🤖 KI-Agent Spezifische Regeln
+
+### Test-Enforcement
+- **Jede Änderung benötigt Tests** (Pest 3)
+- Nach Codeänderungen: `php artisan test --compact` oder `make test`
+- Mindestens Feature-Tests, idealerweise auch Unit-Tests
+- Coverage-Minimum: **95%**
+
+### Pint-Formatting
+- **Nach jeder PHP-Änderung:** `vendor/bin/pint --dirty --format agent`
+- Oder via Makefile: `make pint-fix`
+- Formatierung ist nicht optional, sondern Pflicht
+
+### PHPStan-Validierung
+- **Level 9 ist Pflicht**
+- Keine neuen Errors einführen
+- Bei Bedarf Baseline aktualisieren: `vendor/bin/phpstan analyse --generate-baseline`
+- Command: `make phpstan`
+
+### Coverage-Gate
+- **Minimum:** 95% Total Coverage
+- **GeminiAiAnalyzer.php:** ≥80%
+- Tests vor Commit ausführen: `make test-coverage`
+- HTML-Report: `make test-coverage-report && make coverage-open`
+
+### Dokumentation
+- Nur auf explizite Anfrage Dokumentationsdateien erstellen
+- PHPDoc für alle Public Methods
+- Komplexe Logik kommentieren (Warum, nicht Was)
+
+---
+
+## 🛡️ Architecture Enforcement
+
+### SOLID-Gate (Pflicht-Review)
+
+Jeder Commit und jeder PR MUSS die SOLID-Prinzipien einhalten.
+
+#### Single Responsibility Principle (SRP)
+**Checkliste:**
+- [ ] Jede Klasse hat nur eine Verantwortlichkeit
+- [ ] Methoden sind < 20 Zeilen
+- [ ] Klassen sind < 200 Zeilen
+- [ ] Cyclomatic Complexity < 5
+
+**Beispiel (gut):**
+```php
+// Eine Klasse = Eine Verantwortung
+class CalculateScoreAction {
+    public function execute(array $matches, array $gaps): ScoreResultDto {
+        $total = count($matches) + count($gaps);
+        if ($total === 0) return new ScoreResultDto(0, 'Keine Daten', ...);
+        
+        $percentage = (int) round((count($matches) / $total) * 100);
+        return new ScoreResultDto($percentage, $this->getRating($percentage), ...);
+    }
+}
+```
+
+**Beispiel (schlecht):**
+```php
+// Zu viele Verantwortlichkeiten!
+class AnalyzeController {
+    public function analyze(Request $request) {
+        // Validation
+        $validated = $request->validate([...]);
+        
+        // AI-Aufruf
+        $aiResult = $this->gemini->analyze(...);
+        
+        // Score-Berechnung
+        $score = ($matches / ($matches + $gaps)) * 100;
+        
+        // View-Building
+        return view('result', [...]);
+    }
+}
+```
+
+#### Open/Closed Principle (OCP)
+**Checkliste:**
+- [ ] Neue Features ohne Änderung bestehender Klassen
+- [ ] Interfaces für austauschbare Komponenten
+- [ ] Strategy Pattern für verschiedene Implementierungen
+
+**Beispiel:**
+```php
+// Interface definieren
+interface AiAnalyzerInterface {
+    public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto;
+}
+
+// Austauschbare Implementierungen
+class GeminiAiAnalyzer implements AiAnalyzerInterface { }
+class MockAiAnalyzer implements AiAnalyzerInterface { }
+
+// Service Provider bindet je nach Config
+$this->app->bind(AiAnalyzerInterface::class, function ($app) {
+    return match(config('ai.provider')) {
+        'gemini' => $app->make(GeminiAiAnalyzer::class),
+        'mock' => $app->make(MockAiAnalyzer::class),
+    };
+});
+```
+
+#### Liskov Substitution Principle (LSP)
+**Checkliste:**
+- [ ] Interfaces sind austauschbar ohne Breaking Changes
+- [ ] Subtypen halten Interface-Kontrakt ein
+- [ ] Keine Exception-Änderungen in Subtypen
+
+#### Interface Segregation Principle (ISP)
+**Checkliste:**
+- [ ] Interfaces sind klein und fokussiert
+- [ ] Keine "fetten" Interfaces mit vielen Methoden
+- [ ] Clients abhängig nur von benötigten Methods
+
+#### Dependency Inversion Principle (DIP)
+**Checkliste:**
+- [ ] Dependencies via Constructor Injection
+- [ ] Abhängigkeiten zu Abstraktionen (Interfaces), nicht zu Konkretionen
+- [ ] Kein `new` in Business-Logic (außer DTOs)
+
+**Beispiel:**
+```php
+// ✅ GUT: Dependency zu Interface
+class AnalyzeJobAndResumeHandler {
+    public function __construct(
+        private AiAnalyzerInterface $aiAnalyzer,  // Interface!
+        private MatchingUseCase $matchingUseCase,
+    ) {}
+}
+
+// ❌ SCHLECHT: Dependency zu Konkretion
+class AnalyzeJobAndResumeHandler {
+    public function __construct(
+        private GeminiAiAnalyzer $geminiAnalyzer,  // Konkrete Klasse!
+    ) {}
+}
+```
+
+---
+
+### Interface-based Design (Program to an Interface)
+
+**Grundprinzip:** Code sollte gegen Abstractions (Interfaces) programmiert werden, nicht gegen Konkretionen.
+
+#### Wann ein Interface erstellen?
+
+**✅ JA — Interface erstellen:**
+- Mehrere Implementierungen existieren oder geplant sind
+- Implementierung austauschbar sein soll
+- External Dependencies (API, DB, Cache)
+- Strategie-Pattern benötigt wird
+- Unit-Tests mit Mocks nötig sind
+
+**Beispiel:**
+```php
+// Interface
+interface CacheRepositoryInterface {
+    public function get(string $key): mixed;
+    public function set(string $key, mixed $value, int $ttl): void;
+    public function has(string $key): bool;
+    public function delete(string $key): void;
+}
+
+// Implementierungen
+class DatabaseCacheRepository implements CacheRepositoryInterface { }
+class RedisCacheRepository implements CacheRepositoryInterface { }
+class MemoryCacheRepository implements CacheRepositoryInterface { }
+
+// Service Provider bindet je nach Umgebung
+$this->app->bind(CacheRepositoryInterface::class, function ($app) {
+    return match(config('cache.driver')) {
+        'redis' => $app->make(RedisCacheRepository::class),
+        'database' => $app->make(DatabaseCacheRepository::class),
+        'array' => $app->make(MemoryCacheRepository::class),
+    };
+});
+
+// Consumer nutzt Interface
+class AnalyzeJobAndResumeHandler {
+    public function __construct(
+        private CacheRepositoryInterface $cache,  // Austauschbar!
+    ) {}
+}
+```
+
+**❌ NEIN — Kein Interface nötig:**
+- Nur eine Implementierung und keine weitere geplant
+- Reine Data Objects (DTOs)
+- Simple Actions ohne External Dependencies
+- Laravel Framework-Klassen (Controller, Models)
+
+#### Anti-Patterns vermeiden
+
+**❌ SCHLECHT: Konkrete Abhängigkeiten**
+```php
+class ReportService {
+    public function __construct(
+        private GeminiAiAnalyzer $gemini,        // Konkrete Klasse!
+        private MySqlRepository $repository,      // Konkrete Klasse!
+        private SendGridMailer $mailer,          // Konkrete Klasse!
+    ) {}
+}
+
+// Probleme:
+// → Nicht testbar (keine Mocks möglich)
+// → Nicht austauschbar (fest an Gemini/MySQL/SendGrid gekoppelt)
+// → Verletzt OCP (Neue Provider = Code-Änderung nötig)
+```
+
+**✅ GUT: Interface-basierte Abhängigkeiten**
+```php
+class ReportService {
+    public function __construct(
+        private AiAnalyzerInterface $aiAnalyzer,        // Interface!
+        private ReportRepositoryInterface $repository,   // Interface!
+        private MailerInterface $mailer,                 // Interface!
+    ) {}
+}
+
+// Vorteile:
+// ✅ Testbar (Mocks für alle Dependencies)
+// ✅ Austauschbar (Provider via Config wechselbar)
+// ✅ OCP-konform (Neue Provider ohne Code-Änderung)
+```
+
+#### Naming Convention
+
+| Typ | Convention | Beispiel |
+|-----|------------|----------|
+| **Service** | `{Noun}Interface` | `AiAnalyzerInterface` |
+| **Repository** | `{Noun}RepositoryInterface` | `CacheRepositoryInterface` |
+| **Strategy** | `{Noun}StrategyInterface` | `ScoringStrategyInterface` |
+| **Provider** | `{Noun}ProviderInterface` | `RecommendationProviderInterface` |
+
+**NICHT verwenden:**
+- `I{Noun}` (C#-Style, z.B. `IAiAnalyzer`)
+- `{Noun}Contract` (Laravel alt, deprecated)
+- `Abstract{Noun}` (das sind abstrakte Klassen, keine Interfaces)
+
+#### Verzeichnisstruktur
+
+```
+app/Domains/{Context}/
+└── Contracts/              # Alle Interfaces hier
+    ├── AiAnalyzerInterface.php
+    ├── CacheRepositoryInterface.php
+    └── ScoringStrategyInterface.php
+```
+
+#### Interface-Checklist
+
+- [ ] Interface liegt in `Contracts/` Unterordner
+- [ ] Methoden vollständig typisiert (Parameter + Return)
+- [ ] PHPDoc für komplexe Array-Typen
+- [ ] Mindestens 2 Implementierungen (aktuell oder geplant)
+- [ ] Interface-Name endet auf `Interface`
+- [ ] Keine Business-Logic im Interface (nur Signaturen)
+
+---
+
+### CQRS-Enforcement (Strict Mode)
+
+Commands und Queries müssen strikt getrennt sein.
+
+#### Commands (Write Operations)
+**Regeln:**
+- [ ] Ändern Zustand
+- [ ] Geben `void` oder Bestätigungs-DTO zurück
+- [ ] Liegen in `app/Domains/{Context}/Commands/`
+- [ ] Handler liegt in `app/Domains/{Context}/Handlers/`
+
+**Beispiel:**
+```php
+// Command DTO
+readonly class AnalyzeJobAndResumeCommand {
+    public function __construct(
+        public AnalyzeRequestDto $request,
+        public bool $demoMode = false,
+    ) {}
+}
+
+// Handler
+class AnalyzeJobAndResumeHandler {
+    public function handle(AnalyzeJobAndResumeCommand $command): AnalyzeResultDto {
+        // Write Operation: Erstellt Analyse-Ergebnis
+        return new AnalyzeResultDto(...);
+    }
+}
+```
+
+#### Queries (Read Operations)
+**Regeln:**
+- [ ] Ändern **keinen** Zustand
+- [ ] Geben DTO oder Collection zurück
+- [ ] Liegen in `app/Domains/{Context}/Queries/`
+- [ ] Query-Handler liegt in `app/Domains/{Context}/Handlers/`
+
+**Beispiel (geplant):**
+```php
+// Query DTO
+readonly class GetCachedAnalysisQuery {
+    public function __construct(
+        public string $requestHash,
+    ) {}
+}
+
+// Query-Handler
+class GetCachedAnalysisQueryHandler {
+    public function handle(GetCachedAnalysisQuery $query): ?array {
+        // Read-Only: Liest aus Cache
+        return $this->repository->getByHash($query->requestHash);
+    }
+}
+```
+
+---
+
+### DDD-Enforcement
+
+Code muss in korrekten Bounded Contexts organisiert sein.
+
+#### Bounded Context Rules
+**Checkliste:**
+- [ ] Code liegt in `app/Domains/{Context}/`
+- [ ] Keine Cross-Context-Dependencies (außer via DTOs/Events)
+- [ ] Ubiquitous Language in Code verwendet
+- [ ] Models sind Aggregate Roots
+
+**Aktueller Context:** `Analysis`
+
+**Geplante Contexts (Roadmap):**
+- `Profile` (Phase 3, ~Commit 22+)
+- `Recommendations` (Phase 4, ~Commit 30+)
+- `Reporting` (Phase 5, ~Commit 35+)
+
+**Integration zwischen Contexts:**
+```php
+// ✅ GUT: Integration via DTO
+class RecommendationService {
+    public function __construct(
+        private GetAnalysisResultQuery $analysisQuery,  // Query aus anderem Context
+    ) {}
+    
+    public function generate(string $hash): RecommendationDto {
+        $analysis = $this->analysisQuery->execute($hash);  // DTO als Boundary
+        return new RecommendationDto(...);
+    }
+}
+
+// ❌ SCHLECHT: Direkte Dependency
+class RecommendationService {
+    public function __construct(
+        private AnalyzeJobAndResumeHandler $analysisHandler,  // Direkt auf anderen Context!
+    ) {}
+}
+```
 
 ---
 
 ## ✅ Checkliste für neue Features
 
-- [ ] Domain-Struktur angelegt
-- [ ] Command + Handler erstellt
+### Architektur
+- [ ] Domain-Struktur angelegt (richtiger Bounded Context)
+- [ ] Command/Query + Handler erstellt
 - [ ] UseCases + Actions implementiert
-- [ ] DTOs definiert
+- [ ] DTOs definiert (immutable, `readonly`)
 - [ ] Repository (falls DB-Zugriff)
 - [ ] Service Provider registriert
+
+### SOLID-Compliance
+- [ ] SRP: Jede Klasse nur eine Verantwortlichkeit
+- [ ] OCP: Erweiterbar ohne Änderung
+- [ ] LSP: Interfaces austauschbar
+- [ ] ISP: Interfaces fokussiert
+- [ ] DIP: Dependencies via Constructor Injection
+- [ ] Interface-based Design: Dependencies zu Interfaces statt Konkretionen
+
+### CQRS-Compliance
+- [ ] Commands/Queries korrekt getrennt
+- [ ] Commands ändern Zustand, Queries nicht
+- [ ] Handler in korrektem Ordner
+
+### DDD-Compliance
+- [ ] Code im korrekten Bounded Context
+- [ ] Keine Cross-Context-Dependencies
+- [ ] Ubiquitous Language verwendet
+
+### Tests & Quality
 - [ ] Unit-Tests geschrieben
 - [ ] Feature-Tests geschrieben
+- [ ] Security-Tests für sicherheitsrelevante Änderungen (OWASP-orientiert)
+- [ ] Coverage ≥95%
 - [ ] PHPStan Level 9 ohne Fehler
 - [ ] Pint ohne Style-Issues
-- [ ] Dokumentation aktualisiert
+
+### Dokumentation
+- [ ] PHPDoc für Public Methods
+- [ ] Komplexe Logik kommentiert
+- [ ] ARCHITECTURE.md aktualisiert (falls nötig)
+- [ ] README.md aktualisiert (falls nötig)
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-02
-
+**Letzte Aktualisierung**: 2026-03-07

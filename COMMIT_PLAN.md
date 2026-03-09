@@ -5,6 +5,39 @@ Er sorgt für eine klare, nachvollziehbare Git‑History und erleichtert die Zus
 
 Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
+**Letzte Aktualisierung:** 2026-03-09  
+**Aktueller Stand:** Commit 20b (Legal-Seiten & Vertrauen) abgeschlossen
+
+---
+
+## 📊 Status-Überblick
+
+### ✅ Abgeschlossen (Commits 1-20b)
+- **Commit 1-11:** Docker-Setup, Laravel-Installation, Basis-Konfiguration
+- **Commit 12:** KI-Integration (Gemini), Analyse-Engine, Validierung, Tests
+- **Commit 13:** KI-Prompt-Engineering & Error-Handling
+- **Commit 14:** UI-Verbesserungen (Score-Panel, Tags, Layout)
+- **Commit 15:** Analyse-Cache (Hash-basiert, DB-gestützt)
+- **Commit 15a:** Domain-Architektur-Refactoring (DDD, CQRS, SOLID)
+- **Commit 16:** Input-Validierung & Security (OWASP)
+- **Commit 16a:** AI-Provider-Abstraktion (Mock/Gemini via Interface)
+- **Commit 16b:** AI-Response-Tags (Match-Tags, Gap-Tags mit Fallback)
+- **Commit 16c:** Prompt-Injection-Schutz (Strikte System-Rules)
+- **Commit 17:** KI-Empfehlungen (RecommendationDto, Priority-Badges, View)
+- **Commit 18:** Cache-Management (Command zum Leeren)
+- **Commit 18a:** Security-Härtung & Kontext-Dokumentation (WORKING_BASELINE)
+- **Commit 20:** Quality-Gates (Coverage 98.2%, PHPStan Level 9, Xdebug)
+- **Commit 20a:** Code-Qualität (Architektur-Cleanup, Test-Erweiterungen)
+- **Commit 20b:** Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen)
+
+**Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
+
+### 🔄 In Planung (Commits 21+)
+- **Commit 21:** Responsive Layout & Mobile-First (geplant)
+- **Commit 21a:** Dark-Mode Support (geplant)
+- **Commit 22:** Lebenslauf-Speicherung (geplant)
+- **Commit 23+:** CI/CD, Deployment, weitere Features
+
 ---
 
 ## 🧱 Commit 1 – Projektgrundstruktur
@@ -1390,7 +1423,43 @@ protected function schedule(Schedule $schedule)
 
 ---
 
-## Commit 19 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+## Commit 17 – Empfehlungen & Verbesserungsvorschläge (KI‑gestützt)
+
+**Status:** ✅ **Vollständig umgesetzt & committed (2026-03-08)**
+
+### Implementierte Features
+
+#### Backend
+- ✅ `RecommendationDto` (immutable, typed mit `priority: 'high'|'medium'|'low'`)
+- ✅ AI-Prompt erweitert um `recommendations`-Feld mit strukturiertem Output
+- ✅ JSON-Schema-Validierung für recommendations
+- ✅ `ParseAiResponseAction`: Parst recommendations mit Type-Guards und priority-Validierung
+- ✅ `AnalyzeResultDto`: Erweitert um `recommendations`-Array
+- ✅ `AnalyzeJobAndResumeHandler`: Leitet recommendations von AI-Analyse durch
+- ✅ `MockAiAnalyzer`: Alle 4 Szenarien mit realistischen Empfehlungen
+  - Realistic: 2 Empfehlungen (high, medium)
+  - High Score: 1 Empfehlung (low)
+  - Low Score: 6 Empfehlungen (3× high, 2× medium, 1× low)
+  - No Match: 5 Empfehlungen (4× high, 1× medium)
+- ✅ Cache-Integration: `GetCachedAnalysisAction` rekonstruiert recommendations als DTOs
+- ✅ Cache-Typisierung: PHPDoc in `AnalysisCacheRepository` und `AnalysisCache` Model
+
+#### Frontend
+- ✅ `result.blade.php`: Neues Panel "💡 Empfehlungen & Verbesserungsvorschläge"
+- ✅ Prioritäts-Badges (farbcodiert: high=rot, medium=gelb, low=grün)
+- ✅ Gap-Namen, Verbesserungsvorschläge, Beispiel-Formulierungen
+- ✅ Robustes Rendering (akzeptiert DTO und Array-Formate)
+- ✅ Responsive Design + Dark-Mode-Support
+
+#### Tests
+- ✅ `RecommendationDtoTest.php` (6 Unit-Tests)
+- ✅ `ParseAiResponseActionTest.php` (+3 Tests für recommendations)
+- ✅ `RecommendationsUiTest.php` (5 Feature-Tests)
+
+#### Quality Gates
+- ✅ PHPStan Level 9: 0 Errors
+- ✅ Pint: Code-Style konform
+- ✅ Tests: 176 passed (496 assertions)
 
 ### Ziel
 
@@ -1457,9 +1526,11 @@ Nutzer sehen:
 Damit wird ResumeHaven zu einem echten Karriere‑Coach.
 
 ---
-## 🔒 Commit 19 – Security Härtung (MVP-Abschluss Phase 1)
+## 🔒 Commit 18a – Security Härtung (MVP-Abschluss Phase 1)
 
 **Zweck:** Anwendung gegen gängige Sicherheitsrisiken hardenen
+
+**Status:** ✅ **Vollständig umgesetzt & committed (2026-03-08)**
 
 ### Added
 
@@ -1563,636 +1634,440 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 
 ---
 
-## 🏆 Commit 21 – Code-Qualität Level 9 (MVP-Abschluss Phase 3a)
+## ⚖️ Commit 20b – Legal-Seiten & Vertrauen (MVP-Abschluss Phase 2c)
 
-**Zweck:** Maximale Robustheit und Wartbarkeit durch SOLID-Prinzipien, PHPStan Level 9 und >90% Test-Coverage
+**Zweck:** Rechtliche Mindestanforderungen für den MVP erfüllen und Vertrauen durch transparente Informationen stärken.
 
-**Datum:** 05.03.2026 (geplant)  
-**Geschätzter Aufwand:** 4-6 Stunden  
-**Status:** 🔄 In Planung
+**Status:** ✅ Abgeschlossen (2026-03-09)
 
----
-
-### 📊 IST-Analyse (aktueller Stand)
-
-#### ✅ Bereits SOLID-konform:
-- ✅ Domain-Driven Architecture (Commands, Handlers, UseCases, Actions)
-- ✅ Single Responsibility in Actions
-- ✅ DTOs sind immutable
-- ✅ Repository Pattern (kein Raw SQL)
-- ✅ Dependency Injection überall
-
-#### ⚠️ Verbesserungspotenzial:
-
-**1. AnalyzeController (78 Zeilen)**
-- **Problem:** `analyze()` Methode mit 50+ Zeilen, mehrere Responsibilities
-- **SRP-Verletzung:** Validation + Dispatching + View-Building in einer Methode
-- **Lösung:** Single-Action-Controller mit `__invoke()` + private Helper-Methoden
-
-**2. ValidateInputAction (144 Zeilen)**
-- **Problem:** `execute()` mit 40+ Zeilen, Pattern-Detection und Sanitization gemischt
-- **Lösung:** Zwei separate Services (`PatternDetectorService`, `InputSanitizerService`)
-
-**3. GeminiAiAnalyzer (160 Zeilen)**
-- **Problem:** `analyze()` mit 50+ Zeilen, viele Responsibilities
-- **Lösung:** Response-Parsing und Validation in separate Actions extrahieren
-
-**4. Fehlende Type-Hints**
-- **Problem:** Einige `@param`/`@return` ohne strikte Type-Hints
-- **Lösung:** PHPStan Level 9 = vollständige Typisierung
-
-**5. Test-Coverage Gaps**
-- **Problem:** Edge-Cases nicht getestet (Unicode, sehr große Inputs)
-- **Lösung:** >90% Coverage mit zusätzlichen Tests
-
----
-
-### 🚀 Umsetzungsplan (6 Phasen)
-
-#### Phase 1: Controller-Refactoring (Single-Action-Pattern)
-
-**Ziel:** AnalyzeController zu Single-Action-Controller umbauen
-
-**Änderungen:**
-```php
-// VORHER (78 Zeilen, analyze() mit 50+ Zeilen)
-class AnalyzeController extends Controller
-{
-    public function analyze(Request $request): View
-    {
-        // Validation, Dispatching, Score, View-Building...
-    }
-}
-
-// NACHHER (60 Zeilen, __invoke() mit ~15 Zeilen)
-class AnalyzeController extends Controller
-{
-    public function __invoke(Request $request): View
-    {
-        $dto = $this->validateAndSanitizeInput($request);
-        $result = $this->dispatchAnalysis($dto);
-        $score = $this->calculateScore($result);
-        return $this->buildView($result, $score);
-    }
-    
-    private function validateAndSanitizeInput(Request $request): AnalyzeRequestDto { }
-    private function dispatchAnalysis(AnalyzeRequestDto $dto): AnalyzeResultDto { }
-    private function calculateScore(AnalyzeResultDto $result): ?ScoreResultDto { }
-    private function buildView(AnalyzeResultDto $result, ?ScoreResultDto $score): View { }
-}
-```
-
-**Route-Änderung:**
-```php
-// routes/web.php
-Route::post('/analyze', AnalyzeController::class); // statt @analyze
-```
-
-**Erwartetes Ergebnis:**
-- `__invoke()`: ~15 Zeilen (Orchestrierung only)
-- Jede private Methode: < 15 Zeilen
-- Cyclomatic Complexity: < 5
-
----
-
-#### Phase 2: ValidateInputAction Refactoring
-
-**Ziel:** Pattern-Detection und Input-Sanitization in separate Services extrahieren
-
-**Neue Services:**
-
-1. **PatternDetectorService**
-```php
-namespace App\Domains\Analysis\UseCases\ValidateInputUseCase;
-
-class PatternDetectorService
-{
-    public function detect(string $input): array
-    {
-        $detected = [];
-        if ($this->isSqlPattern($input)) $detected[] = 'SQL Keywords';
-        if ($this->isXssPattern($input)) $detected[] = 'Script Tags';
-        if ($this->isEventHandlerPattern($input)) $detected[] = 'Event Handlers';
-        return $detected;
-    }
-    
-    private function isSqlPattern(string $input): bool { }
-    private function isXssPattern(string $input): bool { }
-    private function isEventHandlerPattern(string $input): bool { }
-}
-```
-
-2. **InputSanitizerService**
-```php
-namespace App\Domains\Analysis\UseCases\ValidateInputUseCase;
-
-class InputSanitizerService
-{
-    public function sanitize(string $input): string
-    {
-        return $this->normalizeLineEndings(
-            $this->trimWhitespace(
-                $this->removeNullBytes($input)
-            )
-        );
-    }
-    
-    private function removeNullBytes(string $input): string { }
-    private function trimWhitespace(string $input): string { }
-    private function normalizeLineEndings(string $input): string { }
-}
-```
-
-**Vereinfachte ValidateInputAction:**
-```php
-class ValidateInputAction
-{
-    public function __construct(
-        private PatternDetectorService $patternDetector,
-        private InputSanitizerService $sanitizer,
-    ) {}
-    
-    public function execute(string $input, string $fieldName = 'input'): ValidatedInputDto
-    {
-        $this->validateLength($input, $fieldName);
-        $patterns = $this->patternDetector->detect($input);
-        $sanitized = $this->sanitizer->sanitize($input);
-        $this->validateNotEmpty($sanitized);
-        
-        return new ValidatedInputDto($input, $sanitized, strlen($sanitized), !empty($patterns), $patterns);
-    }
-    
-    private function validateLength(string $input, string $fieldName): void { }
-    private function validateNotEmpty(string $sanitized): void { }
-}
-```
-
-**Erwartetes Ergebnis:**
-- `execute()`: ~20 Zeilen (statt 40+)
-- Zwei neue Services mit je < 50 Zeilen
-- Cyclomatic Complexity < 5 pro Methode
-
----
-
-#### Phase 3: GeminiAiAnalyzer Refactoring
-
-**Ziel:** Response-Parsing und Validation in separate Actions extrahieren
-
-**Neue Actions:**
-
-1. **ValidateAiResponseAction**
-```php
-namespace App\Services\AiAnalyzer\Actions;
-
-class ValidateAiResponseAction
-{
-    public function execute(string $rawResponse): array
-    {
-        $this->validateLength($rawResponse);
-        $this->validateJsonStructure($rawResponse);
-        $this->validateSecurity($rawResponse);
-        
-        return json_decode($rawResponse, true);
-    }
-}
-```
-
-2. **ParseAiResponseAction**
-```php
-namespace App\Services\AiAnalyzer\Actions;
-
-class ParseAiResponseAction
-{
-    public function execute(array $data, AnalyzeRequestDto $request): AnalyzeResultDto
-    {
-        $this->validateStructure($data);
-        
-        $requirements = $this->extractRequirements($data);
-        $experiences = $this->extractExperiences($data);
-        $matches = $this->extractMatches($data);
-        $gaps = $this->extractGaps($data);
-        $tags = $this->extractTags($data);
-        
-        return new AnalyzeResultDto(
-            $request->jobText(),
-            $request->cvText(),
-            $requirements,
-            $experiences,
-            $matches,
-            $gaps,
-            null,
-            $tags
-        );
-    }
-}
-```
-
-**Vereinfachter GeminiAiAnalyzer:**
-```php
-class GeminiAiAnalyzer implements AiAnalyzerInterface
-{
-    public function __construct(
-        private ParseAiResponseAction $parseResponse,
-        private ValidateAiResponseAction $validateResponse,
-    ) {}
-    
-    public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto
-    {
-        try {
-            $sanitized = $this->sanitizeInput($request);
-            $response = $this->callApi($sanitized);
-            $validated = $this->validateResponse->execute($response);
-            return $this->parseResponse->execute($validated, $request);
-        } catch (\Throwable $e) {
-            $this->logError($e, $request);
-            return $this->buildErrorDto($request, $e);
-        }
-    }
-}
-```
-
-**Erwartetes Ergebnis:**
-- `analyze()`: ~15 Zeilen (statt 50+)
-- Zwei neue Actions mit klaren Responsibilities
-- Bessere Testbarkeit durch Separation
-
----
-
-#### Phase 4: PHPStan Level 9
-
-**Aktuelle Aufgaben:**
-
-1. **Type-Hints vervollständigen:**
-```php
-// VORHER
-public function getByHash(string $hash): ?array
-
-// NACHHER
-/**
- * @return array{requirements: array<int, string>, experiences: array<int, string>, matches: array<int, array{requirement: string, experience: string}>, gaps: array<int, string>, tags?: array{matches: array<int, array{requirement: string, experience: array<string>}>, gaps: array<int, string>}, error?: string|null}|null
- */
-public function getByHash(string $hash): ?array
-```
-
-2. **Union-Types korrekt annotieren:**
-```php
-// VORHER
-public function handle($command)
-
-// NACHHER
-public function handle(AnalyzeJobAndResumeCommand $command): AnalyzeResultDto
-```
-
-3. **Nullable-Types korrekt:**
-```php
-// VORHER
-public $score;
-
-// NACHHER
-public readonly ?ScoreResultDto $score;
-```
-
-4. **PHPStan-Konfiguration verschärfen:**
-```yaml
-# phpstan.neon
-parameters:
-    level: 9
-    paths:
-        - app
-        - tests
-    checkMissingIterableValueType: true
-    checkGenericClassInNonGenericObjectType: true
-```
-
-**Erwartetes Ergebnis:**
+**Durchgeführt:**
+- Routes für Legal-Pages und Contact hinzugefügt
+- `LegalController` mit named methods für statische Seiten
+- `ContactController` für Kontaktformular (show/submit)
+- Views für Impressum, Datenschutz, Kontakt, Lizenzen erstellt
+- Footer-Navigation mit Legal-Links erweitert
+- `GenerateLicenseDataCommand` implementiert (parst composer.lock & package-lock.json)
+- Composer-Script & Makefile-Target für `licenses:generate` hinzugefügt
+- Feature-Tests für Legal-Pages, Contact-Form, Footer, Licenses
 - PHPStan Level 9: 0 Errors
-- Alle Properties, Parameter und Return-Types vollständig typisiert
+- Pint: Code-Style konform
+- Alle Tests grün
 
 ---
 
-#### Phase 5: Test-Coverage > 90%
+### 📋 Implementierungsplan
 
-**Fehlende Tests identifizieren:**
+#### Phase 1: Routes & Controller-Struktur
 
-1. **ValidateInputAction - Edge-Cases:**
-   - Unicode-Zeichen (Emoji: 😀, Umlaute: äöü)
-   - Sehr lange Strings (49KB, 50KB, 51KB)
-   - Mehrfache Patterns gleichzeitig
-   - Null-Bytes in verschiedenen Positionen
-
-2. **GeminiAiAnalyzer - Error-Paths:**
-   - Timeout-Simulation
-   - Ungültiges JSON
-   - Fehlende Response-Felder
-   - API-Rate-Limit
-
-3. **AnalyzeController - Validation-Failures:**
-   - Zu kurze Inputs (<30 chars)
-   - Zu lange Inputs (>50KB)
-   - XSS/SQL-Injection in Inputs
-
-4. **PatternDetectorService (neu):**
-   - Alle Patterns einzeln testen
-   - Kombinationen von Patterns
-   - Case-Insensitivity
-
-5. **InputSanitizerService (neu):**
-   - Alle Sanitization-Schritte isoliert
-   - Kombinationen von problematischen Zeichen
-
-**Neue Tests (15+):**
-- `PatternDetectorServiceTest.php` (8 Tests)
-- `InputSanitizerServiceTest.php` (6 Tests)
-- `ValidateAiResponseActionTest.php` (5 Tests)
-- `ParseAiResponseActionTest.php` (5 Tests)
-- Erweiterte Edge-Case-Tests in bestehenden Test-Suites
-
-**Coverage-Ziel:**
-```bash
-make test -- --coverage
-# Ziel: >90% Coverage (aktuell ~85%)
-```
-
-**Mutation-Testing (optional):**
-```bash
-vendor/bin/pest --mutate
-# Ziel: >80% Mutation-Score
-```
-
----
-
-#### Phase 6: Final Validation & Performance-Audit
-
-**1. Test-Validierung:**
-```bash
-make test              # Alle Tests grün (100+ Tests)
-make phpstan           # Level 9, 0 Errors
-make pint              # Code-Formatting clean
-```
-
-**2. Performance-Audit:**
-
-**N+1 Query Detection:**
-- `AnalysisCacheRepository::getByHash()` → Single Query ✓
-- Eloquent-Relations → Eager Loading checken
-
-**Caching-Effektivität:**
-- Cache-Hit-Rate messen
-- Durchschnittliche Response-Zeit mit/ohne Cache
-
-**Code-Duplication:**
-```bash
-vendor/bin/phpcpd app/
-# Ziel: < 5% Duplikation
-```
-
-**3. Dokumentation aktualisieren:**
-- `docs/CODING_GUIDELINES.md` mit neuen Services ergänzen
-- `docs/ARCHITECTURE.md` mit Refactoring-Entscheidungen
-- `COMMIT_PLAN.md` mit Ergebnissen
-
----
-
-### Tests Added
-
-**Neue Test-Dateien:**
-- `PatternDetectorServiceTest.php` (8 Unit-Tests)
-- `InputSanitizerServiceTest.php` (6 Unit-Tests)
-- `ValidateAiResponseActionTest.php` (5 Unit-Tests)
-- `ParseAiResponseActionTest.php` (5 Unit-Tests)
-- Erweiterte Tests in bestehenden Suites (10+ Tests)
-
-**Test-Metriken:**
-- **Total Tests:** 100+ (vorher: 85)
-- **Assertions:** 320+ (vorher: 265)
-- **Coverage:** >90% (vorher: ~85%)
-
----
-
-### 📊 Erwartete Metriken nach Commit 21
-
-| Metrik | Vor Commit 21 | Nach Commit 21 | Verbesserung |
-|--------|---------------|----------------|--------------|
-| **Tests** | 85 | 100+ | +15+ Tests |
-| **Assertions** | 265 | 320+ | +55+ |
-| **PHPStan Level** | 7-8 | 9 | +1-2 Levels |
-| **Test-Coverage** | ~85% | >90% | +5% |
-| **Controller Zeilen** | 78 | ~60 | -18 Zeilen |
-| **Längste Methode** | 50 Zeilen | <20 Zeilen | -60% |
-| **Cyclomatic Complexity** | 8-10 | <5 | -50% |
-
----
-
-### Result
-
-Code ist Production-Ready mit höchster Quality:
-
-- ✅ **SOLID-Prinzipien:** Alle Klassen < 200 Zeilen, Methoden < 20 Zeilen
-- ✅ **Single-Action-Controller:** `AnalyzeController::__invoke()`
-- ✅ **Kleine Methoden:** Cyclomatic Complexity < 5
-- ✅ **PHPStan Level 9:** 0 Errors, vollständige Typisierung
-- ✅ **Test-Coverage:** > 90%
-- ✅ **Performance:** N+1 Queries vermieden, Caching optimiert
-- ✅ **Wartbarkeit:** Code-Duplication < 5%
-
----
-
-### 🎯 Definition of Done
-
-Commit 21 gilt als **complete**, wenn:
-
-1. ✅ **PHPStan Level 9**: 0 Errors
-2. ✅ **Test-Coverage**: > 90%
-3. ✅ **Tests**: Alle grün (100+ Tests, 320+ Assertions)
-4. ✅ **SOLID**: Alle Klassen < 200 Zeilen, Methoden < 20 Zeilen
-5. ✅ **Single-Action-Controller**: `AnalyzeController::__invoke()`
-6. ✅ **Kleine Methoden**: Cyclomatic Complexity < 5
-7. ✅ **Pint**: Code-Formatting clean
-8. ✅ **Dokumentation**: CODING_GUIDELINES.md und ARCHITECTURE.md aktualisiert
-
----
-
-### ✅ Checkliste für Umsetzung (05.03.2026)
-
-#### Vor Start:
-- [ ] Branch `feature/commit-21-code-quality` erstellen
-- [ ] Tests ausführen (Baseline: 85 Tests, alle grün)
-- [ ] PHPStan Level aktuell prüfen (`make phpstan`)
-
-#### Phase 1: Controller-Refactoring
-- [ ] AnalyzeController zu Single-Action umbauen
-- [ ] Private Methoden extrahieren (4 Methoden)
-- [ ] Route anpassen (`::class` statt `@analyze`)
-- [ ] Tests aktualisieren
-- [ ] PHPStan: 0 Errors
-
-#### Phase 2: ValidateInputAction
-- [ ] PatternDetectorService erstellen + Tests (8 Tests)
-- [ ] InputSanitizerService erstellen + Tests (6 Tests)
-- [ ] ValidateInputAction refactoren
-- [ ] Tests aktualisieren (18+ Tests total)
-- [ ] PHPStan: 0 Errors
-
-#### Phase 3: GeminiAiAnalyzer
-- [ ] ValidateAiResponseAction erstellen + Tests (5 Tests)
-- [ ] ParseAiResponseAction erstellen + Tests (5 Tests)
-- [ ] GeminiAiAnalyzer refactoren
-- [ ] Tests aktualisieren
-- [ ] PHPStan: 0 Errors
-
-#### Phase 4: PHPStan Level 9
-- [ ] `make phpstan` ausführen
-- [ ] Alle Type-Hints ergänzen
-- [ ] Nullability korrekt annotieren
-- [ ] PHPStan Level 9: 0 Errors
-
-#### Phase 5: Test-Coverage > 90%
-- [ ] Coverage-Report generieren (`make test -- --coverage`)
-- [ ] Fehlende Tests identifizieren
-- [ ] Edge-Case-Tests schreiben (15+ neue Tests)
-- [ ] Coverage > 90% erreichen
-
-#### Phase 6: Final Validation
-- [ ] `make test`: Alle Tests grün (100+ Tests)
-- [ ] `make phpstan`: Level 9, 0 Errors
-- [ ] `make pint`: Code-Formatting clean
-- [ ] Performance-Audit durchführen
-- [ ] CODING_GUIDELINES.md aktualisieren
-- [ ] ARCHITECTURE.md aktualisieren
-
----
-
-## 📝 Commit 21a – Umfassende Test-Suite & Dokumentation (MVP-Abschluss Phase 3b)
-
-**Zweck:** Dokumentation aller kritischen Schnittstellen
-
-### Added
-
-#### 1. Zusätzliche Pest Tests
-- Architecture Tests (Namespace-Struktur, Dependency-Rules)
-- Integration Tests für alle UseCases
-- Acceptance Tests für kritische User-Flows
-
-#### 2. Dokumentation
-- PHPDoc Comments für alle Public Methods
-- Architecture Decision Records (ADRs) für wichtige Entscheidungen
-- Setup-Anleitung für neue Entwickler
-
-#### 3. Test-Beispiele im `tests/README.md`
-- Wie schreibe ich Unit Tests?
-- Wie schreibe ich Feature Tests?
-- Wie nutze ich Mocks/Stubs?
-
-### Tests Added
-- 20+ weitere Pest Tests
-- Minimal 90% Coverage
-
-### Result
-Codebase ist selbst-dokumentiert und einfach zu erweitern.
-
----
-
-## 💾 Commit 22 – CV-Speicherung (DB-basiert, anonym)
-
-**Zweck:** Lebensläufe speichern & wiederverwenden (GDPR-konform, ohne Auth)
-
-### Added
-
-#### 1. Database Migration
-```
-app/Domains/Resume/
-├── Models/
-│   └── StoredResume.php
-├── Repositories/
-│   └── StoredResumeRepository.php
-├── Actions/
-│   ├── GetOrCreateResumeAction.php
-│   └── DeleteResumeAction.php
-└── Dto/
-    └── StoredResumeDto.php
-```
-
-Migration `create_stored_resumes_table`:
-- `id` (UUID)
-- `content_hash` (SHA256 des CV-Texts)
-- `resume_text` (longText)
-- `session_id` (für Tracking, optional)
-- `created_at`, `updated_at`
-
-#### 2. Controller-Erweiterung
-- CV-Form: Checkbox "Gespeicherten CV verwenden?"
-- GET `/` pre-fills CV-Textarea wenn gespeichert
-- POST `/analyze`: Speichert CV wenn neu/geändert
-
-#### 3. Actions
-- `GetOrCreateResumeAction`: Prüft Hash, gibt bestehenden CV zurück
-- `DeleteResumeAction`: Löscht CV (anonym, ohne Auth)
-
-#### 4. UI
-- Checkbox im Form
-- "Gespeicherte CVs ansehen/löschen"-Link im Footer
-- Einfacher "Delete"-Button neben jedem CV
-
-#### 5. Privacy & GDPR
-- Keine PII speichern (nur Text)
-- Delete-Link für User (selbst-Löschung)
-- Keine Tracking / Email / Namen gespeichert
-
-### Tests Added
-- `StoredResumeRepositoryTest.php` (Unit)
-- `GetOrCreateResumeActionTest.php` (Unit)
-- `ResumeStorageFeatureTest.php` (Feature)
-
-### Result
-Nutzer können ihre CVs speichern & wiederverwenden, ohne sich anzumelden.
-
----
-
-## 🧹 Commit 22a – Resume Cleanup-Cronjob (Optional)
-
-**Zweck:** Alte CVs automatisch löschen (Speicherplatz, Datenschutz)
-
-### Added
-
-#### 1. Artisan Command
-```bash
-php artisan resume:cleanup --older-than=90
-```
-
-- Löscht CVs älter als N Tage (default: 90)
-- Output: "Deleted 42 stored resumes."
-
-#### 2. Cronjob-Integration
+**1.1 Routes definieren** (`routes/web.php`)
 ```php
-// In app/Console/Kernel.php
-$schedule->command('resume:cleanup --older-than=90')
-    ->dailyAt('03:00');
+// Legal Pages (GET only)
+Route::get('/impressum', [LegalController::class, 'impressum'])->name('legal.impressum');
+Route::get('/datenschutz', [LegalController::class, 'datenschutz'])->name('legal.datenschutz');
+Route::get('/lizenzen', [LegalController::class, 'lizenzen'])->name('legal.lizenzen');
+
+// Contact (GET + POST)
+Route::get('/kontakt', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.submit');
 ```
 
-#### 3. Logging
-- Log in `storage/logs/resume-cleanup.log`
-- Anzahl gelöschter Einträge
-- Timestamp
+**1.2 Controller erstellen**
+- `app/Http/Controllers/LegalController.php` (Single-Action aufteilen in named methods für Legal)
+- `app/Http/Controllers/ContactController.php` (show + submit)
 
-### Tests Added
-- `ResumeCleanupCommandTest.php` (Feature)
-
-### Result
-Alte CVs werden automatisch gelöscht (Data Minimization GDPR).
+**Architektur-Entscheidung:**
+- **LegalController**: Named Methods (nicht Single-Action), da statische Content-Seiten
+- **ContactController**: 2 Methods (show/submit), da CRUD-Pattern
+- **Begründung**: Single-Action-Prinzip gilt primär für Business-Logic, nicht für simple View-Returns
 
 ---
 
-## 🎯 MVP-Abschluss-Checkliste
+#### Phase 2: Views erstellen
 
-Nach Commit 22a ist das **MVP complete**:
+**2.1 Legal-Seiten** (`resources/views/legal/`)
+- `impressum.blade.php` - Anbieterkennzeichnung
+- `datenschutz.blade.php` - DSGVO-konform
+- `kontakt.blade.php` - Kontaktformular
+- `lizenzen.blade.php` - Automatisch generiert
 
-- ✅ **Funktionalität:** Analysen, Tags, Caching, CV-Speicherung funktionieren
-- ✅ **Sicherheit:** Prompt-Injection, Input-Validation, Error-Handling (Commit 19)
-- ✅ **UX:** Responsive, Dark-Mode, Accessibility (Commits 20–20a)
-- ✅ **Qualität:** PHPStan Level 9, >90% Coverage (Commits 21–21a)
-- ✅ **Dokumentation:** Vollständig, selbst-dokumentierter Code
-- ✅ **Privacy:** GDPR-konform, Daten-Minimization, Delete-Option
-- ✅ **Deployment:** Lauffähig auf IONOS Webspace
+**2.2 Layout erweitern** (`resources/views/layouts/app.blade.php`)
+- Footer um Legal-Links erweitern
+- Responsive Footer (Stack vertikal < 768px, Horizontal > 768px)
 
-**Next:** v1.0.0 Release + Englische Dokumentation (Phase 2)
+**Content-Struktur Legal-Seiten:**
+```blade
+@extends('layouts.app')
+@section('title', 'Impressum')
+@section('content')
+    <div class="prose dark:prose-invert max-w-3xl">
+        <h1>Impressum</h1>
+        <!-- Platzhalter-Content für MVP -->
+    </div>
+@endsection
+```
+
+---
+
+#### Phase 3: Kontaktformular
+
+**3.1 Backend-Struktur**
+
+**DTO:**
+```php
+// app/Dto/ContactRequestDto.php
+readonly class ContactRequestDto {
+    public function __construct(
+        public string $name,
+        public string $email,
+        public string $message,
+    ) {}
+}
+```
+
+**Validation:**
+```php
+// app/Http/Requests/ContactRequest.php (Form Request)
+- name: required, string, min:2, max:100
+- email: required, email, max:255
+- message: required, string, min:10, max:5000
+```
+
+**UseCase (optional):**
+```php
+// app/Domains/Contact/UseCases/SendContactMessageAction.php
+- Validiert Input
+- Speichert in DB (ContactMessage Model) ODER
+- Sendet E-Mail (MVP: nur Logging)
+- Returns Success/Error
+```
+
+**3.2 ContactController**
+```php
+public function show(): View
+{
+    return view('legal.kontakt');
+}
+
+public function submit(ContactRequest $request): RedirectResponse
+{
+    // Validierung via ContactRequest
+    // UseCase aufrufen
+    // Redirect mit Success-Message
+    return redirect()->route('contact.show')
+        ->with('success', 'Vielen Dank für Ihre Nachricht!');
+}
+```
+
+**3.3 View mit Validierungs-Feedback**
+```blade
+@if (session('success'))
+    <div class="alert-success">{{ session('success') }}</div>
+@endif
+
+@if ($errors->any())
+    <div class="alert-error">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </div>
+@endif
+
+<form method="POST" action="{{ route('contact.submit') }}">
+    @csrf
+    <!-- Formular-Felder -->
+</form>
+```
+
+---
+
+#### Phase 4: Lizenzen-Seite (automatisiert)
+
+**4.1 Artisan Command erstellen**
+```bash
+php artisan make:command GenerateLicenseData
+```
+
+**4.2 Command-Logik** (`app/Console/Commands/GenerateLicenseDataCommand.php`)
+```php
+class GenerateLicenseDataCommand extends Command
+{
+    protected $signature = 'licenses:generate';
+    protected $description = 'Generiert Lizenzdaten aus composer.lock und package-lock.json';
+
+    public function handle(): int
+    {
+        $phpLicenses = $this->parseComposerLock();
+        $nodeLicenses = $this->parsePackageLock();
+        
+        $data = [
+            'generated_at' => now()->toIso8601String(),
+            'php' => $phpLicenses,
+            'node' => $nodeLicenses,
+        ];
+        
+        Storage::put('licenses.json', json_encode($data, JSON_PRETTY_PRINT));
+        
+        $this->info('Lizenzen erfolgreich generiert!');
+        return 0;
+    }
+}
+```
+
+**4.3 LegalController::lizenzen()**
+```php
+public function lizenzen(): View
+{
+    $licenses = json_decode(Storage::get('licenses.json'), true);
+    
+    return view('legal.lizenzen', [
+        'php' => $licenses['php'] ?? [],
+        'node' => $licenses['node'] ?? [],
+        'generated_at' => $licenses['generated_at'] ?? null,
+    ]);
+}
+```
+
+**4.4 View** (`resources/views/legal/lizenzen.blade.php`)
+- Tabelle mit: Paket, Version, Lizenz
+- Trennung PHP/Node
+- Hinweis auf Generierungszeitpunkt
+
+**4.5 Composer-Integration**
+```json
+// composer.json - scripts
+"scripts": {
+    // ...existing scripts...
+    "licenses:generate": "@php artisan licenses:generate"
+}
+```
+
+**4.6 Makefile-Integration**
+```makefile
+# Makefile
+licenses: ## Lizenzen neu generieren
+    docker exec -it resumehaven-php composer run licenses:generate
+```
+
+**4.7 Build-Integration (Post-Update)**
+```json
+// composer.json - scripts
+"post-update-cmd": [
+    "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+    "@php artisan licenses:generate"
+]
+```
+
+---
+
+#### Phase 5: Footer-Navigation
+
+**5.1 Layout-Update** (`resources/views/layouts/app.blade.php`)
+```blade
+<footer class="bg-white dark:bg-neutral-dark border-t mt-16">
+    <div class="max-w-5xl mx-auto px-6 py-6">
+        <!-- Footer-Links -->
+        <nav class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <a href="{{ route('legal.impressum') }}" class="hover:text-primary">Impressum</a>
+            <span class="text-gray-300">•</span>
+            <a href="{{ route('legal.datenschutz') }}" class="hover:text-primary">Datenschutz</a>
+            <span class="text-gray-300">•</span>
+            <a href="{{ route('contact.show') }}" class="hover:text-primary">Kontakt</a>
+            <span class="text-gray-300">•</span>
+            <a href="{{ route('legal.lizenzen') }}" class="hover:text-primary">Lizenzen</a>
+        </nav>
+        
+        <!-- Copyright -->
+        <div class="text-sm text-gray-500 dark:text-gray-500">
+            © {{ date('Y') }} ResumeHaven — Bewerbungsanalyse leicht gemacht.
+        </div>
+    </div>
+</footer>
+```
+
+---
+
+#### Phase 6: Tests
+
+**6.1 Feature-Tests** (`tests/Feature/LegalPagesTest.php`)
+```php
+test('impressum ist erreichbar', function () {
+    $response = $this->get(route('legal.impressum'));
+    $response->assertStatus(200);
+    $response->assertSee('Impressum');
+});
+
+// Analog für datenschutz, lizenzen
+```
+
+**6.2 Contact-Form-Tests** (`tests/Feature/ContactFormTest.php`)
+```php
+test('kontakt-formular zeigt seite', function () {
+    $response = $this->get(route('contact.show'));
+    $response->assertStatus(200);
+    $response->assertSee('Kontaktformular');
+});
+
+test('kontakt-formular validiert pflichtfelder', function () {
+    $response = $this->post(route('contact.submit'), []);
+    $response->assertSessionHasErrors(['name', 'email', 'message']);
+});
+
+test('kontakt-formular akzeptiert valide eingabe', function () {
+    $response = $this->post(route('contact.submit'), [
+        'name' => 'Max Mustermann',
+        'email' => 'max@example.com',
+        'message' => 'Test-Nachricht mit mindestens 10 Zeichen',
+    ]);
+    
+    $response->assertRedirect(route('contact.show'));
+    $response->assertSessionHas('success');
+});
+
+test('kontakt-formular erfordert csrf-token', function () {
+    $response = $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class)
+        ->post(route('contact.submit'), []);
+    // Test für CSRF-Fehler
+});
+```
+
+**6.3 Footer-Test** (`tests/Feature/FooterNavigationTest.php`)
+```php
+test('footer enthält alle legal-links', function () {
+    $response = $this->get('/');
+    
+    $response->assertSee('Impressum');
+    $response->assertSee('Datenschutz');
+    $response->assertSee('Kontakt');
+    $response->assertSee('Lizenzen');
+});
+```
+
+**6.4 Licenses-Test** (`tests/Feature/LicensesPageTest.php`)
+```php
+test('lizenzen-seite zeigt php-pakete', function () {
+    Artisan::call('licenses:generate');
+    
+    $response = $this->get(route('legal.lizenzen'));
+    $response->assertStatus(200);
+    $response->assertSee('laravel/framework');
+});
+```
+
+---
+
+### 📦 Dateien-Struktur
+
+**Neu zu erstellen:**
+```
+src/
+├── app/
+│   ├── Console/Commands/
+│   │   └── GenerateLicenseDataCommand.php
+│   ├── Dto/
+│   │   └── ContactRequestDto.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── ContactController.php
+│   │   │   └── LegalController.php
+│   │   └── Requests/
+│   │       └── ContactRequest.php
+│   └── Domains/Contact/
+│       └── UseCases/
+│           └── SendContactMessageAction.php (optional)
+├── resources/views/legal/
+│   ├── impressum.blade.php
+│   ├── datenschutz.blade.php
+│   ├── kontakt.blade.php
+│   └── lizenzen.blade.php
+├── tests/Feature/
+│   ├── LegalPagesTest.php
+│   ├── ContactFormTest.php
+│   ├── FooterNavigationTest.php
+│   └── LicensesPageTest.php
+└── storage/app/
+    └── licenses.json (generiert)
+```
+
+**Zu ändern:**
+```
+src/
+├── routes/web.php
+├── resources/views/layouts/app.blade.php
+├── composer.json
+└── Makefile (Root-Verzeichnis)
+```
+
+---
+
+### ✅ Akzeptanzkriterien
+
+**Funktional:**
+- [ ] Alle vier Seiten (Impressum, Datenschutz, Kontakt, Lizenzen) sind erreichbar
+- [ ] Footer-Links funktionieren auf allen Seiten
+- [ ] Kontaktformular validiert serverseitig
+- [ ] Lizenzen werden automatisch generiert
+- [ ] Erfolgs-/Fehlermeldungen werden angezeigt
+
+**Technisch:**
+- [ ] Alle Tests grün (Pest)
+- [ ] PHPStan Level 9: 0 Errors
+- [ ] Pint: Code-Style konform
+- [ ] CSRF-Protection aktiv
+- [ ] Responsive Design (Mobile + Desktop)
+- [ ] Dark-Mode funktioniert
+
+**Content:**
+- [ ] Platzhalter-Texte für Impressum/Datenschutz (für MVP ausreichend)
+- [ ] Klarer Hinweis: "Muster-Content, vor Produktivbetrieb anpassen"
+
+---
+
+### 🎯 MVP-Entscheidungen
+
+**Was wird NICHT implementiert (für später):**
+- ❌ Echtes E-Mail-Versenden (nur Logging/DB-Speicherung)
+- ❌ Datenschutz-Cookie-Banner (kommt mit Analytics)
+- ❌ Multi-Language-Support
+- ❌ Admin-Interface für Kontakt-Messages
+- ❌ Rate-Limiting für Kontaktformular (später mit Redis)
+
+**Was wird als Platzhalter implementiert:**
+- ⚠️ Impressum-Content: "Muster-Impressum – bitte anpassen"
+- ⚠️ Datenschutz-Content: "Muster-Datenschutzerklärung – DSGVO-Vorlage"
+- ⚠️ Kontaktformular speichert nur in Log (kein E-Mail-Versand)
+
+---
+
+### 🚀 Implementierungsreihenfolge
+
+1. **Routes + LegalController** (statische Seiten)
+2. **Views für Legal-Seiten** (mit Platzhalter-Content)
+3. **Footer-Navigation** (Layout-Update)
+4. **Tests für statische Seiten + Footer**
+5. **ContactController + ContactRequest** (Formular-Backend)
+6. **Contact-View + Validation-UI**
+7. **Contact-Tests**
+8. **GenerateLicenseDataCommand** (Lizenzen-Generator)
+9. **Lizenzen-View**
+10. **Lizenzen-Tests**
+11. **PHPStan + Pint + Final Testing**
+
+---
+
+### ⏱️ Geschätzter Aufwand
+
+- **Phase 1-4 (Statische Seiten + Footer):** ~1h
+- **Phase 5-7 (Kontaktformular):** ~1.5h
+- **Phase 8-10 (Lizenzen):** ~1h
+- **Tests + Quality Gates:** ~0.5h
+- **Gesamt:** ~4h
+
+---
+
+### 📝 Result
+
+ResumeHaven erfüllt die rechtlichen MVP-Basisanforderungen (Impressum, Datenschutz, Kontakt, Lizenzen) und erhöht Transparenz sowie Nutzervertrauen. Alle Seiten sind responsive, Dark-Mode-fähig und DSGVO-bereit.
+
+---
+
 

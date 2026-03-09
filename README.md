@@ -62,6 +62,7 @@ Alle Dokumentationen:
 ## Voraussetzungen
 - Docker & Docker Compose  
 - Git  
+- Make (zum Ausführen von `make` Kommandos)
 - (optional) Node lokal, falls kein Docker genutzt wird  
 
 ## Projekt klonen
@@ -70,24 +71,21 @@ git clone https://github.com/<dein-user>/resume-haven.git
 cd resume-haven
 ```
 
-## Docker starten
+## Docker starten (empfohlen)
 ```bash
-docker-compose up --build
+make docker-up
+# oder manuell:
+docker compose up -d
 ```
 
-## Laravel installieren
+## Laravel Setup
 ```bash
-docker exec -it php bash
-composer install
-cp .env.example .env
-php artisan key:generate
-```
-
-## Tailwind starten
-```bash
-docker exec -it node bash
-npm install
-npm run dev
+make setup
+# oder manuell:
+docker exec -it resumehaven-php composer install
+docker exec -it resumehaven-php cp .env.example .env
+docker exec -it resumehaven-php php artisan key:generate
+docker exec -it resumehaven-php php artisan migrate
 ```
 
 ## Anwendung aufrufen
@@ -95,12 +93,48 @@ http://localhost:8080
 
 ---
 
+## 🐛 Debugging aktivieren (optional)
+
+Für lokales Debugging mit Xdebug:
+
+```bash
+make debug-on       # Xdebug aktivieren
+# Dann Breakpoint setzen und debuggen
+make debug-off      # Xdebug deaktivieren (schneller Mode)
+```
+
+Siehe [Debugging Guide](./docs/DEBUGGING.md) für Details.
+
+---
+
+## 📚 Häufige Kommandos
+
+```bash
+make help                 # Alle Kommandos anzeigen
+make test                 # Tests ausführen
+make test-coverage        # Coverage-Check in Konsole (min 95%)
+make test-coverage-report # Coverage-Dateien unter src/coverage-report/
+make coverage-open        # HTML-Coverage-Report im Browser öffnen
+make coverage-clean       # Alte Coverage-Reports löschen
+make pint-fix             # Code formatieren
+make phpstan              # Statische Analyse
+make php-shell            # Bash im PHP-Container
+```
+
+**Code Coverage Anforderungen:**
+- **Minimum:** 95% Total Coverage
+- **Aktueller Stand:** 98.2% ✅
+
+Vollständige Übersicht: [Development Setup](./docs/DEVELOPMENT.md)
+
+---
+
 # 🐳 Docker-Services
 
-- **php-fpm** – PHP 8.5 + Composer  
+- **php-fpm** – PHP 8.5 + Composer (+ optional Xdebug)
 - **nginx** – Webserver  
 - **node** – Tailwind Build Pipeline  
-- **mailpit** – lokaler SMTP‑Testserver  
+- **mailpit** – lokaler SMTP-Testserver  
 
 Mailpit UI:  
 http://localhost:8025

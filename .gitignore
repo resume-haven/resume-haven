@@ -65,6 +65,7 @@ vendor/bundle/
 docker/*.log
 /identifier.sqlite
 /resume-haven-ideas/
+docker-compose.override.yml
 /src/AGENTS.md
 /src/boost.json
 /src/.junie/mcp/mcp.json
