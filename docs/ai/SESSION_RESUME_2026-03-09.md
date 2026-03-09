@@ -130,20 +130,40 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 ---
 
+### 8. Commit 21a: Dark-Mode Support abgeschlossen ✅
+
+**Umgesetzt:**
+- Tailwind `darkMode: 'class'` in tailwind.config.js aktiviert
+- DarkModeManager JavaScript-Modul (`resources/js/dark-mode.js`)
+- System-Präferenz-Detection (`prefers-color-scheme: dark`)
+- LocalStorage-Persistierung für User-Präferenz
+- Toggle-Button im Header mit Sun/Moon Icons
+- Dark-Mode CSS für HTML, Header, Footer, Navigation
+- 10 Feature-Tests in `DarkModeTest.php`
+
+**Verifikation:**
+- ✅ Tests: 194 passed (1499 assertions)
+- ✅ PHPStan: 0 Errors
+- ✅ Pint: PASS
+- ✅ Assets: Neu gebaut mit Dark-Mode Support
+- ✅ Dokumentation: `COMMIT_21a_IMPLEMENTATION_GUIDE.md` erstellt
+
+---
+
 ## 🎯 Aktueller Projekt-Stand
 
 ### Abgeschlossene Commits
-- **Commit 1-21:** Vollständig abgeschlossen
-- **Letzter Commit:** 21 (Responsive Layout & Mobile-First)
+- **Commit 1-21a:** Vollständig abgeschlossen
+- **Letzter Commit:** 21a (Dark-Mode Support)
 - **Hinweis:** Commit 19 wurde historisch übersprungen (Nummerierungslücke)
 
 ### Quality-Metriken
-- **Tests:** Alle grün ✅
+- **Tests:** 194 passed (1499 assertions) ✅
 - **PHPStan:** Level 9, 0 Errors ✅
 - **Pint:** Code-Style konform ✅
 - **Coverage:** 98.2% ✅
 
-### Implementierte Features (Stand Commit 21)
+### Implementierte Features (Stand Commit 21a)
 - Docker-Setup + Laravel 12
 - KI-Integration (Gemini + Mock-Provider)
 - Analyse-Engine (Matching, Gap-Analysis, Scoring)
@@ -152,6 +172,7 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 - Tags & Empfehlungen (Match-Tags, Gap-Tags, Recommendations mit Priority-Badges)
 - Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen - responsive + Dark-Mode)
 - **Responsive Layout** (Mobile-First, Alpine.js Mobile-Menu, Touch-Optimierungen WCAG 44px)
+- **Dark-Mode Support** (System-Präferenz-Detection, Toggle-Button, LocalStorage-Persistierung)
 
 **Commit-Nummerierung:** Commit 19 wurde übersprungen (historische Entwicklung), Features wurden als Commit 17 implementiert.
 
@@ -159,13 +180,9 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 ## 📋 Nächste geplante Commits
 
-### Commit 21a: Dark-Mode Support
-- System-Präferenz-Detection
-- Toggle-Button
-- Persistente User-Präferenz
-
 ### Commit 22: Lebenslauf-Speicherung
 - Anonymous CV-Storage
+- Retrieve by unique Token
 - Privacy by Design
 
 ### Commit 23+: CI/CD & Deployment

@@ -6,13 +6,13 @@ Er sorgt für eine klare, nachvollziehbare Git‑History und erleichtert die Zus
 Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 **Letzte Aktualisierung:** 2026-03-09  
-**Aktueller Stand:** Commit 21 (Responsive Layout & Mobile-First) abgeschlossen
+**Aktueller Stand:** Commit 21a (Dark-Mode Support) abgeschlossen
 
 ---
 
 ## 📊 Status-Überblick
 
-### ✅ Abgeschlossen (Commits 1-21)
+### ✅ Abgeschlossen (Commits 1-21a)
 - **Commit 1-11:** Docker-Setup, Laravel-Installation, Basis-Konfiguration
 - **Commit 12:** KI-Integration (Gemini), Analyse-Engine, Validierung, Tests
 - **Commit 13:** KI-Prompt-Engineering & Error-Handling
@@ -30,11 +30,11 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 - **Commit 20a:** Code-Qualität (Architektur-Cleanup, Test-Erweiterungen)
 - **Commit 20b:** Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen)
 - **Commit 21:** Responsive Layout & Mobile-First (Alpine.js, Touch-Optimierungen)
+- **Commit 21a:** Dark-Mode Support (System-Präferenz, Toggle, Persistierung)
 
 **Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
 
-### 🔄 In Planung (Commits 21a+)
-- **Commit 21a:** Dark-Mode Support (geplant)
+### 🔄 In Planung (Commits 22+)
 - **Commit 22:** Lebenslauf-Speicherung (geplant)
 - **Commit 23+:** CI/CD, Deployment, weitere Features
 
@@ -1619,33 +1619,81 @@ UI ist usable auf Phones (320px) bis 4K Desktops (2560px).
 
 ---
 
-## 🌙 Commit 20a – Dark-Mode Support (MVP-Abschluss Phase 2b)
+## 🌙 Commit 21a – Dark-Mode Support (MVP-Abschluss Phase 2b)
 
-**Zweck:** Dunkle Benutzeroberfläche für Augen-Komfort
+**Zweck:** Vollständige Dark-Mode-Unterstützung mit System-Präferenz-Detection, Toggle-Button und persistenter User-Präferenz
 
-### Added
+**Status:** ✅ Abgeschlossen (2026-03-09)
 
-#### 1. Tailwind Dark-Mode aktivieren
-- `dark:` Prefix für Dark-Mode Styles in Blade-Templates
-- System-Preference respektieren (`prefers-color-scheme`)
-- Toggle-Button im Header (optional)
+**Durchgeführt:**
+- Tailwind `darkMode: 'class'` in `tailwind.config.js` aktiviert
+- `DarkModeManager` JavaScript-Modul erstellt (`resources/js/dark-mode.js`)
+- System-Präferenz-Detection (`prefers-color-scheme: dark`)
+- LocalStorage-Persistierung für User-Präferenz
+- Toggle-Button im Header mit Sun/Moon Icons
+- Dark-Mode CSS für alle Komponenten (HTML, Header, Footer, Navigation)
+- 10 Feature-Tests in `DarkModeTest.php`
+- PHPStan Level 9: 0 Errors
+- Pint: Code-Style konform
+- Alle Tests grün (194 passed, 1499 assertions)
 
-#### 2. Farb-Anpassungen
-- Hintergrund: `white` → `dark:bg-slate-900`
-- Text: `black` → `dark:text-slate-100`
-- Panels: `bg-white` → `dark:bg-slate-800`
-- Borders: `border-gray-200` → `dark:border-slate-700`
+### Features
 
-#### 3. Storage-Preference
-- LocalStorage für User-Preference speichern
-- Script im Head prüft Preference vor Page-Paint
+#### 1. Tailwind Dark-Mode Konfiguration
+- `darkMode: 'class'` aktiviert (class-based, nicht media-query)
+- Erlaubt manuellen Toggle per JavaScript
+- Alle `dark:` Varianten funktionieren
 
-### Tests Added
-- CSS-Audit für Dark-Mode Contrast
-- Manual Testing auf verschiedenen Systemen
+#### 2. JavaScript Dark-Mode Manager
+- **Auto-Init:** Initialisiert automatisch beim Page-Load
+- **System-Präferenz:** Respektiert `prefers-color-scheme` als Fallback
+- **LocalStorage:** Persistiert User-Präferenz (`darkMode: 'true'|'false'`)
+- **Toggle-Funktion:** `DarkModeManager.toggle()` für Button
+- **Event-Dispatch:** Custom Events für UI-Updates
+- **Watcher:** Live-Erkennung von System-Präferenz-Änderungen
+
+#### 3. UI-Integration
+- **Toggle-Button im Header:**
+  - Sun Icon (🌞) für Light Mode
+  - Moon Icon (🌙) für Dark Mode
+  - Aria-Labels für Accessibility
+  - Responsive Design (funktioniert mit Mobile Menu)
+
+#### 4. Dark-Mode CSS
+- **HTML/Body:** `dark:bg-neutral-dark dark:text-text-dark`
+- **Header:** `dark:bg-neutral-dark dark:border-gray-700`
+- **Footer:** `dark:bg-neutral-dark dark:border-gray-700`
+- **Navigation:** `dark:text-gray-400 dark:hover:text-primary`
+- **Buttons:** `dark:hover:bg-gray-800`
+- **Alle Views:** Bereits mit `dark:` Varianten ausgestattet
+
+#### 5. Feature-Tests (10 Tests)
+1. ✅ Dark-Mode Toggle Button im Header vorhanden
+2. ✅ Sun Icon für Light Mode sichtbar
+3. ✅ Moon Icon für Dark Mode sichtbar
+4. ✅ Dark-Mode Klassen auf HTML Element
+5. ✅ Dark-Mode JavaScript geladen
+6. ✅ Header hat Dark-Mode Support
+7. ✅ Footer hat Dark-Mode Support
+8. ✅ Tailwind darkMode Config aktiviert
+9. ✅ Alle Standard-Seiten haben Dark-Mode Support
+10. ✅ Mobile Menu Button hat Dark-Mode Support
+
+### Quality-Gates
+- ✅ Tests: 194 passed (1499 assertions)
+- ✅ PHPStan Level 9: 0 Errors
+- ✅ Pint: Code-Style konform
+- ✅ Assets: Neu gebaut mit Tailwind Dark-Mode Support
+
+### Dateien
+- **Neu:** `resources/js/dark-mode.js`, `tests/Feature/DarkModeTest.php`
+- **Aktualisiert:** `tailwind.config.js`, `resources/js/app.js`, `resources/views/layouts/app.blade.php`
+
+### Dokumentation
+- `docs/COMMIT_21a_IMPLEMENTATION_GUIDE.md` (vollständige Implementierungsdokumentation)
 
 ### Result
-Benutzer mit Dark-Mode-Preference bekommen passende UI.
+Benutzer können Dark-Mode manuell aktivieren oder automatisch basierend auf System-Präferenz nutzen. Präferenz wird persistent gespeichert.
 
 ---
 
