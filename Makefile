@@ -17,6 +17,9 @@ help:
 setup: ## Projekt initialisieren (Composer, NPM, .env, Migration, Build)
 	docker exec -it resumehaven-php composer run setup
 
+# --- CACHE ---
+cache-clear: ## Alle Caches löschen (Laravel Artisan)
+	docker exec -it resumehaven-php composer run cache:clear
 # --- DEV ---
 dev: ## Lokalen Entwicklungsserver und Assets starten
 	docker exec -it resumehaven-php composer run dev
@@ -195,4 +198,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup cache-clear dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

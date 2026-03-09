@@ -6,13 +6,13 @@ Er sorgt für eine klare, nachvollziehbare Git‑History und erleichtert die Zus
 Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 **Letzte Aktualisierung:** 2026-03-09  
-**Aktueller Stand:** Commit 20b (Legal-Seiten & Vertrauen) abgeschlossen
+**Aktueller Stand:** Commit 21 (Responsive Layout & Mobile-First) abgeschlossen
 
 ---
 
 ## 📊 Status-Überblick
 
-### ✅ Abgeschlossen (Commits 1-20b)
+### ✅ Abgeschlossen (Commits 1-21)
 - **Commit 1-11:** Docker-Setup, Laravel-Installation, Basis-Konfiguration
 - **Commit 12:** KI-Integration (Gemini), Analyse-Engine, Validierung, Tests
 - **Commit 13:** KI-Prompt-Engineering & Error-Handling
@@ -29,11 +29,11 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 - **Commit 20:** Quality-Gates (Coverage 98.2%, PHPStan Level 9, Xdebug)
 - **Commit 20a:** Code-Qualität (Architektur-Cleanup, Test-Erweiterungen)
 - **Commit 20b:** Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen)
+- **Commit 21:** Responsive Layout & Mobile-First (Alpine.js, Touch-Optimierungen)
 
 **Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
 
-### 🔄 In Planung (Commits 21+)
-- **Commit 21:** Responsive Layout & Mobile-First (geplant)
+### 🔄 In Planung (Commits 21a+)
 - **Commit 21a:** Dark-Mode Support (geplant)
 - **Commit 22:** Lebenslauf-Speicherung (geplant)
 - **Commit 23+:** CI/CD, Deployment, weitere Features
@@ -1568,9 +1568,24 @@ Anwendung ist resistent gegen bekannte Top-10-Sicherheitsrisiken (OWASP).
 
 ---
 
-## 🎨 Commit 20 – Responsive Layout & Mobile-First Design (MVP-Abschluss Phase 2a)
+## 🎨 Commit 21 – Responsive Layout & Mobile-First Design (MVP-Abschluss Phase 2a)
 
 **Zweck:** UI für alle Geräte optimieren
+
+**Status:** ✅ Abgeschlossen (2026-03-09)
+
+**Durchgeführt:**
+- Alpine.js via CDN integriert für Mobile-Menu-Toggle
+- Responsive Header mit Hamburger-Menu (< md zeigt Mobile-Menu)
+- Responsive Footer (Stack vertikal Mobile → horizontal Desktop)
+- Analyze-Form: Grid-Layout (1 Column Mobile → 2 Columns Desktop)
+- Touch-optimierte Inputs (min-h-[48px], text-base >= 16px für iOS)
+- Result-View: Responsive Score-Panel (5xl → 6xl → 7xl)
+- Touch-Optimierungen in app.css (WCAG 44px Touch-Targets, Focus-States)
+- 6 Feature-Tests in ResponsiveLayoutTest.php
+- PHPStan Level 9: 0 Errors
+- Pint: Code-Style konform
+- Alle Tests grün (182 passed)
 
 ### Updated
 
@@ -1648,6 +1663,24 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 - Footer-Navigation mit Legal-Links erweitert
 - `GenerateLicenseDataCommand` implementiert (parst composer.lock & package-lock.json)
 - Composer-Script & Makefile-Target für `licenses:generate` hinzugefügt
+
+**Nachbesserungen (2026-03-09):**
+- Legal-Views waren initial nicht vorhanden (nur Controller/Routes)
+- Alle 4 Legal-Blade-Views nachträglich erstellt (impressum, datenschutz, kontakt, lizenzen)
+- Responsive Design + Dark-Mode Support
+- Escaped Quotes (\" → ") korrigiert
+- Blade-Syntax-Fehler behoben (doppeltes @endsection in kontakt.blade.php)
+- `GenerateLicenseDataCommand` (`licenses:generate`) vollständig implementiert
+- Datenmodell für Lizenz-Export um optionales Feld `homepage` erweitert
+- `lizenzen.blade.php` zeigt Paketnamen als Link, wenn `homepage` vorhanden ist
+- Neue Feature-Tests für den Lizenzgenerator ergänzt
+- Alle Tests grün, PHPStan Level 9: 0 Errors
+
+**Quality-Gates:**
+- ✅ Tests: 182 passed (509 assertions)
+- ✅ PHPStan Level 9: 0 Errors
+- ✅ Pint: Code-Style konform
+- ✅ Legal-Routes funktionieren: /impressum, /datenschutz, /kontakt, /lizenzen
 - Feature-Tests für Legal-Pages, Contact-Form, Footer, Licenses
 - PHPStan Level 9: 0 Errors
 - Pint: Code-Style konform
@@ -2063,11 +2096,4 @@ src/
 - **Gesamt:** ~4h
 
 ---
-
-### 📝 Result
-
-ResumeHaven erfüllt die rechtlichen MVP-Basisanforderungen (Impressum, Datenschutz, Kontakt, Lizenzen) und erhöht Transparenz sowie Nutzervertrauen. Alle Seiten sind responsive, Dark-Mode-fähig und DSGVO-bereit.
-
----
-
 

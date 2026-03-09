@@ -16,19 +16,19 @@
 
         <!-- Score Panel -->
         @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']) && $score)
-            <div class="mb-6 {{ $score->bgColor }} dark:bg-slate-800 border-l-4 {{ str_replace('bg-', 'border-', $score->barColor) }} rounded-lg shadow p-4 sm:p-6">
+            <div class="mb-6 {{ $score->bgColor }} dark:bg-slate-800 border-l-4 {{ str_replace('bg-', 'border-', $score->barColor) }} rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                     <div class="flex-1 w-full">
                         <p class="text-xs sm:text-sm font-semibold {{ $score->textColor }} uppercase tracking-wide">Übereinstimmung</p>
-                        <p class="text-4xl sm:text-5xl md:text-6xl font-bold {{ $score->textColor }} mt-2">{{ $score->percentage }}%</p>
-                        <p class="text-base sm:text-lg {{ $score->textColor }} mt-2">{{ $score->rating }}</p>
-                        <p class="text-xs sm:text-sm {{ $score->textColor }} mt-4">
+                        <p class="text-5xl sm:text-6xl lg:text-7xl font-bold {{ $score->textColor }} mt-2">{{ $score->percentage }}%</p>
+                        <p class="text-base sm:text-lg lg:text-xl {{ $score->textColor }} mt-2 sm:mt-3">{{ $score->rating }}</p>
+                        <p class="text-xs sm:text-sm lg:text-base {{ $score->textColor }} mt-3 sm:mt-4">
                             ✓ {{ $score->matchCount }} Match{{ $score->matchCount !== 1 ? 'es' : '' }} •
                             ✗ {{ $score->gapCount }} Gap{{ $score->gapCount !== 1 ? 's' : '' }}
                         </p>
                     </div>
                     <!-- Circle Indicator -->
-                    <div class="w-20 sm:w-24 h-20 sm:h-24 flex-shrink-0">
+                    <div class="w-24 sm:w-28 lg:w-32 h-24 sm:h-28 lg:h-32 flex-shrink-0">
                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" class="opacity-10 {{ $score->textColor }}"></circle>
                             <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="{{ $score->percentage * 2.827 }} 282.7" class="{{ $score->barColor }}"></circle>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <!-- Progress Bar -->
-                <div class="mt-4 sm:mt-6 bg-white dark:bg-neutral-dark rounded-full h-2 overflow-hidden">
+                <div class="mt-4 sm:mt-6 bg-white dark:bg-neutral-dark rounded-full h-2 sm:h-3 overflow-hidden">
                     <div class="h-full {{ $score->barColor }} transition-all duration-500" style="width: {{ $score->percentage }}%"></div>
                 </div>
             </div>

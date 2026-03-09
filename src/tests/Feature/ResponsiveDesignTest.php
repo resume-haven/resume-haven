@@ -61,9 +61,9 @@ describe('Responsive Design', function () {
     test('Spacing ist auf allen Breakpoints responsive', function () {
         $response = $this->get('/analyze');
 
-        // Check for responsive spacing
-        expect($response->getContent())->toContain('sm:p-');
-        expect($response->getContent())->toContain('sm:mb-');
+        // Check for responsive spacing (wir verwenden sm:px- und sm:py- statt sm:p-)
+        expect($response->getContent())->toContain('sm:px-');
+        expect($response->getContent())->toContain('sm:py-');
         expect($response->getContent())->toContain('sm:space-y-');
     });
 

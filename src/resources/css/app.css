@@ -12,3 +12,38 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Touch-Optimierungen & Accessibility */
+@layer base {
+    /* WCAG Touch-Target-Sizes (min 44x44px) */
+    button, a[role="button"], input[type="submit"], input[type="button"] {
+        min-height: 44px;
+    }
+
+    /* Tap-Highlight entfernen (iOS/Android) */
+    button, a {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Focus-States für Accessibility */
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+        @apply outline-none ring-2 ring-primary ring-offset-2;
+    }
+
+    /* Smooth Scroll für Anker-Links */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* iOS Zoom-Prevention (Font-Size >= 16px auf Mobile) */
+    @media screen and (max-width: 768px) {
+        input, textarea, select {
+            font-size: 16px;
+        }
+    }
+}
+
