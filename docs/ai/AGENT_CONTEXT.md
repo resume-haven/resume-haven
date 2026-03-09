@@ -2,6 +2,10 @@
 
 Diese Datei ist die **Single Source of Truth** für alle KI-Agenten (GitHub Copilot, Windsurf, etc.).
 
+> Session-Startpunkt / Soft-Reset: `docs/ai/WORKING_BASELINE.md`
+> 
+> Nutze diese Baseline fuer den aktuellen Tageskontext und behandle den Repository-Stand als verbindlich.
+
 ---
 
 ## 🎯 Architektur-Prinzipien (Pflicht)
@@ -388,3 +392,7 @@ Jeder Commit ist erst "Done", wenn:
 - **Changelog:** `CHANGELOG.md`
 - **Laravel Boost:** `src/AGENTS.md`
 
+---
+
+**Letzte Aktualisierung**: 2026-03-09  
+**Version**: 2.1 (Verweis auf WORKING_BASELINE als Session-Startpunkt)

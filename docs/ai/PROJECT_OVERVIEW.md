@@ -306,3 +306,7 @@ readonly class ScoreResultDto
 - **Agent-Kontext:** `docs/ai/AGENT_CONTEXT.md`
 - **Commit-Plan:** `COMMIT_PLAN.md`
 
+---
+
+**Letzte Aktualisierung**: 2026-03-09  
+**Version**: 2.1 (konsolidierter KI-Dokumentationskontext)

@@ -69,6 +69,29 @@ Zusammenfassung der Domain-Architektur-Refaktorierung (Commit 15a).
 
 ### 🤖 AI & Agenten
 
+#### [**ai/WORKING_BASELINE.md**](ai/WORKING_BASELINE.md)
+Operativer Session-Startpunkt fuer KI-gestuetzte Arbeit (Soft-Reset-Basis).
+
+**Inhalt:**
+- Verbindliche Tages-Baseline fuer KI-Sessions
+- Prioritaet: aktueller Repository-Stand
+- Architektur- und Qualitaets-Leitplanken in Kurzform
+- Reset-Protokoll fuer lange Chat-Verlaeufe
+
+**Für wen:** KI-Agenten und Entwickler fuer einen schnellen, konsistenten Einstieg
+
+#### [**ai/SESSION_RESUME_2026-03-09.md**](ai/SESSION_RESUME_2026-03-09.md)
+Tagesaktuelle Zusammenfassung (Soft-Reset nach Kontextverlust).
+
+**Inhalt:**
+- Was wurde heute erreicht (Kontext-Konsolidierung, Dokumentations-Updates)
+- Aktueller Projekt-Stand (Commit 20b abgeschlossen)
+- Nächste geplante Commits (21, 21a, 22)
+- Soft-Reset-Protokoll und Lesefolge
+- Action Items für neue Sessions
+
+**Für wen:** KI-Agenten nach Kontext-Reset, Entwickler beim Wiedereinstieg nach längerer Pause
+
 #### [**ai/AGENT_CONTEXT.md**](ai/AGENT_CONTEXT.md)
 Zentrale Arbeitsregeln für KI-Agenten (GitHub Copilot, etc.)
 
@@ -187,7 +210,7 @@ Richtlinien für Beiträge zum Projekt.
 
 ### Für KI-Agenten (Copilot, Windsurf, etc.)
 
-1. **Einstieg**: Lies [`.github/copilot-instructions.md`](../.github/copilot-instructions.md)
+1. **Einstieg (Soft-Reset)**: Lies [`ai/WORKING_BASELINE.md`](ai/WORKING_BASELINE.md)
 2. **Arbeitsregeln**: Lies [`ai/AGENT_CONTEXT.md`](ai/AGENT_CONTEXT.md)
 3. **Projektüberblick**: Lies [`ai/PROJECT_OVERVIEW.md`](ai/PROJECT_OVERVIEW.md)
 4. **Architektur**: Lies [`ARCHITECTURE.md`](ARCHITECTURE.md)
@@ -260,7 +283,5 @@ Richtlinien für Beiträge zum Projekt.
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-07  
-**Version**: 2.0 (nach Kontext-Konsolidierung + CQRS/SOLID/DDD-Integration)
-
-
+**Letzte Aktualisierung**: 2026-03-09  
+**Version**: 2.1 (inkl. WORKING_BASELINE als Soft-Reset-Einstieg)

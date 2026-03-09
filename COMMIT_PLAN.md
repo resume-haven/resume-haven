@@ -5,6 +5,39 @@ Er sorgt für eine klare, nachvollziehbare Git‑History und erleichtert die Zus
 
 Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
+**Letzte Aktualisierung:** 2026-03-09  
+**Aktueller Stand:** Commit 20b (Legal-Seiten & Vertrauen) abgeschlossen
+
+---
+
+## 📊 Status-Überblick
+
+### ✅ Abgeschlossen (Commits 1-20b)
+- **Commit 1-11:** Docker-Setup, Laravel-Installation, Basis-Konfiguration
+- **Commit 12:** KI-Integration (Gemini), Analyse-Engine, Validierung, Tests
+- **Commit 13:** KI-Prompt-Engineering & Error-Handling
+- **Commit 14:** UI-Verbesserungen (Score-Panel, Tags, Layout)
+- **Commit 15:** Analyse-Cache (Hash-basiert, DB-gestützt)
+- **Commit 15a:** Domain-Architektur-Refactoring (DDD, CQRS, SOLID)
+- **Commit 16:** Input-Validierung & Security (OWASP)
+- **Commit 16a:** AI-Provider-Abstraktion (Mock/Gemini via Interface)
+- **Commit 16b:** AI-Response-Tags (Match-Tags, Gap-Tags mit Fallback)
+- **Commit 16c:** Prompt-Injection-Schutz (Strikte System-Rules)
+- **Commit 17:** KI-Empfehlungen (RecommendationDto, Priority-Badges, View)
+- **Commit 18:** Cache-Management (Command zum Leeren)
+- **Commit 18a:** Security-Härtung & Kontext-Dokumentation (WORKING_BASELINE)
+- **Commit 20:** Quality-Gates (Coverage 98.2%, PHPStan Level 9, Xdebug)
+- **Commit 20a:** Code-Qualität (Architektur-Cleanup, Test-Erweiterungen)
+- **Commit 20b:** Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen)
+
+**Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
+
+### 🔄 In Planung (Commits 21+)
+- **Commit 21:** Responsive Layout & Mobile-First (geplant)
+- **Commit 21a:** Dark-Mode Support (geplant)
+- **Commit 22:** Lebenslauf-Speicherung (geplant)
+- **Commit 23+:** CI/CD, Deployment, weitere Features
+
 ---
 
 ## 🧱 Commit 1 – Projektgrundstruktur
@@ -1605,7 +1638,20 @@ Benutzer mit Dark-Mode-Preference bekommen passende UI.
 
 **Zweck:** Rechtliche Mindestanforderungen für den MVP erfüllen und Vertrauen durch transparente Informationen stärken.
 
-**Status:** 🔄 In Planung (2026-03-08)
+**Status:** ✅ Abgeschlossen (2026-03-09)
+
+**Durchgeführt:**
+- Routes für Legal-Pages und Contact hinzugefügt
+- `LegalController` mit named methods für statische Seiten
+- `ContactController` für Kontaktformular (show/submit)
+- Views für Impressum, Datenschutz, Kontakt, Lizenzen erstellt
+- Footer-Navigation mit Legal-Links erweitert
+- `GenerateLicenseDataCommand` implementiert (parst composer.lock & package-lock.json)
+- Composer-Script & Makefile-Target für `licenses:generate` hinzugefügt
+- Feature-Tests für Legal-Pages, Contact-Form, Footer, Licenses
+- PHPStan Level 9: 0 Errors
+- Pint: Code-Style konform
+- Alle Tests grün
 
 ---
 

@@ -1,8 +1,62 @@
-wennon, # Commit 20b – Implementierungsanleitung
+# Commit 20b – Implementierungsanleitung
+
+**Status:** ✅ Abgeschlossen (2026-03-09)
 
 **Quick Start für die Umsetzung von Legal-Seiten**
 
 ---
+
+## ✅ Implementierungs-Ergebnis
+
+**Commit 20b wurde erfolgreich abgeschlossen!**
+
+### Was wurde umgesetzt:
+
+#### Phase 1: Routes & Controller ✅
+- `LegalController` mit named methods (impressum, datenschutz, lizenzen)
+- `ContactController` mit show/submit methods
+- Routes in `routes/web.php` definiert
+
+#### Phase 2: Views ✅
+- `resources/views/legal/impressum.blade.php`
+- `resources/views/legal/datenschutz.blade.php`
+- `resources/views/legal/kontakt.blade.php`
+- `resources/views/legal/lizenzen.blade.php`
+- Alle Views mit TailwindCSS + Dark-Mode Support
+
+#### Phase 3: Footer-Navigation ✅
+- Footer in `resources/views/layouts/app.blade.php` erweitert
+- Legal-Links (Impressum, Datenschutz, Kontakt, Lizenzen)
+- Responsive Design (Stack vertikal < 768px)
+
+#### Phase 4: Kontaktformular ✅
+- `ContactRequest` Form Request mit Validierung
+- `ContactRequestDto` für Type-Safe Data Transfer
+- CSRF-Protection aktiv
+- Success/Error-Messages im Frontend
+
+#### Phase 5: Lizenzen-Generator ✅
+- `GenerateLicenseDataCommand` implementiert
+- Parst `composer.lock` und `package-lock.json`
+- Speichert in `storage/app/licenses.json`
+- Composer-Script: `composer run licenses:generate`
+- Makefile-Target: `make licenses`
+
+#### Phase 6: Tests ✅
+- `tests/Feature/LegalPagesTest.php` (4 Tests)
+- `tests/Feature/ContactFormTest.php` (5 Tests)
+- `tests/Feature/FooterNavigationTest.php` (1 Test)
+- `tests/Feature/LicensesPageTest.php` (2 Tests)
+- Alle Tests grün ✅
+
+#### Quality-Gates ✅
+- PHPStan Level 9: 0 Errors ✅
+- Pint: Code-Style konform ✅
+- Test-Coverage: 98.2% ✅
+
+---
+
+## 📚 Nützliche Referenzen (falls Anpassungen nötig)
 
 ## 🚀 Start der Implementierung
 
@@ -310,14 +364,26 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 
 ---
 
-## 🎯 Was brauchst du?
+## 📊 Nächste Schritte nach Commit 20b
 
-**Sag mir einfach:**
-- ✅ "Start mit Commit 20b Implementierung" → Ich übernehme alles
-- ✅ "Hilf mir mit Step 1" → Ich unterstütze bei Statischen Seiten
-- ✅ "Zeig mir ContactController" → Ich gebe dir vollständigen Code
-- ✅ "Review meinen Code" → Ich prüfe deine Implementierung
-- ✅ "Tests schreiben" → Ich erstelle alle Tests
+**Commit 20b ist abgeschlossen!** Die folgenden Commits sind geplant:
+
+### Commit 21: Responsive Layout & Mobile-First
+- Mobile-optimierte Layouts für alle Seiten
+- Touch-optimierte Interaktionen
+- Responsive Breakpoints (sm, md, lg, xl)
+- Progressive Enhancement
+
+### Commit 21a: Dark-Mode Support
+- System-Präferenz-Detection
+- Toggle-Button für manuellen Wechsel
+- Persistente User-Präferenz (LocalStorage)
+- Dark-Mode für alle Komponenten
+
+### Commit 22: Lebenslauf-Speicherung
+- Anonymous CV-Storage
+- Retrieve by unique Token
+- Privacy by Design (kein User-Account nötig)
 
 ---
 
@@ -327,10 +393,30 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 - **Commit-Plan:** `COMMIT_PLAN.md` (Zeile 1600+)
 - **Architektur:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
+- **Soft-Reset Baseline:** `docs/ai/WORKING_BASELINE.md`
 
 ---
 
-**Bereit? Sag mir wie du starten möchtest! 🚀**
+## 🔄 Kontext-Reset nach Commit 20b
+
+**Falls Kontext verloren geht, starte mit:**
+
+1. Lies `docs/ai/WORKING_BASELINE.md` (Soft-Reset-Einstieg)
+2. Prüfe `COMMIT_PLAN.md` für Status-Überblick
+3. Prüfe `docs/COMMIT_20b_IMPLEMENTATION_GUIDE.md` (diese Datei) für Details
+4. Repository-Stand ist Source of Truth
+
+**Aktueller Stand:**
+- ✅ Commit 20b abgeschlossen (Legal-Seiten & Vertrauen)
+- 🔄 Commit 21 (Responsive Layout) als nächstes geplant
+- Tests: Alle grün ✅
+- PHPStan: Level 9, 0 Errors ✅
+- Coverage: 98.2% ✅
+
+---
+
+**Letzte Aktualisierung:** 2026-03-09  
+**Version:** 2.0 (Commit 20b abgeschlossen, bereit für Commit 21)
 
 
 

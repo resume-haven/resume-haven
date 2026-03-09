@@ -353,3 +353,7 @@ make docker-rebuild
 - **Development Setup:** `docs/DEVELOPMENT.md`
 - **Debugging:** `docs/DEBUGGING.md`
 
+---
+
+**Letzte Aktualisierung**: 2026-03-09  
+**Version**: 2.1 (konsolidierter KI-Dokumentationskontext)
