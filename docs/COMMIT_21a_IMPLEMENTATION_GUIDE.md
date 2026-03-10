@@ -14,13 +14,14 @@
 - Erlaubt manuellen Toggle per JavaScript
 
 ### 2. Dark-Mode JavaScript Manager ✅
-- Neues Modul: `resources/js/dark-mode.js`
-- DarkModeManager mit Auto-Init
+- **Inline-Script im Layout:** `resources/views/layouts/app.blade.php`
+- `window.DarkModeManager` als globales Objekt
 - Features:
   - System-Präferenz-Detection (`prefers-color-scheme`)
   - LocalStorage-Persistierung (`darkMode` key)
-  - Toggle-Funktion mit Event-Dispatch
-  - Getter/Setter/Reset-Methods
+  - Toggle-Funktion (`DarkModeManager.toggle()`)
+  - Initialisierung vor Page-Render (kein Flackern)
+  - Minimale, fokussierte Implementierung (ca. 50 Zeilen)
 
 ### 3. Layout-Integration ✅
 - Dark-Mode Toggle Button im Header
@@ -86,13 +87,10 @@ Tailwind erkennt die Klasse und aktiviert alle `dark:` Varianten.
 ## 📐 Implementierte Dateien
 
 ### JavaScript
-- **`resources/js/dark-mode.js`** (neu)
-  - DarkModeManager Modul
-  - Auto-Init beim Page-Load
-  - System-Präferenz-Watcher
-
-- **`resources/js/app.js`** (aktualisiert)
-  - Import von `dark-mode.js`
+- **Inline-Script in `resources/views/layouts/app.blade.php`**
+  - DarkModeManager als globales `window.DarkModeManager` Objekt
+  - Initialisierung im `<head>` vor Page-Render
+  - Kein separates JS-Modul nötig (minimale Implementierung)
 
 ### Tailwind Config
 - **`tailwind.config.js`** (aktualisiert)
@@ -100,6 +98,7 @@ Tailwind erkennt die Klasse und aktiviert alle `dark:` Varianten.
 
 ### Layout
 - **`resources/views/layouts/app.blade.php`** (aktualisiert)
+  - Inline Dark-Mode-Script im `<head>`
   - Dark-Mode Toggle Button im Header
   - Sun/Moon Icons
   - Dark-Mode CSS-Klassen für HTML/Body/Header/Footer
@@ -160,11 +159,12 @@ vendor/bin/pest tests/Feature/DarkModeTest.php
 
 ## 📊 Metriken
 
-- **Neue Dateien:** 2 (dark-mode.js, DarkModeTest.php)
-- **Geänderte Dateien:** 3 (tailwind.config.js, app.js, app.blade.php)
+- **Neue Dateien:** 1 (DarkModeTest.php)
+- **Geänderte Dateien:** 2 (tailwind.config.js, app.blade.php)
 - **Neue Tests:** 10
-- **Code-Zeilen JavaScript:** ~125
+- **Code-Zeilen JavaScript:** ~50 (Inline-Script)
 - **Code-Zeilen Tests:** ~127
+- **Implementierungsansatz:** Inline-Script statt separates Modul (einfacher, schneller, keine Build-Probleme)
 
 ---
 
@@ -198,6 +198,31 @@ vendor/bin/pest tests/Feature/DarkModeTest.php
 
 ---
 
+## 🔧 Troubleshooting
+
+### Problem: "DarkModeManager is not defined" Fehler
+
+**Ursache:** Toggle-Button nutzt `onclick="DarkModeManager.toggle()"`, aber globales Objekt fehlt.
+
+**Lösung (implementiert):**
+- Inline-Script im `<head>` definiert `window.DarkModeManager` global
+- Script wird vor Page-Render ausgeführt
+- Kein separates JS-Modul nötig (einfachere Implementierung)
+
+**Code-Snippet:**
+```javascript
+window.DarkModeManager = {
+    toggle() {
+        const next = !document.documentElement.classList.contains('dark');
+        // ... toggle logic
+    }
+};
+```
+
+**Status:** ✅ Behoben (2026-03-10)
+
+---
+
 ## 📚 Referenzen
 
 - **Tailwind Dark Mode Docs:** https://tailwindcss.com/docs/dark-mode
@@ -206,6 +231,11 @@ vendor/bin/pest tests/Feature/DarkModeTest.php
 
 ---
 
-**Letzte Aktualisierung:** 2026-03-09  
-**Version:** 1.0 (Commit 21a abgeschlossen)
+**Letzte Aktualisierung:** 2026-03-10  
+**Version:** 1.1 (Commit 21a abgeschlossen, DarkModeManager-Fix dokumentiert)
+
+
+
+
+
 

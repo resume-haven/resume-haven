@@ -134,19 +134,25 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 **Umgesetzt:**
 - Tailwind `darkMode: 'class'` in tailwind.config.js aktiviert
-- DarkModeManager JavaScript-Modul (`resources/js/dark-mode.js`)
+- DarkModeManager als globales `window.DarkModeManager` Objekt (Inline-Script)
 - System-Präferenz-Detection (`prefers-color-scheme: dark`)
 - LocalStorage-Persistierung für User-Präferenz
 - Toggle-Button im Header mit Sun/Moon Icons
 - Dark-Mode CSS für HTML, Header, Footer, Navigation
 - 10 Feature-Tests in `DarkModeTest.php`
 
+**Bugfix (2026-03-10):**
+- "DarkModeManager is not defined" Fehler behoben
+- Inline-Script im `<head>` statt separates JS-Modul
+- Initialisierung vor Page-Render (kein Flackern)
+
 **Verifikation:**
 - ✅ Tests: 194 passed (1499 assertions)
 - ✅ PHPStan: 0 Errors
 - ✅ Pint: PASS
 - ✅ Assets: Neu gebaut mit Dark-Mode Support
-- ✅ Dokumentation: `COMMIT_21a_IMPLEMENTATION_GUIDE.md` erstellt
+- ✅ Dokumentation: `COMMIT_21a_IMPLEMENTATION_GUIDE.md` aktualisiert
+- ✅ Browser-Funktionalität: Dark-Mode Toggle funktioniert einwandfrei
 
 ---
 
