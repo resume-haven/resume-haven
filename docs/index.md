@@ -163,6 +163,18 @@ Langfristige Vision und Feature-Roadmap für ResumeHaven.
 **Für wen:** Product Owner, Stakeholder, Entwickler
 
 
+#### [**COMMIT_22_IMPLEMENTATION_GUIDE.md**](COMMIT_22_IMPLEMENTATION_GUIDE.md)
+Implementierungsleitfaden fuer den neuen `Profile`-Context und die tokenbasierte CV-Speicherung.
+
+**Inhalt:**
+- Architektur und Dateistruktur von Commit 22
+- CQRS-Flow fuer Speichern/Laden
+- Token- und Krypto-Entscheidungen
+- Testabdeckung und Quality Gates
+- MVP-Limitierungen und naechste Schritte
+
+**Für wen:** Entwickler und KI-Agenten, die an Commit 22 weiterarbeiten
+
 ---
 
 ### 🛠️ Entwicklung & Debugging

@@ -1,8 +1,12 @@
 # Commit 22 – Anonyme CV-Speicherung (Profile Context)
 
 **Branch:** `feature/commit-22-profile-cv-storage`  
-**Status:** 🔄 In Planung  
+**Status:** 🔄 In Umsetzung (Basis implementiert)  
 **Erstellt:** 2026-03-10
+
+---
+
+> **Umsetzungsstand:** Siehe `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md` fuer den bereits implementierten Basis-Flow und die verifizierten Quality Gates.
 
 ---
 
@@ -79,21 +83,19 @@ $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
 
 ### 2. Verschlüsselung (MVP-Kompromiss)
 
-**Entscheidung:** Token = Encryption Key (temporär für MVP)
+**Entscheidung:** Token dient im MVP als Basis fuer das Encryption Secret
 
 ```php
-// Verschlüsseln
-$encrypted = Crypt::encryptString($cvText);
-
-// Entschlüsseln
-$cvText = Crypt::decryptString($encrypted);
+$key = hash('sha256', $token, true);
+$iv = random_bytes(12);
+$cipherText = openssl_encrypt($cvText, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
 ```
 
 **Begründung (MVP):**
 - ✅ Keine separate Key-Verwaltung nötig
-- ✅ Einfache Implementierung
-- ✅ Token muss sowieso sicher sein
+- ✅ Token muss sowieso sicher und nicht erratbar sein
 - ✅ Daten at-rest verschlüsselt
+- ✅ Robuste, lokale Implementierung ohne zusätzlichen Infrastrukturbedarf
 
 **⚠️ Technische Schuld:**
 - ❌ Token-Verlust = Datenverlust (keine Recovery)

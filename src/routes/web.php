@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\AnalyzeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\LoadResumeController;
+use App\Http\Controllers\StoreResumeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,9 +19,12 @@ Route::get('/about', function () {
 
 Route::get('/analyze', function () {
     return view('analyze');
-});
+})->name('analyze');
 
-Route::post('/analyze', AnalyzeController::class);
+Route::post('/analyze', AnalyzeController::class)->name('analyze.submit');
+
+Route::post('/profile/store', StoreResumeController::class)->name('profile.store');
+Route::get('/profile/load/{token}', LoadResumeController::class)->name('profile.load');
 
 // Legal Pages
 Route::get('/impressum', [LegalController::class, 'impressum'])->name('legal.impressum');

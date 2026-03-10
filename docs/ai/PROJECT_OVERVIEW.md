@@ -28,11 +28,18 @@ miteinander vergleicht und **strukturiert auswertet**.
 - Fortschrittsbalken mit Farbskala (Rot/Gelb/Grün)
 - Bewertungstext ("Geringe/Mittlere/Hohe Übereinstimmung")
 
+#### Profile / CV-Speicherung
+- Anonyme CV-Speicherung über Token-Link
+- URL-safe Base64-Token mit hoher Entropie
+- Verschlüsselte Speicherung des CVs in `stored_resumes`
+- Wiederherstellung des gespeicherten CVs über `/profile/load/{token}`
+
 #### Performance & Security
 - Analyse-Cache (Datenbank, Request-Hash-basiert)
 - Input-Validierung (max 50KB, Pattern-Detection)
 - Prompt-Injection-Schutz im AI-Analyzer
 - Input-Sanitization (Null-Bytes, Whitespace, Line-Endings)
+- Fehlerbehandlung für ungültige Resume-Tokens und defekte Payloads
 
 #### Entwicklung
 - Mock-AI-Provider (ohne API-Kosten entwickeln)
@@ -45,14 +52,12 @@ miteinander vergleicht und **strukturiert auswertet**.
 ### ❌ **NICHT im MVP:**
 
 - ❌ Keine User-Accounts
-- 🔄 **Lebenslauf-Speicherung (Commit 22 - in Implementierung)**
-  - Anonym, token-basiert, verschlüsselt
-  - Branch: `feature/commit-22-profile-cv-storage`
-  - Detailplan: `docs/PLANNING_COMMIT_22.md`
+- ❌ Keine Multi-CV-Verwaltung
 - ❌ Keine PDF-Generierung
 - ❌ Keine öffentliche API
 - ❌ Keine E-Mail-Benachrichtigungen (nur Mailpit für Tests)
 - ❌ Kein Production-Deployment (aktuell nur Docker-Dev)
+- ⚠️ Keine finale User-basierte Verschlüsselung (MVP nutzt Token als Secret, spaeteres Refactoring eingeplant)
 
 ---
 
@@ -60,7 +65,7 @@ miteinander vergleicht und **strukturiert auswertet**.
 
 ### Domain-Driven Design (DDD)
 
-**Bounded Context:** `Analysis`
+**Bounded Contexts:** `Analysis`, `Profile`
 
 ```
 app/Domains/Analysis/
@@ -77,20 +82,32 @@ app/Domains/Analysis/
 │   ├── Actions/
 │   └── Repositories/
 └── Dto/              # Data Transfer Objects (immutable)
+
+app/Domains/Profile/
+├── Commands/         # CV speichern
+├── Queries/          # CV per Token laden
+├── Handlers/         # Orchestrierung Store/Load
+├── Actions/          # Token, Encrypt, Decrypt
+├── Repositories/     # StoredResume-Persistenz
+└── Dto/              # StoreResumeDto, ResumeTokenDto, LoadedResumeDto
 ```
 
 ### Single-Action-Controller
 
-Controller sind dünn (~34 Zeilen) und nutzen `__invoke()`:
+Controller sind dünn und nutzen `__invoke()`:
 
 ```php
-class AnalyzeController extends Controller
+class StoreResumeController extends Controller
 {
-    public function __invoke(Request $request): View
+    public function __invoke(StoreResumeRequest $request, Dispatcher $dispatcher): RedirectResponse
     {
-        // Dispatch Command → Handler → UseCases
-        $result = $this->handler->handle($command);
-        return view('result', compact('result'));
+        /** @var ResumeTokenDto $tokenDto */
+        $tokenDto = $dispatcher->dispatch(
+            new StoreResumeCommand(new StoreResumeDto($request->validated('cv_text')))
+        );
+
+        return redirect()->route('analyze')
+            ->with('resume_token', $tokenDto->token);
     }
 }
 ```
@@ -100,10 +117,10 @@ class AnalyzeController extends Controller
 Persistence-Abstraktion, kein Raw-SQL außer in Repositories:
 
 ```php
-// app/Domains/Analysis/Cache/Repositories/AnalysisCacheRepository.php
-public function getByHash(string $hash): ?array
+// app/Domains/Profile/Repositories/ProfileRepository.php
+public function getByToken(string $token): ?StoredResume
 {
-    return AnalysisCache::where('request_hash', $hash)->first()?->result;
+    return StoredResume::query()->where('token', $token)->first();
 }
 ```
 
@@ -114,8 +131,8 @@ public function getByHash(string $hash): ?array
 ### Design-System
 - **Minimalistisch:** Klar, professionell, keine Ablenkung
 - **TailwindCSS v3:** Utility-First
-- **Mobile-First:** Responsive (geplant: Commit 20)
-- **Dark-Mode:** Geplant (Commit 20a)
+- **Mobile-First:** Responsive umgesetzt
+- **Dark-Mode:** Implementiert mit Toggle und Persistierung
 
 ### Komponenten
 - **Panels:** `rounded-lg, shadow-sm, p-6, bg-white`
@@ -257,42 +274,37 @@ readonly class ScoreResultDto
 ## 🚫 Was das MVP NICHT tut
 
 ### Funktional
-- ❌ Keine Lebenslauf-Speicherung (kommt in Phase 2)
-- ❌ Keine KI-Empfehlungen ("Wie verbessere ich meinen CV?")
+- ❌ Keine User-Accounts / Authentication
+- ❌ Keine Multi-CV-Verwaltung
 - ❌ Keine Verlaufs-Historie (kein "Meine Analysen")
 - ❌ Keine Vergleichs-Funktion (mehrere Jobs gleichzeitig)
 - ❌ Keine PDF/Word-Upload (nur Plain-Text)
 - ❌ Kein Export (PDF/Word-Download)
 
 ### Technisch
-- ❌ Keine User-Accounts / Authentication
 - ❌ Keine öffentliche API
 - ❌ Kein Production-Hosting (nur Docker-Dev)
 - ❌ Keine E-Mail-Integration (nur Mailpit für Tests)
 - ❌ Keine Real-Time-Collaboration
 - ❌ Keine Internationalisierung (nur Deutsch)
+- ⚠️ Noch keine User-basierte Verschlüsselung fuer gespeicherte CVs
 
 ---
 
 ## 📅 Roadmap (Highlights)
 
-### Phase 2 (Post-MVP)
-- **Commit 19:** KI-Empfehlungen & Verbesserungsvorschläge
-- **Commit 20:** Responsive Layout & Mobile-First
-- **Commit 20a:** Dark-Mode Support
-- **Commit 22:** Lebenslauf-Speicherung (anonym)
+### Naechste Schritte
+- **Commit 19:** Nachziehen/abschliessen der historisch uebersprungenen Planungsinhalte
+- **Commit 23+:** CI/CD, Deployment, weitere Produktfeatures
+- **Profile-Weiterentwicklung:** Benutzerkonten, mehrere CVs, ueberarbeitete Verschluesselungsstrategie
+- **Recommendations/Reporting:** Weitere Entkopplung in eigene Kontexte nach MVP
 
-### Phase 3 (Erweiterung)
+### Mittelfristig
 - **Bounded Context `Profile`:**
   - User-Accounts
   - Lebenslauf-Verwaltung
-  - Präferenzen
-- **Bounded Context `Recommendations`:**
-  - KI-Empfehlungen
-  - Verbesserungsvorschläge
-  - Beispiel-Formulierungen
-
-### Phase 4 (Analytics)
+  - Praeferenzen
+  - sichere, userbasierte Verschluesselung
 - **Bounded Context `Reporting`:**
   - Analyse-Historie
   - Statistiken
@@ -310,5 +322,5 @@ readonly class ScoreResultDto
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-09  
-**Version**: 2.1 (konsolidierter KI-Dokumentationskontext)
+**Letzte Aktualisierung**: 2026-03-10  
+**Version**: 2.2 (Commit-22-Status aktualisiert)

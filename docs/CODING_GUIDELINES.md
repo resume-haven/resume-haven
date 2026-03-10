@@ -321,7 +321,7 @@ class MatchAction
 **DTOs sind immutable Datencontainer:**
 
 ```php
-class AnalyzeResultDto
+readonly class AnalyzeResultDto
 {
     /**
      * @param array<int, string> $requirements
@@ -330,20 +330,20 @@ class AnalyzeResultDto
      * @param array<int, string> $gaps
      */
     public function __construct(
-        public readonly string $job_text,
-        public readonly string $cv_text,
-        public readonly array $requirements,
-        public readonly array $experiences,
-        public readonly array $matches,
-        public readonly array $gaps,
-        public readonly ?string $error = null,
+        public string $jobText,
+        public string $cvText,
+        public array $requirements,
+        public array $experiences,
+        public array $matches,
+        public array $gaps,
+        public ?string $error = null,
     ) {}
 
     public function toArray(): array
     {
         return [
-            'job_text' => $this->job_text,
-            'cv_text' => $this->cv_text,
+            'job_text' => $this->jobText,
+            'cv_text' => $this->cvText,
             'requirements' => $this->requirements,
             'experiences' => $this->experiences,
             'matches' => $this->matches,
@@ -357,15 +357,23 @@ class AnalyzeResultDto
 **Best Practices:**
 
 ✅ **DO**:
-- `public readonly` Properties (PHP 8.2+)
-- PHPDoc für komplexe Array-Typen
-- `toArray()` Methode für Serialisierung
-- `fromArray()` statische Factory-Methode für Deserialisierung
+- `readonly class` oder `public readonly` Properties verwenden
+- PHPDoc für komplexe Array-Typen ergänzen
+- `toArray()` Methode nur für Transport/Serialisierung bereitstellen
+- `fromArray()` nur dort verwenden, wo externe Daten sicher typisiert werden müssen
+- DTOs klein und use-case-spezifisch halten (z. B. `StoreResumeDto`, `LoadedResumeDto`)
 
 ❌ **DON'T**:
 - Keine Setter (immutable!)
 - Keine Business-Logic im DTO
-- Keine Validierung im DTO (nur Type-Checks)
+- Keine Persistenz- oder Infrastruktur-Logik im DTO
+- Keine Validierung im DTO ausser minimalen Type-Checks
+
+### DTO-Regel für neue Features
+
+- Commands, Queries und Handler kommunizieren bevorzugt über DTOs.
+- Views erhalten keine Domain-Models direkt, sondern View-Daten oder DTO-konvertierte Arrays.
+- Bei sensiblen Daten immer explizit festlegen, welche Felder transportiert werden.
 
 ---
 
@@ -416,35 +424,22 @@ class AnalysisCacheRepository
 
 ### Single Action Controllers
 
-**Controller sind dünn und delegieren an Commands:**
+**Controller sind dünn und delegieren an Actions, Commands oder Queries:**
 
 ```php
-class AnalyzeController extends Controller
+class StoreResumeController extends Controller
 {
-    public function __construct(
-        private Dispatcher $dispatcher,
-    ) {}
-
-    public function analyze(Request $request): View
+    public function __invoke(StoreResumeRequest $request, Dispatcher $dispatcher): RedirectResponse
     {
-        $validated = $request->validate([
-            'job_text' => ['required', 'min:30'],
-            'cv_text' => ['required', 'min:30'],
-        ]);
+        $cvText = $request->validated('cv_text');
 
-        $dto = AnalyzeRequestDto::fromArray($validated);
-        
-        /** @var AnalyzeResultDto $result */
-        $result = $this->dispatcher->dispatch(
-            new AnalyzeJobAndResumeCommand($dto)
+        /** @var ResumeTokenDto $tokenDto */
+        $tokenDto = $dispatcher->dispatch(
+            new StoreResumeCommand(new StoreResumeDto($cvText))
         );
 
-        return view('result', [
-            'job_text' => $result->job_text,
-            'cv_text' => $result->cv_text,
-            'result' => $result->toArray(),
-            'error' => $result->error,
-        ]);
+        return redirect()->route('analyze')
+            ->with('resume_token', $tokenDto->token);
     }
 }
 ```
@@ -452,16 +447,25 @@ class AnalyzeController extends Controller
 **Best Practices:**
 
 ✅ **DO**:
-- Validierung im Controller
-- Command-Dispatch für Business-Logic
-- Type-Hint für dispatch()-Return
-- Klare View-Rückgabe
+- `__invoke()` fuer HTTP-Endpunkte mit einer klaren Aufgabe nutzen
+- Validierung im Form Request oder im Controller-Einstieg halten
+- Commands/Queries/Actions fuer Business-Logic verwenden
+- Type-Hint fuer `dispatch()`-Return dokumentieren
+- Nur Redirects/Views/Responses zusammensetzen
 
 ❌ **DON'T**:
 - Keine Business-Logic im Controller
-- Keine direkten Service-Calls
-- Keine DB-Queries im Controller
-- Keine komplexe Transformationen
+- Keine direkten DB-Queries im Controller
+- Keine kryptografischen Operationen im Controller
+- Keine komplexen Transformationen oder Fallback-Orchestrierung im Controller
+
+### Sicherheitsregeln fuer tokenbasierte Speicherung
+
+- Token muessen mit `random_bytes()` erzeugt und URL-safe kodiert werden.
+- Sensible Inhalte duerfen nie im Klartext persistiert werden.
+- Kryptografie gehoert in dedizierte Actions, nicht in Controller oder Views.
+- MVP-Ausnahmen wie "Token als Secret" muessen explizit dokumentiert und spaeter migriert werden.
+- Fehler bei Entschluesselung oder ungueltigen Tokens muessen sicher und benutzerfreundlich behandelt werden.
 
 ---
 
@@ -966,10 +970,9 @@ Code muss in korrekten Bounded Contexts organisiert sein.
 - [ ] Ubiquitous Language in Code verwendet
 - [ ] Models sind Aggregate Roots
 
-**Aktueller Context:** `Analysis`
+**Aktuelle Contexts:** `Analysis`, `Profile`
 
-**Geplante Contexts (Roadmap):**
-- `Profile` (Phase 3, ~Commit 22+)
+**Weitere Contexts (Roadmap):**
 - `Recommendations` (Phase 4, ~Commit 30+)
 - `Reporting` (Phase 5, ~Commit 35+)
 
@@ -1041,4 +1044,4 @@ class RecommendationService {
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-07
+**Letzte Aktualisierung**: 2026-03-10
