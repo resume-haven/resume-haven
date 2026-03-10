@@ -42,7 +42,7 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 **Was:**
 - Status von Commit 20b auf "Abgeschlossen" gesetzt
 - Zusammenfassung der durchgeführten Arbeiten hinzugefügt
-- Status-Überblick am Anfang eingefügt (Commits 1-20b abgeschlossen)
+- Status-Überblick am Anfang eingefügt (Commits 1-21 abgeschlossen)
 - Letzte Aktualisierung: 2026-03-09
 
 ---
@@ -58,27 +58,127 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 ---
 
+### 5. Commit 21 – Responsive Layout & Mobile-First
+
+**Was:**
+- Alpine.js via CDN integriert (Mobile-Menu-Toggle)
+- Responsive Header mit Hamburger-Menu
+- Responsive Footer (Stack vertikal Mobile → horizontal Desktop)
+- Analyze-Form: Grid-Layout (1 Column Mobile → 2 Columns Desktop)
+- Result-View: Responsive Score-Panel (5xl → 6xl → 7xl)
+- Touch-Optimierungen (WCAG 44px, Focus-States, iOS-Zoom-Prevention)
+- 6 Feature-Tests für Responsive-Layout
+- Alle Tests grün, PHPStan Level 9: 0 Errors
+
+---
+
+### 6. Legal-Views nachträglich erstellt & korrigiert
+
+**Problem 1:** Legal-Blade-Views waren im Commit 20b nicht vorhanden
+
+**Gelöst:**
+- `resources/views/legal/impressum.blade.php` erstellt
+- `resources/views/legal/datenschutz.blade.php` erstellt
+- `resources/views/legal/kontakt.blade.php` erstellt (mit responsive Formular)
+- `resources/views/legal/lizenzen.blade.php` erstellt (mit responsive Tabellen)
+- Alle Views mit Mobile-First Design + Dark-Mode Support
+- Controller (LegalController, ContactController) existierten bereits
+- Routes existierten bereits
+
+**Problem 2:** Escaped Quotes in Legal-Views (\" statt ")
+
+**Ursache:** Views wurden über Terminal-Pipe erstellt, was Quotes escaped hat
+
+**Gelöst:**
+- Alle 4 Legal-Views korrigiert (escaped \" → normale ")
+- Blade-Syntax jetzt sauber und korrekt
+
+**Problem 3:** InvalidArgumentException "Cannot end a section without first starting one"
+
+**Ursache:** `kontakt.blade.php` hatte doppeltes `@endsection` und überflüssiges `</div>`
+
+**Gelöst:**
+- Doppeltes `@endsection` entfernt
+- Überflüssiges `</div>` entfernt
+- Blade-Syntax jetzt korrekt
+
+**Verifikation:**
+- ✅ Alle Tests grün (182 passed)
+- ✅ PHPStan Level 9: 0 Errors
+- ✅ Alle Legal-Routes funktionieren
+- ✅ Keine Blade-Syntax-Fehler mehr
+
+---
+
+### 7. Lizenzgenerator final umgesetzt & abgeschlossen ✅
+
+**Umgesetzt:**
+- `licenses:generate` Command implementiert (`GenerateLicenseDataCommand`)
+- Exportiert `php`, `node`, `generated_at` nach `storage/app/licenses.json`
+- Datenmodell erweitert: optionales Feld `homepage` pro Paket
+- `lizenzen.blade.php` auf Controller-Daten umgestellt (kein Dateizugriff in der View)
+- Paketname wird als klickbarer Link gerendert, wenn `homepage` vorhanden ist
+- Neue Feature-Tests: `GenerateLicenseDataCommandTest.php`
+- **Makefile-Target hinzugefügt:** `make licenses-generate` ✅
+- **Erstellt:** `storage/app/licenses.json` (78 PHP-Pakete, 203 Node-Pakete)
+
+**Verifikation:**
+- ✅ Tests: 184 passed (1471 assertions)
+- ✅ PHPStan: 0 Errors
+- ✅ Pint: PASS
+- ✅ Route `/lizenzen` funktioniert und zeigt alle Pakete an
+
+---
+
+### 8. Commit 21a: Dark-Mode Support abgeschlossen ✅
+
+**Umgesetzt:**
+- Tailwind `darkMode: 'class'` in tailwind.config.js aktiviert
+- DarkModeManager als globales `window.DarkModeManager` Objekt (Inline-Script)
+- System-Präferenz-Detection (`prefers-color-scheme: dark`)
+- LocalStorage-Persistierung für User-Präferenz
+- Toggle-Button im Header mit Sun/Moon Icons
+- Dark-Mode CSS für HTML, Header, Footer, Navigation
+- 10 Feature-Tests in `DarkModeTest.php`
+
+**Bugfix (2026-03-10):**
+- "DarkModeManager is not defined" Fehler behoben
+- Inline-Script im `<head>` statt separates JS-Modul
+- Initialisierung vor Page-Render (kein Flackern)
+
+**Verifikation:**
+- ✅ Tests: 194 passed (1499 assertions)
+- ✅ PHPStan: 0 Errors
+- ✅ Pint: PASS
+- ✅ Assets: Neu gebaut mit Dark-Mode Support
+- ✅ Dokumentation: `COMMIT_21a_IMPLEMENTATION_GUIDE.md` aktualisiert
+- ✅ Browser-Funktionalität: Dark-Mode Toggle funktioniert einwandfrei
+
+---
+
 ## 🎯 Aktueller Projekt-Stand
 
 ### Abgeschlossene Commits
-- **Commit 1-20b:** Vollständig abgeschlossen
-- **Letzter Commit:** 20b (Legal-Seiten & Vertrauen)
+- **Commit 1-21a:** Vollständig abgeschlossen
+- **Letzter Commit:** 21a (Dark-Mode Support)
 - **Hinweis:** Commit 19 wurde historisch übersprungen (Nummerierungslücke)
 
 ### Quality-Metriken
-- **Tests:** Alle grün ✅
+- **Tests:** 194 passed (1499 assertions) ✅
 - **PHPStan:** Level 9, 0 Errors ✅
 - **Pint:** Code-Style konform ✅
 - **Coverage:** 98.2% ✅
 
-### Implementierte Features (Stand Commit 20b)
+### Implementierte Features (Stand Commit 21a)
 - Docker-Setup + Laravel 12
 - KI-Integration (Gemini + Mock-Provider)
 - Analyse-Engine (Matching, Gap-Analysis, Scoring)
 - Cache-Management (Hash-basiert, DB)
 - Security (Input-Validation, Prompt-Injection-Schutz, OWASP)
 - Tags & Empfehlungen (Match-Tags, Gap-Tags, Recommendations mit Priority-Badges)
-- Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen)
+- Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen - responsive + Dark-Mode)
+- **Responsive Layout** (Mobile-First, Alpine.js Mobile-Menu, Touch-Optimierungen WCAG 44px)
+- **Dark-Mode Support** (System-Präferenz-Detection, Toggle-Button, LocalStorage-Persistierung)
 
 **Commit-Nummerierung:** Commit 19 wurde übersprungen (historische Entwicklung), Features wurden als Commit 17 implementiert.
 
@@ -86,19 +186,14 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 ## 📋 Nächste geplante Commits
 
-### Commit 21: Responsive Layout & Mobile-First
-- Mobile-optimierte Layouts
-- Touch-optimierte Interaktionen
-- Progressive Enhancement
-
-### Commit 21a: Dark-Mode Support
-- System-Präferenz-Detection
-- Toggle-Button
-- Persistente User-Präferenz
-
 ### Commit 22: Lebenslauf-Speicherung
 - Anonymous CV-Storage
+- Retrieve by unique Token
 - Privacy by Design
+
+### Commit 23+: CI/CD & Deployment
+- GitHub Actions
+- Production-Deployment (IONOS)
 
 ---
 
@@ -118,14 +213,14 @@ Repository-Stand ist Source of Truth, ältere Chat-Details ignorieren.
 
 ## 📚 Zentrale Dokumentation (Lesefolge)
 
-1. `docs/ai/WORKING_BASELINE.md` — Session-Startpunkt
-2. `docs/ai/SESSION_RESUME_2026-03-09.md` — Diese Datei (aktueller Stand)
-3. `docs/ai/AGENT_CONTEXT.md` — Arbeitsregeln (CQRS, SOLID, DDD, Quality-Gates)
-4. `docs/ai/PROJECT_OVERVIEW.md` — MVP-Scope, Datenstrukturen, Request-Flow
-5. `docs/ai/TECH_STACK.md` — Versionen, Make-Kommandos, Docker-Setup
-6. `COMMIT_PLAN.md` — Detaillierter Commit-by-Commit-Plan
-7. `docs/ARCHITECTURE.md` — Vollständige Architektur-Dokumentation
-8. `docs/CODING_GUIDELINES.md` — Best Practices, Patterns, Checklisten
+1. `WORKING_BASELINE.md` — Session-Startpunkt
+2. `SESSION_RESUME_2026-03-09.md` — Diese Datei (aktueller Stand)
+3. `AGENT_CONTEXT.md` — Arbeitsregeln (CQRS, SOLID, DDD, Quality-Gates)
+4. `PROJECT_OVERVIEW.md` — MVP-Scope, Datenstrukturen, Request-Flow
+5. `TECH_STACK.md` — Versionen, Make-Kommandos, Docker-Setup
+6. `../../COMMIT_PLAN.md` — Detaillierter Commit-by-Commit-Plan
+7. `../ARCHITECTURE.md` — Vollständige Architektur-Dokumentation
+8. `../CODING_GUIDELINES.md` — Best Practices, Patterns, Checklisten
 
 ---
 
@@ -137,7 +232,7 @@ Repository-Stand ist Source of Truth, ältere Chat-Details ignorieren.
 - ✅ Commit 20b ist abgeschlossen
 
 ### Bereit für:
-- 🔄 Commit 21 (Responsive Layout) kann gestartet werden
+- 🔄 Commit 21a (Dark-Mode Support) kann gestartet werden
 - 🔄 Weitere Architektur-Diskussionen (z. B. Event Sourcing, Hexagonal Architecture)
 - 🔄 Production-Deployment-Planung
 
@@ -146,6 +241,3 @@ Repository-Stand ist Source of Truth, ältere Chat-Details ignorieren.
 **Erstellt:** 2026-03-09  
 **Zweck:** Soft-Reset-Einstieg nach Kontextverlust  
 **Gültigkeit:** Bis zum nächsten Major-Meilenstein (z. B. Commit 25 oder MVP-Release)
-
-
-

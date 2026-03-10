@@ -23,50 +23,55 @@
             </div>
         @endif
 
-        <form action="/analyze" method="POST" class="space-y-6 sm:space-y-8">
+        <form action="/analyze" method="POST" class="space-y-6">
             @csrf
 
-            <!-- Job Description -->
-            <div>
-                <label class="block text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-text-light dark:text-text-dark">
-                    Stellenausschreibung
-                </label>
-                <textarea
-                    name="job_text"
-                    rows="8"
-                    class="w-full p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-dark dark:text-text-dark text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    placeholder="Füge hier die Stellenausschreibung ein..."
-                    required
-                >{{ old('job_text') }}</textarea>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Mindestens 30 Zeichen erforderlich</p>
+            <!-- Grid: 1 Column Mobile, 2 Columns Desktop -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Job Description -->
+                <div>
+                    <label class="block text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-text-light dark:text-text-dark">
+                        Stellenausschreibung
+                    </label>
+                    <textarea
+                        name="job_text"
+                        rows="12"
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-dark dark:text-text-dark text-base focus:outline-none focus:ring-2 focus:ring-primary resize-none min-h-[200px] sm:min-h-[300px]"
+                        placeholder="Füge hier die Stellenausschreibung ein..."
+                        required
+                    >{{ old('job_text') }}</textarea>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Mindestens 30 Zeichen erforderlich</p>
+                </div>
+
+                <!-- CV -->
+                <div>
+                    <label class="block text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-text-light dark:text-text-dark">
+                        Lebenslauf
+                    </label>
+                    <textarea
+                        name="cv_text"
+                        rows="12"
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-dark dark:text-text-dark text-base focus:outline-none focus:ring-2 focus:ring-primary resize-none min-h-[200px] sm:min-h-[300px]"
+                        placeholder="Füge hier deinen Lebenslauf ein..."
+                        required
+                    >{{ old('cv_text') }}</textarea>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Mindestens 30 Zeichen erforderlich</p>
+                </div>
+
             </div>
 
-            <!-- CV -->
-            <div>
-                <label class="block text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-text-light dark:text-text-dark">
-                    Lebenslauf
-                </label>
-                <textarea
-                    name="cv_text"
-                    rows="8"
-                    class="w-full p-3 sm:p-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-dark dark:text-text-dark text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    placeholder="Füge hier deinen Lebenslauf ein..."
-                    required
-                >{{ old('cv_text') }}</textarea>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Mindestens 30 Zeichen erforderlich</p>
-            </div>
-
-            <!-- CTA Button -->
-            <div class="flex gap-2 sm:gap-4 pt-2 sm:pt-4">
+            <!-- CTA Buttons: Full-Width Mobile, Auto Desktop -->
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4 justify-center">
                 <button
                     type="submit"
-                    class="flex-1 sm:flex-none px-6 sm:px-8 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition duration-200 ease-in-out text-sm sm:text-base"
+                    class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
                 >
                     Analysieren
                 </button>
                 <a
                     href="/"
-                    class="flex-1 sm:flex-none px-6 sm:px-8 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg transition duration-200 ease-in-out text-center text-sm sm:text-base"
+                    class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg transition duration-200 ease-in-out text-center text-base sm:text-lg min-h-[48px]"
                 >
                     Zurück
                 </a>
