@@ -67,13 +67,21 @@ Die Architektur folgt modernen Best Practices:
 - **Verantwortlichkeit:** Job-/CV-Analyse, Matching, Gap-Analysis, Scoring, Cache
 - **Ubiquitous Language:** Requirements, Experiences, Matches, Gaps, Score, Tags
 - **Struktur:** `app/Domains/Analysis/`
+- **Status:** ✅ Vollständig implementiert
 
-### Geplante Bounded Contexts (Roadmap)
+#### `Profile` (Commit 22) — ✅ **Basis implementiert**
+- **Verantwortlichkeit:** Anonyme CV-Speicherung, Token-Verwaltung, Verschlüsselung, Wiederherstellung
+- **Ubiquitous Language:** StoredResume, Token, EncryptedCV, LoadedResume
+- **Struktur:** `app/Domains/Profile/`
+- **Integration:** Unabhängig von `Analysis` (keine direkte Kopplung, nur CV-Text als Input in der UI)
+- **Status:**
+  - ✅ CQRS-Basis mit `StoreResumeCommand` und `GetResumeByTokenQuery`
+  - ✅ Single-Action-Controller für Store/Load
+  - ✅ AES-256-GCM mit tokenbasiert abgeleitetem Secret (MVP-Kompromiss)
+  - ✅ Persistenz über `stored_resumes` + `ProfileRepository`
+  - ⚠️ **Technische Schuld:** Migration zu User-basierter Verschlüsselung vor User-Accounts verpflichtend
 
-#### `Profile` (Phase 3, ~Commit 22+)
-- **Verantwortlichkeit:** Lebenslauf-Speicherung, User-Präferenzen
-- **Ubiquitous Language:** Profile, Resume, Preferences, Templates
-- **Integration:** Via DTOs/Events mit `Analysis`
+### Implementierte Bounded Contexts
 
 #### `Recommendations` (Phase 4, ~Commit 17+) — ✅ **Grundstruktur implementiert**
 - **Verantwortlichkeit:** KI-Empfehlungen, Verbesserungsvorschläge
@@ -86,6 +94,8 @@ Die Architektur folgt modernen Best Practices:
   - ✅ UI-Component (result.blade.php)
   - ⏳ Separate Domain-Extraktion geplant (~Commit 30+)
 
+### Geplante Bounded Contexts (Roadmap)
+
 #### `Reporting` (Phase 5, ~Commit 35+)
 - **Verantwortlichkeit:** Analyse-Historie, Statistiken, Exports
 - **Ubiquitous Language:** Report, History, Statistics, Export
@@ -97,19 +107,6 @@ Die Architektur folgt modernen Best Practices:
 - ✅ **Communication:** Nur via DTOs, Events oder Shared Kernel
 - ✅ **Ubiquitous Language:** Code verwendet fachliche Begriffe
 - ✅ **Aggregate Roots:** Models sind Aggregate Roots ihres Contexts
-
----
-
-## SOLID-Prinzipien (Pflicht-Gate)
-
-Siehe `docs/ai/AGENT_CONTEXT.md` und `.github/PULL_REQUEST_TEMPLATE.md` für Details.
-
-**Kurzform:**
-- **SRP:** Eine Klasse = Eine Verantwortlichkeit
-- **OCP:** Erweiterbar ohne Änderung
-- **LSP:** Interfaces sind austauschbar
-- **ISP:** Kleine, fokussierte Interfaces
-- **DIP:** Dependencies via Constructor Injection
 
 ---
 
@@ -162,6 +159,34 @@ Immutable Data Transfer Objects:
 
 ---
 
+### **Profile Domain** (`app/Domains/Profile/`)
+
+Die Domain für anonyme CV-Speicherung und Wiederherstellung.
+
+#### **Commands** (`Commands/`)
+- `StoreResumeCommand`: Write-Request zum persistierten Speichern eines CVs
+
+#### **Queries** (`Queries/`)
+- `GetResumeByTokenQuery`: Read-Request zum Laden eines gespeicherten CVs per Token
+
+#### **Handlers** (`Handlers/`)
+- `StoreResumeHandler`: Generiert eindeutigen Token, verschlüsselt den CV und persistiert ihn
+- `GetResumeByTokenHandler`: Lädt gespeicherten CV, entschlüsselt ihn und aktualisiert `last_accessed_at`
+
+#### **Actions** (`Actions/`)
+- `GenerateTokenAction`: Erzeugt URL-safe Base64-Token aus 32 zufälligen Bytes
+- `EncryptResumeAction`: Verschlüsselt CV-Inhalt via AES-256-GCM
+- `DecryptResumeAction`: Entschlüsselt gespeicherte CV-Inhalte robust und fehlertolerant
+
+#### **Repositories** (`Repositories/`)
+- `ProfileRepository`: Abstraktion über `stored_resumes`-Persistenz
+
+#### **DTOs** (`Dto/`)
+- `StoreResumeDto`, `ResumeTokenDto`, `LoadedResumeDto`
+- Immutable (`readonly`) und klar auf UI-/Domain-Transfer beschränkt
+
+---
+
 ## 2.2 Application Layer
 
 ### **Controllers** (`app/Http/Controllers/`)
@@ -198,7 +223,7 @@ Legacy-Services (werden nach und nach in Domains migriert):
 ```
 HTTP POST /analyze
     ↓
-AnalyzeController::analyze()
+AnalyzeController::__invoke()
     ├─ Validierung (Laravel Validator)
     ├─ DTO erstellen (AnalyzeRequestDto)
     ├─ Command erstellen (AnalyzeJobAndResumeCommand)
@@ -362,33 +387,33 @@ Services:
 - ✅ User-freundliche Fehlermeldungen
 
 ## 9.5 Security-Tests
-- `SecurityAuditTest.php`, `ApiErrorHandlingTest.php`, `ValidateInputActionTest.php`
+- `SecurityAuditTest.php`, `ApiErrorHandlingTest.php`, `ValidateInputActionTest.php`, `ProfileResumeStorageTest.php`
 
 ---
 
 # 🔮 10. Zukunft / Erweiterbarkeit
 
-## Geplante Bounded Contexts (DDD-Erweiterung)
+## Weiterentwicklung bestehender Bounded Contexts
 
-### Phase 3: `Profile` Context
-- **Commit:** ~22+
-- **Features:**
-  - Lebenslauf-Speicherung (anonym)
-  - User-Präferenzen
-  - Template-Verwaltung
-- **Struktur:** `app/Domains/Profile/`
-- **Integration:** Via DTOs mit `Analysis`
+### `Profile` Context (naechste Ausbaustufe)
+- **Status:** Basis in Commit 22 implementiert
+- **Naechste Features:**
+  - User-Accounts
+  - mehrere gespeicherte CVs pro Benutzer
+  - Praeferenzen / Profil-Metadaten
+  - Migration auf userbasierte Verschluesselung
+- **Integration:** Weiterhin lose Kopplung an `Analysis` via DTOs/UI-Flows
 
-### Phase 4: `Recommendations` Context
+### `Recommendations` Context
 - **Commit:** ~30+
 - **Features:**
-  - KI-Empfehlungen
-  - Verbesserungsvorschläge
+  - KI-Empfehlungen als eigenstaendiger Kontext
+  - Verbesserungsvorschlaege
   - Beispiel-Formulierungen
 - **Struktur:** `app/Domains/Recommendations/`
 - **Integration:** Konsumiert `Analysis`-Ergebnisse
 
-### Phase 5: `Reporting` Context
+### `Reporting` Context
 - **Commit:** ~35+
 - **Features:**
   - Analyse-Historie
@@ -398,10 +423,10 @@ Services:
 - **Integration:** Read-Only auf `Analysis` + `Profile`
 
 ## Weitere Erweiterungen
-1. **Events & Listeners** (Notification-System)
+1. **Events & Listeners** (nach MVP)
 2. **API-Layer** (RESTful API)
 3. **Queue-Processing** (Async AI-Analysen)
-4. **Multi-Tenancy** (User-Accounts)
+4. **Multi-Tenancy** (spaeter, falls Produktvision es traegt)
 
 ## Wie erweitern?
 - **Neue Domain hinzufügen:** `app/Domains/NewDomain/`
@@ -427,4 +452,4 @@ Siehe `CODING_GUIDELINES.md` für detaillierte Best Practices.
 - **Testbarkeit**: Jede Komponente isoliert testbar
 - **Stabilität**: Robuste Fehlerbehandlung
 - **Performance**: Caching, optimierte DB-Queries
-  
+

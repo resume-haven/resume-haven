@@ -5,8 +5,8 @@ Er sorgt für eine klare, nachvollziehbare Git‑History und erleichtert die Zus
 
 Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
-**Letzte Aktualisierung:** 2026-03-09  
-**Aktueller Stand:** Commit 21a (Dark-Mode Support) abgeschlossen
+**Letzte Aktualisierung:** 2026-03-10  
+**Aktueller Stand:** Commit 21a abgeschlossen, Commit 22 implementiert (Basis-Flow) und in Verifikation/Dokumentation
 
 ---
 
@@ -34,8 +34,14 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 **Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
 
-### 🔄 In Planung (Commits 22+)
-- **Commit 22:** Lebenslauf-Speicherung (geplant)
+### 🔄 In Umsetzung (Commit 22)
+- **Commit 22:** CV-Speicherung (Profile Context, verschlüsselt, token-basiert)
+  - Branch: `feature/commit-22-profile-cv-storage`
+  - Status: Basis-Implementierung abgeschlossen, Tests/PHPStan/Pint grün
+  - Detailplan: `docs/PLANNING_COMMIT_22.md`
+  - Implementierungsleitfaden: `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+
+### ⏳ Zukünftig (Commits 23+)
 - **Commit 23+:** CI/CD, Deployment, weitere Features
 
 ---
@@ -2141,6 +2147,68 @@ src/
 - **Phase 8-10 (Lizenzen):** ~1h
 - **Tests + Quality Gates:** ~0.5h
 - **Gesamt:** ~4h
+
+---
+
+## 💾 Commit 22 – Anonyme CV-Speicherung (Profile Context)
+
+**Branch:** `feature/commit-22-profile-cv-storage`  
+**Status:** 🔄 Basis implementiert, verifiziert und dokumentiert  
+**Zweck:** Implementierung eines neuen Bounded Context `Profile` für anonyme CV-Speicherung und -Wiederherstellung über URL-Token
+
+**Detaillierte Planung:** `docs/PLANNING_COMMIT_22.md`  
+**Implementierungsstand:** `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+
+---
+
+### ✅ Bereits umgesetzt
+
+#### Domain & Persistence
+- ✅ Neuer Bounded Context `Profile` unter `app/Domains/Profile/`
+- ✅ Migration `stored_resumes` mit `token`, `encrypted_cv`, `last_accessed_at`
+- ✅ Model `StoredResume`
+- ✅ Repository `ProfileRepository`
+
+#### CQRS & DTOs
+- ✅ `StoreResumeCommand`
+- ✅ `GetResumeByTokenQuery`
+- ✅ `StoreResumeHandler`
+- ✅ `GetResumeByTokenHandler`
+- ✅ Immutable DTOs: `StoreResumeDto`, `ResumeTokenDto`, `LoadedResumeDto`
+
+#### Actions & Security
+- ✅ `GenerateTokenAction` mit URL-safe Base64-Token
+- ✅ `EncryptResumeAction` / `DecryptResumeAction`
+- ✅ AES-256-GCM mit aus dem Token abgeleitetem Secret (MVP-Kompromiss)
+- ✅ Fehlerbehandlung für ungültige Tokens und defekte Payloads
+
+#### HTTP & UI
+- ✅ Single-Action-Controller: `StoreResumeController`, `LoadResumeController`
+- ✅ `StoreResumeRequest` für serverseitige Validierung
+- ✅ Neue Routes: `POST /profile/store`, `GET /profile/load/{token}`
+- ✅ `analyze.blade.php` um Speichern/Laden, Statusmeldungen und Link-Ausgabe erweitert
+
+#### Tests & Quality Gates
+- ✅ Feature-Tests für Speichern, Laden, Fehlerfälle, UI-Präsenz
+- ✅ Unit-Tests für Token-Generierung und Krypto-Actions
+- ✅ `make test-feature` grün
+- ✅ `make test-unit` grün
+- ✅ `make phpstan` grün
+- ✅ `make pint-analyse` grün
+
+---
+
+### 🔄 Noch offen / optionaler Ausbau
+
+- ⏳ Komfortfunktion zum Kopieren des Speicher-Links in der UI
+- ⏳ Detail-Dokumentation in weiteren Übersichtsseiten nach Bedarf
+- ⏳ Spätere Migration auf User-basierte Verschlüsselung vor Auth-Features
+
+---
+
+### 🎯 Ergebnis
+
+ResumeHaven kann nun einen Lebenslauf anonym speichern, verschlüsselt persistieren und über einen nicht erratbaren Token-Link wieder laden, ohne den `Analysis`-Context direkt zu koppeln. Die Umsetzung folgt DDD, CQRS, Single-Action-Controller, immutable DTOs und wurde durch Feature-/Unit-Tests sowie PHPStan und Pint abgesichert.
 
 ---
 

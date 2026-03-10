@@ -74,4 +74,59 @@ describe('GetCachedAnalysisAction', function () {
         expect($result?->error)->toBe('API Error');
         expect($result?->tags)->toBeNull();
     });
+
+    test('mapped Cache-Treffer mit Recommendations korrekt', function () {
+        $repo = Mockery::mock(AnalysisCacheRepository::class);
+        $request = new AnalyzeRequestDto('job', 'cv');
+
+        $repo->shouldReceive('getByHash')
+            ->once()
+            ->andReturn([
+                'requirements' => ['PHP'],
+                'experiences' => ['Laravel'],
+                'matches' => [],
+                'gaps' => ['Docker'],
+                'error' => null,
+                'tags' => null,
+                'recommendations' => [
+                    [
+                        'gap' => 'Docker',
+                        'priority' => 'high',
+                        'suggestion' => 'Docker-Kenntnisse aufbauen',
+                        'example_phrase' => 'Ich habe Erfahrung mit Docker.',
+                    ],
+                ],
+            ]);
+
+        $action = new GetCachedAnalysisAction($repo);
+        $result = $action->execute($request);
+
+        expect($result)->not()->toBeNull();
+        expect($result?->recommendations)->toHaveCount(1);
+        expect($result?->recommendations[0]->gap)->toBe('Docker');
+        expect($result?->recommendations[0]->priority)->toBe('high');
+    });
+
+    test('mapped Cache-Treffer ohne Recommendations-Key korrekt', function () {
+        $repo = Mockery::mock(AnalysisCacheRepository::class);
+        $request = new AnalyzeRequestDto('job', 'cv');
+
+        $repo->shouldReceive('getByHash')
+            ->once()
+            ->andReturn([
+                'requirements' => [],
+                'experiences' => [],
+                'matches' => [],
+                'gaps' => [],
+                'error' => null,
+                'tags' => null,
+                // kein 'recommendations'-Key
+            ]);
+
+        $action = new GetCachedAnalysisAction($repo);
+        $result = $action->execute($request);
+
+        expect($result)->not()->toBeNull();
+        expect($result?->recommendations)->toBe([]);
+    });
 });
