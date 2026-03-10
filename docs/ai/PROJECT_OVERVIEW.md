@@ -45,8 +45,10 @@ miteinander vergleicht und **strukturiert auswertet**.
 ### ❌ **NICHT im MVP:**
 
 - ❌ Keine User-Accounts
-- ❌ Keine Lebenslauf-Speicherung (geplant: Commit 22)
-- ❌ Keine KI-Empfehlungen (geplant: Commit 19)
+- 🔄 **Lebenslauf-Speicherung (Commit 22 - in Implementierung)**
+  - Anonym, token-basiert, verschlüsselt
+  - Branch: `feature/commit-22-profile-cv-storage`
+  - Detailplan: `docs/PLANNING_COMMIT_22.md`
 - ❌ Keine PDF-Generierung
 - ❌ Keine öffentliche API
 - ❌ Keine E-Mail-Benachrichtigungen (nur Mailpit für Tests)

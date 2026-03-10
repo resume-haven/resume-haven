@@ -67,13 +67,22 @@ Die Architektur folgt modernen Best Practices:
 - **Verantwortlichkeit:** Job-/CV-Analyse, Matching, Gap-Analysis, Scoring, Cache
 - **Ubiquitous Language:** Requirements, Experiences, Matches, Gaps, Score, Tags
 - **Struktur:** `app/Domains/Analysis/`
+- **Status:** ✅ Vollständig implementiert
 
-### Geplante Bounded Contexts (Roadmap)
+### Bounded Contexts in Implementierung
 
-#### `Profile` (Phase 3, ~Commit 22+)
-- **Verantwortlichkeit:** Lebenslauf-Speicherung, User-Präferenzen
-- **Ubiquitous Language:** Profile, Resume, Preferences, Templates
-- **Integration:** Via DTOs/Events mit `Analysis`
+#### `Profile` (Phase 3, Commit 22) — 🔄 **In Planung**
+- **Verantwortlichkeit:** Anonyme CV-Speicherung, Token-Verwaltung
+- **Ubiquitous Language:** StoredResume, Token, EncryptedCV
+- **Integration:** Unabhängig von `Analysis` (keine direkte Kopplung)
+- **Status:** 
+  - 🔄 Planung abgeschlossen (`docs/PLANNING_COMMIT_22.md`)
+  - 🔄 Branch: `feature/commit-22-profile-cv-storage`
+  - ⏳ CQRS: `StoreResumeCommand`, `GetResumeByTokenQuery`
+  - ⏳ Verschlüsselung: Token als Secret (MVP-Kompromiss)
+  - ⚠️ **Technische Schuld:** Migration zu User-basierter Verschlüsselung vor User-Accounts verpflichtend!
+
+### Implementierte Bounded Contexts
 
 #### `Recommendations` (Phase 4, ~Commit 17+) — ✅ **Grundstruktur implementiert**
 - **Verantwortlichkeit:** KI-Empfehlungen, Verbesserungsvorschläge
@@ -85,6 +94,8 @@ Die Architektur folgt modernen Best Practices:
   - ✅ Parsing-Logic (ParseAiResponseAction)
   - ✅ UI-Component (result.blade.php)
   - ⏳ Separate Domain-Extraktion geplant (~Commit 30+)
+
+### Geplante Bounded Contexts (Roadmap)
 
 #### `Reporting` (Phase 5, ~Commit 35+)
 - **Verantwortlichkeit:** Analyse-Historie, Statistiken, Exports
