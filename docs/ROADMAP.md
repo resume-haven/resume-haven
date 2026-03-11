@@ -119,25 +119,27 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-03-08)
+# 📊 Aktueller Stand (2026-03-11)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
 - DDD-Architektur mit Commands/Handlers/UseCases/Actions
 - CQRS-Pattern (Phase 1 abgeschlossen, Phase 2 in Arbeit)
-- Code-Coverage: 98.2% (Minimum: 95%)
+- Code-Coverage: >=95% abgesichert
 - PHPStan Level 9: 0 Errors
 - OWASP-orientiertes Security-Testing implementiert
 - Interface-based Design (AiAnalyzerInterface)
 - Xdebug-Integration für Debugging + Coverage
+- Commit 22: Profile-Context (anonyme, verschlüsselte CV-Speicherung)
 
 ## 🔄 In Arbeit
 - Phase 2: Engine-Verbesserungen
-- Security-Testing vollständig dokumentiert
-- Legal-Seiten-Planung (Commit 20b)
+- Commit 23 Planung: GitHub Actions CI + Branch Protection (`main`)
 
 ## 📋 Geplant
-- GitHub CI/CD Workflow
+- GitHub CI/CD Workflow (Commit 23)
+- Branch Protection mit Required Checks (`pint`, `phpstan`, `pest`)
+- Codecov-Badge + Coverage-Artefakte in CI
 - arc42 Dokumentationsstruktur
 - req42 Requirements Management
 - Acceptance-Tests
