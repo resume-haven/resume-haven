@@ -189,6 +189,67 @@ make docker-up              # Neu starten (frisch!)
 
 ---
 
+## 🔁 GitHub CI & Branch Protection (Commit 23)
+
+### CI-Workflow
+
+Der Workflow liegt in:
+- `.github/workflows/ci.yml`
+
+Aktive Jobs:
+- `pint`
+- `phpstan`
+- `pest_coverage` (inkl. Coverage-Gate `>=95%`)
+
+Trigger:
+- `push` (alle Branches ausser `main`)
+- `pull_request` auf `main`
+- `workflow_dispatch` (manuell)
+
+Coverage-Artefakte:
+- Upload als GitHub Artifact `coverage-report`
+- Retention: 7 Tage
+
+### CI-Umgebungsdatei
+
+- `src/.env.ci` enthaelt die CI-spezifischen Defaultwerte
+- `AI_PROVIDER=mock` verhindert externe API-Abhaengigkeiten
+- `GEMINI_API_KEY` bleibt als leerer Platzhalter
+- `APP_KEY` wird im Workflow zur Laufzeit erzeugt
+
+### Codecov Setup (public repository)
+
+1. Bei `codecov.io` mit GitHub anmelden
+2. Repository aktivieren
+3. Keine Tokens notwendig (public Repo)
+4. Workflow lädt `src/coverage-report/clover.xml` hoch
+
+### Status-Badges
+
+Im `README.md` sind drei Badges vorgesehen:
+- CI (GitHub Actions)
+- Coverage (Codecov)
+- PHPStan Level 9
+
+Hinweis: Ersetze in den Badge-URLs `<owner>/<repo>` durch den echten GitHub-Pfad.
+
+### Branch-Protection fuer `main`
+
+GitHub Einstellungen:
+1. `Settings -> Branches -> Add rule`
+2. Branch-Pattern: `main`
+3. Aktivieren:
+   - `Require a pull request before merging`
+   - `Require status checks to pass before merging`
+   - `Require branches to be up to date before merging`
+   - `Do not allow bypassing the above settings`
+4. Required checks auswaehlen:
+   - `pint`
+   - `phpstan`
+   - `pest_coverage`
+
+---
+
 ## 📚 Weitere Dokumentation
 
 | Thema | Link |

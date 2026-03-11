@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: src
+
+jobs:
+  pint:
+    name: pint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.5
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:v2
+          extensions: mbstring, intl, pdo_sqlite, sqlite3, dom, curl, xml, zip, bcmath
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Pint analyze
+        run: vendor/bin/pint --config pint.json --test .
+
+  phpstan:
+    name: phpstan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.5
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:v2
+          extensions: mbstring, intl, pdo_sqlite, sqlite3, dom, curl, xml, zip, bcmath
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress
+
+  pest_coverage:
+    name: pest_coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.5 + Xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: xdebug
+          tools: composer:v2
+          extensions: mbstring, intl, pdo_sqlite, sqlite3, dom, curl, xml, zip, bcmath
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Prepare CI environment
+        run: |
+          cp .env.ci .env
+          php artisan key:generate --ansi --force
+          php artisan config:clear --ansi
+
+      - name: Run tests with coverage gate
+        run: |
+          mkdir -p coverage-report
+          vendor/bin/pest --coverage --coverage-clover=coverage-report/clover.xml --coverage-html=coverage-report/html --min=95
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: src/coverage-report
+          retention-days: 7
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: src/coverage-report/clover.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+

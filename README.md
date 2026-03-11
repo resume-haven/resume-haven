@@ -1,5 +1,9 @@
 # ResumeHaven – MVP
 
+[![CI](https://github.com/resume-haven/resume-haven/actions/workflows/ci.yml/badge.svg)](https://github.com/resume-haven/resume-haven/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/resume-haven/resume-haven/branch/main/graph/badge.svg)](https://codecov.io/gh/resume-haven/resume-haven)
+[![PHPStan Level 9](https://img.shields.io/badge/PHPStan-Level%209-brightgreen)](https://phpstan.org)
+
 ResumeHaven ist ein leichtgewichtiges, textbasiertes Analyse‑Tool, das Stellenausschreibungen und Lebensläufe miteinander vergleicht und strukturiert auswertet.  
 Das Projekt basiert auf Laravel 12, TailwindCSS und einer modularen Analyse‑Engine.
 
