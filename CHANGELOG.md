@@ -10,13 +10,46 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
-- *Bereit für Commit 20b (Legal-Seiten)*
+- **Commit 22 – Anonyme CV-Speicherung (Profile Context) finalisiert**
+  - Neuer Bounded Context `Profile` mit CQRS-Basis:
+    - `StoreResumeCommand`, `GetResumeByTokenQuery`
+    - `StoreResumeHandler`, `GetResumeByTokenHandler`
+    - `ProfileRepository`
+    - immutable DTOs (`StoreResumeDto`, `ResumeTokenDto`, `LoadedResumeDto`)
+  - Persistenz fuer gespeicherte Lebenslaeufe in `stored_resumes`
+    - Felder inkl. `token`, `encrypted_cv`, `last_accessed_at`
+  - Verschluesselung via AES-256-GCM (MVP: tokenbasierte Secret-Ableitung)
+  - UI-Erweiterung in `analyze.blade.php`:
+    - Generierter Speicher-Link
+    - Copy-to-Clipboard-Button mit visuellem Feedback
 
 ### Changed
-- *Noch keine Änderungen*
+- `StoreResumeController`: defensiven, praktisch unerreichbaren String-Guard entfernt
+  - Typgarantie erfolgt bereits ueber `StoreResumeRequest` (`cv_text` als `string`)
+- Dokumentation fuer Commit 22 erweitert/aktualisiert
+  - `COMMIT_PLAN.md`
+  - `docs/ARCHITECTURE.md`
+  - `docs/CODING_GUIDELINES.md`
+  - `docs/PLANNING_COMMIT_22.md`
+  - `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md`
 
 ### Fixed
-- *Noch keine Änderungen*
+- Coverage-Luecken fuer Commit-22-nahe Komponenten geschlossen
+  - `DecryptResumeAction` auf 100%
+  - `StoreResumeController` auf 100%
+  - `GetCachedAnalysisAction` auf 100%
+  - `LegalController` und `ContactController` auf 100%
+- Zusätzliche Tests fuer Edge Cases und UX-Flows
+  - Feature: `ProfileResumeStorageTest`, `AnalyzeResumeStorageUiTest`, `LegalPagesTest`, `ContactFormTest`
+  - Unit: `ResumeCryptoActionsTest`, `GetCachedAnalysisActionTest`
+
+### Security
+- Fehlerfaelle bei ungueltigen Tokens und defekten Payloads explizit abgesichert
+- Keine Klartextpersistenz fuer gespeicherte CV-Inhalte
+
+### Documentation
+- Finaler Implementierungsleitfaden fuer Commit 22 hinzugefuegt:
+  - `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md`
 
 ---
 
@@ -189,7 +222,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-08
-
-
-
+**Letzte Aktualisierung**: 2026-03-10
