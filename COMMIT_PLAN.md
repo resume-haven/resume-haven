@@ -34,7 +34,7 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
 **Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
 
-### 🔄 In Planung (Commit 23)
+### ✅ Abgeschlossen (Commit 23)
 - **Commit 23:** GitHub Actions CI + Branch Protection (`main`)
   - Branch: `feature/commit-23-github-actions-ci`
   - Scope: CI-first (kein Deployment in Commit 23)
