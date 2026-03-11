@@ -1,7 +1,7 @@
 # ResumeHaven – MVP
 
-[![CI](https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg)](https://github.com/<owner>/<repo>/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/<owner>/<repo>/branch/main/graph/badge.svg)](https://codecov.io/gh/<owner>/<repo>)
+[![CI](https://github.com/resume-haven/resume-haven/actions/workflows/ci.yml/badge.svg)](https://github.com/resume-haven/resume-haven/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/resume-haven/resume-haven/branch/main/graph/badge.svg)](https://codecov.io/gh/resume-haven/resume-haven)
 [![PHPStan Level 9](https://img.shields.io/badge/PHPStan-Level%209-brightgreen)](https://phpstan.org)
 
 ResumeHaven ist ein leichtgewichtiges, textbasiertes Analyse‑Tool, das Stellenausschreibungen und Lebensläufe miteinander vergleicht und strukturiert auswertet.  
