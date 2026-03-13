@@ -5,14 +5,14 @@ Er sorgt für eine klare, nachvollziehbare Git‑History und erleichtert die Zus
 
 Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 
-**Letzte Aktualisierung:** 2026-03-11  
-**Aktueller Stand:** Commit 22 abgeschlossen, Commit 23 in Planung (CI-Foundation)
+**Letzte Aktualisierung:** 2026-03-13  
+**Aktueller Stand:** Commit 23 abgeschlossen, Commit 24 in Planung (Kompetenzlebenslaeufe)
 
 ---
 
 ## 📊 Status-Überblick
 
-### ✅ Abgeschlossen (Commits 1-21a)
+### ✅ Abgeschlossen (Commits 1-23)
 - **Commit 1-11:** Docker-Setup, Laravel-Installation, Basis-Konfiguration
 - **Commit 12:** KI-Integration (Gemini), Analyse-Engine, Validierung, Tests
 - **Commit 13:** KI-Prompt-Engineering & Error-Handling
@@ -31,6 +31,8 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
 - **Commit 20b:** Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen)
 - **Commit 21:** Responsive Layout & Mobile-First (Alpine.js, Touch-Optimierungen)
 - **Commit 21a:** Dark-Mode Support (System-Präferenz, Toggle, Persistierung)
+- **Commit 22:** Profile-Context (anonyme, verschluesselte CV-Speicherung)
+- **Commit 23:** GitHub Actions CI + Branch Protection (`main`)
 
 **Hinweis:** Commit 19 wurde übersprungen (Nummerierungslücke in der historischen Entwicklung)
 
@@ -40,9 +42,18 @@ Jeder Commit ist klein, fokussiert und baut logisch auf dem vorherigen auf.
   - Scope: CI-first (kein Deployment in Commit 23)
   - Detailplan: `docs/PLANNING_COMMIT_23.md`
 
-### ⏳ Zukünftig (Commit 24+)
-- **Commit 24:** Deployment-Vorbereitung (nach User-Accounts + lokalem LLM)
-- **Commit 25+:** weitere Produkt- und Infrastrukturfeatures
+### 🔄 In Planung (Commit 24)
+- **Commit 24:** Kompetenzlebenslaeufe I (Erstellen + Anzeigen, MVP-light)
+  - Ziel: strukturierter Kompetenzlebenslauf als produktnaher Mehrwert
+  - Detailplan: `docs/PLANNING_COMMIT_24.md`
+
+### ⏳ Geplante Folge-Reihenfolge (neu priorisiert)
+- **Commit 25:** Analysequalitaet & Erklaerbarkeit (B)
+- **Commit 26:** Profile-Ausbau ohne Auth (D)
+- **Commit 27:** Acceptance-Tests Kernflows (C)
+- **Commit 28:** Architecture-Tests & Engineering-Haertung (E)
+- **Commit 29+:** User/Auth/AuthZ + rudimentaere Userverwaltung
+- **Deployment:** erst nach User-/LLM-Block neu einordnen
 
 ---
 
@@ -1777,7 +1788,7 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 - `lizenzen.blade.php` - Automatisch generiert
 
 **2.2 Layout erweitern** (`resources/views/layouts/app.blade.php`)
-- Footer um Legal-Links erweitern
+- Footer um Legal-Links erweitert
 - Responsive Footer (Stack vertikal < 768px, Horizontal > 768px)
 
 **Content-Struktur Legal-Seiten:**
@@ -2150,40 +2161,3 @@ src/
 
 ---
 
-## ⚙️ Commit 23 – GitHub Actions CI + Branch Protection
-
-**Branch:** `feature/commit-23-github-actions-ci`  
-**Status:** 🔄 In Planung  
-**Zweck:** Quality Gates automatisch zwischen Feature-Branches und `main` absichern.
-
-### Scope
-- CI-first, kein Deployment
-- GitHub Actions Workflow mit Jobs fuer:
-  - `pint`
-  - `phpstan`
-  - `pest` inkl. Coverage (`>=95%`)
-- Trigger: `push`, `pull_request` auf `main`, `workflow_dispatch`
-- Coverage-Artifact (HTML/Clover), Retention 7 Tage
-- Codecov-Upload (public Repo, ohne Token)
-- Status-Badges in `README.md`
-- Branch-Protection fuer `main` dokumentieren
-
-### Architektur- und Qualitätsregeln
-- DDD/CQRS/SOLID unveraendert
-- Keine Aufweichung der bestehenden Quality Gates
-- `AI_PROVIDER=mock` in CI-Kontext
-- `APP_KEY` zur Laufzeit im Workflow erzeugen
-
-### Geplante Artefakte
-- `.github/workflows/ci.yml`
-- `src/.env.ci`
-- `README.md` (Badges)
-- `docs/DEVELOPMENT.md` (Branch-Protection + Codecov Setup)
-
-### Definition of Done
-- CI laeuft fuer Push/PR/manuell und ist gruen
-- Alle drei Checks (`pint`, `phpstan`, `pest`) sind als Required Checks dokumentiert
-- Coverage-Gate (`>=95%`) ist im Workflow aktiv
-- Coverage-Artefakte werden hochgeladen
-- Badges in `README.md` sichtbar und korrekt verlinkt
-- `main`-Protection in Doku beschrieben

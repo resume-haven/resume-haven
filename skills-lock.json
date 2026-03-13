@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "arc42-documentation": {
+      "source": "melodic-software/claude-code-plugins",
+      "sourceType": "github",
+      "computedHash": "c9ab7ad185680900e00a0362fed025951fd0429869dcad62eba89bb4069105a7"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "computedHash": "6412eb4eb3b91595ebab937f0c69501240e7ba761b3d82510b5cf506ec5c7adc"
+    }
+  }
+}
