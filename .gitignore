@@ -76,3 +76,15 @@ docker-compose.override.yml
 /src/.junie/skills/developing-with-ai-sdk/SKILL.md
 /src/.junie/skills/pest-testing/SKILL.md
 /src/.junie/skills/tailwindcss-development/SKILL.md
+/.agents/skills/tailwindcss-animations/references/animation-patterns.md
+/.claude/skills/tailwindcss-animations/references/animation-patterns.md
+/.junie/skills/tailwindcss-animations/references/animation-patterns.md
+/.agents/skills/tailwindcss-advanced-layouts/SKILL.md
+/.agents/skills/tailwindcss-animations/SKILL.md
+/.agents/skills/tailwindcss-mobile-first/SKILL.md
+/.claude/skills/tailwindcss-advanced-layouts/SKILL.md
+/.claude/skills/tailwindcss-animations/SKILL.md
+/.claude/skills/tailwindcss-mobile-first/SKILL.md
+/.junie/skills/tailwindcss-advanced-layouts/SKILL.md
+/.junie/skills/tailwindcss-animations/SKILL.md
+/.junie/skills/tailwindcss-mobile-first/SKILL.md

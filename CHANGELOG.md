@@ -30,8 +30,8 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
   - `COMMIT_PLAN.md`
   - `docs/ARCHITECTURE.md`
   - `docs/CODING_GUIDELINES.md`
-  - `docs/PLANNING_COMMIT_22.md`
-  - `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+  - `docs/history/PLANNING_COMMIT_22.md`
+  - `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
 
 ### Fixed
 - Coverage-Luecken fuer Commit-22-nahe Komponenten geschlossen
@@ -49,7 +49,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Documentation
 - Finaler Implementierungsleitfaden fuer Commit 22 hinzugefuegt:
-  - `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+  - `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
 
 ---
 

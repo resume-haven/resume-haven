@@ -100,17 +100,17 @@ Langfristige Vision und Feature-Roadmap für ResumeHaven.
 **Für wen:** Product Owner, Stakeholder, Entwickler
 
 
-#### [**COMMIT_22_IMPLEMENTATION_GUIDE.md**](COMMIT_22_IMPLEMENTATION_GUIDE.md)
-Implementierungsleitfaden fuer den neuen `Profile`-Context und die tokenbasierte CV-Speicherung.
+#### [**../COMMIT_PLAN.md**](../COMMIT_PLAN.md)
+Aktiver, verschlankter Commit-Plan fuer den aktuellen Arbeitsfokus.
 
-**Inhalt:**
-- Architektur und Dateistruktur von Commit 22
-- CQRS-Flow fuer Speichern/Laden
-- Token- und Krypto-Entscheidungen
-- Testabdeckung und Quality Gates
-- MVP-Limitierungen und naechste Schritte
+#### [**COMMIT_HISTORY_INDEX.md**](COMMIT_HISTORY_INDEX.md)
+Indexseite fuer ausgelagerte Commit-Historie.
 
-**Für wen:** Entwickler und KI-Agenten, die an Commit 22 weiterarbeiten
+#### [**history/COMMIT_HISTORY_2026.md**](history/COMMIT_HISTORY_2026.md)
+Kompakte Historie der abgeschlossenen Commits (1-23).
+
+#### [**history/COMMIT_22_IMPLEMENTATION_GUIDE.md**](history/COMMIT_22_IMPLEMENTATION_GUIDE.md)
+Historischer Implementierungsleitfaden fuer den `Profile`-Context aus Commit 22.
 
 ---
 
@@ -200,4 +200,3 @@ Richtlinien für Beiträge zum Projekt.
 
 **Letzte Aktualisierung**: 2026-03-02  
 **Version**: 1.0 (nach Domain-Architektur Refactoring)
-
