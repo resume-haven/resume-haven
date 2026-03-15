@@ -18,6 +18,57 @@
             </div>
         @endif
 
+        @if (session('competence_resume') && is_array(session('competence_resume')))
+            @php
+                /** @var array{hard_skills?: array<int, string>, soft_skills?: array<int, string>, domains?: array<int, string>, years_experience?: int|null, summary?: string} $competenceResume */
+                $competenceResume = session('competence_resume');
+            @endphp
+            <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 space-y-4">
+                <h3 class="text-base sm:text-lg font-semibold text-text-light dark:text-text-dark">Kompetenzlebenslauf (Vorschau)</h3>
+
+                @if (isset($competenceResume['summary']) && is_string($competenceResume['summary']))
+                    <p class="text-sm text-gray-700 dark:text-gray-300">{{ $competenceResume['summary'] }}</p>
+                @endif
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="font-semibold mb-2">Hard Skills</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach (($competenceResume['hard_skills'] ?? []) as $skill)
+                                <span class="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-800 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-100">{{ $skill }}</span>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold mb-2">Soft Skills</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach (($competenceResume['soft_skills'] ?? []) as $skill)
+                                <span class="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-800 px-2 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-100">{{ $skill }}</span>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold mb-2">Domainen</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach (($competenceResume['domains'] ?? []) as $domain)
+                                <span class="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-800 px-2 py-1 text-xs font-medium text-purple-700 dark:text-purple-100">{{ $domain }}</span>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold mb-2">Berufserfahrung</p>
+                        <p class="text-gray-700 dark:text-gray-300">
+                            @if (isset($competenceResume['years_experience']) && is_int($competenceResume['years_experience']))
+                                {{ $competenceResume['years_experience'] }}+ Jahre
+                            @else
+                                Nicht erkannt
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Error Messages -->
         @if ($errors->any())
             <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded-lg mb-6">
@@ -137,6 +188,14 @@
                     class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
                 >
                     CV speichern
+                </button>
+                <button
+                    type="submit"
+                    formaction="{{ route('profile.competence-resume') }}"
+                    formnovalidate
+                    class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
+                >
+                    Kompetenzlebenslauf erstellen
                 </button>
                 <a
                     href="/"

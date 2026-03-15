@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AnalyzeController;
+use App\Http\Controllers\BuildCompetenceResumeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\LoadResumeController;
@@ -24,6 +25,7 @@ Route::get('/analyze', function () {
 Route::post('/analyze', AnalyzeController::class)->name('analyze.submit');
 
 Route::post('/profile/store', StoreResumeController::class)->name('profile.store');
+Route::post('/profile/competence-resume', BuildCompetenceResumeController::class)->name('profile.competence-resume');
 Route::get('/profile/load/{token}', LoadResumeController::class)->name('profile.load');
 
 // Legal Pages
