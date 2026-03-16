@@ -18,13 +18,32 @@
             </div>
         @endif
 
+        @if (session('cv_source') === 'competence_resume')
+            <div class="bg-indigo-100 dark:bg-indigo-900 border border-indigo-400 dark:border-indigo-700 text-indigo-800 dark:text-indigo-100 px-4 py-3 rounded-lg">
+                Aktuelle Analysequelle: Kompetenzlebenslauf. Der urspruengliche CV bleibt als Ausgangstext erhalten.
+            </div>
+        @endif
+
         @if (session('competence_resume') && is_array(session('competence_resume')))
             @php
                 /** @var array{hard_skills?: array<int, string>, soft_skills?: array<int, string>, domains?: array<int, string>, years_experience?: int|null, summary?: string} $competenceResume */
                 $competenceResume = session('competence_resume');
+                /** @var string|null $competenceResumeText */
+                $competenceResumeText = session('competence_resume_text');
             @endphp
             <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 space-y-4">
-                <h3 class="text-base sm:text-lg font-semibold text-text-light dark:text-text-dark">Kompetenzlebenslauf (Vorschau)</h3>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <h3 class="text-base sm:text-lg font-semibold text-text-light dark:text-text-dark">Kompetenzlebenslauf (Vorschau)</h3>
+                    <form action="{{ route('profile.competence-resume.use') }}" method="POST">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200 ease-in-out text-sm"
+                        >
+                            Kompetenzlebenslauf fuer Analyse verwenden
+                        </button>
+                    </form>
+                </div>
 
                 @if (isset($competenceResume['summary']) && is_string($competenceResume['summary']))
                     <p class="text-sm text-gray-700 dark:text-gray-300">{{ $competenceResume['summary'] }}</p>
@@ -66,6 +85,13 @@
                         </p>
                     </div>
                 </div>
+
+                @if (is_string($competenceResumeText) && $competenceResumeText !== '')
+                    <div class="space-y-2">
+                        <p class="font-semibold text-sm">Analyse-Artefakt</p>
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300" style="white-space: pre-wrap; word-break: break-word; line-height: 1.5;">{{ $competenceResumeText }}</div>
+                    </div>
+                @endif
             </div>
         @endif
 
