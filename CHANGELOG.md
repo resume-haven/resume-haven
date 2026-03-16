@@ -10,6 +10,19 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Commit 24 – Kompetenzlebenslaeufe I (MVP-light) finalisiert**
+  - Neues Analyseartefakt fuer Kompetenzlebenslaeufe:
+    - `RenderCompetenceResumeTextAction` rendert `CompetenceResumeDto` deterministisch in Textform
+  - Neuer Reuse-Flow fuer Analysequelle:
+    - `UseCompetenceResumeController`
+    - Route: `POST /profile/competence-resume/use` (`profile.competence-resume.use`)
+  - Analyze-UI erweitert:
+    - Vorschau inkl. Analyseartefakt (`competence_resume_text`)
+    - Hinweis auf aktive Analysequelle (`cv_source=competence_resume`)
+    - Aktion "Kompetenzlebenslauf fuer Analyse verwenden"
+  - Session-Daten fuer Nachvollziehbarkeit erweitert:
+    - `competence_resume_text`, `original_cv_text`
+
 - **Commit 22 – Anonyme CV-Speicherung (Profile Context) finalisiert**
   - Neuer Bounded Context `Profile` mit CQRS-Basis:
     - `StoreResumeCommand`, `GetResumeByTokenQuery`
@@ -24,6 +37,9 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
     - Copy-to-Clipboard-Button mit visuellem Feedback
 
 ### Changed
+- `COMMIT_PLAN.md` auf Commit-24-Abschluss aktualisiert (Commit 25 als naechster Fokus)
+- `docs/PLANNING_COMMIT_24.md` auf abgeschlossen gesetzt und mit Umsetzungsstand finalisiert
+- `docs/history/COMMIT_HISTORY_2026.md` um Commit 24 ergaenzt
 - `StoreResumeController`: defensiven, praktisch unerreichbaren String-Guard entfernt
   - Typgarantie erfolgt bereits ueber `StoreResumeRequest` (`cv_text` als `string`)
 - Dokumentation fuer Commit 22 erweitert/aktualisiert
@@ -34,6 +50,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
   - `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
 
 ### Fixed
+- Kompetenzlebenslauf-Reuse: klarer Fehlerpfad bei fehlendem Analyseartefakt in der Session
 - Coverage-Luecken fuer Commit-22-nahe Komponenten geschlossen
   - `DecryptResumeAction` auf 100%
   - `StoreResumeController` auf 100%
@@ -50,6 +67,14 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ### Documentation
 - Finaler Implementierungsleitfaden fuer Commit 22 hinzugefuegt:
   - `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+- Finaler Implementierungsleitfaden fuer Commit 24 hinzugefuegt:
+  - `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
+
+### Quality
+- Commit-24-Stand mit Quality-Gates validiert:
+  - `make test` (gruen)
+  - `make phpstan` (0 Errors)
+  - `make pint-analyse` (gruen)
 
 ---
 

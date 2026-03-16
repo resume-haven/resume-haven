@@ -1,7 +1,7 @@
 # Commit 24 - Kompetenzlebenslaeufe I (MVP-light)
 
 **Branch (geplant):** `feature/commit-24-competence-resume`  
-**Status:** In Planung  
+**Status:** Abgeschlossen (PR/Merge-Finalisierung)  
 **Erstellt:** 2026-03-13
 
 ---
@@ -18,7 +18,9 @@ Der Fokus liegt auf sofortigem Nutzerwert: strukturierte Kompetenzen statt nur F
 ### Enthalten
 - Kompetenzprofil aus vorhandenen CV-Daten ableiten
 - Kompetenzlebenslauf in der UI anzeigen
-- Grundlage fuer spaetere Re-Analyse mit verbessertem CV schaffen
+- Grundlage fuer Re-Analyse mit verbessertem CV schaffen
+- Kompetenzlebenslauf als deterministisches Analyseartefakt rendern
+- Kompetenzlebenslauf gezielt als Analysequelle uebernehmen
 - Testabdeckung fuer neue Kernflows erweitern
 - Datenschutz-/Retention-Aspekte in der Planung explizit beruecksichtigen
 
@@ -47,6 +49,16 @@ Der Fokus liegt auf sofortigem Nutzerwert: strukturierte Kompetenzen statt nur F
    - und/oder `Gaps_neu < Gaps_alt`
 4. Neue/angepasste Tests sind gruen.
 5. PHPStan/Pint/Tests bleiben gruen.
+
+---
+
+## Umsetzungsstand (Commit 24)
+
+- Build-Flow erstellt Kompetenzlebenslauf und speichert Vorschau + Analyseartefakt in der Session.
+- Analyze-UI zeigt Vorschau, Artefakt und expliziten Use-Button fuer die Analysequelle.
+- Reuse-Flow ist als eigener Single-Action-Controller umgesetzt.
+- Fehlerpfad fuer fehlendes Artefakt ist abgedeckt (Session-Error).
+- Relevante Feature-/Unit-Tests, PHPStan und Pint sind gruen.
 
 ---
 

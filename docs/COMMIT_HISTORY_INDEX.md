@@ -14,5 +14,6 @@ Diese Seite dient als Einstieg fuer die ausgelagerte Commit-Historie.
 ## Bezug zum aktiven Plan
 
 - Aktive Planung: [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
-- Laufender Detailplan: [`PLANNING_COMMIT_24.md`](PLANNING_COMMIT_24.md)
+- Letzter abgeschlossener Detailplan: [`PLANNING_COMMIT_24.md`](PLANNING_COMMIT_24.md)
+- Letzter Implementierungsleitfaden: [`history/COMMIT_24_IMPLEMENTATION_GUIDE.md`](history/COMMIT_24_IMPLEMENTATION_GUIDE.md)
 - Vorheriger abgeschlossener Detailplan: [`history/PLANNING_COMMIT_23.md`](history/PLANNING_COMMIT_23.md)

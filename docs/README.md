@@ -107,10 +107,13 @@ Aktiver, verschlankter Commit-Plan fuer den aktuellen Arbeitsfokus.
 Indexseite fuer ausgelagerte Commit-Historie.
 
 #### [**history/COMMIT_HISTORY_2026.md**](history/COMMIT_HISTORY_2026.md)
-Kompakte Historie der abgeschlossenen Commits (1-23).
+Kompakte Historie der abgeschlossenen Commits (1-24).
 
 #### [**history/COMMIT_22_IMPLEMENTATION_GUIDE.md**](history/COMMIT_22_IMPLEMENTATION_GUIDE.md)
 Historischer Implementierungsleitfaden fuer den `Profile`-Context aus Commit 22.
+
+#### [**history/COMMIT_24_IMPLEMENTATION_GUIDE.md**](history/COMMIT_24_IMPLEMENTATION_GUIDE.md)
+Historischer Implementierungsleitfaden fuer Commit 24 (Kompetenzlebenslaeufe I).
 
 ---
 

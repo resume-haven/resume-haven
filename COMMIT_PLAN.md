@@ -3,23 +3,21 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-03-13  
-**Aktueller Stand:** Commit 23 abgeschlossen, Commit 24 in Planung (Kompetenzlebenslaeufe)
+**Letzte Aktualisierung:** 2026-03-16  
+**Aktueller Stand:** Commit 24 fachlich abgeschlossen (Feature-Branch), PR/Merge-Finalisierung laufend
 
 ---
 
 ## Status-Ueberblick
 
 ### Abgeschlossen
-- Commit 1-23 (kompakt in `docs/history/COMMIT_HISTORY_2026.md`)
+- Commit 1-24 (kompakt in `docs/history/COMMIT_HISTORY_2026.md`)
 - Hinweis: Commit 19 wurde historisch uebersprungen
 
 ### In Planung
-- **Commit 24:** Kompetenzlebenslaeufe I (Erstellen + Anzeigen, MVP-light)
-  - Detailplan: `docs/PLANNING_COMMIT_24.md`
+- **Commit 25:** Analysequalitaet & Erklaerbarkeit (B)
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 25:** Analysequalitaet & Erklaerbarkeit (B)
 - **Commit 26:** Profile-Ausbau ohne Auth (D)
 - **Commit 27:** Acceptance-Tests Kernflows (C)
 - **Commit 28:** Architecture-Tests & Engineering-Haertung (E)
@@ -30,8 +28,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 ## Commit 24 - Kompetenzlebenslaeufe I (MVP-light)
 
-**Branch (geplant):** `feature/commit-24-competence-resume`  
-**Status:** In Planung
+**Branch:** `feature/commit-24-competence-resume`  
+**Status:** Abgeschlossen (PR/Merge-Finalisierung)
 
 ### Ziel
 - Kompetenzlebenslauf als neues Produktartefakt erzeugen und anzeigen
@@ -40,7 +38,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ### Scope
 - Kompetenzprofil aus CV ableiten
 - Kompetenzlebenslauf erstellen und in der UI darstellen
-- Grundlage fuer Re-Analyse mit verbessertem CV
+- Kompetenzlebenslauf als Analyseartefakt rendern und in Session speichern
+- Kompetenzlebenslauf explizit als Analysequelle wiederverwenden (Use-Flow)
 - Testausbau als Pflicht
 - Datenschutz/Retention in der Planung beruecksichtigen
 
@@ -48,7 +47,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Kompetenzlebenslauf kann erzeugt und angezeigt werden
 - Re-Analyse mit verbessertem CV ist moeglich
 - Qualitaetsziel vorbereitet: typischerweise `Score_neu > Score_alt` und/oder `Gaps_neu < Gaps_alt`
-- Tests/PHPStan/Pint bleiben gruen
+- Tests/PHPStan/Pint bleiben gruen (validiert)
 
 ### Nicht-Scope in Commit 24
 - Kein User-Login/Auth
@@ -73,4 +72,5 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Historie 2026 (kompakt): `docs/history/COMMIT_HISTORY_2026.md`
 - Detailplanung Commit 23: `docs/history/PLANNING_COMMIT_23.md`
 - Detailplanung Commit 24: `docs/PLANNING_COMMIT_24.md`
+- Implementierungsleitfaden Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
 - Roadmap: `docs/ROADMAP.md`

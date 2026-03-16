@@ -24,11 +24,13 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 21a: Dark Mode
 - Commit 22: Profile-Context (anonyme, verschluesselte CV-Speicherung)
 - Commit 23: GitHub Actions CI + Branch Protection (`main`)
+- Commit 24: Kompetenzlebenslaeufe I (Erstellen, Anzeigen, Analyse-Reuse-Flow)
 
 ## Detaillierte Einzelplaene
 
 - [`PLANNING_COMMIT_23.md`](PLANNING_COMMIT_23.md)
-- [`../PLANNING_COMMIT_24.md`](../PLANNING_COMMIT_24.md) (in Planung)
+- [`../PLANNING_COMMIT_24.md`](../PLANNING_COMMIT_24.md) (abgeschlossen)
+- [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 
 ## Hinweis
 
