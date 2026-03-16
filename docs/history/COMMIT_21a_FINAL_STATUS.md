@@ -126,7 +126,7 @@ Toggle-Button nutzte `onclick="DarkModeManager.toggle()"`, aber separates JS-Mod
 
 ### Neu
 - `tests/Feature/DarkModeTest.php` (127 Zeilen)
-- `docs/COMMIT_21a_IMPLEMENTATION_GUIDE.md` (Dokumentation)
+- `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` (Dokumentation)
 
 ### Geändert
 - `tailwind.config.js` (+1 Zeile: `darkMode: 'class'`)
@@ -164,7 +164,7 @@ npm run build
 ## 📚 Dokumentation
 
 ### Aktualisierte Dateien
-1. ✅ `docs/COMMIT_21a_IMPLEMENTATION_GUIDE.md` - Vollständige Implementierungsdokumentation
+1. ✅ `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` - Vollständige Implementierungsdokumentation
 2. ✅ `docs/ai/SESSION_RESUME_2026-03-09.md` - Session-Status aktualisiert
 3. ✅ `COMMIT_PLAN.md` - Commit 21a als abgeschlossen markiert
 
@@ -201,5 +201,3 @@ npm run build
 ---
 
 **Commit 21a Status:** ✅ **PRODUCTION READY**
-
-

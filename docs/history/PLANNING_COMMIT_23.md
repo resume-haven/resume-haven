@@ -1,8 +1,9 @@
 # Commit 23 - GitHub Actions CI + Branch Protection
 
 **Branch:** `feature/commit-23-github-actions-ci`  
-**Status:** In Planung  
-**Erstellt:** 2026-03-11
+**Status:** Abgeschlossen  
+**Erstellt:** 2026-03-11  
+**Abgeschlossen:** 2026-03-13
 
 ---
 
@@ -36,7 +37,7 @@ Quality Gates automatisch zwischen Feature-Branches und `main` absichern, ohne b
 2. Coverage: bestehende `clover.xml` wird fuer Codecov genutzt
 3. APP_KEY: wird zur Laufzeit im Workflow erzeugt (nicht im Repo)
 4. AI im CI: `AI_PROVIDER=mock`, `GEMINI_API_KEY` als leerer Platzhalter
-5. Protected Branch: `main` mit Required Checks (`pint`, `phpstan`, `pest`)
+5. Protected Branch: `main` mit Required Checks (`pint`, `phpstan`, `pest_coverage`)
 
 ---
 
@@ -67,4 +68,3 @@ Quality Gates automatisch zwischen Feature-Branches und `main` absichern, ohne b
 - Repo ist public -> Codecov ohne Token moeglich
 - `clover.xml` existiert bereits
 - Deployment bleibt fuer Commit 24+ eingeplant
-

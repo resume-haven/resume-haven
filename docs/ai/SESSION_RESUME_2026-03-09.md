@@ -151,7 +151,7 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 - ✅ PHPStan: 0 Errors
 - ✅ Pint: PASS
 - ✅ Assets: Neu gebaut mit Dark-Mode Support
-- ✅ Dokumentation: `COMMIT_21a_IMPLEMENTATION_GUIDE.md` aktualisiert
+- ✅ Dokumentation: `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` aktualisiert
 - ✅ Browser-Funktionalität: Dark-Mode Toggle funktioniert einwandfrei
 
 ---
@@ -189,7 +189,7 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 ### Commit 22: CV-Speicherung (Profile Context) — 🔄 In Planung
 - **Status:** Planung abgeschlossen (2026-03-10)
 - **Branch:** `feature/commit-22-profile-cv-storage`
-- **Detailplan:** `docs/PLANNING_COMMIT_22.md`
+- **Detailplan:** `docs/history/PLANNING_COMMIT_22.md`
 - **Architektur-Entscheidungen:**
   - Neuer Bounded Context `Profile`
   - Token: URL-safe Base64, 32 Bytes (nicht erratbar)

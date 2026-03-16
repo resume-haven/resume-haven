@@ -6,7 +6,7 @@
 
 ---
 
-> **Umsetzungsstand:** Siehe `docs/COMMIT_22_IMPLEMENTATION_GUIDE.md` fuer den bereits implementierten Basis-Flow und die verifizierten Quality Gates.
+> **Umsetzungsstand:** Siehe `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md` fuer den bereits implementierten Basis-Flow und die verifizierten Quality Gates.
 
 ---
 
@@ -315,4 +315,3 @@ Siehe vollständige Code-Beispiele in `COMMIT_PLAN.md` (Commit 22 Abschnitt).
 
 **Letzte Aktualisierung:** 2026-03-10  
 **Version:** 1.0 (Detaillierte Planung für Commit 22)
-

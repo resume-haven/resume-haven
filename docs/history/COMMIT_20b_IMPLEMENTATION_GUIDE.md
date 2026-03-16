@@ -83,7 +83,7 @@
 
 **Wenn du selbst implementieren möchtest:**
 
-Folge der **Step-by-Step-Reihenfolge** in `docs/PLANNING_COMMIT_20b.md`:
+Folge der **Step-by-Step-Reihenfolge** in `docs/history/PLANNING_COMMIT_20b.md`:
 
 #### Step 1: Statische Seiten (Quick Win - ~30min)
 
@@ -390,8 +390,8 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 
 ## 📚 Weitere Dokumentation
 
-- **Detailplanung:** `docs/PLANNING_COMMIT_20b.md`
-- **Commit-Plan:** `COMMIT_PLAN.md` (Zeile 1600+)
+- **Detailplanung:** `docs/history/PLANNING_COMMIT_20b.md`
+- **Commit-Plan:** `COMMIT_PLAN.md`
 - **Architektur:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
 - **Soft-Reset Baseline:** `docs/ai/WORKING_BASELINE.md`
@@ -404,7 +404,7 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 
 1. Lies `docs/ai/WORKING_BASELINE.md` (Soft-Reset-Einstieg)
 2. Prüfe `COMMIT_PLAN.md` für Status-Überblick
-3. Prüfe `docs/COMMIT_20b_IMPLEMENTATION_GUIDE.md` (diese Datei) für Details
+3. Prüfe `docs/history/COMMIT_20b_IMPLEMENTATION_GUIDE.md` (diese Datei) für Details
 4. Repository-Stand ist Source of Truth
 
 **Aktueller Stand:**
@@ -418,6 +418,3 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 
 **Letzte Aktualisierung:** 2026-03-09  
 **Version:** 2.0 (Commit 20b abgeschlossen, bereit für Commit 21)
-
-
-
