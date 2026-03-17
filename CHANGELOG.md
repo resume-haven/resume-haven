@@ -10,6 +10,43 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Commit 25 – Analysequalitaet & Erklaerbarkeit (in Umsetzung)**
+  - Persistente Baseline im `Profile`-Context (neue Tabelle `analysis_baselines`):
+    - `AnalysisBaseline`-Model + Migration
+    - `AnalysisBaselineDto` (immutable)
+    - `AnalysisBaselineRepository` mit `upsert()` und `find()`
+  - Delta-Engine fuer erklaerbare Vergleiche:
+    - `ScoreDeltaDto`, `RecommendationDeltaDto`, `AnalysisComparisonDto`
+    - `BuildAnalysisComparisonAction` – erzeugt Delta-Daten aus persistenter Baseline oder Session-Fallback
+    - `ResolveBaselineKeyAction` – bestimmt Baseline-Schluessel (Token- oder Session-basiert)
+  - Fallback-Mechanismus: Session-Snapshot, wenn keine persistente Baseline vorhanden
+  - Result-UI mit Delta/Impact-Panel:
+    - Score-Delta, Match-Delta, Gap-Delta mit Richtungspfeilen (`↑`, `→`, `↓`)
+    - Farbkodierung: Verbesserung (gruen), Gleichstand (blau), Verschlechterung (rot)
+    - Prioritaetswechsel bei Empfehlungen sichtbar
+  - Neue Unit-Tests:
+    - `BuildAnalysisComparisonActionTest`:
+      - Null-Score → kein Vergleich
+      - Baseline-Speicherung bei normaler Analyse
+      - Delta-Berechnung (Verbesserung, Gleichstand, Verschlechterung)
+      - Session-Fallback inkl. Empfehlungs-Normalisierung
+      - Ungültiger Session-Snapshot → `null`
+    - `BuildAnalyzeViewDataActionTest` um explizite `comparison`-Assertions erweitert
+    - `AnalyzeControllerUnitTest`: View-Daten enthalten `comparison` korrekt
+  - Neue Feature-Tests:
+    - `AnalysisBaselineRepositoryTest`:
+      - `find()` liefert `null` ohne Treffer
+      - `upsert()` aktualisiert statt Duplikate anzulegen
+      - Normalisierung filtert ungültige Empfehlungs-Eintraege
+      - `null`-Persistenzwert ergibt leere Empfehlungsliste
+    - `AnalysisComparisonTest` erweitert:
+      - Kompetenz-Analyse mit neutralem Vergleich (`→`)
+      - Kompetenz-Analyse mit Verschlechterung (`↓`)
+    - `GenerateLicenseDataCommandTest` erweitert:
+      - Fehlende Lock-Dateien → leere Paketlisten
+      - Ungueltige Lock-Formate → robustes Fehlerverhalten
+      - Parsing, Normalisierung und alphabetische Sortierung
+
 - **Commit 24 – Kompetenzlebenslaeufe I (MVP-light) finalisiert**
   - Neues Analyseartefakt fuer Kompetenzlebenslaeufe:
     - `RenderCompetenceResumeTextAction` rendert `CompetenceResumeDto` deterministisch in Textform
@@ -37,44 +74,46 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
     - Copy-to-Clipboard-Button mit visuellem Feedback
 
 ### Changed
-- `COMMIT_PLAN.md` auf Commit-24-Abschluss aktualisiert (Commit 25 als naechster Fokus)
+- `GenerateLicenseDataCommand`: Ungültige `packages`-Struktur in `composer.lock` führt nicht mehr zu `assert()`-Abbruch (Commit 25)
+- `GenerateLicenseDataCommand`: Leere Lizenz-Arrays werden als `unknown` normalisiert (Commit 25)
+- `ExecuteAnalyzeFlowAction`: Snapshot-Logik und Baseline-Aufbau in `buildComparisonData()` gekapselt (Commit 25)
+- `StoreResumeController`: defensiven, praktisch unerreichbaren String-Guard entfernt (Commit 24)
+  - Typgarantie erfolgt bereits ueber `StoreResumeRequest` (`cv_text` als `string`)
+- `COMMIT_PLAN.md` auf Commit-25-Status aktualisiert
 - `docs/PLANNING_COMMIT_24.md` auf abgeschlossen gesetzt und mit Umsetzungsstand finalisiert
 - `docs/history/COMMIT_HISTORY_2026.md` um Commit 24 ergaenzt
-- `StoreResumeController`: defensiven, praktisch unerreichbaren String-Guard entfernt
-  - Typgarantie erfolgt bereits ueber `StoreResumeRequest` (`cv_text` als `string`)
-- Dokumentation fuer Commit 22 erweitert/aktualisiert
-  - `COMMIT_PLAN.md`
-  - `docs/ARCHITECTURE.md`
-  - `docs/CODING_GUIDELINES.md`
-  - `docs/history/PLANNING_COMMIT_22.md`
-  - `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+- Dokumentation fuer Commit 22 erweitert/aktualisiert:
+  - `docs/ARCHITECTURE.md`, `docs/CODING_GUIDELINES.md`
+  - `docs/history/PLANNING_COMMIT_22.md`, `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
 
 ### Fixed
-- Kompetenzlebenslauf-Reuse: klarer Fehlerpfad bei fehlendem Analyseartefakt in der Session
-- Coverage-Luecken fuer Commit-22-nahe Komponenten geschlossen
-  - `DecryptResumeAction` auf 100%
-  - `StoreResumeController` auf 100%
-  - `GetCachedAnalysisAction` auf 100%
-  - `LegalController` und `ContactController` auf 100%
-- Zusätzliche Tests fuer Edge Cases und UX-Flows
+- `GenerateLicenseDataCommand` crashte bei `composer.lock` mit `packages`-Wert != Array (Commit 25)
+- Leere Lizenz-Arrays (`[]`) wurden als Leerstring serialisiert statt als `unknown` (Commit 25)
+- Kompetenzlebenslauf-Reuse: klarer Fehlerpfad bei fehlendem Analyseartefakt in der Session (Commit 24)
+- Coverage-Luecken fuer Commit-22-nahe Komponenten geschlossen (Commit 24):
+  - `DecryptResumeAction`, `StoreResumeController`, `GetCachedAnalysisAction` auf 100 %
+  - `LegalController` und `ContactController` auf 100 %
+- Zusätzliche Tests fuer Edge Cases und UX-Flows (Commit 24):
   - Feature: `ProfileResumeStorageTest`, `AnalyzeResumeStorageUiTest`, `LegalPagesTest`, `ContactFormTest`
   - Unit: `ResumeCryptoActionsTest`, `GetCachedAnalysisActionTest`
 
 ### Security
-- Fehlerfaelle bei ungueltigen Tokens und defekten Payloads explizit abgesichert
-- Keine Klartextpersistenz fuer gespeicherte CV-Inhalte
+- Fehlerfaelle bei ungueltigen Tokens und defekten Payloads explizit abgesichert (Commit 24)
+- Keine Klartextpersistenz fuer gespeicherte CV-Inhalte (Commit 24)
 
 ### Documentation
-- Finaler Implementierungsleitfaden fuer Commit 22 hinzugefuegt:
-  - `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
-- Finaler Implementierungsleitfaden fuer Commit 24 hinzugefuegt:
-  - `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
+- Finaler Implementierungsleitfaden fuer Commit 22: `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+- Finaler Implementierungsleitfaden fuer Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
 
 ### Quality
-- Commit-24-Stand mit Quality-Gates validiert:
-  - `make test` (gruen)
-  - `make phpstan` (0 Errors)
-  - `make pint-analyse` (gruen)
+- Test-Coverage von **98.2 % → 98.4 %** (Minimum: 95 %)
+- Neue/erweiterte Hotspot-Abdeckungen:
+  - `Console/Commands/GenerateLicenseDataCommand` → **96.8 %** (vorher: 69.1 %)
+  - `Domains/Profile/Repositories/AnalysisBaselineRepository` → **100.0 %** (vorher: 91.1 %)
+  - `Domains/Analysis/UseCases/PresentationUseCase/BuildAnalysisComparisonAction` → **98.2 %** (vorher: 96.5 %)
+- `make phpstan` → **0 Errors** (Level 9, 96 Dateien)
+- `make pint-analyse` → **pass**
+- **254 Tests**, **1764 Assertions**
 
 ---
 
@@ -247,4 +286,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-10
+**Letzte Aktualisierung**: 2026-03-17
