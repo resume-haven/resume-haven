@@ -13,7 +13,10 @@ use App\Domains\Analysis\Dto\ScoreResultDto;
  */
 class BuildAnalyzeViewDataAction
 {
-    public function fromResult(AnalyzeResultDto $result, ?ScoreResultDto $score): AnalyzeViewDataDto
+    /**
+     * @param array<string, mixed>|null $comparison
+     */
+    public function fromResult(AnalyzeResultDto $result, ?ScoreResultDto $score, ?array $comparison = null): AnalyzeViewDataDto
     {
         return new AnalyzeViewDataDto(
             jobText: $result->job_text,
@@ -22,6 +25,7 @@ class BuildAnalyzeViewDataAction
             error: $result->error,
             score: $score,
             tags: $result->tags,
+            comparison: $comparison,
         );
     }
 
@@ -34,6 +38,7 @@ class BuildAnalyzeViewDataAction
             error: $message,
             score: null,
             tags: null,
+            comparison: null,
         );
     }
 }

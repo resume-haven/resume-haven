@@ -23,6 +23,12 @@ describe('AnalyzeController::__invoke', function () {
             'job_text' => str_repeat('A', 31),
             'cv_text' => str_repeat('B', 31),
         ]);
+        $comparison = [
+            'has_comparison' => true,
+            'score_delta' => [
+                'delta' => 12,
+            ],
+        ];
 
         $viewDataDto = new AnalyzeViewDataDto(
             jobText: str_repeat('A', 31),
@@ -38,6 +44,7 @@ describe('AnalyzeController::__invoke', function () {
             error: null,
             score: null,
             tags: null,
+            comparison: $comparison,
         );
 
         $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
@@ -50,7 +57,9 @@ describe('AnalyzeController::__invoke', function () {
         $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
         $response = $controller->__invoke($request);
 
-        expect($response)->toBeInstanceOf(\Illuminate\Contracts\View\View::class);
+        expect($response)
+            ->toBeInstanceOf(\Illuminate\Contracts\View\View::class)
+            ->and($response->getData()['comparison'] ?? null)->toBe($comparison);
     });
 
     it('gibt bei Action-Fehlerdaten weiterhin die result-View zurueck', function () {
@@ -66,6 +75,7 @@ describe('AnalyzeController::__invoke', function () {
             error: 'Sicherheitsvalidierung fehlgeschlagen: Ungueltige Eingabe',
             score: null,
             tags: null,
+            comparison: null,
         );
 
         $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
@@ -76,7 +86,10 @@ describe('AnalyzeController::__invoke', function () {
 
         $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
         $response = $controller->__invoke($request);
+        $viewData = $response->getData();
 
-        expect($response)->toBeInstanceOf(\Illuminate\Contracts\View\View::class);
+        expect($response)
+            ->toBeInstanceOf(\Illuminate\Contracts\View\View::class)
+            ->and(array_key_exists('comparison', $viewData) ? $viewData['comparison'] : null)->toBeNull();
     });
 });

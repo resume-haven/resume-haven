@@ -42,6 +42,69 @@
             </div>
         @endif
 
+        <!-- Vergleichs-Panel (Commit 25) -->
+        @if (isset($comparison) && is_array($comparison) && (($comparison['has_comparison'] ?? false) === true))
+            @php
+                /** @var array{baseline: int, current: int, delta: int, direction: string, color_class: string, arrow: string}|null $scoreDelta */
+                $scoreDelta = is_array($comparison['score_delta'] ?? null) ? $comparison['score_delta'] : null;
+                /** @var array<int, array{gap: string, baseline_priority: string, current_priority: string, direction: string, color_class: string, arrow: string}> $recommendationDeltas */
+                $recommendationDeltas = is_array($comparison['recommendation_deltas'] ?? null) ? $comparison['recommendation_deltas'] : [];
+                /** @var int $matchDelta */
+                $matchDelta = is_int($comparison['match_delta'] ?? null) ? $comparison['match_delta'] : 0;
+                /** @var int $gapDelta */
+                $gapDelta = is_int($comparison['gap_delta'] ?? null) ? $comparison['gap_delta'] : 0;
+            @endphp
+            <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 mt-4 sm:mt-6">
+                <h3 class="text-lg sm:text-xl font-bold mb-4">Vergleich zur Baseline</h3>
+
+                @if (is_string($comparison['message'] ?? null))
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3">{{ $comparison['message'] }}</p>
+                @endif
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Score-Delta</p>
+                        @if ($scoreDelta)
+                            <p class="text-lg font-semibold {{ $scoreDelta['color_class'] }}">
+                                {{ $scoreDelta['arrow'] }} {{ $scoreDelta['delta'] > 0 ? '+' : '' }}{{ $scoreDelta['delta'] }}%
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                Baseline {{ $scoreDelta['baseline'] }}% → Aktuell {{ $scoreDelta['current'] }}%
+                            </p>
+                        @endif
+                    </div>
+
+                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Match-Delta</p>
+                        <p class="text-lg font-semibold {{ $matchDelta > 0 ? 'text-green-700 dark:text-green-300' : ($matchDelta < 0 ? 'text-red-700 dark:text-red-300' : 'text-blue-700 dark:text-blue-300') }}">
+                            {{ $matchDelta > 0 ? '↑' : ($matchDelta < 0 ? '↓' : '→') }} {{ $matchDelta > 0 ? '+' : '' }}{{ $matchDelta }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Gap-Delta</p>
+                        <p class="text-lg font-semibold {{ $gapDelta < 0 ? 'text-green-700 dark:text-green-300' : ($gapDelta > 0 ? 'text-red-700 dark:text-red-300' : 'text-blue-700 dark:text-blue-300') }}">
+                            {{ $gapDelta < 0 ? '↑' : ($gapDelta > 0 ? '↓' : '→') }} {{ $gapDelta > 0 ? '+' : '' }}{{ $gapDelta }}
+                        </p>
+                    </div>
+                </div>
+
+                @if (count($recommendationDeltas) > 0)
+                    <div class="space-y-2">
+                        <p class="text-sm font-semibold">Prioritaetsaenderungen bei Empfehlungen</p>
+                        @foreach ($recommendationDeltas as $delta)
+                            <div class="rounded-md border border-gray-200 dark:border-gray-700 p-3 text-sm">
+                                <span class="font-semibold">{{ $delta['gap'] }}</span>
+                                <span class="ml-2 {{ $delta['color_class'] }}">
+                                    {{ $delta['arrow'] }} {{ strtoupper($delta['baseline_priority']) }} → {{ strtoupper($delta['current_priority']) }}
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endif
+
         <!-- Tags Section -->
         @if ($result && is_array($result) && isset($result['tags']) && is_array($result['tags']))
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">

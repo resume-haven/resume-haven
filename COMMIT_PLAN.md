@@ -4,7 +4,7 @@ Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.
 Abgeschlossene Details sind in die Historie ausgelagert.
 
 **Letzte Aktualisierung:** 2026-03-16  
-**Aktueller Stand:** Commit 24 fachlich abgeschlossen (Feature-Branch), PR/Merge-Finalisierung laufend
+**Aktueller Stand:** Commit 24 abgeschlossen, Commit 25 gestartet (`feature/commit-25-analysis-delta-explainability`)
 
 ---
 
@@ -16,6 +16,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 ### In Planung
 - **Commit 25:** Analysequalitaet & Erklaerbarkeit (B)
+  - Detailplan: `docs/PLANNING_COMMIT_25.md`
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **Commit 26:** Profile-Ausbau ohne Auth (D)
@@ -29,7 +30,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ## Commit 24 - Kompetenzlebenslaeufe I (MVP-light)
 
 **Branch:** `feature/commit-24-competence-resume`  
-**Status:** Abgeschlossen (PR/Merge-Finalisierung)
+**Status:** Abgeschlossen
 
 ### Ziel
 - Kompetenzlebenslauf als neues Produktartefakt erzeugen und anzeigen
@@ -73,4 +74,43 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 23: `docs/history/PLANNING_COMMIT_23.md`
 - Detailplanung Commit 24: `docs/PLANNING_COMMIT_24.md`
 - Implementierungsleitfaden Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
+- Detailplanung Commit 25: `docs/PLANNING_COMMIT_25.md`
 - Roadmap: `docs/ROADMAP.md`
+
+---
+
+## Commit 25 - Analysequalitaet & Erklaerbarkeit
+
+**Branch:** `feature/commit-25-analysis-delta-explainability`  
+**Status:** In Umsetzung
+
+### Ziel
+- Vergleichbarkeit zwischen Original-CV und optimiertem CV transparent machen
+- Erklaerbarkeit liefern, warum sich Score/Matches/Gaps veraendern
+
+### Scope
+- Persistente Baseline im `Profile`-Context (neue Tabelle) fuer Vergleichsdaten
+- Fallback-Verhalten, wenn Baseline nicht vorliegt (Session-basierter Vergleich)
+- Delta-Engine fuer:
+  - Score-Differenz
+  - Match-/Gap-Differenz
+  - Recommendations-Differenz inkl. Prioritaetswechsel
+- Impact-Visualisierung in der Ergebnis-UI:
+  - Verbesserung: Gruenton
+  - Gleichbleibend: Blauton
+  - Verschlechterung: Rotton
+  - zusaetzlich Richtungspfeile (`↑`, `→`, `↓`)
+- Mockdaten-Erweiterung fuer reproduzierbare Vergleichsfaelle
+
+### Geplante Slices
+- **Slice 0:** CTA/Button-Styles stabilisieren ("Kompetenzlebenslauf erstellen")
+- **Slice 1:** Baseline + Delta-DTOs + Vergleichs-Action
+- **Slice 2:** Result-UI fuer Delta/Impact
+- **Slice 3:** Mockdaten + Unit/Feature-Tests + Quality-Gates
+
+### Erfolgskriterien
+- Vergleichspanel zeigt nachvollziehbare Delta-Werte fuer Score/Matches/Gaps/Recommendations
+- Prioritaetsaenderungen bei Empfehlungen sind inkl. Impact sichtbar
+- Fallback funktioniert ohne Fehler, wenn persistente Baseline fehlt
+- Tests, PHPStan und Pint bleiben gruen
+

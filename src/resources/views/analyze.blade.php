@@ -219,7 +219,8 @@
                     type="submit"
                     formaction="{{ route('profile.competence-resume') }}"
                     formnovalidate
-                    class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
+                    class="btn-competence-resume w-full sm:w-auto px-8 py-3 sm:py-4 font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
+                    style="background-color:#4f46e5;color:#ffffff;"
                 >
                     Kompetenzlebenslauf erstellen
                 </button>

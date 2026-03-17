@@ -64,6 +64,16 @@ it('zeigt die Kompetenzlebenslauf-Vorschau auf der Analyze-Seite an', function (
     $response->assertSee('SaaS');
     $response->assertSee('10+ Jahre');
 });
+
+it('zeigt einen stabilen CTA-Button fuer Kompetenzlebenslauf auf analyze', function () {
+    $response = $this->get(route('analyze'));
+
+    $response->assertStatus(200);
+    $response->assertSee('Kompetenzlebenslauf erstellen');
+    $response->assertSee('btn-competence-resume', false);
+    $response->assertSee('background-color:#4f46e5;color:#ffffff;', false);
+});
+
 it('uebernimmt den Kompetenzlebenslauf als Analysegrundlage', function () {
     $competenceResumeText = implode(PHP_EOL, [
         'Kompetenzlebenslauf',
