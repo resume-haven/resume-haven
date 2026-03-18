@@ -103,6 +103,96 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
+# 🔌 Phase 5 – Provider-agnostischer LLM-Layer (geplant)
+
+## Ziel
+
+Den AI-Analyzer von der konkreten Gemini-Implementierung lösen, sodass beliebige LLM-Provider
+über ein einheitliches Plugin-Interface eingebunden werden können — ohne Änderungen am
+Domain-Code.
+
+## Ausgangssituation
+
+Die aktuelle Architektur ist bereits gut vorbereitet:
+
+- `AiAnalyzerInterface` → provideragnostische Abstraktion ✅
+- `AppServiceProvider` → Strategy-Pattern-Binding über `AI_PROVIDER`-Config ✅
+- `GeminiAiAnalyzer` → konkrete Gemini-Implementierung (korrekt benannt) ✅
+- `MockAiAnalyzer` → Test-/Dev-Implementierung ✅
+
+Was fehlt: ein generischer Basisanalyzer sowie ein formalisiertes Plugin-Konzept für
+provider-spezifische Eigenheiten.
+
+## Geplante Architektur
+
+```
+AiAnalyzerInterface                    ← unverändert, bleibt Vertragsgrundlage
+    │
+    ├── AbstractLlmAiAnalyzer          ← neu: generischer Basis-Analyzer
+    │       gemeinsame Logik:          (Sanitization, Error-Handling, Logging,
+    │                                   JSON-Encoding, Response-Validierung)
+    │
+    ├── GeminiAiAnalyzer               ← bleibt, extends AbstractLlmAiAnalyzer
+    ├── OpenAiAnalyzer                 ← zukünftig
+    ├── AnthropicAiAnalyzer            ← zukünftig
+    └── MockAiAnalyzer                 ← bleibt unverändert
+```
+
+## Plugin-Konzept für LLM-Eigenheiten
+
+Jeder Provider kann in seinem Analyzer von der Basis abweichen, wo nötig:
+
+| Aspekt | Beispiel für provider-spezifische Abweichung |
+|---|---|
+| **Prompt-Format** | Gemini: JSON-Objekt; OpenAI: System+User-Message-Struktur |
+| **Structured Output** | Unterschiedliche Schema-Übergabe pro SDK |
+| **Token-Limits** | Provider-spezifische Max-Token-Konfiguration |
+| **Fehler-Codes** | HTTP-429 (Rate Limit), API-spezifische Exception-Typen |
+| **Retry-Strategie** | Exponential Backoff je nach Provider-Verhalten |
+| **Response-Normalisierung** | Unterschiedliche `toArray()`-Strukturen der SDK-Responses |
+
+Jeder Analyzer überschreibt nur die Methoden, bei denen echte Abweichungen bestehen
+(Template-Method-Pattern). Gemeinsame Logik bleibt in `AbstractLlmAiAnalyzer`.
+
+## Umsetzungsschritte (grob)
+
+1. **`AbstractLlmAiAnalyzer` extrahieren**
+   - Gemeinsamen Code aus `GeminiAiAnalyzer` hochziehen
+   - `GeminiAiAnalyzer` auf `extends AbstractLlmAiAnalyzer` umstellen
+   - Alle bestehenden Tests bleiben grün
+
+2. **Plugin-Interface formalisieren**
+   - Optional: `LlmProviderPluginInterface` für provider-spezifische Hooks
+     (`buildPromptPayload()`, `normalizeResponse()`, `mapProviderException()`)
+
+3. **Provider-Config erweitern**
+   - `AI_PROVIDER=openai` / `AI_PROVIDER=anthropic` im AppServiceProvider ergänzen
+   - Konfigurationsstruktur in `config/ai.php` provider-generisch gestalten
+
+4. **Ersten Zweit-Provider implementieren** (Proof of Concept)
+   - z. B. `OpenAiAnalyzer` als Validierung der Abstraktion
+
+5. **Tests & Quality Gates**
+   - AbstractLlmAiAnalyzer: Unit-Tests für gemeinsame Logik
+   - Pro Plugin: minimale Integrations-Tests für abweichende Pfade
+
+## Abhängigkeiten & Voraussetzungen
+
+- Commit 28 (Architecture-Tests) sollte abgeschlossen sein, damit Layer-Regeln
+  den neuen `AbstractLlmAiAnalyzer` korrekt einordnen
+- `laravel/ai` SDK muss den gewünschten Provider unterstützen (aktuelle Version prüfen)
+- Kein User-Auth erforderlich
+
+## Offene Fragen für die Detailplanung
+
+- [ ] Soll `LlmProviderPluginInterface` als eigenes Interface existieren oder reicht
+      Template-Method im Abstract-Analyzer?
+- [ ] Welcher Zweit-Provider wird als Proof of Concept implementiert (OpenAI / Anthropic)?
+- [ ] Soll Provider-Fallback (z. B. Gemini → OpenAI bei Timeout) in Phase 5 oder später?
+- [ ] Konfiguration pro Analyse-Typ (z. B. Gemini für Matching, OpenAI für Empfehlungen)?
+
+---
+
 # 🚫 Nicht geplant (Stand MVP)
 
 - Datenbank  
@@ -119,7 +209,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-03-11)
+# 📊 Aktueller Stand (2026-03-18)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
@@ -128,18 +218,26 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Code-Coverage: >=95% abgesichert
 - PHPStan Level 9: 0 Errors
 - OWASP-orientiertes Security-Testing implementiert
-- Interface-based Design (AiAnalyzerInterface)
+- Interface-based Design (AiAnalyzerInterface + Strategy-Pattern)
 - Xdebug-Integration für Debugging + Coverage
 - Commit 22: Profile-Context (anonyme, verschlüsselte CV-Speicherung)
+- Commit 23: GitHub Actions CI + Branch Protection
+- Commit 24: Kompetenzlebensläufe I (MVP-light)
 
 ## 🔄 In Arbeit
-- Phase 2: Engine-Verbesserungen
-- Commit 23 Planung: GitHub Actions CI + Branch Protection (`main`)
+- Commit 25: Analysequalität & Erklärbarkeit
 
 ## 📋 Geplant
-- GitHub CI/CD Workflow (Commit 23)
-- Branch Protection mit Required Checks (`pint`, `phpstan`, `pest`)
-- Codecov-Badge + Coverage-Artefakte in CI
+- Commit 26: Profile-Ausbau ohne Auth
+- Commit 27: Acceptance-Tests Kernflows
+- Commit 28: Architecture-Tests & Engineering-Härtung
+- Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
+- **Phase 5: Provider-agnostischer LLM-Layer**
+  - AbstractLlmAiAnalyzer als gemeinsame Basis
+  - Plugin-Konzept für provider-spezifische Eigenheiten
+  - Erster Zweit-Provider als Proof of Concept
+  - Offene Fragen: siehe Phase-5-Abschnitt oben
+- GitHub CI/CD Workflow (Commit 23 ✅)
 - arc42 Dokumentationsstruktur
 - req42 Requirements Management
 - Acceptance-Tests

@@ -23,6 +23,11 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **Commit 27:** Acceptance-Tests Kernflows (C)
 - **Commit 28:** Architecture-Tests & Engineering-Haertung (E)
 - **Commit 29+:** User/Auth/AuthZ + rudimentaere Userverwaltung
+- **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
+  - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
+  - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
+  - Commit L3: Erster Zweit-Provider als Proof of Concept
+  - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
 
 ---
