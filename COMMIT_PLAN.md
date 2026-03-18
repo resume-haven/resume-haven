@@ -3,26 +3,25 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-03-16  
-**Aktueller Stand:** Commit 24 abgeschlossen, Commit 25 gestartet (`feature/commit-25-analysis-delta-explainability`)
+**Letzte Aktualisierung:** 2026-03-18  
+**Aktueller Stand:** Commit 26 gestartet (`feature/commit-26-profile-expansion-no-auth`)
 
 ---
 
 ## Status-Ueberblick
 
 ### Abgeschlossen
-- Commit 1-24 (kompakt in `docs/history/COMMIT_HISTORY_2026.md`)
+- Commit 1-25 (kompakt in `docs/history/COMMIT_HISTORY_2026.md`)
 - Hinweis: Commit 19 wurde historisch uebersprungen
+- Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
 
 ### In Planung
-- **Commit 25:** Analysequalitaet & Erklaerbarkeit (B)
-  - Detailplan: `docs/PLANNING_COMMIT_25.md`
+*(keine)*
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 26:** Profile-Ausbau ohne Auth (D)
 - **Commit 27:** Acceptance-Tests Kernflows (C)
-- **Commit 28:** Architecture-Tests & Engineering-Haertung (E)
-- **Commit 29+:** User/Auth/AuthZ + rudimentaere Userverwaltung
+- **Commit 28:** Architecture-Tests & Engineering-Härtung (E)
+- **Commit 29+:** User/Auth/AuthZ + rudimentäre Userverwaltung
 - **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
@@ -77,9 +76,9 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Historie-Index: `docs/COMMIT_HISTORY_INDEX.md`
 - Historie 2026 (kompakt): `docs/history/COMMIT_HISTORY_2026.md`
 - Detailplanung Commit 23: `docs/history/PLANNING_COMMIT_23.md`
-- Detailplanung Commit 24: `docs/PLANNING_COMMIT_24.md`
+- Detailplanung Commit 24: `docs/history/PLANNING_COMMIT_24.md`
 - Implementierungsleitfaden Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
-- Detailplanung Commit 25: `docs/PLANNING_COMMIT_25.md`
+- Detailplanung Commit 25: `docs/history/PLANNING_COMMIT_25.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---
@@ -87,7 +86,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ## Commit 25 - Analysequalitaet & Erklaerbarkeit
 
 **Branch:** `feature/commit-25-analysis-delta-explainability`  
-**Status:** In Umsetzung
+**Status:** Abgeschlossen
 
 ### Ziel
 - Vergleichbarkeit zwischen Original-CV und optimiertem CV transparent machen
@@ -119,3 +118,34 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Fallback funktioniert ohne Fehler, wenn persistente Baseline fehlt
 - Tests, PHPStan und Pint bleiben gruen
 
+---
+
+## Commit 26 - Profile-Ausbau ohne Auth
+
+**Branch:** `feature/commit-26-profile-expansion-no-auth`  
+**Status:** In Umsetzung
+
+### Ziel
+- Profile-Flow ohne Auth für lokale Entwicklung ausbauen (UX-first)
+- Retention im MVP pragmatisch umsetzen und für Nutzende transparent machen
+- CI-Guardrails: AI_PROVIDER=mock, keine externen AI-Secrets, nur interne Services erlaubt
+
+### Scope
+- Verbesserter Profile-UX-Flow (Speichern/Laden/Feedback)
+- Retention-Mechanik im MVP-Stil (ohne produktive Plattformfestlegung)
+- Zusätzliche UI-Hinweise zur Datenhaltung/-lebensdauer
+- CI-Guardrails (required) für No-Egress in AI-Pfaden
+
+### Nicht-Scope
+- User/Auth/AuthZ
+- Plattformspezifische produktive Retention-Endlösung
+- Externe AI-Provider in CI
+
+### Erfolgskriterien
+- Profile-Flow ist robust und nachvollziehbar ohne Auth
+- Retention-Verhalten ist technisch wirksam und in der UI klar kommuniziert
+- CI blockiert externe AI-Egress-Pfade (allow internal services only)
+- Tests, PHPStan und Pint bleiben grün
+
+### Detailplan
+- Siehe: `docs/PLANNING_COMMIT_26.md`

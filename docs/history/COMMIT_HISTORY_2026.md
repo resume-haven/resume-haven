@@ -29,7 +29,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 ## Detaillierte Einzelplaene
 
 - [`PLANNING_COMMIT_23.md`](PLANNING_COMMIT_23.md)
-- [`../PLANNING_COMMIT_24.md`](../PLANNING_COMMIT_24.md) (abgeschlossen)
+- [`PLANNING_COMMIT_24.md`](PLANNING_COMMIT_24.md) (abgeschlossen)
 - [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 
 ## Hinweis
