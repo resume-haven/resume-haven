@@ -98,4 +98,3 @@ describe('AnalysisBaselineRepository', function () {
             ->and($baseline?->recommendations)->toBe([]);
     });
 });
-

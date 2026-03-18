@@ -299,5 +299,3 @@ describe('BuildAnalysisComparisonAction', function () {
         expect($comparison)->toBeNull();
     });
 });
-
-

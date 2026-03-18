@@ -29,9 +29,6 @@ class MockableGeminiAiAnalyzer extends GeminiAiAnalyzer
     }
 }
 
-/**
- * @return MockableGeminiAiAnalyzer
- */
 function mockableAnalyzer(): MockableGeminiAiAnalyzer
 {
     return new MockableGeminiAiAnalyzer(
@@ -41,7 +38,6 @@ function mockableAnalyzer(): MockableGeminiAiAnalyzer
 }
 
 describe('GeminiAiAnalyzer Coverage', function () {
-
     test('analyze() happy path liefert AnalyzeResultDto ohne Fehler bei valider KI-Antwort', function () {
         $responseData = [
             'requirements'    => ['PHP-Kenntnisse'],
@@ -170,5 +166,3 @@ describe('GeminiAiAnalyzer Coverage', function () {
         expect($result)->toBeInstanceOf(Analyzer::class);
     });
 });
-
-

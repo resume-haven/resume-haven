@@ -197,4 +197,3 @@ it('parst, normalisiert und sortiert Composer- und NPM-Pakete', function () {
         ->and($nodePackages[1]['homepage'] ?? null)->toBe('https://example.com/beta')
         ->and($nodePackages[2]['homepage'] ?? null)->toBe('https://example.com/zeta');
 });
-

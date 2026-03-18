@@ -172,4 +172,3 @@ it('zeigt bei schlechterem Kompetenzprofil eine Verschlechterung an', function (
         ->and((int) ($comparisonArray['match_delta'] ?? 0))->toBeLessThan(0)
         ->and((int) ($comparisonArray['gap_delta'] ?? 0))->toBeGreaterThan(0);
 });
-
