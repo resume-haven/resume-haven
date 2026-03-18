@@ -12,6 +12,7 @@ final class AnalyzeViewDataDto
     /**
      * @param array<string, mixed>|null $result
      * @param array<string, mixed>|null $tags
+     * @param array<string, mixed>|null $comparison
      */
     public function __construct(
         public readonly string $jobText,
@@ -20,10 +21,11 @@ final class AnalyzeViewDataDto
         public readonly ?string $error,
         public readonly ?ScoreResultDto $score,
         public readonly ?array $tags = null,
+        public readonly ?array $comparison = null,
     ) {}
 
     /**
-     * @return array{job_text: string, cv_text: string, result: array<string, mixed>|null, error: string|null, score: ScoreResultDto|null, tags: array<string, mixed>|null}
+     * @return array{job_text: string, cv_text: string, result: array<string, mixed>|null, error: string|null, score: ScoreResultDto|null, tags: array<string, mixed>|null, comparison: array<string, mixed>|null}
      */
     public function toArray(): array
     {
@@ -34,6 +36,7 @@ final class AnalyzeViewDataDto
             'error' => $this->error,
             'score' => $this->score,
             'tags' => $this->tags,
+            'comparison' => $this->comparison,
         ];
     }
 }

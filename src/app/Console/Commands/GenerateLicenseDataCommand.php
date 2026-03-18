@@ -74,14 +74,13 @@ class GenerateLicenseDataCommand extends Command
         $content = File::get($composerLockPath);
         $composerLock = json_decode($content, true);
 
-        if (! is_array($composerLock) || ! isset($composerLock['packages'])) {
+        if (! is_array($composerLock) || ! is_array($composerLock['packages'] ?? null)) {
             $this->error('❌ composer.lock hat ungültiges Format');
 
             return [];
         }
 
         $packages = $composerLock['packages'];
-        assert(is_array($packages));
 
         $result = [];
 
@@ -205,6 +204,10 @@ class GenerateLicenseDataCommand extends Command
     private function formatLicense(array|string|null $license): string
     {
         if (is_array($license)) {
+            if ($license === []) {
+                return 'unknown';
+            }
+
             return implode(', ', $license);
         }
 

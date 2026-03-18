@@ -51,5 +51,166 @@ skills:
       prompt: >
         Analysiere diesen Fehler-Stacktrace und schlage mögliche Ursachen und Lösungen vor.
 
+  resumehaven:
+    - name: programmierstil_gate
+      prompt: >
+        Arbeite strikt nach dem ResumeHaven-Programmierstil: DDD, CQRS (phasenweise, aber
+        strikt pro Use-Case), SOLID als Pflicht-Gate, Single-Action-Controller (__invoke),
+        Business-Logik in Actions/UseCases/Services statt im Controller, DTO-first mit
+        immutable DTOs (readonly), vollständige Typisierung (PHPStan Level 9).
+        Schreibe/ändere Code so, dass Tests (Pest), phpstan und pint grün bleiben.
+        Liefere bei jeder Änderung kurz: (1) Architektur-Einordnung, (2) SOLID-Check,
+        (3) benötigte Tests, (4) auszuführende Quality-Gates.
+      usage:
+        - "Wende `programmierstil_gate` auf diese Änderung an und gib mir danach Architektur-Einordnung, SOLID-Check, Tests und Quality-Gates."
+        - "Refaktoriere diese Klasse im ResumeHaven-Stil (DDD/CQRS/SOLID) und halte Pest, PHPStan und Pint grün."
+
+    - name: pr_review_gate
+      prompt: >
+        Führe ein PR-Review im ResumeHaven-Stil durch. Priorisiere Findings nach Schweregrad
+        (kritisch -> hoch -> mittel -> niedrig) und nenne stets Datei/Zeilenbezug.
+        Fokus: Bugs, Verhaltensänderungen/Regressionen, Sicherheitsrisiken, DDD/CQRS/SOLID-
+        Verstöße, fehlende Tests sowie Risiken für Wartbarkeit.
+        Prüfe explizit: Single-Action-Controller, Business-Logik außerhalb von Controllern,
+        DTO-Immutable-Ansatz, Typisierung für PHPStan Level 9, Repository-Grenzen sowie
+        Quality-Gates (Pest, Coverage >= 95, phpstan, pint).
+        Antworte in dieser Reihenfolge: (1) Findings, (2) offene Fragen/Annahmen,
+        (3) knappe Change-Zusammenfassung, (4) empfohlene nächste Schritte.
+      usage:
+        - "Nutze `pr_review_gate` und reviewe diese Änderungen mit priorisierten Findings inkl. Datei/Zeilenbezug."
+        - "Führe ein ResumeHaven-PR-Review durch und prüfe explizit DDD/CQRS/SOLID plus fehlende Tests und Quality-Gates."
+
+    - name: cqrs_boundary_check
+      prompt: >
+        Prüfe diese Änderung auf CQRS-Grenzen im ResumeHaven-Stil. Stelle sicher, dass
+        Commands keine Read-Logik enthalten, Queries keine Zustandsänderung ausführen und
+        Handler fachlich sauber getrennt sind.
+        Liefere konkret: (1) gefundene Grenzverletzungen mit Datei/Zeile,
+        (2) minimale Refactoring-Schritte,
+        (3) betroffene Tests.
+      usage:
+        - "Nutze `cqrs_boundary_check` auf diesen Diff und zeige mir alle CQRS-Verletzungen mit Fix-Vorschlag."
+        - "Prüfe mit `cqrs_boundary_check`, ob Command/Query/Handler hier korrekt getrennt sind."
+
+    - name: quality_gate_planner
+      prompt: >
+        Erstelle für diese Änderung einen verbindlichen Quality-Gate-Plan im ResumeHaven-Stil.
+        Enthalten sein müssen: minimale Testausführung (Pest), Coverage-Relevanz,
+        PHPStan Level 9 und Pint-Reihenfolge.
+        Antworte als kurze, priorisierte Runlist mit erwarteten Erfolgskriterien.
+      usage:
+        - "Nutze `quality_gate_planner` und gib mir die kleinste sinnvolle Test-/Gate-Sequenz für diesen Change."
+        - "Erzeuge mit `quality_gate_planner` eine Runlist für Pest, Coverage, PHPStan und Pint."
+
+    - name: controller_thinness_check
+      prompt: >
+        Prüfe Controller-Code auf ResumeHaven-Standards: Single-Action-Controller (__invoke),
+        keine Business-Logik im Controller, Nutzung von Form Requests, Delegation an
+        Actions/UseCases/Services.
+        Liefere: (1) Verstöße mit Datei/Zeile, (2) Zielstruktur, (3) konkrete Auslagerungsschritte.
+      usage:
+        - "Wende `controller_thinness_check` auf diesen Controller an und markiere Business-Logik-Leaks."
+        - "Prüfe mit `controller_thinness_check`, ob `__invoke`, Form Request und Delegation korrekt umgesetzt sind."
+
   docker:
-    - name: dockerfile
+    - name: dockerfile_analyse
+      prompt: >
+        Analysiere dieses Dockerfile im ResumeHaven-Kontext (PHP 8.5-FPM, Nginx, Node:20).
+        Prüfe: Layer-Caching, unnötige Pakete, Sicherheitsrisiken, ARG/ENV-Konventionen
+        und optionale Xdebug-Integration (INSTALL_XDEBUG=true).
+        Liefere: (1) Findings mit Zeile, (2) optimierte Variante, (3) Auswirkung auf Build-Zeit.
+      usage:
+        - "Nutze `dockerfile_analyse` auf dieses Dockerfile und zeige Layer-Caching- und Sicherheitsprobleme."
+        - "Prüfe mit `dockerfile_analyse`, ob Xdebug-ARG und Permissions im PHP-Container korrekt sind."
+
+    - name: docker_compose_check
+      prompt: >
+        Prüfe diese docker-compose.yml im ResumeHaven-Setup (Services: resumehaven-php,
+        resumehaven-nginx, resumehaven-node, resumehaven-mailpit).
+        Prüfe: Service-Abhängigkeiten, Volume-Mounts (./src:/var/www/html), Netzwerk,
+        Port-Konflikte, Override-Kompatibilität und UID/GID-Handling.
+        Liefere: (1) Findings, (2) Fix-Vorschläge, (3) Auswirkung auf lokale Entwicklung.
+      usage:
+        - "Nutze `docker_compose_check` und prüfe ob Service-Abhängigkeiten, Volumes und Ports korrekt konfiguriert sind."
+        - "Prüfe mit `docker_compose_check`, ob das Override-File für Xdebug sauber mit dem Basis-Compose harmoniert."
+
+    - name: container_debug
+      prompt: >
+        Hilf beim Debuggen eines Problems im ResumeHaven-Docker-Setup.
+        Relevante Services: resumehaven-php (PHP-FPM), resumehaven-nginx (Port 8080),
+        resumehaven-node (Tailwind), resumehaven-mailpit (Port 8025).
+        Nützliche Befehle: `docker exec resumehaven-php ...`, `docker compose logs -f`,
+        `make debug-status`, `make php-shell`.
+        Liefere: (1) wahrscheinliche Ursache, (2) konkrete Debug-Schritte, (3) Fix.
+      usage:
+        - "Nutze `container_debug` — der PHP-Container startet nicht und ich sehe diesen Fehler in den Logs."
+        - "Prüfe mit `container_debug`, warum Xdebug nicht auf Port 9003 antwortet."
+
+    - name: xdebug_setup
+      prompt: >
+        Erkläre oder prüfe die Xdebug-Konfiguration im ResumeHaven-Setup.
+        Xdebug wird über INSTALL_XDEBUG=true (build-time ARG) und docker-compose.override.yml
+        aktiviert (XDEBUG_MODE=debug,coverage, Port 9003).
+        Aktivierung: `make debug-on`, Deaktivierung: `make debug-off`, Status: `make debug-status`.
+        Liefere: (1) Status der aktuellen Konfiguration, (2) konkrete Fix-Schritte falls nötig,
+        (3) IDE-Setup-Hinweise (VS Code / PhpStorm).
+      usage:
+        - "Nutze `xdebug_setup` und prüfe, ob Xdebug in meiner aktuellen Konfiguration korrekt aktiviert ist."
+        - "Erkläre mit `xdebug_setup`, wie ich Xdebug für Coverage-Reports aktiviere und danach wieder deaktiviere."
+
+    - name: container_commands
+      prompt: >
+        Stelle sicher, dass alle Befehle im ResumeHaven-Projekt immer im richtigen
+        Docker-Container ausgeführt werden — niemals direkt auf dem Host.
+        Container-Mapping:
+          - PHP, Artisan, Composer, Pest, PHPStan, Pint → resumehaven-php
+          - npm, npx, Node-Skripte                      → resumehaven-node
+        Bevorzuge `make`-Shortcuts wo vorhanden (make test, make phpstan, make pint-fix usw.).
+        Wenn du einen Befehl vorschlägst, liefere immer die vollständige `docker exec`-Form
+        oder das passende `make`-Ziel. Niemals `php`, `composer` oder `npm` ohne Container-Prefix.
+      usage:
+        - "Übersetze diesen Befehl für ResumeHaven in die korrekte Container-Form: `php artisan make:class Foo`"
+        - "Welches `docker exec` oder `make`-Kommando entspricht `npm run build` im ResumeHaven-Setup?"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SKILL ROUTING — Welcher Skill bei welchem Task zuerst?
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# IMPLEMENTATION / REFACTORING
+#   1. programmierstil_gate      → Baseline für jeden Code-Change
+#   2. container_commands        → alle vorgeschlagenen Befehle im Container ausführen
+#   3. cqrs_boundary_check       → wenn Commands/Queries/Handler betroffen
+#   4. controller_thinness_check → wenn Controller-Dateien angefasst werden
+#   5. quality_gate_planner      → am Ende: welche Gates minimal nötig?
+#
+# CODE REVIEW / PR
+#   1. pr_review_gate           → Haupt-Review (Bugs, SOLID, Sicherheit, Tests)
+#   2. cqrs_boundary_check      → zusätzlich bei Domain-Flow-Änderungen
+#
+# QUALITÄTSSICHERUNG
+#   1. quality_gate_planner     → welche Pest/PHPStan/Pint-Schritte sind Pflicht?
+#   2. container_commands       → sicherstellen, dass Gates im Container laufen
+#   3. pr_review_gate           → finaler Merge-Check
+#
+# ARCHITEKTUR-ANALYSE
+#   1. projektstruktur_analysieren  → Gesamtbild, SRP-Verletzungen
+#   2. architekturvorschlaege       → Modul-/Service-Design
+#   3. cqrs_boundary_check          → CQRS-Konsistenz prüfen
+#
+# DOCKER / INFRASTRUKTUR
+#   1. container_commands       → IMMER: php/npm/composer → richtiger Container
+#   2. docker_compose_check     → Service-Setup, Volumes, Ports
+#   3. dockerfile_analyse       → Layer, Sicherheit, Xdebug-ARG
+#   4. xdebug_setup             → Debugging/Coverage aktivieren
+#   5. container_debug          → Laufzeit-Probleme diagnostizieren
+#
+# LARAVEL-SPEZIFISCH
+#   1. container_commands       → Artisan immer via docker exec
+#   2. eloquent_optimierer      → Query-Performance
+#   3. migration_generator      → Schema → Migration
+#   4. test_generator           → Klassen-Tests mit Mocking
+#
+# PHP-ALLGEMEIN
+#   1. typisierung_verbessern   → PHPStan-Level 9 vorbereiten
+#   2. refactoring_assistent    → SOLID, Lesbarkeit
+#   3. fehleranalyse            → Stacktrace → Ursache

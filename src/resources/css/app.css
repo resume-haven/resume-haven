@@ -47,3 +47,15 @@
     }
 }
 
+@layer components {
+    /* Stabiler CTA-Button fuer Kompetenzlebenslauf, unabhaengig von Utility-Build-Artefakten */
+    .btn-competence-resume {
+        background-color: #4f46e5;
+        color: #ffffff;
+    }
+
+    .btn-competence-resume:hover {
+        background-color: #4338ca;
+    }
+}
+

@@ -9,6 +9,10 @@ use App\Domains\Analysis\Dto\ScoreResultDto;
 describe('BuildAnalyzeViewDataAction', function () {
     test('baut View-Daten aus erfolgreicher Analyse', function () {
         $action = new BuildAnalyzeViewDataAction();
+        $comparison = [
+            'has_comparison' => true,
+            'match_delta' => 2,
+        ];
 
         $result = new AnalyzeResultDto(
             'Job Text',
@@ -30,11 +34,12 @@ describe('BuildAnalyzeViewDataAction', function () {
             gapCount: 1
         );
 
-        $viewData = $action->fromResult($result, $score);
+        $viewData = $action->fromResult($result, $score, $comparison);
 
         expect($viewData->jobText)->toBe('Job Text');
         expect($viewData->error)->toBeNull();
         expect($viewData->score)->toBe($score);
+        expect($viewData->comparison)->toBe($comparison);
     });
 
     test('baut View-Daten aus Validierungs-Fehler', function () {
@@ -53,6 +58,12 @@ describe('BuildAnalyzeViewDataAction', function () {
 
     test('toArray gibt vollständige Struktur zurück', function () {
         $action = new BuildAnalyzeViewDataAction();
+        $comparison = [
+            'has_comparison' => true,
+            'score_delta' => [
+                'delta' => 10,
+            ],
+        ];
 
         $result = new AnalyzeResultDto(
             'Job',
@@ -64,9 +75,11 @@ describe('BuildAnalyzeViewDataAction', function () {
             null
         );
 
-        $viewData = $action->fromResult($result, null);
+        $viewData = $action->fromResult($result, null, $comparison);
         $array = $viewData->toArray();
 
-        expect($array)->toHaveKeys(['job_text', 'cv_text', 'result', 'error', 'score', 'tags']);
+        expect($array)
+            ->toHaveKeys(['job_text', 'cv_text', 'result', 'error', 'score', 'tags', 'comparison'])
+            ->and($array['comparison'])->toBe($comparison);
     });
 });

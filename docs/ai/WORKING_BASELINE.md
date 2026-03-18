@@ -51,7 +51,7 @@ Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorha
 
 **Empfohlene Reset-Reihenfolge:**
 1. Diese Datei (`WORKING_BASELINE.md`)
-2. Tagesaktuelle Session-Resume (z. B. `SESSION_RESUME_2026-03-09.md`)
+2. Tagesaktuelle Session-Resume (z. B. `SESSION_RESUME_2026-03-18.md`)
 3. `COMMIT_PLAN.md` (Status-Überblick)
 4. `AGENT_CONTEXT.md` (Details zu Arbeitsregeln)
 
@@ -80,5 +80,5 @@ Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorha
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-09  
-**Version**: 1.1 (Soft-Reset-Baseline als verbindlicher Session-Startpunkt + Versionierungskonvention)
+**Letzte Aktualisierung**: 2026-03-18  
+**Version**: 1.2 (Reset-Referenz auf aktuelle Session-Resume aktualisiert)
