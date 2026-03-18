@@ -67,13 +67,13 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
 
     private function callAi(AnalyzeRequestDto $sanitizedRequest): string
     {
-        $jsonData = json_encode($sanitizedRequest);
+        $jsonData = json_encode($sanitizedRequest->toArray());
         if ($jsonData === false) {
             throw new \RuntimeException('JSON-Encoding fehlgeschlagen');
         }
 
         /** @var StructuredAgentResponse $response */
-        $response = (new Analyzer())->prompt($jsonData);
+        $response = $this->createAnalyzer()->prompt($jsonData);
 
         $rawResponse = json_encode($response->toArray());
 
@@ -82,6 +82,11 @@ class GeminiAiAnalyzer implements AiAnalyzerInterface
         }
 
         return $rawResponse;
+    }
+
+    protected function createAnalyzer(): Analyzer
+    {
+        return new Analyzer();
     }
 
     private function sanitizeInput(string $input): string
