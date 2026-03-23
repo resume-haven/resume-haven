@@ -1,3 +1,18 @@
+#
+# Skill-Hinweis zur Test-Reihenfolge:
+#
+# - make pint-fix → Code-Formatierung (immer zuerst, verhindert Style-Fehler in nachfolgenden Checks)
+# - make phpstan  → Statische Analyse (früher Fehlerfang, schneller als Tests)
+# - make test     → Schneller Testlauf ohne Coverage (empfohlen für schnelle Checks)
+# - make test-coverage → Führt alle Tests inkl. Coverage aus (Testlauf ist enthalten, separater make test ist dann nicht nötig)
+#
+# Empfehlung:
+#   - Für schnelles Feedback: pint-fix → phpstan → test
+#   - Für vollständige Quality-Gates: pint-fix → phpstan → test-coverage
+#   - test-coverage ist langsamer, aber deckt alles ab (inkl. Testlauf)
+#
+# (Siehe auch docs/CODING_GUIDELINES.md)
+#
 # ResumeHaven Makefile (WSL)
 #
 # Übersicht: make <ziel>

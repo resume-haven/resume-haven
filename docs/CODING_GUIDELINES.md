@@ -1045,3 +1045,25 @@ class RecommendationService {
 ---
 
 **Letzte Aktualisierung**: 2026-03-10
+
+---
+
+## 🛠️ Test- und Quality-Gate-Reihenfolge
+
+**Empfohlene Reihenfolge für lokale und CI-Checks:**
+
+1. `make pint-fix`  → Code-Formatierung (immer zuerst, verhindert Style-Fehler)
+2. `make phpstan`   → Statische Analyse (früher Fehlerfang, schneller als Tests)
+3. `make test`      → Schneller Testlauf ohne Coverage (empfohlen für schnelles Feedback)
+4. `make test-coverage` → Führt alle Tests inkl. Coverage aus (Testlauf ist enthalten, separater `make test` ist dann nicht nötig)
+
+**Hinweise:**
+- Für schnelles Feedback: pint-fix → phpstan → test
+- Für vollständige Quality-Gates (z. B. vor Release): pint-fix → phpstan → test-coverage
+- `make test-coverage` ist langsamer, aber deckt alles ab (inkl. Testlauf)
+- Ein separater `make test` ist vor `make test-coverage` nicht nötig, da alle Tests ohnehin laufen.
+
+(Siehe auch Skill-Kommentar im Makefile)
+
+---
+
