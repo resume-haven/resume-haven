@@ -54,7 +54,7 @@ test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
 
 test-coverage: ## Testabdeckung mit Xdebug anzeigen
-	docker exec -it resumehaven-php composer run test:pest-coverage
+	docker exec -it resumehaven-php composer run test:pest-coverage --timeout=400
 
 test-coverage-report: ## Coverage-Report im Dateisystem erzeugen (coverage-report/)
 	docker exec -it resumehaven-php composer run test:pest-coverage-report

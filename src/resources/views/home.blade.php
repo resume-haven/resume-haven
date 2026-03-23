@@ -4,20 +4,20 @@
 
 @section('content')
     <div class="space-y-8">
-
-        <h2 class="text-4xl font-bold text-primary">
+        <x-molecules.page-heading>
             Willkommen bei ResumeHaven
-        </h2>
+        </x-molecules.page-heading>
 
-        <p class="text-gray-600 dark:text-text-dark text-lg leading-relaxed max-w-3xl">
-            ResumeHaven unterstützt dich dabei, die Anforderungen einer Stellenausschreibung
-            mit deinen Erfahrungen abzugleichen. Schnell, klar und ohne Schnickschnack.
-        </p>
-
-        <a href="/analyze" class="inline-block px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition shadow-md hover:shadow-lg">
-            Analyse starten
-        </a>
-
-
+        <x-molecules.call-to-action>
+            <x-slot name="button">
+                <x-atoms.link href="/analyze" class="inline-block px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition shadow-md hover:shadow-lg">
+                    Analyse starten
+                </x-atoms.link>
+            </x-slot>
+            <p class="text-gray-600 dark:text-text-dark text-lg leading-relaxed max-w-3xl">
+                ResumeHaven unterstützt dich dabei, die Anforderungen einer Stellenausschreibung
+                mit deinen Erfahrungen abzugleichen. Schnell, klar und ohne Schnickschnack.
+            </p>
+        </x-molecules.call-to-action>
     </div>
 @endsection
