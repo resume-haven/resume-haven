@@ -5,9 +5,9 @@
 @section('content')
     <div class="space-y-6 sm:space-y-8">
 
-         <x-molecules.page-heading>
-             Bewerbungsanalyse
-         </x-molecules.page-heading>
+        <x-atoms.heading-h1>
+            Bewerbungsanalyse
+        </x-atoms.heading-h1>
 
         <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
             Fuege die Stellenausschreibung und deinen Lebenslauf ein. ResumeHaven analysiert anschliessend,

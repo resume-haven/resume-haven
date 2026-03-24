@@ -4,9 +4,9 @@
 
 @section('content')
     <div class="space-y-8">
-        <x-molecules.page-heading>
+        <x-atoms.heading-h1>
             Willkommen bei ResumeHaven
-        </x-molecules.page-heading>
+        </x-atoms.heading-h1>
 
         <x-molecules.call-to-action>
             <x-slot name="button">

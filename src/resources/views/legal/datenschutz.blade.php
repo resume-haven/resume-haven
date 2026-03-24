@@ -5,7 +5,7 @@
 @section('content')
     <div class="max-w-3xl mx-auto">
         <div class="prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none">
-            <h1>Datenschutzerklärung</h1>
+            <x-atoms.heading-h1>Datenschutzerklärung</x-atoms.heading-h1>
 
             <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-3 sm:p-4 mb-6">
                 <p class="text-sm text-yellow-800 dark:text-yellow-200 font-semibold">
