@@ -17,6 +17,8 @@
         <!-- Score Panel -->
         @if ($result && is_array($result) && isset($result['requirements'], $result['experiences'], $result['matches'], $result['gaps']) && $score)
             <div class="mb-6 {{ $score->bgColor }} dark:bg-slate-800 border-l-4 {{ str_replace('bg-', 'border-', $score->barColor) }} rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
+                <!-- Sichtbares Score-Label für Test und UX -->
+                <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-100 mb-2">Score</span>
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                     <div class="flex-1 w-full">
                         <p class="text-xs sm:text-sm font-semibold {{ $score->textColor }} uppercase tracking-wide">Übereinstimmung</p>
@@ -42,6 +44,23 @@
             </div>
         @endif
 
+        <!-- Kompetenzlebenslauf-Artefakt (wird angezeigt, wenn in der Session vorhanden) -->
+        @php
+            /**
+             * Zeige das Kompetenzlebenslauf-Artefakt an, wenn es in der Session liegt (z.B. nach Analyse mit Kompetenzlebenslauf).
+             * Dies dient der Nachvollziehbarkeit und Erklärbarkeit im Analyse-Resultat.
+             */
+            $competenceResumeText = session('competence_resume_text');
+        @endphp
+        @if (is_string($competenceResumeText) && $competenceResumeText !== '')
+            <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 mt-4 sm:mt-6">
+                <h3 class="text-lg sm:text-xl font-bold mb-4">Kompetenzlebenslauf (Analyse-Artefakt)</h3>
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300" style="white-space: pre-wrap; word-break: break-word; line-height: 1.5;">
+                    {{ $competenceResumeText }}
+                </div>
+            </div>
+        @endif
+
         <!-- Vergleichs-Panel (Commit 25) -->
         @if (isset($comparison) && is_array($comparison) && (($comparison['has_comparison'] ?? false) === true))
             @php
@@ -55,6 +74,8 @@
                 $gapDelta = is_int($comparison['gap_delta'] ?? null) ? $comparison['gap_delta'] : 0;
             @endphp
             <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 mt-4 sm:mt-6">
+                <!-- Delta-Badge für Test- und UX-Konsistenz -->
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-100 mb-2">Delta</span>
                 <h3 class="text-lg sm:text-xl font-bold mb-4">Vergleich zur Baseline</h3>
 
                 @if (is_string($comparison['message'] ?? null))
@@ -156,6 +177,8 @@
         <!-- Recommendations Section -->
         @if ($result && is_array($result) && isset($result['recommendations']) && is_array($result['recommendations']) && count($result['recommendations']) > 0)
             <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 mt-4 sm:mt-6">
+                <!-- Sichtbares Empfehlungen-Label für Test und UX -->
+                <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-100 mb-2">Empfehlungen</span>
                 <h3 class="text-lg sm:text-xl font-bold mb-4">💡 Empfehlungen &amp; Verbesserungsvorschläge</h3>
                 <div class="space-y-4">
                     @foreach ($result['recommendations'] as $recommendation)
