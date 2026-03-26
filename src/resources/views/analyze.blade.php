@@ -5,7 +5,9 @@
 @section('content')
     <div class="space-y-6 sm:space-y-8">
 
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">Bewerbungsanalyse</h2>
+        <x-atoms.heading-h1>
+            Bewerbungsanalyse
+        </x-atoms.heading-h1>
 
         <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
             Fuege die Stellenausschreibung und deinen Lebenslauf ein. ResumeHaven analysiert anschliessend,
@@ -103,6 +105,20 @@
                         <li class="text-sm">{{ $error }}</li>
                     @endforeach
                 </ul>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Bitte prüfe deinen Token oder lade die Seite neu, falls ein technischer Fehler vorliegt.</p>
+            </div>
+        @endif
+
+        @if (session('loaded_token'))
+            <div class="bg-blue-100 dark:bg-blue-900 border border-blue-400 dark:border-blue-700 text-blue-800 dark:text-blue-100 px-4 py-3 rounded-lg mb-4">
+                <span class="font-semibold">Gespeicherter Lebenslauf geladen:</span>
+                <span class="break-all">{{ session('loaded_token') }}</span>
+            </div>
+        @endif
+        @if (session('resume_token') && !session('loaded_token'))
+            <div class="bg-emerald-100 dark:bg-emerald-900 border border-emerald-400 dark:border-emerald-700 text-emerald-800 dark:text-emerald-100 px-4 py-3 rounded-lg mb-4">
+                <span class="font-semibold">Lebenslauf gespeichert!</span>
+                <span class="block text-xs mt-1">Token: <span class="break-all">{{ session('resume_token') }}</span></span>
             </div>
         @endif
 
@@ -112,34 +128,34 @@
                 Falls du bereits einen Token hast, kannst du deinen gespeicherten Lebenslauf direkt laden.
             </p>
             <div class="flex flex-col sm:flex-row gap-3">
-                <input
+                <x-atoms.input
                     id="resume_token_input"
                     type="text"
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-dark dark:text-text-dark text-sm"
                     placeholder="Resume-Token eingeben"
-                    value="{{ session('loaded_token', session('resume_token', '')) }}"
-                >
-                <button
+                    :value="session('loaded_token', session('resume_token', ''))"
+                />
+                <x-atoms.button
                     type="button"
                     id="load_resume_button"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg transition duration-200 ease-in-out"
                 >
                     Lebenslauf laden
-                </button>
+                </x-atoms.button>
             </div>
 
             @if (session('resume_link'))
                 <div class="space-y-2">
                     <p class="text-xs sm:text-sm font-semibold text-text-light dark:text-text-dark">Dein Speicher-Link:</p>
                     <div class="flex gap-2">
-                        <input
+                        <x-atoms.input
                             id="resume_link_display"
                             type="text"
                             readonly
                             class="flex-1 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-xs sm:text-sm"
-                            value="{{ session('resume_link') }}"
-                        >
-                        <button
+                            :value="session('resume_link')"
+                        />
+                        <x-atoms.button
                             type="button"
                             id="copy_link_button"
                             title="Link kopieren"
@@ -151,7 +167,7 @@
                             <svg id="check_icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
-                        </button>
+                        </x-atoms.button>
                     </div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">
                         Speichere diesen Link, um deinen Lebenslauf spaeter wieder zu laden.
@@ -201,21 +217,21 @@
 
             <!-- CTA Buttons: Full-Width Mobile, Auto Desktop -->
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4 justify-center">
-                <button
+                <x-atoms.button
                     type="submit"
                     class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
                 >
                     Analysieren
-                </button>
-                <button
+                </x-atoms.button>
+                <x-atoms.button
                     type="submit"
                     formaction="{{ route('profile.store') }}"
                     formnovalidate
                     class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition duration-200 ease-in-out text-base sm:text-lg min-h-[48px]"
                 >
                     CV speichern
-                </button>
-                <button
+                </x-atoms.button>
+                <x-atoms.button
                     type="submit"
                     formaction="{{ route('profile.competence-resume') }}"
                     formnovalidate
@@ -223,13 +239,13 @@
                     style="background-color:#4f46e5;color:#ffffff;"
                 >
                     Kompetenzlebenslauf erstellen
-                </button>
-                <a
+                </x-atoms.button>
+                <x-atoms.link
                     href="/"
                     class="w-full sm:w-auto px-8 py-3 sm:py-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold rounded-lg transition duration-200 ease-in-out text-center text-base sm:text-lg min-h-[48px]"
                 >
                     Zurueck
-                </a>
+                </x-atoms.link>
             </div>
 
         </form>

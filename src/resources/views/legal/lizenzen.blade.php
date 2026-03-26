@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="max-w-5xl mx-auto">
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">Open Source Lizenzen</h1>
+        <x-atoms.heading-h1>Open Source Lizenzen</x-atoms.heading-h1>
 
         <div class="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-3 sm:p-4 mb-6">
             <p class="text-sm text-blue-800 dark:text-blue-200">

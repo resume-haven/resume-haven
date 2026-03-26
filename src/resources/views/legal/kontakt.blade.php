@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="max-w-3xl mx-auto">
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">Kontakt</h1>
+        <x-atoms.heading-h1>Kontakt</x-atoms.heading-h1>
 
         @if (session('success'))
             <div class="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-100 px-4 py-3 rounded-lg mb-6">

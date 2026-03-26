@@ -92,7 +92,7 @@ class DarkModeTest extends TestCase
         $html = $response->getContent();
         $this->assertStringContainsString('dark:bg-neutral-dark', $html);
         $this->assertStringContainsString('dark:border-gray-700', $html);
-        $this->assertStringContainsString('dark:text-gray-400', $html);
+        $this->assertStringContainsString('dark:text-gray-200', $html);
     }
 
     /**

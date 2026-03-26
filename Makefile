@@ -1,3 +1,18 @@
+#
+# Skill-Hinweis zur Test-Reihenfolge:
+#
+# - make pint-fix → Code-Formatierung (immer zuerst, verhindert Style-Fehler in nachfolgenden Checks)
+# - make phpstan  → Statische Analyse (früher Fehlerfang, schneller als Tests)
+# - make test     → Schneller Testlauf ohne Coverage (empfohlen für schnelle Checks)
+# - make test-coverage → Führt alle Tests inkl. Coverage aus (Testlauf ist enthalten, separater make test ist dann nicht nötig)
+#
+# Empfehlung:
+#   - Für schnelles Feedback: pint-fix → phpstan → test
+#   - Für vollständige Quality-Gates: pint-fix → phpstan → test-coverage
+#   - test-coverage ist langsamer, aber deckt alles ab (inkl. Testlauf)
+#
+# (Siehe auch docs/CODING_GUIDELINES.md)
+#
 # ResumeHaven Makefile (WSL)
 #
 # Übersicht: make <ziel>
@@ -39,6 +54,9 @@ test-unit: ## Nur Unit-Tests ausführen
 test-feature: ## Nur Feature-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-feature
 
+test-acceptance: ## Nur Acceptance-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-acceptance
+
 test-security: ## OWASP-orientierte Security-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-security
 
@@ -46,12 +64,9 @@ test-security-strict: ## Striktere Security-Tests (erweiterter Filter, stop-on-f
 	docker exec -it resumehaven-php composer run test:pest-security-strict
 
 test-security-gate: ## Kombiniertes Security-Quality-Gate (strict tests + phpstan + pint)
-	docker exec -it resumehaven-php composer run test:pest-security-strict
-	docker exec -it resumehaven-php composer run phpstan
 	docker exec -it resumehaven-php composer run pint:analyse
-
-test-acceptance: ## Nur Acceptance-Tests ausführen
-	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
+	docker exec -it resumehaven-php composer run phpstan
+	docker exec -it resumehaven-php composer run test:pest-security-strict
 
 test-coverage: ## Testabdeckung mit Xdebug anzeigen
 	docker exec -it resumehaven-php composer run test:pest-coverage

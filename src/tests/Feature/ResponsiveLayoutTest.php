@@ -50,7 +50,7 @@ test('footer nutzt responsive layout (vertical stack mobile, horizontal desktop)
 
     $response->assertStatus(200);
     // Prüfe auf responsive Flex-Direction
-    $response->assertSee('flex-col sm:flex-row', false);
+    $response->assertSee('flex-col-reverse sm:flex-row', false);
 });
 
 test('alpine js ist für mobile menu geladen', function () {
