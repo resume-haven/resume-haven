@@ -223,12 +223,12 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 22: Profile-Context (anonyme, verschlüsselte CV-Speicherung)
 - Commit 23: GitHub Actions CI + Branch Protection
 - Commit 24: Kompetenzlebensläufe I (MVP-light)
+- Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
 
 ## 🔄 In Arbeit
-- Commit 25: Analysequalität & Erklärbarkeit
+- Commit 26: Profile-Ausbau ohne Auth (`feature/commit-26-profile-expansion-no-auth`)
 
 ## 📋 Geplant
-- Commit 26: Profile-Ausbau ohne Auth
 - Commit 27: Acceptance-Tests Kernflows
 - Commit 28: Architecture-Tests & Engineering-Härtung
 - Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
