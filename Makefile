@@ -54,6 +54,9 @@ test-unit: ## Nur Unit-Tests ausführen
 test-feature: ## Nur Feature-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-feature
 
+test-acceptance: ## Nur Acceptance-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-acceptance
+
 test-security: ## OWASP-orientierte Security-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-security
 
@@ -61,12 +64,9 @@ test-security-strict: ## Striktere Security-Tests (erweiterter Filter, stop-on-f
 	docker exec -it resumehaven-php composer run test:pest-security-strict
 
 test-security-gate: ## Kombiniertes Security-Quality-Gate (strict tests + phpstan + pint)
-	docker exec -it resumehaven-php composer run test:pest-security-strict
-	docker exec -it resumehaven-php composer run phpstan
 	docker exec -it resumehaven-php composer run pint:analyse
-
-test-acceptance: ## Nur Acceptance-Tests ausführen
-	docker exec -it resumehaven-php vendor/bin/pest --group=acceptance
+	docker exec -it resumehaven-php composer run phpstan
+	docker exec -it resumehaven-php composer run test:pest-security-strict
 
 test-coverage: ## Testabdeckung mit Xdebug anzeigen
 	docker exec -it resumehaven-php composer run test:pest-coverage

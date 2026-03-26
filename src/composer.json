@@ -60,6 +60,7 @@
         "test:pest-all": "vendor/bin/pest",
         "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
         "test:pest-feature": "vendor/bin/pest --testsuite=Feature",
+        "test:pest-acceptance": "vendor/bin/pest --testsuite=Acceptance",
         "test:pest-security": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php",
         "test:pest-security-strict": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php --stop-on-failure",
         "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
