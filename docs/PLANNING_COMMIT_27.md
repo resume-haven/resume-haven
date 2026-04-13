@@ -1,7 +1,7 @@
 # Commit 27 - Acceptance-Tests Kernflows
 
 **Branch:** `feature/commit-27-acceptance-core-flows`  
-**Status:** Geplant  
+**Status:** In Abschlussphase  
 **Erstellt:** 2026-04-13
 
 ### Fortschritt (2026-04-13)
@@ -158,7 +158,7 @@ Kernfragen fuer Commit 27:
 ## Verweise
 
 - Aktivplan: `COMMIT_PLAN.md`
-- Vorheriger Detailplan: `docs/PLANNING_COMMIT_26.md`
+- Vorheriger Detailplan: `docs/history/PLANNING_COMMIT_26.md`
 - Historie: `docs/history/COMMIT_HISTORY_2026.md`
 - Roadmap: `docs/ROADMAP.md`
 - Agent-Kontext: `docs/ai/AGENT_CONTEXT.md`

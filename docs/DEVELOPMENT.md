@@ -238,7 +238,11 @@ Hinweis: Ersetze in den Badge-URLs `<owner>/<repo>` durch den echten GitHub-Pfad
 
 ### Branch-Protection fuer `main`
 
-GitHub Einstellungen:
+Status:
+- **Done (im Repo):** CI-Checks existieren als Jobs `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
+- **To-do (in GitHub Settings manuell setzen):** Branch-Protection-Regel inkl. Required Checks aktivieren
+
+GitHub Einstellungen (To-do):
 1. `Settings -> Branches -> Add rule`
 2. Branch-Pattern: `main`
 3. Aktivieren:
@@ -251,6 +255,12 @@ GitHub Einstellungen:
    - `phpstan`
    - `pest_acceptance`
    - `pest_coverage`
+
+Checkliste Branch-Protection:
+- [ ] Regel fuer `main` erstellt
+- [ ] `Require a pull request before merging` aktiv
+- [ ] `Require status checks to pass before merging` aktiv
+- [ ] Required checks gesetzt: `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
 
 ---
 
