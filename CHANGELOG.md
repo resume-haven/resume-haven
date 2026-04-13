@@ -10,110 +10,36 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
-- **Commit 25 – Analysequalitaet & Erklaerbarkeit (in Umsetzung)**
-  - Persistente Baseline im `Profile`-Context (neue Tabelle `analysis_baselines`):
-    - `AnalysisBaseline`-Model + Migration
-    - `AnalysisBaselineDto` (immutable)
-    - `AnalysisBaselineRepository` mit `upsert()` und `find()`
-  - Delta-Engine fuer erklaerbare Vergleiche:
-    - `ScoreDeltaDto`, `RecommendationDeltaDto`, `AnalysisComparisonDto`
-    - `BuildAnalysisComparisonAction` – erzeugt Delta-Daten aus persistenter Baseline oder Session-Fallback
-    - `ResolveBaselineKeyAction` – bestimmt Baseline-Schluessel (Token- oder Session-basiert)
-  - Fallback-Mechanismus: Session-Snapshot, wenn keine persistente Baseline vorhanden
-  - Result-UI mit Delta/Impact-Panel:
-    - Score-Delta, Match-Delta, Gap-Delta mit Richtungspfeilen (`↑`, `→`, `↓`)
-    - Farbkodierung: Verbesserung (gruen), Gleichstand (blau), Verschlechterung (rot)
-    - Prioritaetswechsel bei Empfehlungen sichtbar
-  - Neue Unit-Tests:
-    - `BuildAnalysisComparisonActionTest`:
-      - Null-Score → kein Vergleich
-      - Baseline-Speicherung bei normaler Analyse
-      - Delta-Berechnung (Verbesserung, Gleichstand, Verschlechterung)
-      - Session-Fallback inkl. Empfehlungs-Normalisierung
-      - Ungültiger Session-Snapshot → `null`
-    - `BuildAnalyzeViewDataActionTest` um explizite `comparison`-Assertions erweitert
-    - `AnalyzeControllerUnitTest`: View-Daten enthalten `comparison` korrekt
-  - Neue Feature-Tests:
-    - `AnalysisBaselineRepositoryTest`:
-      - `find()` liefert `null` ohne Treffer
-      - `upsert()` aktualisiert statt Duplikate anzulegen
-      - Normalisierung filtert ungültige Empfehlungs-Eintraege
-      - `null`-Persistenzwert ergibt leere Empfehlungsliste
-    - `AnalysisComparisonTest` erweitert:
-      - Kompetenz-Analyse mit neutralem Vergleich (`→`)
-      - Kompetenz-Analyse mit Verschlechterung (`↓`)
-    - `GenerateLicenseDataCommandTest` erweitert:
-      - Fehlende Lock-Dateien → leere Paketlisten
-      - Ungueltige Lock-Formate → robustes Fehlerverhalten
-      - Parsing, Normalisierung und alphabetische Sortierung
-
-- **Commit 24 – Kompetenzlebenslaeufe I (MVP-light) finalisiert**
-  - Neues Analyseartefakt fuer Kompetenzlebenslaeufe:
-    - `RenderCompetenceResumeTextAction` rendert `CompetenceResumeDto` deterministisch in Textform
-  - Neuer Reuse-Flow fuer Analysequelle:
-    - `UseCompetenceResumeController`
-    - Route: `POST /profile/competence-resume/use` (`profile.competence-resume.use`)
-  - Analyze-UI erweitert:
-    - Vorschau inkl. Analyseartefakt (`competence_resume_text`)
-    - Hinweis auf aktive Analysequelle (`cv_source=competence_resume`)
-    - Aktion "Kompetenzlebenslauf fuer Analyse verwenden"
-  - Session-Daten fuer Nachvollziehbarkeit erweitert:
-    - `competence_resume_text`, `original_cv_text`
-
-- **Commit 22 – Anonyme CV-Speicherung (Profile Context) finalisiert**
-  - Neuer Bounded Context `Profile` mit CQRS-Basis:
-    - `StoreResumeCommand`, `GetResumeByTokenQuery`
-    - `StoreResumeHandler`, `GetResumeByTokenHandler`
-    - `ProfileRepository`
-    - immutable DTOs (`StoreResumeDto`, `ResumeTokenDto`, `LoadedResumeDto`)
-  - Persistenz fuer gespeicherte Lebenslaeufe in `stored_resumes`
-    - Felder inkl. `token`, `encrypted_cv`, `last_accessed_at`
-  - Verschluesselung via AES-256-GCM (MVP: tokenbasierte Secret-Ableitung)
-  - UI-Erweiterung in `analyze.blade.php`:
-    - Generierter Speicher-Link
-    - Copy-to-Clipboard-Button mit visuellem Feedback
+- **Commit 27 – Acceptance-Tests Kernflows (in Abschlussphase)**
+  - Dedizierte Acceptance-Suite fuer Kernflows in `src/tests/Acceptance/`:
+    - `AcceptanceAnalysisFlowTest`
+    - `AcceptanceCompetenceResumeFlowTest`
+    - `AcceptanceDeltaComparisonFlowTest`
+    - `AcceptanceProfileFlowTest`
+  - Edge-Cases in den Kernflows abgesichert (Validation, fehlende Sessiondaten, ungueltige Tokens, Delta-Fallback)
+  - CI-Check `pest_acceptance` in `.github/workflows/ci.yml` ergaenzt
 
 ### Changed
-- `GenerateLicenseDataCommand`: Ungültige `packages`-Struktur in `composer.lock` führt nicht mehr zu `assert()`-Abbruch (Commit 25)
-- `GenerateLicenseDataCommand`: Leere Lizenz-Arrays werden als `unknown` normalisiert (Commit 25)
-- `ExecuteAnalyzeFlowAction`: Snapshot-Logik und Baseline-Aufbau in `buildComparisonData()` gekapselt (Commit 25)
-- `StoreResumeController`: defensiven, praktisch unerreichbaren String-Guard entfernt (Commit 24)
-  - Typgarantie erfolgt bereits ueber `StoreResumeRequest` (`cv_text` als `string`)
-- `COMMIT_PLAN.md` auf Commit-25-Status aktualisiert
-- `docs/PLANNING_COMMIT_24.md` auf abgeschlossen gesetzt und mit Umsetzungsstand finalisiert
-- `docs/history/COMMIT_HISTORY_2026.md` um Commit 24 ergaenzt
-- Dokumentation fuer Commit 22 erweitert/aktualisiert:
-  - `docs/ARCHITECTURE.md`, `docs/CODING_GUIDELINES.md`
-  - `docs/history/PLANNING_COMMIT_22.md`, `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
+- Composer-Script `quality:acceptance-gate` in `src/composer.json` hinzugefuegt
+- Make-Target `test-acceptance-gate` in `Makefile` hinzugefuegt
+- `COMMIT_PLAN.md` auf Commit-27-Fortschritt aktualisiert
 
 ### Fixed
-- `GenerateLicenseDataCommand` crashte bei `composer.lock` mit `packages`-Wert != Array (Commit 25)
-- Leere Lizenz-Arrays (`[]`) wurden als Leerstring serialisiert statt als `unknown` (Commit 25)
-- Kompetenzlebenslauf-Reuse: klarer Fehlerpfad bei fehlendem Analyseartefakt in der Session (Commit 24)
-- Coverage-Luecken fuer Commit-22-nahe Komponenten geschlossen (Commit 24):
-  - `DecryptResumeAction`, `StoreResumeController`, `GetCachedAnalysisAction` auf 100 %
-  - `LegalController` und `ContactController` auf 100 %
-- Zusätzliche Tests fuer Edge Cases und UX-Flows (Commit 24):
-  - Feature: `ProfileResumeStorageTest`, `AnalyzeResumeStorageUiTest`, `LegalPagesTest`, `ContactFormTest`
-  - Unit: `ResumeCryptoActionsTest`, `GetCachedAnalysisActionTest`
+- Fragile Acceptance-Assertions stabilisiert (robustere Session-/View-Signale)
+- Session-Zugriff im Delta-Acceptance-Flow korrigiert
 
 ### Security
-- Fehlerfaelle bei ungueltigen Tokens und defekten Payloads explizit abgesichert (Commit 24)
-- Keine Klartextpersistenz fuer gespeicherte CV-Inhalte (Commit 24)
+- CI-AI-Pfade fuer Acceptance laufen explizit mit `AI_PROVIDER=mock`
 
 ### Documentation
-- Finaler Implementierungsleitfaden fuer Commit 22: `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md`
-- Finaler Implementierungsleitfaden fuer Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
+- Commit-27-Planungsfortschritt aktualisiert in `docs/PLANNING_COMMIT_27.md`
+- `docs/PLANNING_COMMIT_26.md` nach `docs/history/PLANNING_COMMIT_26.md` verschoben
+- `docs/COMMIT_HISTORY_INDEX.md` und Verweise in `COMMIT_PLAN.md` angepasst
+- Branch-Protection-Hinweise in `docs/DEVELOPMENT.md` (Done/To-do + Required Checks) geschärft
 
 ### Quality
-- Test-Coverage von **98.2 % → 98.4 %** (Minimum: 95 %)
-- Neue/erweiterte Hotspot-Abdeckungen:
-  - `Console/Commands/GenerateLicenseDataCommand` → **96.8 %** (vorher: 69.1 %)
-  - `Domains/Profile/Repositories/AnalysisBaselineRepository` → **100.0 %** (vorher: 91.1 %)
-  - `Domains/Analysis/UseCases/PresentationUseCase/BuildAnalysisComparisonAction` → **98.2 %** (vorher: 96.5 %)
-- `make phpstan` → **0 Errors** (Level 9, 96 Dateien)
-- `make pint-analyse` → **pass**
-- **254 Tests**, **1764 Assertions**
+- `composer run quality:acceptance-gate` erfolgreich (Pint + PHPStan + Acceptance)
+- Acceptance-Suite: **7 Tests**, **85 Assertions**, gruen
 
 ---
 
@@ -286,4 +212,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-17
+**Letzte Aktualisierung**: 2026-04-13

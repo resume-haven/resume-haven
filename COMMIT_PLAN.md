@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-03-18  
-**Aktueller Stand:** Commit 26 gestartet (`feature/commit-26-profile-expansion-no-auth`)
+**Letzte Aktualisierung:** 2026-04-13  
+**Aktueller Stand:** Commit 27 in Abschlussphase (`feature/commit-27-acceptance-core-flows`), Commit 26 weiterhin in Umsetzung
 
 ---
 
@@ -16,7 +16,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
 
 ### In Planung
-*(keine)*
+- Commit 27: Acceptance-Tests Kernflows (Slices 0-5 umgesetzt, Abschluss/Review offen)
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **Commit 27:** Acceptance-Tests Kernflows (C)
@@ -28,6 +28,12 @@ Abgeschlossene Details sind in die Historie ausgelagert.
   - Commit L3: Erster Zweit-Provider als Proof of Concept
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
+
+### Commit-27 Fortschritt (Kurzstatus)
+- Acceptance-Kernflows inkl. Edge-Cases sind als eigene Suite umgesetzt
+- CI-/Command-Integration ist ergänzt (`pest_acceptance`, `quality:acceptance-gate`)
+- Quality-Gates lokal validiert (Acceptance, PHPStan, Pint)
+- Offener Restpunkt: finaler Review/Abschluss und Einordnung in Historie
 
 ---
 
@@ -79,6 +85,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 24: `docs/history/PLANNING_COMMIT_24.md`
 - Implementierungsleitfaden Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
 - Detailplanung Commit 25: `docs/history/PLANNING_COMMIT_25.md`
+- Detailplanung Commit 26: `docs/history/PLANNING_COMMIT_26.md`
+- Detailplanung Commit 27: `docs/PLANNING_COMMIT_27.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---
@@ -148,4 +156,4 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Tests, PHPStan und Pint bleiben grün
 
 ### Detailplan
-- Siehe: `docs/PLANNING_COMMIT_26.md`
+- Siehe: `docs/history/PLANNING_COMMIT_26.md`

@@ -71,6 +71,11 @@
         "pint:analyse": "vendor/bin/pint --config pint.json --test .",
         "pint:fix": "vendor/bin/pint --config pint.json .",
         "phpstan": "vendor/bin/phpstan analyse",
+        "quality:acceptance-gate": [
+            "@pint:analyse",
+            "@phpstan",
+            "@test:pest-acceptance"
+        ],
         "phpstan:baseline": "vendor/bin/phpstan analyse --generate-baseline",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

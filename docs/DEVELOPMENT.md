@@ -47,6 +47,8 @@ docker compose logs # Logs anzeigen
 make test                   # Alle Tests (Pest)
 make test-unit              # Unit-Tests nur
 make test-feature           # Feature-Tests nur
+make test-acceptance        # Acceptance-Tests nur (Kernflows)
+make test-acceptance-gate   # Pint + PHPStan + Acceptance-Tests
 make test-security          # OWASP-orientierte Security-Tests
 make test-security-strict   # Erweiterte Security-Tests (stop-on-failure)
 make test-security-gate     # Security-Tests + PHPStan + Pint-Analyse
@@ -199,6 +201,7 @@ Der Workflow liegt in:
 Aktive Jobs:
 - `pint`
 - `phpstan`
+- `pest_acceptance` (Kernflows + Edge-Cases, `AI_PROVIDER=mock`)
 - `pest_coverage` (inkl. Coverage-Gate `>=95%`)
 
 Trigger:
@@ -235,7 +238,11 @@ Hinweis: Ersetze in den Badge-URLs `<owner>/<repo>` durch den echten GitHub-Pfad
 
 ### Branch-Protection fuer `main`
 
-GitHub Einstellungen:
+Status:
+- **Done (im Repo):** CI-Checks existieren als Jobs `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
+- **To-do (in GitHub Settings manuell setzen):** Branch-Protection-Regel inkl. Required Checks aktivieren
+
+GitHub Einstellungen (To-do):
 1. `Settings -> Branches -> Add rule`
 2. Branch-Pattern: `main`
 3. Aktivieren:
@@ -246,7 +253,14 @@ GitHub Einstellungen:
 4. Required checks auswaehlen:
    - `pint`
    - `phpstan`
+   - `pest_acceptance`
    - `pest_coverage`
+
+Checkliste Branch-Protection:
+- [ ] Regel fuer `main` erstellt
+- [ ] `Require a pull request before merging` aktiv
+- [ ] `Require status checks to pass before merging` aktiv
+- [ ] Required checks gesetzt: `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
 
 ---
 
