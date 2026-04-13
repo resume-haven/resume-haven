@@ -57,6 +57,9 @@ test-feature: ## Nur Feature-Tests ausführen
 test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-acceptance
 
+test-acceptance-gate: ## Acceptance-Quality-Gate (pint + phpstan + acceptance)
+	docker exec -it resumehaven-php composer run quality:acceptance-gate
+
 test-security: ## OWASP-orientierte Security-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-security
 
@@ -218,4 +221,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup cache-clear licenses-generate dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup cache-clear licenses-generate dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-acceptance-gate test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

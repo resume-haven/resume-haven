@@ -47,6 +47,8 @@ docker compose logs # Logs anzeigen
 make test                   # Alle Tests (Pest)
 make test-unit              # Unit-Tests nur
 make test-feature           # Feature-Tests nur
+make test-acceptance        # Acceptance-Tests nur (Kernflows)
+make test-acceptance-gate   # Pint + PHPStan + Acceptance-Tests
 make test-security          # OWASP-orientierte Security-Tests
 make test-security-strict   # Erweiterte Security-Tests (stop-on-failure)
 make test-security-gate     # Security-Tests + PHPStan + Pint-Analyse
@@ -199,6 +201,7 @@ Der Workflow liegt in:
 Aktive Jobs:
 - `pint`
 - `phpstan`
+- `pest_acceptance` (Kernflows + Edge-Cases, `AI_PROVIDER=mock`)
 - `pest_coverage` (inkl. Coverage-Gate `>=95%`)
 
 Trigger:
@@ -246,6 +249,7 @@ GitHub Einstellungen:
 4. Required checks auswaehlen:
    - `pint`
    - `phpstan`
+   - `pest_acceptance`
    - `pest_coverage`
 
 ---

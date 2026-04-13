@@ -9,8 +9,8 @@
 - [x] Slice 1: Analyse-Flow + Validation-Edge-Case in Acceptance abgesichert
 - [x] Slice 2: Kompetenzlebenslauf-Flow und Delta-Session-Fallback abgesichert
 - [x] Slice 3: Profile-Flow inkl. Token-Edge-Case abgesichert
-- [ ] Slice 4: CI-/Command-Feinschliff final pruefen
-- [ ] Slice 5: Vollstaendige Quality-Gates (Acceptance + phpstan + pint) final dokumentieren
+- [x] Slice 4: CI-/Command-Feinschliff umgesetzt (Composer/Makefile/CI-Job)
+- [x] Slice 5: Quality-Gates validiert (Acceptance + phpstan + pint)
 
 ---
 
