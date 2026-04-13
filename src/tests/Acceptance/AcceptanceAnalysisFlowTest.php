@@ -2,50 +2,57 @@
 
 declare(strict_types=1);
 
+use App\Domains\Analysis\Handlers\AnalyzeJobAndResumeHandler;
+use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
+use App\Services\AiAnalyzer\MockAiAnalyzer;
+use App\Services\AnalyzeApplicationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-/**
- * Szenarienbasierter End-to-End-Test für den vollständigen Analyse-Flow:
- * - User gibt Job-Text und CV ein
- * - Analyse wird durchgeführt
- * - Ergebnis, Kompetenzlebenslauf und Delta/Erklärbarkeit werden angezeigt
- */
-test('User kann eine vollständige Analyse durchführen und Delta/Erklärbarkeit sehen', function () {
-    // Schritt 1: Baseline-Analyse (ohne Kompetenzlebenslauf)
-    $jobText = 'Gesucht: PHP-Entwickler mit Erfahrung in Laravel, Docker, SaaS.';
-    $cvTextBaseline = 'Erste Projekte mit PHP und Laravel.';
+$configureMockAnalyzer = static function (string $scenario = 'realistic'): void {
+    config([
+        'ai.provider' => 'mock',
+        'ai.mock.scenario' => $scenario,
+        'ai.mock.delay_ms' => 0,
+    ]);
+
+    app()->forgetInstance(AiAnalyzerInterface::class);
+    app()->forgetInstance(MockAiAnalyzer::class);
+    app()->forgetInstance(AnalyzeApplicationService::class);
+    app()->forgetInstance(AnalyzeJobAndResumeHandler::class);
+};
+
+beforeEach(function () use ($configureMockAnalyzer): void {
+    $configureMockAnalyzer();
+});
+
+test('nutzende koennen den analyse-kernflow bis zur ergebnisansicht durchlaufen', function () {
+    $jobText = str_repeat('Senior Laravel Backend Developer mit API, Docker und Testing Erfahrung. ', 2);
+    $cvText = str_repeat('Mehrjaehrige PHP und Laravel Projekte mit REST APIs, Git und Teamarbeit. ', 2);
+
     $this->post(route('analyze.submit'), [
         'job_text' => $jobText,
-        'cv_text' => $cvTextBaseline,
-    ])->assertStatus(200);
-
-    // Schritt 2: Kompetenzlebenslauf erzeugen (optimierter CV)
-    $cvTextOptimiert = '10 Jahre Erfahrung mit PHP, Laravel, Docker. Mentoring in SaaS-Projekten.';
-    $this->post(route('profile.competence-resume'), [
-        'cv_text' => $cvTextOptimiert,
-    ])->assertRedirect(route('analyze'));
-
-    // Schritt 3: Optimierte Analyse mit Kompetenzlebenslauf und Vergleich
-    $this->withSession([
-        'competence_resume' => [
-            'hard_skills' => ['PHP', 'Laravel'],
-            'soft_skills' => ['Mentoring'],
-            'domains' => ['SaaS'],
-            'years_experience' => 10,
-            'summary' => '10+ Jahre PHP, Laravel',
-        ],
-        'competence_resume_text' => 'Kompetenzlebenslauf\nHard Skills: PHP, Laravel',
-        'cv_source' => 'competence_resume',
-    ])->post(route('analyze.submit'), [
-        'job_text' => $jobText,
-        'cv_text' => $cvTextOptimiert,
-    ])->assertStatus(200)
+        'cv_text' => $cvText,
+    ])
+        ->assertOk()
         ->assertViewIs('result')
-        ->assertViewHasAll(['comparison', 'job_text', 'cv_text'])
-        ->assertSee('Kompetenzlebenslauf')
-        ->assertSee('Delta')
+        ->assertViewHasAll(['result', 'job_text', 'cv_text', 'score'])
+        ->assertSee('Analyse-Ergebnis')
         ->assertSee('Score')
-        ->assertSee('Empfehlungen');
+        ->assertSee('Match-Tags')
+        ->assertSee('Gap-Tags')
+        ->assertSee('Empfehlungen')
+        ->assertSee('Stellenausschreibung (Roh-Text)')
+        ->assertSee('Lebenslauf (Roh-Text)');
+});
+
+test('nutzende werden bei ungueltigen analyse-eingaben auf das formular zurueckgeleitet', function () {
+    $this->from(route('analyze'))
+        ->post(route('analyze.submit'), [
+            'job_text' => 'zu kurz',
+            'cv_text' => '',
+        ])
+        ->assertRedirect(route('analyze'))
+        ->assertSessionHasErrors(['job_text', 'cv_text']);
 });

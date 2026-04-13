@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-03-18  
-**Aktueller Stand:** Commit 26 gestartet (`feature/commit-26-profile-expansion-no-auth`)
+**Letzte Aktualisierung:** 2026-04-13  
+**Aktueller Stand:** Commit 26 in Umsetzung (`feature/commit-26-profile-expansion-no-auth`)
 
 ---
 
@@ -16,7 +16,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
 
 ### In Planung
-*(keine)*
+- Commit 27: Acceptance-Tests Kernflows (Detailplan erstellt)
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **Commit 27:** Acceptance-Tests Kernflows (C)
@@ -79,6 +79,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 24: `docs/history/PLANNING_COMMIT_24.md`
 - Implementierungsleitfaden Commit 24: `docs/history/COMMIT_24_IMPLEMENTATION_GUIDE.md`
 - Detailplanung Commit 25: `docs/history/PLANNING_COMMIT_25.md`
+- Detailplanung Commit 26: `docs/PLANNING_COMMIT_26.md`
+- Detailplanung Commit 27: `docs/PLANNING_COMMIT_27.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---
