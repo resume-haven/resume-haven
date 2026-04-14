@@ -10,7 +10,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
-- **Commit 27 – Acceptance-Tests Kernflows (in Abschlussphase)**
+- **Commit 27 – Acceptance-Tests Kernflows (abgeschlossen)**
   - Dedizierte Acceptance-Suite fuer Kernflows in `src/tests/Acceptance/`:
     - `AcceptanceAnalysisFlowTest`
     - `AcceptanceCompetenceResumeFlowTest`
@@ -32,7 +32,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - CI-AI-Pfade fuer Acceptance laufen explizit mit `AI_PROVIDER=mock`
 
 ### Documentation
-- Commit-27-Planungsfortschritt aktualisiert in `docs/PLANNING_COMMIT_27.md`
+- Commit-27-Planung nach `docs/history/PLANNING_COMMIT_27.md` ueberfuehrt
 - `docs/PLANNING_COMMIT_26.md` nach `docs/history/PLANNING_COMMIT_26.md` verschoben
 - `docs/COMMIT_HISTORY_INDEX.md` und Verweise in `COMMIT_PLAN.md` angepasst
 - Branch-Protection-Hinweise in `docs/DEVELOPMENT.md` (Done/To-do + Required Checks) geschärft

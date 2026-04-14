@@ -224,12 +224,12 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 23: GitHub Actions CI + Branch Protection
 - Commit 24: Kompetenzlebensläufe I (MVP-light)
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
+- Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 
 ## 🔄 In Arbeit
 - Commit 26: Profile-Ausbau ohne Auth (`feature/commit-26-profile-expansion-no-auth`)
 
 ## 📋 Geplant
-- Commit 27: Acceptance-Tests Kernflows
 - Commit 28: Architecture-Tests & Engineering-Härtung
 - Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
 - **Phase 5: Provider-agnostischer LLM-Layer**
