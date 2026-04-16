@@ -29,7 +29,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Analyze-UI zeigt explizite Hinweise zu Datenhaltung/Lebensdauer im Profile-Flow
 - Composer-Script `quality:acceptance-gate` in `src/composer.json` hinzugefuegt
 - Make-Target `test-acceptance-gate` in `Makefile` hinzugefuegt
-- `COMMIT_PLAN.md` auf Commit-27-Fortschritt aktualisiert
+- `COMMIT_PLAN.md` auf Commit-26-Abschluss und Commit-28-Planungsfokus aktualisiert
 
 ### Fixed
 - Fragile Acceptance-Assertions stabilisiert (robustere Session-/View-Signale)
@@ -220,4 +220,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-13
+**Letzte Aktualisierung**: 2026-04-16
