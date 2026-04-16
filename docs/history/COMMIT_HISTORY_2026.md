@@ -26,6 +26,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 23: GitHub Actions CI + Branch Protection (`main`)
 - Commit 24: Kompetenzlebenslaeufe I (Erstellen, Anzeigen, Analyse-Reuse-Flow)
 - Commit 25: Analysequalitaet & Erklaerbarkeit (Baseline, Delta, Session-Fallback)
+- Commit 26: Profile-Ausbau ohne Auth (Retention + UI-Hinweise + CI-Guardrails)
 - Commit 27: Acceptance-Tests Kernflows + CI-/Quality-Gate-Integration
 
 ## Detaillierte Einzelplaene
@@ -33,7 +34,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - [`PLANNING_COMMIT_23.md`](PLANNING_COMMIT_23.md)
 - [`PLANNING_COMMIT_24.md`](PLANNING_COMMIT_24.md) (abgeschlossen)
 - [`PLANNING_COMMIT_25.md`](PLANNING_COMMIT_25.md) (abgeschlossen)
-- [`PLANNING_COMMIT_26.md`](PLANNING_COMMIT_26.md) (ausgelagert, Commit weiterhin in Arbeit)
+- [`PLANNING_COMMIT_26.md`](PLANNING_COMMIT_26.md) (abgeschlossen)
 - [`PLANNING_COMMIT_27.md`](PLANNING_COMMIT_27.md) (abgeschlossen)
 - [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 

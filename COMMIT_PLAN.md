@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-13  
-**Aktueller Stand:** Commit 26 in Umsetzung (`feature/commit-26-profile-expansion-no-auth`), Commit 27 abgeschlossen
+**Letzte Aktualisierung:** 2026-04-16  
+**Aktueller Stand:** Commit 26 abgeschlossen, Commit 28 als naechster Fokus in Planung
 
 ---
 
@@ -14,6 +14,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 1-25 (kompakt in `docs/history/COMMIT_HISTORY_2026.md`)
 - Hinweis: Commit 19 wurde historisch uebersprungen
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
+- Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 
 ### In Planung
@@ -125,7 +126,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ## Commit 26 - Profile-Ausbau ohne Auth
 
 **Branch:** `feature/commit-26-profile-expansion-no-auth`  
-**Status:** In Umsetzung
+**Status:** Abgeschlossen
 
 ### Ziel
 - Profile-Flow ohne Auth für lokale Entwicklung ausbauen (UX-first)

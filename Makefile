@@ -36,6 +36,9 @@ setup: ## Projekt initialisieren (Composer, NPM, .env, Migration, Build)
 cache-clear: ## Alle Caches löschen (Laravel Artisan)
 	docker exec -it resumehaven-php composer run cache:clear
 
+profile-prune: ## Abgelaufene gespeicherte Lebensläufe gemäß Retention entfernen
+	docker exec -it resumehaven-php composer run profile:prune
+
 # --- LICENSES ---
 licenses-generate: ## Lizenzdaten für alle Packages generieren (licenses.json)
 	docker exec -it resumehaven-php composer run licenses:generate
@@ -221,4 +224,4 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup cache-clear licenses-generate dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-acceptance-gate test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+.PHONY: help setup cache-clear profile-prune licenses-generate dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-acceptance-gate test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed

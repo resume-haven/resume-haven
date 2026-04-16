@@ -10,6 +10,11 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Commit 26 – Profile-Ausbau ohne Auth (abgeschlossen)**
+  - MVP-Retention fuer gespeicherte CVs mit konfigurierbarer Aufbewahrungsdauer (`PROFILE_RESUME_RETENTION_HOURS`)
+  - Neuer Cleanup-Command `profile:prune-stored-resumes` inkl. Scheduling in `routes/console.php`
+  - Neue Feature-Tests: `PruneStoredResumesCommandTest` und Expiry-Edge-Case in `ProfileResumeStorageTest`
+
 - **Commit 27 – Acceptance-Tests Kernflows (abgeschlossen)**
   - Dedizierte Acceptance-Suite fuer Kernflows in `src/tests/Acceptance/`:
     - `AcceptanceAnalysisFlowTest`
@@ -20,6 +25,8 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
   - CI-Check `pest_acceptance` in `.github/workflows/ci.yml` ergaenzt
 
 ### Changed
+- `GetResumeByTokenHandler` blockiert und bereinigt abgelaufene gespeicherte CVs defensiv
+- Analyze-UI zeigt explizite Hinweise zu Datenhaltung/Lebensdauer im Profile-Flow
 - Composer-Script `quality:acceptance-gate` in `src/composer.json` hinzugefuegt
 - Make-Target `test-acceptance-gate` in `Makefile` hinzugefuegt
 - `COMMIT_PLAN.md` auf Commit-27-Fortschritt aktualisiert
@@ -29,6 +36,7 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - Session-Zugriff im Delta-Acceptance-Flow korrigiert
 
 ### Security
+- Neuer CI-Job `ai_guardrails` erzwingt Mock-only-Konfiguration in `.env.ci`
 - CI-AI-Pfade fuer Acceptance laufen explizit mit `AI_PROVIDER=mock`
 
 ### Documentation

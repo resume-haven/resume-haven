@@ -79,3 +79,27 @@ it('gibt Fehler zurueck wenn gespeicherter CV nicht entschluesselt werden kann',
     $response->assertRedirect(route('analyze'));
     $response->assertSessionHasErrors(['resume_token']);
 });
+
+it('gibt Fehler zurueck und entfernt den Datensatz wenn gespeicherter CV abgelaufen ist', function () {
+    config(['profile.resume_retention_hours' => 24]);
+
+    $token = (new GenerateTokenAction())->execute();
+    $cv = 'Aelterer gespeicherter CV mit gueltiger Struktur aber abgelaufener Aufbewahrung.';
+    $encrypted = (new EncryptResumeAction())->execute($cv, $token);
+
+    \DB::table('stored_resumes')->insert([
+        'token' => $token,
+        'encrypted_cv' => $encrypted,
+        'last_accessed_at' => now()->subHours(26),
+        'created_at' => now()->subHours(30),
+        'updated_at' => now()->subHours(30),
+    ]);
+
+    expect(StoredResume::query()->count())->toBe(1);
+
+    $response = $this->get(route('profile.load', ['token' => $token]));
+
+    $response->assertRedirect(route('analyze'));
+    $response->assertSessionHasErrors(['resume_token']);
+    expect(StoredResume::query()->count())->toBe(0);
+});
