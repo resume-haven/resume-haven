@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-16  
-**Aktueller Stand:** Commit 26 abgeschlossen, Commit 28 als naechster Fokus in Planung
+**Letzte Aktualisierung:** 2026-04-17  
+**Aktueller Stand:** Commit 27 abgeschlossen, Commit 28 in Implementation
 
 ---
 
@@ -17,7 +17,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 
-### In Planung
+### In Arbeit
 - Commit 28: Architecture-Tests & Engineering-Härtung
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
@@ -82,6 +82,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 25: `docs/history/PLANNING_COMMIT_25.md`
 - Detailplanung Commit 26: `docs/history/PLANNING_COMMIT_26.md`
 - Detailplanung Commit 27: `docs/history/PLANNING_COMMIT_27.md`
+- Detailplanung Commit 28: `docs/history/PLANNING_COMMIT_28.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---

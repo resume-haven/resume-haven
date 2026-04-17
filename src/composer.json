@@ -21,6 +21,7 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2",
+        "pestphp/pest-plugin-mutate": "^3.0",
         "phpstan/phpstan": "2.1.40",
         "phpunit/phpunit": "^11.5.3"
     },
@@ -62,6 +63,8 @@
         "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
         "test:pest-feature": "vendor/bin/pest --testsuite=Feature",
         "test:pest-acceptance": "vendor/bin/pest --testsuite=Acceptance",
+        "test:pest-arch": "vendor/bin/pest --testsuite=Architecture",
+        "test:pest-mutation": "vendor/bin/pest --mutate --path=app/Domains",
         "test:pest-security": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php",
         "test:pest-security-strict": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php --stop-on-failure",
         "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
@@ -76,6 +79,11 @@
             "@pint:analyse",
             "@phpstan",
             "@test:pest-acceptance"
+        ],
+        "quality:arch-gate": [
+            "@pint:analyse",
+            "@phpstan",
+            "@test:pest-arch"
         ],
         "phpstan:baseline": "vendor/bin/phpstan analyse --generate-baseline",
         "post-autoload-dump": [

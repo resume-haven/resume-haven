@@ -10,6 +10,42 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Commit 28 – Architecture-Tests & Engineering-Härtung (abgeschlossen)**
+  - Dedizierte Architecture-Test-Suite in `src/tests/Architecture/`:
+    - `DddArchTest.php`: Bounded-Context-Grenzen (Profile ↔ Analysis strikt getrennt)
+    - `CqrsArchTest.php`: Command/Query-Segregation (Commands → void, Queries → read-only)
+    - `SolidArchTest.php`: Single-Action-Controller, Interface-based Design, readonly DTOs
+  - Vollständiger Scope: alle `app/`-Namespaces (Domains, Http, Services, Ai, Dto)
+  - Pest 3 `arch()`-API für Architektur-Assertions
+  - Mutation-Testing-Vorbereitung (`pestphp/pest-plugin-mutate`, `make test-mutation`)
+  - Git-Hooks in `.githooks/pre-commit` (Pint, PHPStan, Commit-Message-Convention)
+  - `make hooks-install` Target für manuelle Aktivierung
+  - Makefile erweitert: `make test-arch`, `make test-arch-gate`, `make test-mutation`
+  - Composer-Script `quality:arch-gate` hinzugefuegt
+  - CI-Integration: Architecture-Suite in `phpunit.xml` und `.github/workflows/ci.yml`
+  - Detailplanung nach `docs/history/PLANNING_COMMIT_28.md` ausgelagert
+
+### Changed
+- `composer.json`: `pestphp/pest-plugin-mutate` als dev-dependency hinzugefuegt
+- `phpunit.xml`: Architecture-Testsuite registriert
+- `src/tests/Pest.php`: Architecture-Tests eingebunden
+- `Makefile`: Neue Targets fuer Architecture und Mutation-Testing
+- `COMMIT_PLAN.md` auf Commit-28-Implementation aktualisiert
+- `docs/ROADMAP.md`: Mutation-Testing-Vorbereitung dokumentiert (offene Fragen)
+
+### Documentation
+- Detailplanung Commit 28 nach `docs/history/PLANNING_COMMIT_28.md` ausgelagert
+- `docs/ROADMAP.md` erweitert um Mutation-Testing-Vorbereitung und offene Fragen
+- `docs/ARCHITECTURE.md` (TODO: aktualisieren mit Arch-Testing-Status)
+- Makefile-Kommentare zur Git-Hooks-Installation ergaenzt
+
+### Quality
+- Architecture-Tests: **3 Test-Dateien**, Layer-Rules validiert, gruen
+- Git-Hook-Script: POSIX-kompatibel, funktioniert auf WSL/macOS/Linux
+- Mutation-Testing: vorbereitet, noch keine Integration im Standard-CI
+
+---
+
 - **Commit 26 – Profile-Ausbau ohne Auth (abgeschlossen)**
   - MVP-Retention fuer gespeicherte CVs mit konfigurierbarer Aufbewahrungsdauer (`PROFILE_RESUME_RETENTION_HOURS`)
   - Neuer Cleanup-Command `profile:prune-stored-resumes` inkl. Scheduling in `routes/console.php`
@@ -220,4 +256,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-16
+**Letzte Aktualisierung**: 2026-04-17

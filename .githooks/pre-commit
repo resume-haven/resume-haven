@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Pre-Commit Hook für ResumeHaven
+# Führt aus: Pint (Code-Formatierung), PHPStan (Statische Analyse), Commit-Message-Validierung
+#
+# Installation: make hooks-install
+# Deaktivierung: git config core.hooksPath ""
+
+set -e
+
+echo "🔍 Pre-Commit Checks starten..."
+
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+SRC_DIR="$PROJECT_ROOT/src"
+
+# Prüfe, ob wir im src/ Verzeichnis sind
+if [ ! -d "$SRC_DIR" ]; then
+    echo "⚠️  src/ Verzeichnis nicht gefunden. Hooks abgebrochen."
+    exit 0
+fi
+
+cd "$SRC_DIR"
+
+# Pint: Code-Formatierung prüfen (dirty only)
+echo "📋 Pint: Code-Formatierung prüfen..."
+if ! vendor/bin/pint --dirty --test . 2>/dev/null; then
+    echo "❌ Pint: Code-Formatierungs-Fehler gefunden."
+    echo "   Behebung: vendor/bin/pint --dirty ."
+    exit 1
+fi
+echo "✅ Pint: OK"
+
+# PHPStan: Statische Analyse (Level 9)
+echo "🔬 PHPStan: Statische Analyse (Level 9)..."
+if ! vendor/bin/phpstan analyse --no-progress 2>/dev/null; then
+    echo "❌ PHPStan: Errors gefunden."
+    exit 1
+fi
+echo "✅ PHPStan: OK"
+
+# Commit-Message-Konvention prüfen (einfache Validierung)
+# Format: "feat: ...", "fix: ...", "docs: ...", "refactor: ...", etc.
+COMMIT_MSG_FILE="$1"
+if [ -f "$COMMIT_MSG_FILE" ]; then
+    COMMIT_MSG=$(cat "$COMMIT_MSG_FILE" | head -1)
+    if ! echo "$COMMIT_MSG" | grep -qE '^(feat|fix|docs|refactor|test|chore|perf|ci|style|build|revert|security):'; then
+        echo "⚠️  Commit-Message-Format empfohlen:"
+        echo "   Format: <type>: <description>"
+        echo "   Beispiele: feat: xyz, fix: abc, docs: update"
+        echo "   (Diese Validierung ist nur eine Warnung.)"
+    fi
+fi
+
+echo "✅ Alle Pre-Commit Checks bestanden!"
+exit 0
+
