@@ -27,8 +27,8 @@ jobs:
 
       - name: Enforce AI provider mock-only in CI
         run: |
-          grep -q '^AI_PROVIDER=mock$' src/.env.ci
-          grep -q '^GEMINI_API_KEY=$' src/.env.ci
+          grep -q '^AI_PROVIDER=mock$' .env.ci
+          grep -q '^GEMINI_API_KEY=$' .env.ci
 
 
   pint:
