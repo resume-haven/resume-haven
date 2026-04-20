@@ -150,4 +150,3 @@ test('profile repository uses default retention when config is not numeric', fun
     expect($deleted)->toBe(0);
     expect(StoredResume::query()->count())->toBe(1);
 });
-
