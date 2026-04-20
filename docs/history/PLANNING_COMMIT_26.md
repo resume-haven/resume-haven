@@ -1,8 +1,15 @@
 # Commit 26 - Profile-Ausbau ohne Auth
 
 **Branch:** `feature/commit-26-profile-expansion-no-auth`  
-**Status:** In Umsetzung  
+**Status:** Abgeschlossen  
 **Erstellt:** 2026-03-18
+
+### Fortschritt (2026-04-16)
+- [x] Slice 0: UX-Flow fuer Speichern/Laden/Feedback stabilisiert
+- [x] Slice 1: MVP-Retention technisch umgesetzt (Expiry beim Laden + Cleanup-Pfad)
+- [x] Slice 2: UI-Hinweise zu Datenhaltung/Lebensdauer sichtbar ergaenzt
+- [x] Slice 3: CI-Guardrails explizit gehaertet (`AI_PROVIDER=mock`, leeres `GEMINI_API_KEY`)
+- [x] Slice 4: Feature-Tests + PHPStan + Pint validiert
 
 ---
 

@@ -36,6 +36,9 @@ setup: ## Projekt initialisieren (Composer, NPM, .env, Migration, Build)
 cache-clear: ## Alle Caches löschen (Laravel Artisan)
 	docker exec -it resumehaven-php composer run cache:clear
 
+profile-prune: ## Abgelaufene gespeicherte Lebensläufe gemäß Retention entfernen
+	docker exec -it resumehaven-php composer run profile:prune
+
 # --- LICENSES ---
 licenses-generate: ## Lizenzdaten für alle Packages generieren (licenses.json)
 	docker exec -it resumehaven-php composer run licenses:generate
@@ -56,6 +59,15 @@ test-feature: ## Nur Feature-Tests ausführen
 
 test-acceptance: ## Nur Acceptance-Tests ausführen
 	docker exec -it resumehaven-php composer run test:pest-acceptance
+
+test-arch: ## Nur Architecture-Tests ausführen
+	docker exec -it resumehaven-php composer run test:pest-arch
+
+test-arch-gate: ## Architecture-Quality-Gate (pint + phpstan + architecture)
+	docker exec -it resumehaven-php composer run quality:arch-gate
+
+test-mutation: ## Mutation-Tests ausführen (Domains, Dry-Run per default)
+	docker exec -it resumehaven-php composer run test:pest-mutation
 
 test-acceptance-gate: ## Acceptance-Quality-Gate (pint + phpstan + acceptance)
 	docker exec -it resumehaven-php composer run quality:acceptance-gate
@@ -221,4 +233,13 @@ db-migrate-refresh: ## Alle Migrationen zurücksetzen und neu ausführen
 db-seed: ## Datenbank mit Seeds befüllen
 	docker exec -it resumehaven-php php artisan db:seed
 
-.PHONY: help setup cache-clear licenses-generate dev test test-unit test-feature test-security test-security-strict test-security-gate test-acceptance test-acceptance-gate test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed
+# --- GIT HOOKS ---
+hooks-install: ## Git-Hooks in .githooks installieren (manuell)
+	@echo "Git-Hooks werden in .git/hooks installiert..."
+	@mkdir -p .git/hooks
+	@cp -f .githooks/pre-commit .git/hooks/pre-commit 2>/dev/null || echo "  ℹ  .githooks/pre-commit nicht vorhanden (neu erstellen erforderlich)"
+	@chmod +x .git/hooks/pre-commit || echo "  ✗ Fehler beim Setzen der Ausführungsberechtigung"
+	@echo "✅ Git-Hooks aktiviert!"
+	@echo "   Weitere Hook-Dateien können in .githooks/ hinzugefügt werden."
+
+.PHONY: help setup cache-clear profile-prune licenses-generate dev test test-unit test-feature test-arch test-mutation test-arch-gate test-acceptance test-acceptance-gate test-security test-security-strict test-security-gate test-coverage test-coverage-report coverage-open coverage-clean pint-analyse pint-fix phpstan phpstan-baseline docker-up docker-down docker-restart docker-rebuild docker-stop docker-start docker-build docker-clean docker-logs docker-pint docker-test npm-build npm-dev php-shell node-shell nginx-shell debug-on debug-off debug-status debug-test debug-logs db-migrate db-migrate-status db-migrate-rollback db-migrate-refresh db-seed hooks-install

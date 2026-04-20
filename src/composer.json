@@ -21,6 +21,7 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2",
+        "pestphp/pest-plugin-mutate": "^3.0",
         "phpstan/phpstan": "2.1.40",
         "phpunit/phpunit": "^11.5.3"
     },
@@ -51,6 +52,7 @@
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
         ],
         "licenses:generate": "php artisan licenses:generate",
+        "profile:prune": "php artisan profile:prune-stored-resumes",
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test",
@@ -61,6 +63,8 @@
         "test:pest-unit": "vendor/bin/pest --testsuite=Unit",
         "test:pest-feature": "vendor/bin/pest --testsuite=Feature",
         "test:pest-acceptance": "vendor/bin/pest --testsuite=Acceptance",
+        "test:pest-arch": "vendor/bin/pest --testsuite=Architecture",
+        "test:pest-mutation": "vendor/bin/pest --mutate --path=app/Domains",
         "test:pest-security": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php",
         "test:pest-security-strict": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php --stop-on-failure",
         "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
@@ -75,6 +79,11 @@
             "@pint:analyse",
             "@phpstan",
             "@test:pest-acceptance"
+        ],
+        "quality:arch-gate": [
+            "@pint:analyse",
+            "@phpstan",
+            "@test:pest-arch"
         ],
         "phpstan:baseline": "vendor/bin/phpstan analyse --generate-baseline",
         "post-autoload-dump": [

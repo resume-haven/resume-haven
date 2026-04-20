@@ -15,6 +15,18 @@ it('zeigt CV-Speicher und Lade-Bedienelemente auf analyze an', function () {
     $response->assertSee('Resume-Token eingeben');
 });
 
+it('zeigt einen transparenten retention-hinweis auf analyze an', function () {
+    config(['profile.resume_retention_hours' => 168]);
+
+    $response = $this->get(route('analyze'));
+
+    $response->assertStatus(200);
+    $response->assertSee('Hinweis zur Datenhaltung (MVP)');
+    $response->assertSee('lokal und verschlüsselt');
+    $response->assertSee('automatisch entfernt');
+    $response->assertSee('7 Tagen');
+});
+
 it('zeigt Speicher-Link mit Copy-Button nach erfolgreicher Speicherung', function () {
     $cv = str_repeat('Erfahrung mit Laravel und PHP. ', 3);
 

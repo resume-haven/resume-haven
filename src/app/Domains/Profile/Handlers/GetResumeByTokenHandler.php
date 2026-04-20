@@ -24,6 +24,12 @@ class GetResumeByTokenHandler
             return null;
         }
 
+        if ($this->repository->isExpired($storedResume)) {
+            $this->repository->deleteByToken($query->token);
+
+            return null;
+        }
+
         $cvText = $this->decryptResume->execute($storedResume->encrypted_cv, $query->token);
 
         if ($cvText === null) {

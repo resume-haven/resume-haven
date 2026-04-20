@@ -122,6 +122,30 @@
             </div>
         @endif
 
+        @php
+            $resumeRetentionHours = max((int) config('profile.resume_retention_hours', 168), 1);
+            $resumeRetentionDays = intdiv($resumeRetentionHours, 24);
+            $resumeRetentionRemainderHours = $resumeRetentionHours % 24;
+        @endphp
+
+        <div class="bg-amber-50 dark:bg-amber-900 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100 px-4 py-3 rounded-lg mb-4 text-sm">
+            <p class="font-semibold">Hinweis zur Datenhaltung (MVP)</p>
+            <p class="mt-1">
+                Gespeicherte Lebensläufe werden lokal und verschlüsselt abgelegt.
+                Daten ohne Zugriff werden nach
+                @if ($resumeRetentionDays > 0)
+                    {{ $resumeRetentionDays }} Tag{{ $resumeRetentionDays !== 1 ? 'en' : '' }}
+                    @if ($resumeRetentionRemainderHours > 0)
+                        und {{ $resumeRetentionRemainderHours }} Stunde{{ $resumeRetentionRemainderHours !== 1 ? 'n' : '' }}
+                    @endif
+                @else
+                    {{ $resumeRetentionHours }} Stunde{{ $resumeRetentionHours !== 1 ? 'n' : '' }}
+                @endif
+                automatisch entfernt.
+            </p>
+            <p class="mt-1 text-xs text-amber-800 dark:text-amber-200">Bewahre deinen Token sicher auf, damit du den gespeicherten Lebenslauf innerhalb der Aufbewahrungsdauer erneut laden kannst.</p>
+        </div>
+
         <div class="bg-white dark:bg-neutral-dark rounded-lg shadow p-4 sm:p-6 space-y-4">
             <h3 class="text-base sm:text-lg font-semibold text-text-light dark:text-text-dark">Lebenslauf wieder laden</h3>
             <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">

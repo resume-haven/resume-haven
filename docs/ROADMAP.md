@@ -154,6 +154,23 @@ Jeder Provider kann in seinem Analyzer von der Basis abweichen, wo nötig:
 Jeder Analyzer überschreibt nur die Methoden, bei denen echte Abweichungen bestehen
 (Template-Method-Pattern). Gemeinsame Logik bleibt in `AbstractLlmAiAnalyzer`.
 
+## Mutation-Testing-Vorbereitung (Commit 28)
+
+Mutation-Testing wird als optionales Engineering-Tool vorbereitet (nicht im Standard-CI).
+
+**Status:** Vorbereitet in Commit 28
+- ✅ `pestphp/pest-plugin-mutate` als dev-dependency
+- ✅ `make test-mutation` Target (Scope: `app/Domains`)
+- ✅ Composer-Script `test:pest-mutation`
+
+**Offene Fragen für Detailplanung (später):**
+
+- [ ] **MSI-Schwellwert:** Welcher Mutation-Score-Index ist akzeptabel? (z. B. 80 %, 85 %)
+- [ ] **Slow-Test-Strategie:** Sollen lange laufende Tests ausgeschlossen werden? (z. B. Integration Tests)
+- [ ] **Parallelisierung:** Soll `--parallel` im Mutation-Workflow aktiviert werden?
+- [ ] **CI-Integration:** Separater `mutation.yml` Workflow (workflow_dispatch) oder Subset im Standard-CI?
+- [ ] **Coverage-Mindestwert:** Nur Tests mit Coverage >= 95 % mutieren?
+
 ## Umsetzungsschritte (grob)
 
 1. **`AbstractLlmAiAnalyzer` extrahieren**
@@ -209,7 +226,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-03-18)
+# 📊 Aktueller Stand (2026-04-20)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
@@ -224,13 +241,14 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 23: GitHub Actions CI + Branch Protection
 - Commit 24: Kompetenzlebensläufe I (MVP-light)
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
+- Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
+- Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
+- Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 
 ## 🔄 In Arbeit
-- Commit 26: Profile-Ausbau ohne Auth (`feature/commit-26-profile-expansion-no-auth`)
+- (kein aktiver Commit-Block)
 
 ## 📋 Geplant
-- Commit 27: Acceptance-Tests Kernflows
-- Commit 28: Architecture-Tests & Engineering-Härtung
 - Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
 - **Phase 5: Provider-agnostischer LLM-Layer**
   - AbstractLlmAiAnalyzer als gemeinsame Basis
@@ -240,10 +258,10 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - GitHub CI/CD Workflow (Commit 23 ✅)
 - arc42 Dokumentationsstruktur
 - req42 Requirements Management
-- Acceptance-Tests
+- Acceptance-Tests (Commit 27 ✅)
 - renovate.js
-- Mutation-Testing
-- Architecture-Testing
+- Mutation-Testing (Commit 28: Vorbereitung ✅, Detailplanung später)
+- Architecture-Testing (Commit 28 ✅)
 
 ---
 

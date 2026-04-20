@@ -10,7 +10,48 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
-- **Commit 27 – Acceptance-Tests Kernflows (in Abschlussphase)**
+- **Commit 28 – Architecture-Tests & Engineering-Härtung (abgeschlossen)**
+  - Dedizierte Architecture-Test-Suite in `src/tests/Architecture/`:
+    - `DddArchTest.php`: Bounded-Context-Grenzen (Profile ↔ Analysis strikt getrennt)
+    - `CqrsArchTest.php`: Command/Query-Segregation (Commands → void, Queries → read-only)
+    - `SolidArchTest.php`: Single-Action-Controller, Interface-based Design, readonly DTOs
+  - Vollständiger Scope: alle `app/`-Namespaces (Domains, Http, Services, Ai, Dto)
+  - Pest 3 `arch()`-API für Architektur-Assertions
+  - Mutation-Testing-Vorbereitung (`pestphp/pest-plugin-mutate`, `make test-mutation`)
+  - Git-Hooks in `.githooks/pre-commit` (Pint, PHPStan, Commit-Message-Convention)
+  - `make hooks-install` Target für manuelle Aktivierung
+  - Makefile erweitert: `make test-arch`, `make test-arch-gate`, `make test-mutation`
+  - Composer-Script `quality:arch-gate` hinzugefuegt
+  - CI-Integration: Architecture-Suite in `phpunit.xml` und `.github/workflows/ci.yml`
+  - Detailplanung nach `docs/history/PLANNING_COMMIT_28.md` ausgelagert
+
+### Changed
+- `composer.json`: `pestphp/pest-plugin-mutate` als dev-dependency hinzugefuegt
+- `phpunit.xml`: Architecture-Testsuite registriert
+- `src/tests/Pest.php`: Architecture-Tests eingebunden
+- `Makefile`: Neue Targets fuer Architecture und Mutation-Testing
+- `COMMIT_PLAN.md` auf Commit-28-Abschluss und Commit-29-Planungsfokus aktualisiert
+- `docs/ROADMAP.md`: Mutation-Testing-Vorbereitung dokumentiert (offene Fragen)
+
+### Documentation
+- Detailplanung Commit 28 nach `docs/history/PLANNING_COMMIT_28.md` ausgelagert
+- `docs/ROADMAP.md` erweitert um Mutation-Testing-Vorbereitung und offene Fragen
+- `docs/ARCHITECTURE.md` um Architekturtest-Status ergänzt
+- Makefile-Kommentare zur Git-Hooks-Installation ergaenzt
+
+### Quality
+- Architecture-Tests: **3 Test-Dateien**, Layer-Rules validiert, gruen
+- Git-Hook-Script: POSIX-kompatibel, funktioniert auf WSL/macOS/Linux
+- Mutation-Testing: vorbereitet, noch keine Integration im Standard-CI
+
+---
+
+- **Commit 26 – Profile-Ausbau ohne Auth (abgeschlossen)**
+  - MVP-Retention fuer gespeicherte CVs mit konfigurierbarer Aufbewahrungsdauer (`PROFILE_RESUME_RETENTION_HOURS`)
+  - Neuer Cleanup-Command `profile:prune-stored-resumes` inkl. Scheduling in `routes/console.php`
+  - Neue Feature-Tests: `PruneStoredResumesCommandTest` und Expiry-Edge-Case in `ProfileResumeStorageTest`
+
+- **Commit 27 – Acceptance-Tests Kernflows (abgeschlossen)**
   - Dedizierte Acceptance-Suite fuer Kernflows in `src/tests/Acceptance/`:
     - `AcceptanceAnalysisFlowTest`
     - `AcceptanceCompetenceResumeFlowTest`
@@ -20,19 +61,22 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
   - CI-Check `pest_acceptance` in `.github/workflows/ci.yml` ergaenzt
 
 ### Changed
+- `GetResumeByTokenHandler` blockiert und bereinigt abgelaufene gespeicherte CVs defensiv
+- Analyze-UI zeigt explizite Hinweise zu Datenhaltung/Lebensdauer im Profile-Flow
 - Composer-Script `quality:acceptance-gate` in `src/composer.json` hinzugefuegt
 - Make-Target `test-acceptance-gate` in `Makefile` hinzugefuegt
-- `COMMIT_PLAN.md` auf Commit-27-Fortschritt aktualisiert
+- `COMMIT_PLAN.md` auf Commit-26-Abschluss und Commit-28-Planungsfokus aktualisiert
 
 ### Fixed
 - Fragile Acceptance-Assertions stabilisiert (robustere Session-/View-Signale)
 - Session-Zugriff im Delta-Acceptance-Flow korrigiert
 
 ### Security
+- Neuer CI-Job `ai_guardrails` erzwingt Mock-only-Konfiguration in `.env.ci`
 - CI-AI-Pfade fuer Acceptance laufen explizit mit `AI_PROVIDER=mock`
 
 ### Documentation
-- Commit-27-Planungsfortschritt aktualisiert in `docs/PLANNING_COMMIT_27.md`
+- Commit-27-Planung nach `docs/history/PLANNING_COMMIT_27.md` ueberfuehrt
 - `docs/PLANNING_COMMIT_26.md` nach `docs/history/PLANNING_COMMIT_26.md` verschoben
 - `docs/COMMIT_HISTORY_INDEX.md` und Verweise in `COMMIT_PLAN.md` angepasst
 - Branch-Protection-Hinweise in `docs/DEVELOPMENT.md` (Done/To-do + Required Checks) geschärft
@@ -212,4 +256,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-13
+**Letzte Aktualisierung**: 2026-04-20
