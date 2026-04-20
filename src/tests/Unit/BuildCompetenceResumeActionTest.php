@@ -39,3 +39,20 @@ it('liefert fallback-summary wenn keine Skill-Keywords erkannt werden', function
     expect($dto->yearsExperience)->toBeNull();
     expect($dto->summary)->toContain('keine klaren Kompetenzcluster');
 });
+
+it('nutzt die hoechste erkannte Jahresangabe und dedupliziert Alias-Treffer', function () {
+    $action = new BuildCompetenceResumeAction();
+
+    $cvText = 'Ich habe 3 years Erfahrung im Backend, 8+ Jahre mit APIs und 10 plus years in SaaS-Produkten. '.
+        'Technisch arbeite ich mit postgres, postgresql, git, rest und clean architecture. '.
+        'Fachlich kenne ich ecommerce und e-commerce sehr gut.';
+
+    $dto = $action->execute($cvText);
+
+    expect($dto->yearsExperience)->toBe(10);
+    expect($dto->hardSkills)->toContain('PostgreSQL');
+    expect(array_values(array_filter($dto->hardSkills, static fn (string $skill): bool => $skill === 'PostgreSQL')))->toHaveCount(1);
+    expect($dto->domains)->toContain('E-Commerce');
+    expect(array_values(array_filter($dto->domains, static fn (string $domain): bool => $domain === 'E-Commerce')))->toHaveCount(1);
+    expect($dto->summary)->toContain('Berufserfahrung: 10+ Jahre');
+});

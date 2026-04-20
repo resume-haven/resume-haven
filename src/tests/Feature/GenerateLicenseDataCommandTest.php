@@ -197,3 +197,54 @@ it('parst, normalisiert und sortiert Composer- und NPM-Pakete', function () {
         ->and($nodePackages[1]['homepage'] ?? null)->toBe('https://example.com/beta')
         ->and($nodePackages[2]['homepage'] ?? null)->toBe('https://example.com/zeta');
 });
+
+it('unterstuetzt package-lock v1 ohne packages-block', function () {
+    File::put($this->composerLockPath, json_encode([
+        'packages' => [],
+    ], JSON_THROW_ON_ERROR));
+
+    File::put($this->packageLockPath, json_encode([
+        'dependencies' => [
+            'z-package' => [
+                'version' => '2.0.0',
+                'license' => 'MIT',
+            ],
+            'a-package' => [
+                'version' => '1.0.0',
+                'license' => 'Apache-2.0',
+                'homepage' => 'https://example.com/a-package',
+            ],
+        ],
+    ], JSON_THROW_ON_ERROR));
+
+    $exitCode = Artisan::call('licenses:generate');
+    $data = json_decode((string) File::get($this->licensesPath), true);
+
+    expect($exitCode)->toBe(0)
+        ->and($data)->toBeArray()
+        ->and(array_column($data['node'] ?? [], 'name'))->toBe(['a-package', 'z-package'])
+        ->and(($data['node'][0]['homepage'] ?? null))->toBe('https://example.com/a-package');
+});
+
+it('setzt leere Composer-Lizenzlisten auf unknown', function () {
+    File::put($this->composerLockPath, json_encode([
+        'packages' => [
+            [
+                'name' => 'package-with-empty-license',
+                'version' => '1.2.3',
+                'license' => [],
+            ],
+        ],
+    ], JSON_THROW_ON_ERROR));
+
+    File::put($this->packageLockPath, json_encode([
+        'packages' => [],
+    ], JSON_THROW_ON_ERROR));
+
+    Artisan::call('licenses:generate');
+
+    $data = json_decode((string) File::get($this->licensesPath), true);
+
+    expect($data['php'][0]['name'] ?? null)->toBe('package-with-empty-license');
+    expect($data['php'][0]['license'] ?? null)->toBe('unknown');
+});
