@@ -175,4 +175,52 @@ describe('ParseAiResponseAction', function () {
         expect($result->recommendations)->toHaveCount(1);
         expect($result->recommendations[0]->gap)->toBe('Docker');
     });
+
+    test('gibt leere recommendations zurueck wenn recommendations kein Array ist', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => ['Docker'],
+            'recommendations' => 'invalid',
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->recommendations)->toBe([]);
+    });
+
+    test('akzeptiert low und medium recommendations und ueberspringt skalare eintraege', function () {
+        $action = new ParseAiResponseAction();
+        $request = new AnalyzeRequestDto('job text', 'cv text');
+        $data = [
+            'requirements' => ['PHP'],
+            'experiences' => ['5 years'],
+            'matches' => [],
+            'gaps' => ['Git', 'Testing'],
+            'recommendations' => [
+                'ungueltiger-string-eintrag',
+                [
+                    'gap' => 'Git',
+                    'priority' => 'medium',
+                    'suggestion' => 'Git vertiefen',
+                    'example_phrase' => 'Taegliche Arbeit mit Git und Pull Requests',
+                ],
+                [
+                    'gap' => 'Testing',
+                    'priority' => 'low',
+                    'suggestion' => 'Mehr Tests erwaehnen',
+                    'example_phrase' => 'Automatisierte Tests mit Pest und PHPUnit',
+                ],
+            ],
+        ];
+
+        $result = $action->execute($data, $request);
+
+        expect($result->recommendations)->toHaveCount(2);
+        expect(array_map(static fn ($recommendation) => $recommendation->priority, $result->recommendations))
+            ->toBe(['medium', 'low']);
+    });
 });

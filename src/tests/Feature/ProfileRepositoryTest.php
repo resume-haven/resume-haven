@@ -150,3 +150,46 @@ test('profile repository uses default retention when config is not numeric', fun
     expect($deleted)->toBe(0);
     expect(StoredResume::query()->count())->toBe(1);
 });
+
+test('profile repository behandelt den exakten cutoff nicht als abgelaufen', function (): void {
+    config(['profile.resume_retention_hours' => 24]);
+
+    StoredResume::query()->insert([
+        'token' => str_repeat('J', 32),
+        'encrypted_cv' => 'exact-cutoff',
+        'last_accessed_at' => Carbon::now()->subHours(24),
+        'created_at' => Carbon::now()->subHours(30),
+        'updated_at' => Carbon::now()->subHours(30),
+    ]);
+
+    $stored = StoredResume::query()->where('token', str_repeat('J', 32))->first();
+
+    expect($stored)->not->toBeNull();
+    expect((new ProfileRepository())->isExpired($stored))->toBeFalse();
+});
+
+test('profile repository prunes records at exact cutoff not away', function (): void {
+    config(['profile.resume_retention_hours' => 24]);
+
+    StoredResume::query()->insert([
+        [
+            'token' => str_repeat('K', 32),
+            'encrypted_cv' => 'exact-last-access',
+            'last_accessed_at' => Carbon::now()->subHours(24),
+            'created_at' => Carbon::now()->subHours(30),
+            'updated_at' => Carbon::now()->subHours(30),
+        ],
+        [
+            'token' => str_repeat('L', 32),
+            'encrypted_cv' => 'exact-created-at',
+            'last_accessed_at' => null,
+            'created_at' => Carbon::now()->subHours(24),
+            'updated_at' => Carbon::now()->subHours(24),
+        ],
+    ]);
+
+    $deleted = (new ProfileRepository())->pruneExpired();
+
+    expect($deleted)->toBe(0);
+    expect(StoredResume::query()->pluck('token')->all())->toBe([str_repeat('K', 32), str_repeat('L', 32)]);
+});
