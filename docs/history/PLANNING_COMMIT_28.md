@@ -1,14 +1,23 @@
 # Commit 28 – Architecture-Tests & Engineering-Härtung
 
 **Branch:** `feature/commit-28-architecture-tests`  
-**Status:** In Planung  
+**Status:** Abgeschlossen  
 **Erstellt:** 2026-04-17
+**Abgeschlossen:** 2026-04-20
 
 ---
 
 ## Ziel
 
 Automatisierte Architektur-Tests (Pest Arch) sichern die bestehenden Layer-Regeln, DDD/CQRS-Grenzen und SOLID-Prinzipien ab. Ergänzend werden Engineering-Härtungsmaßnahmen (Mutation-Testing-Vorbereitung, Git-Hooks, erweiterte Quality-Gates) implementiert.
+
+### Abschluss (2026-04-20)
+
+- ✅ Architecture-Suite umgesetzt (`DddArchTest`, `CqrsArchTest`, `SolidArchTest`)
+- ✅ Composer/Makefile um `test:pest-arch`, `quality:arch-gate`, `test-mutation`, `hooks-install` erweitert
+- ✅ Mutation-Testing vorbereitet (optional, separater Lauf)
+- ✅ Git-Hooks vorbereitet (`.githooks/pre-commit`, manuelle Aktivierung)
+- ✅ Dokumentation in `COMMIT_PLAN.md` und `docs/ROADMAP.md` auf Abschlussstand gebracht
 
 ### Kernfragen für Commit 28
 
@@ -180,4 +189,5 @@ Automatisierte Architektur-Tests (Pest Arch) sichern die bestehenden Layer-Regel
 - Roadmap: `docs/ROADMAP.md`
 - Architektur-Dokumentation: `docs/ARCHITECTURE.md`
 - Agent-Kontext: `docs/ai/AGENT_CONTEXT.md`
+
 

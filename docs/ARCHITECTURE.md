@@ -15,6 +15,7 @@ Die Architektur folgt modernen Best Practices:
 - **Single Action Controllers** (Controller sind dünn, ~34 Zeilen)
 - **Repository Pattern** (Persistence-Abstraktion)
 - **UseCase Pattern** (Business-Logic-Orchestrierung)
+- **Architecture-Tests (Pest Arch)** (automatisierte Layer- und Boundary-Validierung)
 - **Wartbarkeit, Testbarkeit, Erweiterbarkeit**
 
 ---
@@ -107,6 +108,14 @@ Die Architektur folgt modernen Best Practices:
 - ✅ **Communication:** Nur via DTOs, Events oder Shared Kernel
 - ✅ **Ubiquitous Language:** Code verwendet fachliche Begriffe
 - ✅ **Aggregate Roots:** Models sind Aggregate Roots ihres Contexts
+
+### Architecture-Tests (Commit 28) — ✅ Abgeschlossen
+
+- Test-Suite: `src/tests/Architecture/`
+- `DddArchTest`: Bounded-Context-Isolation (`Analysis`/`Profile`)
+- `CqrsArchTest`: Command-/Query-Segregation und Namenskonventionen
+- `SolidArchTest`: Single-Action-Controller, Interface-Contracts, readonly-DTOs
+- Ausführung: `make test-arch` oder `composer run test:pest-arch`
 
 ---
 

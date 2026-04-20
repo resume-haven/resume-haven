@@ -226,7 +226,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-04-16)
+# 📊 Aktueller Stand (2026-04-20)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
@@ -243,7 +243,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
 - Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
-- Commit 28: Architecture-Tests & Engineering-Härtung (in Implementation)
+- Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 
 ## 🔄 In Arbeit
 - (kein aktiver Commit-Block)

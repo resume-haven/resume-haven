@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-17  
-**Aktueller Stand:** Commit 27 abgeschlossen, Commit 28 in Implementation
+**Letzte Aktualisierung:** 2026-04-20  
+**Aktueller Stand:** Commit 28 abgeschlossen, Commit 29 als naechster Fokus in Planung
 
 ---
 
@@ -16,12 +16,12 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 25: Analysequalität & Erklärbarkeit (abgeschlossen)
 - Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
+- Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 
-### In Arbeit
-- Commit 28: Architecture-Tests & Engineering-Härtung
+### In Planung
+- Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 28:** Architecture-Tests & Engineering-Härtung (E)
 - **Commit 29+:** User/Auth/AuthZ + rudimentäre Userverwaltung
 - **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen

@@ -30,13 +30,13 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - `phpunit.xml`: Architecture-Testsuite registriert
 - `src/tests/Pest.php`: Architecture-Tests eingebunden
 - `Makefile`: Neue Targets fuer Architecture und Mutation-Testing
-- `COMMIT_PLAN.md` auf Commit-28-Implementation aktualisiert
+- `COMMIT_PLAN.md` auf Commit-28-Abschluss und Commit-29-Planungsfokus aktualisiert
 - `docs/ROADMAP.md`: Mutation-Testing-Vorbereitung dokumentiert (offene Fragen)
 
 ### Documentation
 - Detailplanung Commit 28 nach `docs/history/PLANNING_COMMIT_28.md` ausgelagert
 - `docs/ROADMAP.md` erweitert um Mutation-Testing-Vorbereitung und offene Fragen
-- `docs/ARCHITECTURE.md` (TODO: aktualisieren mit Arch-Testing-Status)
+- `docs/ARCHITECTURE.md` um Architekturtest-Status ergänzt
 - Makefile-Kommentare zur Git-Hooks-Installation ergaenzt
 
 ### Quality
@@ -256,4 +256,4 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-17
+**Letzte Aktualisierung**: 2026-04-20
