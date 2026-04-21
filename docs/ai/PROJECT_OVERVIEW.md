@@ -33,6 +33,9 @@ miteinander vergleicht und **strukturiert auswertet**.
 - URL-safe Base64-Token mit hoher Entropie
 - Verschlüsselte Speicherung des CVs in `stored_resumes`
 - Wiederherstellung des gespeicherten CVs über `/profile/load/{token}`
+- **Auth (Commit 29):** Registrierung / Login / Logout via Laravel Breeze
+- **Auth (Commit 29):** Rollen `user` / `admin` auf `User`-Model
+- **Auth (Commit 29):** Auto-Claim — anonyme Session-CVs werden beim Login dem User zugeordnet
 
 #### Performance & Security
 - Analyse-Cache (Datenbank, Request-Hash-basiert)
@@ -51,13 +54,13 @@ miteinander vergleicht und **strukturiert auswertet**.
 
 ### ❌ **NICHT im MVP:**
 
-- ❌ Keine User-Accounts
-- ❌ Keine Multi-CV-Verwaltung
+- ❌ Keine Multi-CV-Verwaltung (geplant Commit 30+)
 - ❌ Keine PDF-Generierung
 - ❌ Keine öffentliche API
-- ❌ Keine E-Mail-Benachrichtigungen (nur Mailpit für Tests)
+- ❌ Keine E-Mail-Benachrichtigungen (nur Mailpit für Tests, Verifizierung deaktiviert)
 - ❌ Kein Production-Deployment (aktuell nur Docker-Dev)
-- ⚠️ Keine finale User-basierte Verschlüsselung (MVP nutzt Token als Secret, spaeteres Refactoring eingeplant)
+- ⚠️ Keine finale User-basierte Verschlüsselung (MVP nutzt Token als Secret, Refactoring eingeplant)
+- ⚠️ `resume_token` in Session (singular) — Tech-Debt, wird mit CV-Verwaltung auf Array umgestellt
 
 ---
 
@@ -294,9 +297,8 @@ readonly class ScoreResultDto
 ## 📅 Roadmap (Highlights)
 
 ### Naechste Schritte
-- **Commit 19:** Nachziehen/abschliessen der historisch uebersprungenen Planungsinhalte
-- **Commit 23+:** CI/CD, Deployment, weitere Produktfeatures
-- **Profile-Weiterentwicklung:** Benutzerkonten, mehrere CVs, ueberarbeitete Verschluesselungsstrategie
+- **Commit 29 (aktuell):** Auth + Rollen + Claim-Flow (`feature/commit-29-auth-roles-claim`)
+- **Commit 30+:** CV-Verwaltung (User-Dashboard, Multi-CV, `resume_tokens[]`-Array)
 - **Recommendations/Reporting:** Weitere Entkopplung in eigene Kontexte nach MVP
 
 ### Mittelfristig
@@ -322,5 +324,5 @@ readonly class ScoreResultDto
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-10  
-**Version**: 2.2 (Commit-22-Status aktualisiert)
+**Letzte Aktualisierung**: 2026-04-21  
+**Version**: 2.3 (Commit-29 Auth/Rollen/Claim-Flow eingetragen, NICHT-MVP aktualisiert)

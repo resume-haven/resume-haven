@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-20  
-**Aktueller Stand:** Commit 28 abgeschlossen, Commit 29 als naechster Fokus in Planung
+**Letzte Aktualisierung:** 2026-04-21  
+**Aktueller Stand:** Commit 28 abgeschlossen, Commit 29 in Arbeit (Branch: `feature/commit-29-auth-roles-claim`)
 
 ---
 
@@ -18,11 +18,15 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 
-### In Planung
-- Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
+### In Arbeit
+- Commit 29: Auth + Rollen + Claim-Flow (Branch: `feature/commit-29-auth-roles-claim`)
+
+### In Planung (Folge)
+- Commit 30+: CV-Verwaltung (User-Dashboard, Multi-CV, `resume_tokens[]`-Array)
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 29+:** User/Auth/AuthZ + rudimentäre Userverwaltung
+- **Commit 29:** Auth + Rollen + Claim-Flow ← **aktuell**
+- **Commit 30+:** CV-Verwaltung (User-Dashboard, mehrere CVs pro User)
 - **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
@@ -63,7 +67,53 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 ---
 
-## Decision Log (kurz)
+## Commit 29 — Auth + Rollen + Claim-Flow
+
+**Branch:** `feature/commit-29-auth-roles-claim`  
+**Status:** In Arbeit
+
+### Ziel
+- Laravel Breeze (Blade, minimal): Login / Registrierung / Logout
+- `UserRole`-Enum (`user`, `admin`) auf `users`-Tabelle
+- Auto-Claim: anonyme Session-CVs werden beim Login automatisch dem User zugeordnet
+- Direkter Claim beim `store`, wenn User bereits eingeloggt
+- Inline Claim-CTA in `result.blade.php`
+- `ProfilePolicy` + Admin-Middleware-Vorbereitung
+
+### Scope-Highlights
+- Breeze auf Minimal-Auth getrimmt (kein Dashboard, keine E-Mail-Verifizierung)
+- `stored_resumes.user_id` (nullable FK) — geclaimte CVs vom Retention-Pruning ausgenommen
+- `ProfileRepository`: `claimByToken()`, `getByUser()`, `store()` mit optionalem `$userId`
+- `AutoClaimResumesListener` auf `Illuminate\Auth\Events\Login`
+- Tech-Debt dokumentiert: `resume_token` (singular) → `resume_tokens[]`-Array bei Commit 30+
+
+### Nicht-Scope
+- Kein User-Dashboard / CV-Übersichtsseite
+- Keine E-Mail-Verifizierung (MVP-Entscheidung)
+- Keine Admin-Views/-Routen (Middleware-Alias nur vorbereitet)
+- Keine User-basierte CV-Verschlüsselung
+
+### Erfolgskriterien
+- Register / Login / Logout funktionieren
+- Claim-Flow (direkt + Auto-Claim) funktioniert und ist getestet
+- `pruneExpired()` schont geclaimte CVs
+- PHPStan Level 9: 0 Errors, Pint: sauber, Coverage ≥ 95 %
+
+### Detailplan
+- Siehe: `docs/history/PLANNING_COMMIT_29.md`
+
+---
+
+## Tech-Debt-Register
+
+| ID | Beschreibung | Geplant für |
+|----|-------------|-------------|
+| TD-01 | `resume_token` in Session (singular) → `resume_tokens[]`-Array | Commit 30+ (CV-Verwaltung) |
+| TD-02 | User-basierte CV-Verschlüsselung (aktuell Token-as-Secret) | Separates Refactoring |
+
+---
+
+
 
 - CI/Branch-Protection wurde in Commit 23 abgeschlossen
 - Planung wurde auf produktnahen Mehrwert neu priorisiert (`A,B,D,C,E`)
@@ -83,6 +133,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 26: `docs/history/PLANNING_COMMIT_26.md`
 - Detailplanung Commit 27: `docs/history/PLANNING_COMMIT_27.md`
 - Detailplanung Commit 28: `docs/history/PLANNING_COMMIT_28.md`
+- Detailplanung Commit 29: `docs/history/PLANNING_COMMIT_29.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---
