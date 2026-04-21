@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int                                                                  $id
@@ -14,8 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int                                                                  $match_count
  * @property int                                                                  $gap_count
  * @property array<int, array{gap: string, priority: 'high'|'medium'|'low'}>|null $recommendations
- * @property \Illuminate\Support\Carbon                                           $created_at
- * @property \Illuminate\Support\Carbon                                           $updated_at
+ * @property Carbon                                                               $created_at
+ * @property Carbon                                                               $updated_at
  */
 class AnalysisBaseline extends Model
 {

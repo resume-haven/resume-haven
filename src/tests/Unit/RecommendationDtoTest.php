@@ -69,6 +69,6 @@ describe('RecommendationDto', function () {
         // Versuche Property zu ändern sollte Error werfen
         // @phpstan-ignore-next-line (erwarteter Fehler bei readonly-Property)
         expect(fn () => $dto->gap = 'new value')
-            ->toThrow(\Error::class);
+            ->toThrow(Error::class);
     });
 });

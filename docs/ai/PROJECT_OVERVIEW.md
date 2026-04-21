@@ -277,7 +277,6 @@ readonly class ScoreResultDto
 ## 🚫 Was das MVP NICHT tut
 
 ### Funktional
-- ❌ Keine User-Accounts / Authentication
 - ❌ Keine Multi-CV-Verwaltung
 - ❌ Keine Verlaufs-Historie (kein "Meine Analysen")
 - ❌ Keine Vergleichs-Funktion (mehrere Jobs gleichzeitig)

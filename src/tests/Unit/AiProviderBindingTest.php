@@ -28,7 +28,7 @@ it('wirft Exception bei unbekanntem Provider', function () {
     config(['ai.provider' => 'unknown']);
 
     expect(fn () => app(AiAnalyzerInterface::class))
-        ->toThrow(\InvalidArgumentException::class, 'Unknown AI provider: unknown');
+        ->toThrow(InvalidArgumentException::class, 'Unknown AI provider: unknown');
 });
 
 it('verwendet mock als Default wenn Provider leer/null ist', function () {

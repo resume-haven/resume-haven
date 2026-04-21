@@ -9,7 +9,7 @@ describe('ValidateAiResponseAction', function () {
         $action = new ValidateAiResponseAction();
         $response = json_encode(['key' => 'value']);
 
-        expect(fn () => $action->execute($response))->not()->toThrow(\Exception::class);
+        expect(fn () => $action->execute($response))->not()->toThrow(Exception::class);
     });
 
     test('lehnt Response ab, die zu lang ist', function () {
@@ -17,17 +17,17 @@ describe('ValidateAiResponseAction', function () {
         $response = json_encode(str_repeat('a', 1_000_001));
 
         expect(fn () => $action->execute($response))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     test('lehnt Response ab, die kein JSON-Objekt ist', function () {
         $action = new ValidateAiResponseAction();
 
         expect(fn () => $action->execute('["array"]'))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
 
         expect(fn () => $action->execute('"string"'))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     test('lehnt Response mit verdächtigen Patterns ab', function () {
@@ -35,7 +35,7 @@ describe('ValidateAiResponseAction', function () {
         $response = json_encode(['eval' => 'eval()']);
 
         expect(fn () => $action->execute($response))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     test('lehnt alle verdächtigen Patterns ab', function () {
@@ -52,7 +52,7 @@ describe('ValidateAiResponseAction', function () {
 
         foreach ($suspiciousPatterns as $pattern) {
             expect(fn () => $action->execute(json_encode(['data' => $pattern])))
-                ->toThrow(\RuntimeException::class);
+                ->toThrow(RuntimeException::class);
         }
     });
 
@@ -63,20 +63,20 @@ describe('ValidateAiResponseAction', function () {
             'special' => '!@#$%^&*()',
         ]);
 
-        expect(fn () => $action->execute($response))->not()->toThrow(\Exception::class);
+        expect(fn () => $action->execute($response))->not()->toThrow(Exception::class);
     });
 
     test('lehnt leeren String ab', function () {
         $action = new ValidateAiResponseAction();
 
         expect(fn () => $action->execute(''))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     test('lehnt nur Whitespace ab', function () {
         $action = new ValidateAiResponseAction();
 
         expect(fn () => $action->execute('   '))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 });

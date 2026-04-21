@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Dto\AnalyzeRequestDto;
 use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
+use App\Domains\Analysis\Dto\RecommendationDto;
 
 describe('ParseAiResponseAction', function () {
     test('parst valide Response zu AnalyzeResultDto', function () {
@@ -31,7 +32,7 @@ describe('ParseAiResponseAction', function () {
         $data = ['requirements' => ['PHP']]; // Fehlen: experiences, matches, gaps
 
         expect(fn () => $action->execute($data, $request))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     test('lehnt Response ab, wenn Feld kein Array ist', function () {
@@ -45,7 +46,7 @@ describe('ParseAiResponseAction', function () {
         ];
 
         expect(fn () => $action->execute($data, $request))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     test('extrahiert Tags aus Response falls vorhanden', function () {
@@ -106,7 +107,7 @@ describe('ParseAiResponseAction', function () {
         $data = ['requirements' => ['PHP'], 'experiences' => []]; // Fehlen: matches, gaps
 
         expect(fn () => $action->execute($data, $request))
-            ->toThrow(\RuntimeException::class, 'Feld \'matches\' fehlt');
+            ->toThrow(RuntimeException::class, 'Feld \'matches\' fehlt');
     });
 
     test('parst recommendations aus Response', function () {
@@ -130,7 +131,7 @@ describe('ParseAiResponseAction', function () {
         $result = $action->execute($data, $request);
 
         expect($result->recommendations)->toHaveCount(1);
-        expect($result->recommendations[0])->toBeInstanceOf(\App\Domains\Analysis\Dto\RecommendationDto::class);
+        expect($result->recommendations[0])->toBeInstanceOf(RecommendationDto::class);
         expect($result->recommendations[0]->gap)->toBe('Docker');
         expect($result->recommendations[0]->priority)->toBe('high');
     });

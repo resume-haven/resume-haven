@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -29,7 +30,7 @@ test('Lizenzen-Seite ist erreichbar', function () {
 
 test('Lizenzen-Seite zeigt Fallback wenn keine licenses.json vorhanden', function () {
     // Storage-Datei sicherstellen, dass sie nicht existiert
-    \Illuminate\Support\Facades\Storage::fake();
+    Storage::fake();
 
     $response = $this->get(route('legal.lizenzen'));
 
@@ -37,8 +38,8 @@ test('Lizenzen-Seite zeigt Fallback wenn keine licenses.json vorhanden', functio
 });
 
 test('Lizenzen-Seite verarbeitet gueltige licenses.json', function () {
-    \Illuminate\Support\Facades\Storage::fake('local');
-    \Illuminate\Support\Facades\Storage::put('licenses.json', json_encode([
+    Storage::fake('local');
+    Storage::put('licenses.json', json_encode([
         'php' => [['name' => 'laravel/framework', 'version' => '12.0', 'license' => 'MIT', 'description' => 'The Laravel Framework']],
         'node' => [],
         'generated_at' => '2026-03-10T12:00:00+00:00',

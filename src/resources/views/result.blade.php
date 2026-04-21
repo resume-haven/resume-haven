@@ -7,6 +7,31 @@
         <!-- Heading -->
         <x-atoms.heading-h1>Analyse-Ergebnis</x-atoms.heading-h1>
 
+        @php
+            $resumeToken = session('resume_token');
+            $resumeBelongsToUser = session('resume_claimed', false) === true;
+        @endphp
+
+        @if (is_string($resumeToken) && $resumeToken !== '' && ! auth()->check())
+            <div class="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 p-4">
+                <p class="text-sm font-semibold text-blue-900 dark:text-blue-100">Lebenslauf sichern</p>
+                <p class="text-sm text-blue-800 dark:text-blue-200 mt-1">
+                    Erstelle ein Konto, damit dein gespeicherter Lebenslauf automatisch deinem Profil zugeordnet wird.
+                </p>
+                <div class="mt-3">
+                    <a href="{{ route('register') }}" class="inline-flex items-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2">
+                        CV sichern &amp; Konto erstellen
+                    </a>
+                </div>
+            </div>
+        @endif
+
+        @if ($resumeBelongsToUser)
+            <div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 p-4">
+                <p class="text-sm font-semibold text-green-900 dark:text-green-100">CV deinem Konto zugeordnet ✓</p>
+            </div>
+        @endif
+
         <!-- Error Handling -->
         @if ($error)
             <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 px-4 py-3 rounded-lg mb-6">

@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Listeners\AutoClaimResumesListener;
+use App\Models\StoredResume;
+use App\Policies\ProfilePolicy;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Event::listen(Login::class, AutoClaimResumesListener::class);
+        Gate::policy(StoredResume::class, ProfilePolicy::class);
     }
 }

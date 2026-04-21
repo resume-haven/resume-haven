@@ -10,6 +10,8 @@ use App\Http\Requests\StoreResumeRequest;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Domains\Profile\Dto\ResumeTokenDto;
 
 class StoreResumeController extends Controller
 {
@@ -17,9 +19,16 @@ class StoreResumeController extends Controller
     {
         /** @var string $cvText */
         $cvText = $request->validated('cv_text');
+        $authId = Auth::id();
+        $userId = is_int($authId) ? $authId : null;
 
-        /** @var \App\Domains\Profile\Dto\ResumeTokenDto $tokenDto */
-        $tokenDto = $dispatcher->dispatch(new StoreResumeCommand(new StoreResumeDto($cvText)));
+        /** @var ResumeTokenDto $tokenDto */
+        $tokenDto = $dispatcher->dispatch(
+            new StoreResumeCommand(new StoreResumeDto($cvText, $userId))
+        );
+
+        $request->session()->put('resume_token', $tokenDto->token);
+        $request->session()->put('resume_claimed', Auth::check());
 
         return redirect()
             ->route('analyze')

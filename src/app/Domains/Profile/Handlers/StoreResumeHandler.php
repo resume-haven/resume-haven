@@ -23,7 +23,7 @@ class StoreResumeHandler
         $token = $this->generateUniqueToken();
         $encryptedCv = $this->encryptResume->execute($command->request->cvText, $token);
 
-        $this->repository->store($token, $encryptedCv);
+        $this->repository->store($token, $encryptedCv, $command->request->userId);
 
         return new ResumeTokenDto($token);
     }

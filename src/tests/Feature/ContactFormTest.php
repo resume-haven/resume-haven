@@ -28,7 +28,7 @@ test('Kontaktformular wird erfolgreich abgeschickt', function () {
 
     Log::shouldHaveReceived('info')
         ->once()
-        ->with('Kontaktformular-Eingang', \Mockery::type('array'));
+        ->with('Kontaktformular-Eingang', Mockery::type('array'));
 });
 
 test('Kontaktformular schlaegt bei fehlenden Pflichtfeldern fehl', function () {

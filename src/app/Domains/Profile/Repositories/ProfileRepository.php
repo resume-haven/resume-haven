@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Profile\Repositories;
 
 use App\Models\StoredResume;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
 class ProfileRepository
@@ -16,10 +17,11 @@ class ProfileRepository
         return StoredResume::query()->where('token', $token)->exists();
     }
 
-    public function store(string $token, string $encryptedCv): void
+    public function store(string $token, string $encryptedCv, ?int $userId = null): void
     {
         StoredResume::query()->create([
             'token' => $token,
+            'user_id' => $userId,
             'encrypted_cv' => $encryptedCv,
             'last_accessed_at' => null,
         ]);
@@ -31,6 +33,26 @@ class ProfileRepository
         $resume = StoredResume::query()->where('token', $token)->first();
 
         return $resume;
+    }
+
+    /** @return Collection<int, StoredResume> */
+    public function getByUser(int $userId): Collection
+    {
+        /** @var Collection<int, StoredResume> $resumes */
+        $resumes = StoredResume::query()
+            ->where('user_id', $userId)
+            ->orderByDesc('updated_at')
+            ->get();
+
+        return $resumes;
+    }
+
+    public function claimByToken(string $token, int $userId): void
+    {
+        StoredResume::query()
+            ->where('token', $token)
+            ->whereNull('user_id')
+            ->update(['user_id' => $userId]);
     }
 
     public function touchLastAccessedByToken(string $token): void
@@ -60,6 +82,7 @@ class ProfileRepository
         $cutoff = Carbon::now()->subHours($this->retentionHours());
 
         $deleted = StoredResume::query()
+            ->whereNull('user_id')
             ->where(function ($query) use ($cutoff): void {
                 $query->whereNotNull('last_accessed_at')
                     ->where('last_accessed_at', '<', $cutoff)
@@ -70,11 +93,7 @@ class ProfileRepository
             })
             ->delete();
 
-        if (! is_numeric($deleted)) {
-            return 0;
-        }
-
-        return (int) $deleted;
+        return $deleted;
     }
 
     private function retentionHours(): int

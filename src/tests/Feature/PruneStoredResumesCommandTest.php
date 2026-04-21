@@ -10,7 +10,7 @@ uses(RefreshDatabase::class);
 test('profile:prune-stored-resumes loescht abgelaufene Datensaetze', function () {
     config(['profile.resume_retention_hours' => 24]);
 
-    \DB::table('stored_resumes')->insert([
+    DB::table('stored_resumes')->insert([
         [
             'token' => str_repeat('A', 32),
             'encrypted_cv' => 'old-encrypted',
@@ -40,7 +40,7 @@ test('profile:prune-stored-resumes loescht abgelaufene Datensaetze', function ()
 test('profile:prune-stored-resumes gibt Nachricht aus wenn nichts zu loeschen ist', function () {
     config(['profile.resume_retention_hours' => 24]);
 
-    \DB::table('stored_resumes')->insert([
+    DB::table('stored_resumes')->insert([
         'token' => str_repeat('C', 32),
         'encrypted_cv' => 'fresh-encrypted',
         'last_accessed_at' => now()->subHours(2),

@@ -7,11 +7,12 @@ use App\Domains\Analysis\UseCases\AnalyzeFlowUseCase\ExecuteAnalyzeFlowAction;
 use App\Http\Controllers\AnalyzeController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 
 uses(RefreshDatabase::class);
 
 it('AnalyzeController besitzt die Methode __invoke', function () {
-    $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
+    $mockExecuteAnalyzeFlow = Mockery::mock(ExecuteAnalyzeFlowAction::class);
     $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
 
     expect(method_exists($controller, '__invoke'))->toBeTrue();
@@ -47,18 +48,18 @@ describe('AnalyzeController::__invoke', function () {
             comparison: $comparison,
         );
 
-        $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
+        $mockExecuteAnalyzeFlow = Mockery::mock(ExecuteAnalyzeFlowAction::class);
         $mockExecuteAnalyzeFlow
             ->shouldReceive('execute')
             ->once()
-            ->with(\Mockery::type(Request::class))
+            ->with(Mockery::type(Request::class))
             ->andReturn($viewDataDto);
 
         $controller = new AnalyzeController($mockExecuteAnalyzeFlow);
         $response = $controller->__invoke($request);
 
         expect($response)
-            ->toBeInstanceOf(\Illuminate\Contracts\View\View::class)
+            ->toBeInstanceOf(View::class)
             ->and($response->getData()['comparison'] ?? null)->toBe($comparison);
     });
 
@@ -78,7 +79,7 @@ describe('AnalyzeController::__invoke', function () {
             comparison: null,
         );
 
-        $mockExecuteAnalyzeFlow = \Mockery::mock(ExecuteAnalyzeFlowAction::class);
+        $mockExecuteAnalyzeFlow = Mockery::mock(ExecuteAnalyzeFlowAction::class);
         $mockExecuteAnalyzeFlow
             ->shouldReceive('execute')
             ->once()
@@ -89,7 +90,7 @@ describe('AnalyzeController::__invoke', function () {
         $viewData = $response->getData();
 
         expect($response)
-            ->toBeInstanceOf(\Illuminate\Contracts\View\View::class)
+            ->toBeInstanceOf(View::class)
             ->and(array_key_exists('comparison', $viewData) ? $viewData['comparison'] : null)->toBeNull();
     });
 });
