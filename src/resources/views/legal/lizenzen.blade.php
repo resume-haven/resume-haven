@@ -3,15 +3,22 @@
 @section('title', 'Lizenzen')
 
 @section('content')
+    @php
+        $showVersion = auth()->check() && auth()->user()?->isAdmin();
+        $columnCount = $showVersion ? 3 : 2;
+    @endphp
+
     <div class="max-w-5xl mx-auto">
         <x-atoms.heading-h1>Open Source Lizenzen</x-atoms.heading-h1>
 
+        @if ($showVersion)
         <div class="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-3 sm:p-4 mb-6">
             <p class="text-sm text-blue-800 dark:text-blue-200">
                 ℹ️ Diese Seite wird automatisch aus <code>composer.lock</code> und <code>package-lock.json</code> generiert.
                 Fuehren Sie <code>php artisan licenses:generate</code> aus, um die Lizenzen zu aktualisieren.
             </p>
         </div>
+        @endif
 
         @if (!empty($php) || !empty($node) || $generated_at)
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-6">
@@ -26,7 +33,9 @@
                         <thead class="bg-gray-100 dark:bg-gray-800">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Paket</th>
-                                <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Version</th>
+                                @if ($showVersion)
+                                    <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Version</th>
+                                @endif
                                 <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Lizenz</th>
                             </tr>
                         </thead>
@@ -42,12 +51,14 @@
                                             {{ $package['name'] }}
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 text-xs sm:text-sm">{{ $package['version'] ?? 'N/A' }}</td>
+                                    @if ($showVersion)
+                                        <td class="px-4 py-3 text-xs sm:text-sm">{{ $package['version'] ?? 'N/A' }}</td>
+                                    @endif
                                     <td class="px-4 py-3 text-xs sm:text-sm">{{ $package['license'] ?? 'N/A' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-3 text-center text-sm text-gray-500">
+                                    <td colspan="{{ $columnCount }}" class="px-4 py-3 text-center text-sm text-gray-500">
                                         Keine PHP-Pakete gefunden. Fuehren Sie <code>php artisan licenses:generate</code> aus.
                                     </td>
                                 </tr>
@@ -65,7 +76,9 @@
                         <thead class="bg-gray-100 dark:bg-gray-800">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Paket</th>
-                                <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Version</th>
+                                @if ($showVersion)
+                                    <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Version</th>
+                                @endif
                                 <th class="px-4 py-3 text-left text-xs sm:text-sm font-semibold">Lizenz</th>
                             </tr>
                         </thead>
@@ -81,12 +94,14 @@
                                             {{ $package['name'] }}
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 text-xs sm:text-sm">{{ $package['version'] ?? 'N/A' }}</td>
+                                    @if ($showVersion)
+                                        <td class="px-4 py-3 text-xs sm:text-sm">{{ $package['version'] ?? 'N/A' }}</td>
+                                    @endif
                                     <td class="px-4 py-3 text-xs sm:text-sm">{{ $package['license'] ?? 'N/A' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-3 text-center text-sm text-gray-500">
+                                    <td colspan="{{ $columnCount }}" class="px-4 py-3 text-center text-sm text-gray-500">
                                         Keine Node-Pakete gefunden.
                                     </td>
                                 </tr>
