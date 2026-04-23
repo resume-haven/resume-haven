@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domains\Profile\Actions\EncryptResumeAction;
 use App\Domains\Profile\Actions\GenerateTokenAction;
 use App\Models\StoredResume;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -18,12 +19,31 @@ it('speichert CV und erzeugt Token-Link', function () {
 
     $response->assertRedirect(route('analyze'));
     $response->assertSessionHas('resume_token');
+    $response->assertSessionHas('resume_claimed', false);
     $response->assertSessionHas('resume_link');
 
     expect(StoredResume::query()->count())->toBe(1);
     $stored = StoredResume::query()->first();
     expect($stored)->not()->toBeNull();
     expect($stored?->encrypted_cv)->not()->toBe($cv);
+    expect($stored?->user_id)->toBeNull();
+});
+
+it('speichert CV fuer eingeloggten nutzer direkt geclaimt', function () {
+    $user = User::factory()->create();
+    $cv = str_repeat('Laravel Erfahrung mit Teamlead und CI. ', 3);
+
+    $response = $this->actingAs($user)->post(route('profile.store'), [
+        'cv_text' => $cv,
+    ]);
+
+    $response->assertRedirect(route('analyze'));
+    $response->assertSessionHas('resume_claimed', true);
+
+    $stored = StoredResume::query()->first();
+
+    expect($stored)->not()->toBeNull();
+    expect($stored?->user_id)->toBe($user->id);
 });
 
 it('validiert cv_text beim Speichern', function () {
@@ -87,7 +107,7 @@ it('gibt Fehler zurueck und entfernt den Datensatz wenn gespeicherter CV abgelau
     $cv = 'Aelterer gespeicherter CV mit gueltiger Struktur aber abgelaufener Aufbewahrung.';
     $encrypted = (new EncryptResumeAction())->execute($cv, $token);
 
-    \DB::table('stored_resumes')->insert([
+    DB::table('stored_resumes')->insert([
         'token' => $token,
         'encrypted_cv' => $encrypted,
         'last_accessed_at' => now()->subHours(26),

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Dto\AnalyzeResultDto;
+use App\Services\AnalyzeApplicationService;
 
 uses(RefreshDatabase::class);
 
@@ -34,8 +36,8 @@ test('akzeptiert gültige Eingaben und zeigt die Ergebnis-View', function () {
 
 
 test('zeigt Fehler bei ungültiger KI-Antwort', function () {
-    $mock = Mockery::mock(App\Services\AnalyzeApplicationService::class);
-    $mockDto = new App\Dto\AnalyzeResultDto(
+    $mock = Mockery::mock(AnalyzeApplicationService::class);
+    $mockDto = new AnalyzeResultDto(
         str_repeat('A', 31),
         str_repeat('B', 31),
         [],
@@ -45,7 +47,7 @@ test('zeigt Fehler bei ungültiger KI-Antwort', function () {
         'AI-Analyse fehlgeschlagen: Ungültige KI-Antwort'
     );
     $mock->shouldReceive('analyze')->andReturn($mockDto);
-    app()->instance(App\Services\AnalyzeApplicationService::class, $mock);
+    app()->instance(AnalyzeApplicationService::class, $mock);
 
     $response = \Pest\Laravel\post('/analyze', [
         'job_text' => str_repeat('A', 31),
@@ -61,9 +63,9 @@ test('zeigt Fehler bei ungültiger KI-Antwort', function () {
 
 
 test('zeigt Fehler bei Exception (z.B. Timeout)', function () {
-    $mock = Mockery::mock(App\Services\AnalyzeApplicationService::class);
+    $mock = Mockery::mock(AnalyzeApplicationService::class);
     $mock->shouldReceive('analyze')->andThrow(new Exception('Timeout!'));
-    app()->instance(App\Services\AnalyzeApplicationService::class, $mock);
+    app()->instance(AnalyzeApplicationService::class, $mock);
 
     $response = \Pest\Laravel\post('/analyze', [
         'job_text' => str_repeat('A', 31),

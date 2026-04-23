@@ -89,3 +89,7 @@ docker-compose.override.yml
 /.junie/skills/tailwindcss-animations/SKILL.md
 /.junie/skills/tailwindcss-mobile-first/SKILL.md
 /.tmp_competence_resume_status
+/tmp-cta.log
+/tmp-pint-cta.log
+/tmp-regression.log
+/tmp-full-coverage.log

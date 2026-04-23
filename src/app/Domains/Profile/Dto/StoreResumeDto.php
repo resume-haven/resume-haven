@@ -8,5 +8,6 @@ readonly class StoreResumeDto
 {
     public function __construct(
         public string $cvText,
+        public ?int $userId = null,
     ) {}
 }

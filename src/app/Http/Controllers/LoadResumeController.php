@@ -8,6 +8,7 @@ use App\Domains\Profile\Queries\GetResumeByTokenQuery;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
+use App\Domains\Profile\Dto\LoadedResumeDto;
 
 class LoadResumeController extends Controller
 {
@@ -17,12 +18,15 @@ class LoadResumeController extends Controller
             return redirect()->route('analyze')->withErrors(['resume_token' => 'Ungueltiger Resume-Token.']);
         }
 
-        /** @var \App\Domains\Profile\Dto\LoadedResumeDto|null $loadedResume */
+        /** @var LoadedResumeDto|null $loadedResume */
         $loadedResume = $dispatcher->dispatch(new GetResumeByTokenQuery($token));
 
         if ($loadedResume === null) {
             return redirect()->route('analyze')->withErrors(['resume_token' => 'Kein gespeicherter Lebenslauf fuer diesen Token gefunden.']);
         }
+
+        session()->put('resume_token', $loadedResume->token);
+        session()->put('resume_claimed', false);
 
         return redirect()
             ->route('analyze')

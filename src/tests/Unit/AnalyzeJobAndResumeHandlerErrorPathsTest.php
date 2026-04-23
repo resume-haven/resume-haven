@@ -12,6 +12,8 @@ use App\Domains\Analysis\UseCases\MatchingUseCase\MatchingUseCase;
 use App\Dto\AnalyzeRequestDto;
 use App\Dto\AnalyzeResultDto;
 use App\Services\AnalyzeApplicationService;
+use App\Domains\Analysis\Dto\GapAnalysisResultDto;
+use App\Domains\Analysis\Dto\MatchingResultDto;
 
 describe('AnalyzeJobAndResumeHandler Error Paths', function () {
     test('gibt Error-Result zurück bei Exception im AnalyzeService', function () {
@@ -26,7 +28,7 @@ describe('AnalyzeJobAndResumeHandler Error Paths', function () {
         $analyzeService = Mockery::mock(AnalyzeApplicationService::class);
 
         $getCachedAnalysis->shouldReceive('execute')->once()->andReturnNull();
-        $analyzeService->shouldReceive('analyze')->once()->andThrow(new \RuntimeException('AI Service down'));
+        $analyzeService->shouldReceive('analyze')->once()->andThrow(new RuntimeException('AI Service down'));
 
         $handler = new AnalyzeJobAndResumeHandler(
             $matchingUseCase,
@@ -92,10 +94,10 @@ describe('AnalyzeJobAndResumeHandler Error Paths', function () {
         $getCachedAnalysis->shouldReceive('execute')->once()->andReturnNull();
         $analyzeService->shouldReceive('analyze')->once()->andReturn($aiResult);
 
-        $matchingResult = new \App\Domains\Analysis\Dto\MatchingResultDto([
+        $matchingResult = new MatchingResultDto([
             ['requirement' => 'PHP', 'experience' => 'Laravel'],
         ]);
-        $gapResult = new \App\Domains\Analysis\Dto\GapAnalysisResultDto([]);
+        $gapResult = new GapAnalysisResultDto([]);
 
         $matchingUseCase->shouldReceive('handle')->once()->andReturn($matchingResult);
         $gapAnalysisUseCase->shouldReceive('handle')->once()->andReturn($gapResult);

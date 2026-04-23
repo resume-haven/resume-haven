@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-openssl": "*",
         "laravel/ai": "^0.2.1",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
@@ -70,7 +71,7 @@
         "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
         "test:pest-coverage-report": [
                 "@php -r \"is_dir('coverage-report') || mkdir('coverage-report', 0777, true);\"",
-                "vendor/bin/pest --coverage --coverage-clover=coverage-report/clover.xml --coverage-html=coverage-report/html --min=95"
+                "vendor/bin/pest --coverage --coverage-clover=coverage-report/clover.xml --coverage-html=coverage-report/html --min=99"
         ],
         "pint:analyse": "vendor/bin/pint --config pint.json --test .",
         "pint:fix": "vendor/bin/pint --config pint.json .",
@@ -111,7 +112,7 @@
         }
     },
     "config": {
-        "process-timeout": 500,
+        "process-timeout":1000,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,

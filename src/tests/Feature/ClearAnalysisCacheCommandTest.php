@@ -44,7 +44,7 @@ test('cache:clear-analysis gibt Nachricht aus wenn Cache leer ist', function () 
 
 test('cache:clear-analysis --older-than=7 löscht nur alte Einträge', function () {
     // Erstelle alten Eintrag (vor 10 Tagen) mit DB::table um Timestamps zu setzen
-    \DB::table('analysis_cache')->insert([
+    DB::table('analysis_cache')->insert([
         'request_hash' => hash('sha256', 'old'),
         'job_text' => 'Old Job',
         'cv_text' => 'Old CV',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -42,19 +43,26 @@ class LegalController extends Controller
             'generated_at' => null,
         ];
 
-        if (Storage::exists('licenses.json')) {
+        // Primärer Pfad: passt zum Generator (storage/app/licenses.json).
+        $raw = null;
+        $storageAppPath = storage_path('app/licenses.json');
+
+        if (File::exists($storageAppPath)) {
+            $raw = File::get($storageAppPath);
+        } elseif (Storage::exists('licenses.json')) {
+            // Fallback für ältere Setups über Default-Disk.
             $raw = Storage::get('licenses.json');
+        }
 
-            if (is_string($raw) && $raw !== '') {
-                $data = json_decode($raw, true);
+        if (is_string($raw) && $raw !== '') {
+            $data = json_decode($raw, true);
 
-                if (is_array($data)) {
-                    $licenses = [
-                        'php' => $data['php'] ?? [],
-                        'node' => $data['node'] ?? [],
-                        'generated_at' => $data['generated_at'] ?? null,
-                    ];
-                }
+            if (is_array($data)) {
+                $licenses = [
+                    'php' => $data['php'] ?? [],
+                    'node' => $data['node'] ?? [],
+                    'generated_at' => $data['generated_at'] ?? null,
+                ];
             }
         }
 

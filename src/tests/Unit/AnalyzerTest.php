@@ -53,7 +53,7 @@ it('liefert das korrekte Schema inkl. tags', function () {
             return $this;
         }
 
-        public function object(\Closure|array $properties = [])
+        public function object(Closure|array $properties = [])
         {
             return $this;
         }
