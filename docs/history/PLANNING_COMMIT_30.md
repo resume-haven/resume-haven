@@ -1,8 +1,9 @@
 # Detailplanung Commit 30 — CV-Verwaltung (Multi-CV CRUD)
 
 **Branch:** `feature/commit-30-multi-cv-crud`  
-**Status:** In Arbeit  
+**Status:** Abgeschlossen  
 **Erstellt:** 2026-04-23  
+**Abgeschlossen:** 2026-04-24
 
 ---
 
@@ -135,4 +136,11 @@ sehen, bearbeiten, loeschen und erneut fuer Analysen verwenden koennen.
 - Roadmap: `../ROADMAP.md`
 - Vorheriger Detailplan: `PLANNING_COMMIT_29.md`
 - Historie-Index: `../COMMIT_HISTORY_INDEX.md`
+
+---
+
+## Abschlussnotiz
+
+- Commit 30 wurde erfolgreich abgeschlossen und gemerged.
+- Naechste Umsetzungsreihenfolge fuer Commit 31 wurde festgelegt: **3, 1, 2**.
 

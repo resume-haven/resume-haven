@@ -30,6 +30,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 27: Acceptance-Tests Kernflows + CI-/Quality-Gate-Integration
 - Commit 28: Architecture-Tests & Engineering-Haertung
 - Commit 29: Auth + Rollen + Claim-Flow
+- Commit 30: CV-Verwaltung (Multi-CV CRUD, Dashboard/Pagination, Session-Token-Cutover, Coverage-Hardening)
 
 ## Detaillierte Einzelplaene
 
@@ -40,7 +41,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - [`PLANNING_COMMIT_27.md`](PLANNING_COMMIT_27.md) (abgeschlossen)
 - [`PLANNING_COMMIT_28.md`](PLANNING_COMMIT_28.md) (abgeschlossen)
 - [`PLANNING_COMMIT_29.md`](PLANNING_COMMIT_29.md) (abgeschlossen)
-- [`PLANNING_COMMIT_30.md`](PLANNING_COMMIT_30.md) (aktiv)
+- [`PLANNING_COMMIT_30.md`](PLANNING_COMMIT_30.md) (abgeschlossen)
 - [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 
 ## Hinweis

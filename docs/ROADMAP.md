@@ -226,7 +226,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-04-23)
+# 📊 Aktueller Stand (2026-04-24)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
@@ -245,9 +245,13 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 - Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
+- Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
 
 ## 🔄 In Arbeit
-- Commit 30: CV-Verwaltung (User-Dashboard, Multi-CV, Pagination, `resume_tokens[]`-Cutover)
+- Commit 31: Reihenfolge **3 → 1 → 2**
+  - 3) Acceptance-Gate fuer Multi-CV ausbauen
+  - 1) Delete-Flow (Owner/Admin) mit Session-Cleanup
+  - 2) Session-Token-Handling vereinheitlichen
 
 ## 📋 Geplant
 - Commit 29 Follow-up: Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise)
