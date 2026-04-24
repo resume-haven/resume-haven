@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-21  
-**Aktueller Stand:** Commit 28 abgeschlossen, Commit 29 in Arbeit (Branch: `feature/commit-29-auth-roles-claim`)
+**Letzte Aktualisierung:** 2026-04-23  
+**Aktueller Stand:** Commit 29 abgeschlossen, Commit 30 in Arbeit (Branch: `feature/commit-30-multi-cv-crud`)
 
 ---
 
@@ -17,16 +17,17 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
+- Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
 
 ### In Arbeit
-- Commit 29: Auth + Rollen + Claim-Flow (Branch: `feature/commit-29-auth-roles-claim`)
+- Commit 30: CV-Verwaltung (Branch: `feature/commit-30-multi-cv-crud`)
 
 ### In Planung (Folge)
-- Commit 30+: CV-Verwaltung (User-Dashboard, Multi-CV, `resume_tokens[]`-Array)
+- LLM-Block: Provider-agnostischer AI-Layer
+- Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 29:** Auth + Rollen + Claim-Flow ← **aktuell**
-- **Commit 30+:** CV-Verwaltung (User-Dashboard, mehrere CVs pro User)
+- **Commit 30:** CV-Verwaltung (User-Dashboard, Multi-CV, Pagination, `resume_tokens[]`-Cutover) ← **aktuell**
 - **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
@@ -70,7 +71,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ## Commit 29 — Auth + Rollen + Claim-Flow
 
 **Branch:** `feature/commit-29-auth-roles-claim`  
-**Status:** In Arbeit
+**Status:** Abgeschlossen
 
 ### Ziel
 - Laravel Breeze (Blade, minimal): Login / Registrierung / Logout
@@ -99,8 +100,51 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - `pruneExpired()` schont geclaimte CVs
 - PHPStan Level 9: 0 Errors, Pint: sauber, Coverage ≥ 95 %
 
+### Ergebnis
+- Minimal-Auth via Breeze (Login / Registrierung / Logout) ist eingeführt
+- Rollenmodell (`user`, `admin`), `ProfilePolicy` und Admin-Middleware-Vorbereitung sind umgesetzt
+- Direkter Claim beim Speichern sowie Auto-Claim beim Login funktionieren
+- Claim-CTA und Success-Hinweis sind in `result.blade.php` integriert und getestet
+- Verbleibende UX-Polishes werden als Roadmap-Item weitergefuehrt, nicht als eigener Commit-Block
+
 ### Detailplan
 - Siehe: `docs/history/PLANNING_COMMIT_29.md`
+
+---
+
+## Commit 30 — CV-Verwaltung (Multi-CV CRUD)
+
+**Branch:** `feature/commit-30-multi-cv-crud`  
+**Status:** In Arbeit
+
+### Ziel
+- Ein paginiertes User-Dashboard fuer mehrere gespeicherte CVs bereitstellen
+- Den singulaeren Session-Token-Flow auf `resume_tokens[]` umstellen
+- CVs pro User sicher anzeigen, bearbeiten, loeschen und erneut fuer Analysen verwenden
+
+### Scope
+- User-Dashboard / CV-Uebersicht mit Pagination (`perPage=10` fuer den MVP)
+- CRUD fuer eigene CVs (Create, Read, Update, Delete)
+- Ownership/Policy-Durchsetzung fuer User/Admin
+- Session-Cutover: `resume_token` → `resume_tokens[]`
+- Token- und User-Flows sauber verzahnen (Load, Claim, Delete, Re-Use)
+- Tests pro Slice (Feature + Unit + Edge-Cases)
+
+### Nicht-Scope
+- Keine Team-/Mandantenverwaltung
+- Keine User-basierte Schluesselrotation fuer verschluesselte CVs
+- Keine Admin-Oberflaechen ausser vorbereiteter Berechtigungsbasis
+- Keine Konfigurierbarkeit der Pagination im MVP
+
+### Erfolgskriterien
+- Nutzer sehen ihre eigenen CVs paginiert und sortiert
+- CRUD-Operationen funktionieren ausschliesslich fuer Owner bzw. Admins
+- `resume_tokens[]` ersetzt den bisherigen Single-Token-Flow robust
+- Claim-, Load- und Retention-Flows bleiben regressionsfrei
+- Tests, PHPStan und Pint bleiben gruen; Coverage-Ziel bleibt eingehalten
+
+### Detailplan
+- Siehe: `docs/history/PLANNING_COMMIT_30.md`
 
 ---
 
@@ -108,7 +152,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 | ID | Beschreibung | Geplant für |
 |----|-------------|-------------|
-| TD-01 | `resume_token` in Session (singular) → `resume_tokens[]`-Array | Commit 30+ (CV-Verwaltung) |
+| TD-01 | `resume_token` in Session (singular) → `resume_tokens[]`-Array | Commit 30 (CV-Verwaltung) |
 | TD-02 | User-basierte CV-Verschlüsselung (aktuell Token-as-Secret) | Separates Refactoring |
 
 ---
@@ -117,7 +161,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 - CI/Branch-Protection wurde in Commit 23 abgeschlossen
 - Planung wurde auf produktnahen Mehrwert neu priorisiert (`A,B,D,C,E`)
-- User/Auth wird nach den Produkt- und Test-Haertungscommits gestartet
+- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist die Multi-CV-Verwaltung
 - Deployment wird bewusst spaeter und kontextabhaengig neu bewertet
 
 ---
@@ -134,6 +178,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 27: `docs/history/PLANNING_COMMIT_27.md`
 - Detailplanung Commit 28: `docs/history/PLANNING_COMMIT_28.md`
 - Detailplanung Commit 29: `docs/history/PLANNING_COMMIT_29.md`
+- Detailplanung Commit 30: `docs/history/PLANNING_COMMIT_30.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---

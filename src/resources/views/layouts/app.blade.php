@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="de" class="bg-neutral-light text-text-light dark:bg-neutral-dark dark:text-text-dark" x-data="{ mobileMenuOpen: false }">
+<html lang="de" class="bg-neutral-light text-text-light dark:bg-neutral-dark dark:text-text-dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'ResumeHaven')</title>
 
-    <link rel="stylesheet" href="/build/app.css">
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
 
     <script>
         // Dark-Mode Manager global bereitstellen (wird vom Header-Button genutzt)
@@ -37,7 +37,7 @@
                 return systemPrefersDark();
             }
 
-            window.DarkModeManager = {
+            globalThis.DarkModeManager = {
                 toggle() {
                     const next = !document.documentElement.classList.contains('dark');
                     applyDarkClass(next);
@@ -50,10 +50,11 @@
         })();
     </script>
 
-    <!-- Alpine.js for Mobile Menu Toggle -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js (local build) -->
+    <script defer src="{{ asset('build/alpinejs.min.js') }}"></script>
 </head>
-<body class="antialiased bg-neutral-light dark:bg-neutral-dark text-text-light dark:text-text-dark">
+<!--suppress HtmlUnknownAttribute -->
+<body class="antialiased bg-neutral-light dark:bg-neutral-dark text-text-light dark:text-text-dark" x-data="{ mobileMenuOpen: false }">
 
     <!-- Header -->
     <header class="bg-white dark:bg-neutral-dark border-b dark:border-gray-700">
@@ -72,6 +73,7 @@
                     <x-atoms.link href="/about" class="hover:text-primary transition">About</x-atoms.link>
 
                     @auth
+                        <x-atoms.link href="{{ route('profile.index') }}" class="hover:text-primary transition">Meine CVs</x-atoms.link>
                         <span class="text-xs text-gray-500 dark:text-gray-300">{{ auth()->user()->email }}</span>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -87,7 +89,7 @@
                 <div class="flex items-center gap-2">
                     <x-atoms.darkmode-button />
                     <button
-                        @click="mobileMenuOpen = !mobileMenuOpen"
+                        x-on:click="mobileMenuOpen = !mobileMenuOpen"
                         class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                         aria-label="Toggle Menu"
                     >
@@ -105,6 +107,7 @@
                 <x-atoms.link href="/about" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">About</x-atoms.link>
 
                 @auth
+                    <x-atoms.link href="{{ route('profile.index') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">Meine CVs</x-atoms.link>
                     <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ auth()->user()->email }}</div>
                     <form method="POST" action="{{ route('logout') }}" class="px-4">
                         @csrf

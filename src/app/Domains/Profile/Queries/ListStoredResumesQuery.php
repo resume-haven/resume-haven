@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domains\Profile\Queries;
+
+use App\Domains\Profile\Dto\StoredResumePageDto;
+use App\Domains\Profile\Handlers\ListStoredResumesHandler;
+
+final class ListStoredResumesQuery
+{
+    public function __construct(
+        public readonly int $userId,
+        public readonly int $page = 1,
+        public readonly int $perPage = 10,
+        public readonly ?string $currentToken = null,
+    ) {}
+
+    public function handle(ListStoredResumesHandler $handler): StoredResumePageDto
+    {
+        return $handler->handle($this);
+    }
+}

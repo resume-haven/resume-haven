@@ -15,6 +15,32 @@ it('MockAiAnalyzer gibt "mock" als Provider-Namen zurück', function () {
     expect($analyzer->getProviderName())->toBe('mock');
 });
 
+it('MockAiAnalyzer fällt bei unbekanntem Szenario auf realistic zurück', function () {
+    config(['ai.mock.scenario' => 'does-not-exist']);
+    config(['ai.mock.delay_ms' => 0]);
+
+    $analyzer = new MockAiAnalyzer();
+    $result = $analyzer->analyze(new AnalyzeRequestDto('Job Text', 'CV Text'));
+
+    expect($result->matches)->not()->toBeEmpty();
+    expect($result->gaps)->not()->toBeEmpty();
+});
+
+it('MockAiAnalyzer verwendet Constructor-Fallbacks für ungültige Config-Werte', function () {
+    config(['ai.mock.scenario' => ['invalid']]);
+    config(['ai.mock.delay_ms' => '15']);
+
+    $analyzer = new MockAiAnalyzer();
+
+    $start = microtime(true);
+    $result = $analyzer->analyze(new AnalyzeRequestDto('Job Text', 'CV Text'));
+    $duration = (microtime(true) - $start) * 1000;
+
+    expect($result->error)->toBeNull();
+    expect($result->matches)->not()->toBeEmpty();
+    expect($duration)->toBeGreaterThanOrEqual(10);
+});
+
 it('MockAiAnalyzer gibt realistic scenario zurück', function () {
     config(['ai.mock.scenario' => 'realistic']);
     $analyzer = new MockAiAnalyzer();
@@ -128,4 +154,19 @@ it('MockAiAnalyzer funktioniert ohne Delay', function () {
     expect($result->error)->toBeNull();
     // Sollte schneller sein als mit 100ms künstlichem Delay (< 600ms ist realistisch für Business-Logik)
     expect($duration)->toBeLessThan(600);
+});
+
+it('MockAiAnalyzer behält die Originaltexte im DTO und verarbeitet sanitizing intern robust', function () {
+    config(['ai.mock.scenario' => 'realistic']);
+    config(['ai.mock.delay_ms' => 0]);
+
+    $jobText = "  Job mit CRLF\r\nund Nullbyte\0  ";
+    $cvText = "  CV mit CRLF\r\nund Nullbyte\0  ";
+
+    $analyzer = new MockAiAnalyzer();
+    $result = $analyzer->analyze(new AnalyzeRequestDto($jobText, $cvText));
+
+    expect($result->job_text)->toBe($jobText);
+    expect($result->cv_text)->toBe($cvText);
+    expect($result->error)->toBeNull();
 });

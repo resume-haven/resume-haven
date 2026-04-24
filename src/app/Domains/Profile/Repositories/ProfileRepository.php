@@ -6,6 +6,7 @@ namespace App\Domains\Profile\Repositories;
 
 use App\Models\StoredResume;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 class ProfileRepository
@@ -45,6 +46,18 @@ class ProfileRepository
             ->get();
 
         return $resumes;
+    }
+
+    /** @return LengthAwarePaginator<int, StoredResume> */
+    public function paginateByUser(int $userId, int $perPage = 10, int $page = 1): LengthAwarePaginator
+    {
+        /** @var LengthAwarePaginator<int, StoredResume> $paginator */
+        $paginator = StoredResume::query()
+            ->where('user_id', $userId)
+            ->orderByDesc('updated_at')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return $paginator;
     }
 
     public function claimByToken(string $token, int $userId): void

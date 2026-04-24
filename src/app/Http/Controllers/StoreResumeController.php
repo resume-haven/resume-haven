@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Domains\Profile\Commands\StoreResumeCommand;
 use App\Domains\Profile\Dto\StoreResumeDto;
 use App\Http\Requests\StoreResumeRequest;
+use App\Support\Session\ResumeTokenSession;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
@@ -15,6 +16,10 @@ use App\Domains\Profile\Dto\ResumeTokenDto;
 
 class StoreResumeController extends Controller
 {
+    public function __construct(
+        private ResumeTokenSession $resumeTokenSession,
+    ) {}
+
     public function __invoke(StoreResumeRequest $request, Dispatcher $dispatcher): RedirectResponse
     {
         /** @var string $cvText */
@@ -27,7 +32,7 @@ class StoreResumeController extends Controller
             new StoreResumeCommand(new StoreResumeDto($cvText, $userId))
         );
 
-        $request->session()->put('resume_token', $tokenDto->token);
+        $this->resumeTokenSession->add($request->session(), $tokenDto->token);
         $request->session()->put('resume_claimed', Auth::check());
 
         return redirect()

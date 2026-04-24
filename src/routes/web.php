@@ -6,6 +6,7 @@ use App\Http\Controllers\AnalyzeController;
 use App\Http\Controllers\BuildCompetenceResumeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\ListStoredResumesController;
 use App\Http\Controllers\LoadResumeController;
 use App\Http\Controllers\StoreResumeController;
 use App\Http\Controllers\UseCompetenceResumeController;
@@ -29,6 +30,9 @@ Route::post('/profile/store', StoreResumeController::class)->name('profile.store
 Route::post('/profile/competence-resume', BuildCompetenceResumeController::class)->name('profile.competence-resume');
 Route::post('/profile/competence-resume/use', UseCompetenceResumeController::class)->name('profile.competence-resume.use');
 Route::get('/profile/load/{token}', LoadResumeController::class)->name('profile.load');
+Route::middleware('auth')->group(function (): void {
+    Route::get('/profile', ListStoredResumesController::class)->name('profile.index');
+});
 
 // Legal Pages
 Route::get('/impressum', [LegalController::class, 'impressum'])->name('legal.impressum');

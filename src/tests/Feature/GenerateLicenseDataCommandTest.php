@@ -6,32 +6,26 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
-    $this->composerLockPath = base_path('composer.lock');
-    $this->packageLockPath = base_path('package-lock.json');
-    $this->licensesPath = storage_path('app/licenses.json');
+    $testFilesDirectory = storage_path('framework/testing/licenses');
+    $this->composerLockPath = $testFilesDirectory.'/composer.lock';
+    $this->packageLockPath = $testFilesDirectory.'/package-lock.json';
+    $this->licensesPath = $testFilesDirectory.'/licenses.json';
 
-    $this->composerLockBackup = File::exists($this->composerLockPath)
-        ? File::get($this->composerLockPath)
-        : null;
-    $this->packageLockBackup = File::exists($this->packageLockPath)
-        ? File::get($this->packageLockPath)
-        : null;
+    File::ensureDirectoryExists($testFilesDirectory);
+
+    config()->set('licenses.composer_lock_path', $this->composerLockPath);
+    config()->set('licenses.package_lock_path', $this->packageLockPath);
+    config()->set('licenses.output_path', $this->licensesPath);
 });
 
 afterEach(function () {
-    if (is_string($this->composerLockBackup)) {
-        File::put($this->composerLockPath, $this->composerLockBackup);
-    } else {
-        File::delete($this->composerLockPath);
-    }
-
-    if (is_string($this->packageLockBackup)) {
-        File::put($this->packageLockPath, $this->packageLockBackup);
-    } else {
-        File::delete($this->packageLockPath);
-    }
-
+    File::delete($this->composerLockPath);
+    File::delete($this->packageLockPath);
     File::delete($this->licensesPath);
+
+    config()->set('licenses.composer_lock_path', null);
+    config()->set('licenses.package_lock_path', null);
+    config()->set('licenses.output_path', null);
 });
 
 it('generiert licenses.json mit php und node struktur', function () {
@@ -247,4 +241,63 @@ it('setzt leere Composer-Lizenzlisten auf unknown', function () {
 
     expect($data['php'][0]['name'] ?? null)->toBe('package-with-empty-license');
     expect($data['php'][0]['license'] ?? null)->toBe('unknown');
+});
+
+it('gibt eine zusammenfassende Erfolgsmeldung mit Paketanzahl aus', function () {
+    File::put($this->composerLockPath, json_encode([
+        'packages' => [
+            [
+                'name' => 'b-package',
+                'version' => '1.0.0',
+                'license' => 'MIT',
+            ],
+            [
+                'name' => 'a-package',
+                'version' => '2.0.0',
+                'license' => 'Apache-2.0',
+            ],
+        ],
+    ], JSON_THROW_ON_ERROR));
+
+    File::put($this->packageLockPath, json_encode([
+        'packages' => [
+            'node_modules/pkg-one' => [
+                'name' => 'pkg-one',
+                'version' => '3.0.0',
+                'license' => 'MIT',
+            ],
+        ],
+    ], JSON_THROW_ON_ERROR));
+
+    $exitCode = Artisan::call('licenses:generate');
+    $output = Artisan::output();
+
+    expect($exitCode)->toBe(0)
+        ->and($output)->toContain('Lizenzdaten generiert: 2 PHP-Pakete, 1 Node-Pakete')
+        ->and($output)->toContain('Gespeichert in:');
+});
+
+it('ignoriert ungueltige dependencies wenn package-lock dependencies kein array ist', function () {
+    File::put($this->composerLockPath, json_encode([
+        'packages' => [],
+    ], JSON_THROW_ON_ERROR));
+
+    File::put($this->packageLockPath, json_encode([
+        'packages' => [
+            'node_modules/pkg-two' => [
+                'name' => 'pkg-two',
+                'version' => '1.2.3',
+                'license' => 'MIT',
+            ],
+        ],
+        'dependencies' => 'invalid',
+    ], JSON_THROW_ON_ERROR));
+
+    $exitCode = Artisan::call('licenses:generate');
+    $data = json_decode((string) File::get($this->licensesPath), true);
+
+    expect($exitCode)->toBe(0)
+        ->and($data)->toBeArray()
+        ->and($data['node'] ?? [])->toHaveCount(1)
+        ->and(($data['node'][0]['name'] ?? null))->toBe('pkg-two');
 });

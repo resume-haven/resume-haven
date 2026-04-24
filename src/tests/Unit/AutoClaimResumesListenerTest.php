@@ -6,6 +6,7 @@ use App\Domains\Profile\Repositories\ProfileRepository;
 use App\Enums\UserRole;
 use App\Listeners\AutoClaimResumesListener;
 use App\Models\User;
+use App\Support\Session\ResumeTokenSession;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
@@ -40,7 +41,7 @@ describe('AutoClaimResumesListener', function (): void {
         $repository = Mockery::mock(ProfileRepository::class);
         $repository->shouldNotReceive('claimByToken');
 
-        $listener = new AutoClaimResumesListener($repository);
+        $listener = new AutoClaimResumesListener($repository, new ResumeTokenSession());
 
         $user = new User();
         $user->id = 42;
@@ -51,14 +52,14 @@ describe('AutoClaimResumesListener', function (): void {
         expect(true)->toBeTrue();
     });
 
-    test('returns early when resume token is missing in session', function (): void {
+    test('returns early when resume tokens are missing in session', function (): void {
         $request = makeLoginRequestWithSession();
         bindCurrentRequest($request);
 
         $repository = Mockery::mock(ProfileRepository::class);
         $repository->shouldNotReceive('claimByToken');
 
-        $listener = new AutoClaimResumesListener($repository);
+        $listener = new AutoClaimResumesListener($repository, new ResumeTokenSession());
 
         $user = new User();
         $user->id = 77;
@@ -70,13 +71,13 @@ describe('AutoClaimResumesListener', function (): void {
     });
 
     test('returns early when auth identifier is not numeric', function (): void {
-        $request = makeLoginRequestWithSession(['resume_token' => 'TOKEN-123']);
+        $request = makeLoginRequestWithSession(['resume_tokens' => ['TOKEN-123']]);
         bindCurrentRequest($request);
 
         $repository = Mockery::mock(ProfileRepository::class);
         $repository->shouldNotReceive('claimByToken');
 
-        $listener = new AutoClaimResumesListener($repository);
+        $listener = new AutoClaimResumesListener($repository, new ResumeTokenSession());
 
         $user = new class () extends User {
             public function getAuthIdentifierName(): string
@@ -96,16 +97,19 @@ describe('AutoClaimResumesListener', function (): void {
         expect($request->session()->has('resume_claimed'))->toBeFalse();
     });
 
-    test('claims token and marks session when auth identifier is valid numeric string', function (): void {
-        $request = makeLoginRequestWithSession(['resume_token' => 'TOKEN-456']);
+    test('claims all tokens and marks session when auth identifier is valid numeric string', function (): void {
+        $request = makeLoginRequestWithSession(['resume_tokens' => ['TOKEN-456', 'TOKEN-789']]);
         bindCurrentRequest($request);
 
         $repository = Mockery::mock(ProfileRepository::class);
         $repository->shouldReceive('claimByToken')
             ->once()
             ->with('TOKEN-456', 1234);
+        $repository->shouldReceive('claimByToken')
+            ->once()
+            ->with('TOKEN-789', 1234);
 
-        $listener = new AutoClaimResumesListener($repository);
+        $listener = new AutoClaimResumesListener($repository, new ResumeTokenSession());
 
         $user = new class () extends User {
             public function getAuthIdentifierName(): string

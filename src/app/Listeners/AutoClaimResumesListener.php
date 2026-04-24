@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Domains\Profile\Repositories\ProfileRepository;
+use App\Support\Session\ResumeTokenSession;
 use Illuminate\Auth\Events\Login;
 
 class AutoClaimResumesListener
 {
     public function __construct(
         private ProfileRepository $repository,
+        private ResumeTokenSession $resumeTokenSession,
     ) {}
 
     public function handle(Login $event): void
@@ -21,9 +23,9 @@ class AutoClaimResumesListener
             return;
         }
 
-        $token = $request->session()->get('resume_token');
+        $tokens = $this->resumeTokenSession->all($request->session());
 
-        if (! is_string($token) || $token === '') {
+        if ($tokens === []) {
             return;
         }
 
@@ -33,7 +35,10 @@ class AutoClaimResumesListener
             return;
         }
 
-        $this->repository->claimByToken($token, (int) $authIdentifier);
+        foreach ($tokens as $token) {
+            $this->repository->claimByToken($token, (int) $authIdentifier);
+        }
+
         $request->session()->put('resume_claimed', true);
     }
 }
