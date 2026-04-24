@@ -1,8 +1,9 @@
 # Detailplanung Commit 29 — Auth, Rollen & Claim-Flow
 
 **Branch:** `feature/commit-29-auth-roles-claim`  
-**Status:** In Arbeit  
+**Status:** Abgeschlossen  
 **Erstellt:** 2026-04-21  
+**Abgeschlossen:** 2026-04-23  
 
 ---
 
@@ -147,6 +148,12 @@ Pest-Feature-Tests:
 - PHPStan Level 9: 0 Errors
 - Pint: sauber
 - Test-Coverage: ≥ 95%
+
+## Abschlussnotiz
+
+- Die geplanten Auth-, Rollen- und Claim-Flow-Bausteine wurden umgesetzt.
+- Offene Restarbeiten betreffen nur UX-Polish (CTA-/Status-Texte, Feinschliff) und wurden bewusst als Roadmap-Follow-up ausgelagert.
+- Die technische Folgearbeit startet mit Commit 30 (`resume_tokens[]`, Multi-CV, Dashboard/CRUD).
 
 ---
 

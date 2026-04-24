@@ -1,0 +1,183 @@
+{
+    "$schema": "https://raw.githubusercontent.com/JetBrains/web-types/master/schema/web-types.json",
+    "framework": "alpine",
+    "name": "Alpine.js",
+    "version": "3.0.0",
+    "contributions": {
+        "html": {
+            "attributes": [
+                {
+                    "name": "x-data",
+                    "description": "Declares a new Alpine component and its data.",
+                    "doc-url": "https://alpinejs.dev/directives/data",
+                    "value": {
+                        "kind": "expression",
+                        "type": "object"
+                    }
+                },
+                {
+                    "name": "x-show",
+                    "description": "Toggles the visibility of an element.",
+                    "doc-url": "https://alpinejs.dev/directives/show",
+                    "value": {
+                        "kind": "expression",
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "x-cloak",
+                    "description": "Hides the element until Alpine is initialized.",
+                    "doc-url": "https://alpinejs.dev/directives/cloak"
+                },
+                {
+                    "name": "x-bind",
+                    "description": "Binds an attribute to a JavaScript expression.",
+                    "doc-url": "https://alpinejs.dev/directives/bind",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-on",
+                    "description": "Listens for DOM events on an element.",
+                    "doc-url": "https://alpinejs.dev/directives/on",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-text",
+                    "description": "Sets the text content of an element.",
+                    "doc-url": "https://alpinejs.dev/directives/text",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-html",
+                    "description": "Sets the innerHTML of an element.",
+                    "doc-url": "https://alpinejs.dev/directives/html",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-model",
+                    "description": "Two-way binds a value to an input.",
+                    "doc-url": "https://alpinejs.dev/directives/model",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-if",
+                    "description": "Conditionally adds/removes an element from the DOM.",
+                    "doc-url": "https://alpinejs.dev/directives/if",
+                    "value": {
+                        "kind": "expression",
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "x-for",
+                    "description": "Creates new DOM nodes for each item in a list.",
+                    "doc-url": "https://alpinejs.dev/directives/for",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-transition",
+                    "description": "Applies CSS transitions to an element.",
+                    "doc-url": "https://alpinejs.dev/directives/transition"
+                },
+                {
+                    "name": "x-effect",
+                    "description": "Re-evaluates an expression when its dependencies change.",
+                    "doc-url": "https://alpinejs.dev/directives/effect",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "x-ref",
+                    "description": "Stores a reference to an element.",
+                    "doc-url": "https://alpinejs.dev/directives/ref",
+                    "value": {
+                        "kind": "plain"
+                    }
+                },
+                {
+                    "name": "x-ignore",
+                    "description": "Prevents Alpine from initializing this element.",
+                    "doc-url": "https://alpinejs.dev/directives/ignore"
+                },
+                {
+                    "name": "x-teleport",
+                    "description": "Renders an element elsewhere in the DOM.",
+                    "doc-url": "https://alpinejs.dev/directives/teleport",
+                    "value": {
+                        "kind": "plain"
+                    }
+                },
+                {
+                    "name": "x-id",
+                    "description": "Generates unique IDs.",
+                    "doc-url": "https://alpinejs.dev/directives/id",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "@click",
+                    "description": "Alpine.js shorthand for x-on:click.",
+                    "doc-url": "https://alpinejs.dev/directives/on",
+                    "value": {
+                        "kind": "expression"
+                    }
+                },
+                {
+                    "name": "@click.prevent",
+                    "description": "Alpine.js shorthand for x-on:click.prevent.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@click.stop",
+                    "description": "Alpine.js shorthand for x-on:click.stop.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@submit",
+                    "description": "Alpine.js shorthand for x-on:submit.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@submit.prevent",
+                    "description": "Alpine.js shorthand for x-on:submit.prevent.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@input",
+                    "description": "Alpine.js shorthand for x-on:input.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@change",
+                    "description": "Alpine.js shorthand for x-on:change.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@keydown",
+                    "description": "Alpine.js shorthand for x-on:keydown.",
+                    "value": { "kind": "expression" }
+                },
+                {
+                    "name": "@keyup",
+                    "description": "Alpine.js shorthand for x-on:keyup.",
+                    "value": { "kind": "expression" }
+                }
+            ]
+        }
+    }
+}
+

@@ -263,6 +263,32 @@ test('profile repository returns resumes by user ordered by newest update first'
     expect($tokens)->toBe([str_repeat('P', 32), str_repeat('O', 32)]);
 });
 
+test('profile repository paginates resumes by user with newest first', function (): void {
+    $repository = new ProfileRepository();
+    $user = User::factory()->create();
+
+    foreach (range(1, 11) as $index) {
+        StoredResume::query()->insert([
+            'token' => str_pad('T'.$index, 32, 'T'),
+            'user_id' => $user->id,
+            'encrypted_cv' => 'resume-'.$index,
+            'last_accessed_at' => null,
+            'created_at' => Carbon::now()->subMinutes(11 - $index),
+            'updated_at' => Carbon::now()->subMinutes(11 - $index),
+        ]);
+    }
+
+    $pageOne = $repository->paginateByUser($user->id, 10, 1);
+    $pageTwo = $repository->paginateByUser($user->id, 10, 2);
+
+    expect($pageOne->total())->toBe(11);
+    expect($pageOne->lastPage())->toBe(2);
+    expect($pageOne->items())->toHaveCount(10);
+    expect($pageOne->items()[0]->token)->toBe(str_pad('T11', 32, 'T'));
+    expect($pageTwo->items())->toHaveCount(1);
+    expect($pageTwo->items()[0]->token)->toBe(str_pad('T1', 32, 'T'));
+});
+
 test('profile repository prune keeps claimed resumes even if stale', function (): void {
     config(['profile.resume_retention_hours' => 24]);
 

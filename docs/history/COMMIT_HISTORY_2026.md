@@ -28,6 +28,8 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 25: Analysequalitaet & Erklaerbarkeit (Baseline, Delta, Session-Fallback)
 - Commit 26: Profile-Ausbau ohne Auth (Retention + UI-Hinweise + CI-Guardrails)
 - Commit 27: Acceptance-Tests Kernflows + CI-/Quality-Gate-Integration
+- Commit 28: Architecture-Tests & Engineering-Haertung
+- Commit 29: Auth + Rollen + Claim-Flow
 
 ## Detaillierte Einzelplaene
 
@@ -36,6 +38,9 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - [`PLANNING_COMMIT_25.md`](PLANNING_COMMIT_25.md) (abgeschlossen)
 - [`PLANNING_COMMIT_26.md`](PLANNING_COMMIT_26.md) (abgeschlossen)
 - [`PLANNING_COMMIT_27.md`](PLANNING_COMMIT_27.md) (abgeschlossen)
+- [`PLANNING_COMMIT_28.md`](PLANNING_COMMIT_28.md) (abgeschlossen)
+- [`PLANNING_COMMIT_29.md`](PLANNING_COMMIT_29.md) (abgeschlossen)
+- [`PLANNING_COMMIT_30.md`](PLANNING_COMMIT_30.md) (aktiv)
 - [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 
 ## Hinweis

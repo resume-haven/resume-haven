@@ -36,7 +36,7 @@ class GenerateLicenseDataCommand extends Command
             'generated_at' => now()->toIso8601String(),
         ];
 
-        $outputPath = storage_path('app/licenses.json');
+        $outputPath = $this->resolveOutputPath();
         $json = json_encode($licenses, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         if ($json === false) {
@@ -63,7 +63,7 @@ class GenerateLicenseDataCommand extends Command
      */
     private function parseComposerLock(): array
     {
-        $composerLockPath = base_path('composer.lock');
+        $composerLockPath = $this->resolveComposerLockPath();
 
         if (! File::exists($composerLockPath)) {
             $this->warn('⚠️ composer.lock nicht gefunden');
@@ -120,7 +120,7 @@ class GenerateLicenseDataCommand extends Command
      */
     private function parsePackageLockJson(): array
     {
-        $packageLockPath = base_path('package-lock.json');
+        $packageLockPath = $this->resolvePackageLockPath();
 
         if (! File::exists($packageLockPath)) {
             $this->warn('⚠️ package-lock.json nicht gefunden');
@@ -216,5 +216,32 @@ class GenerateLicenseDataCommand extends Command
         }
 
         return 'unknown';
+    }
+
+    private function resolveComposerLockPath(): string
+    {
+        $configuredPath = config('licenses.composer_lock_path');
+
+        return is_string($configuredPath) && $configuredPath !== ''
+            ? $configuredPath
+            : base_path('composer.lock');
+    }
+
+    private function resolvePackageLockPath(): string
+    {
+        $configuredPath = config('licenses.package_lock_path');
+
+        return is_string($configuredPath) && $configuredPath !== ''
+            ? $configuredPath
+            : base_path('package-lock.json');
+    }
+
+    private function resolveOutputPath(): string
+    {
+        $configuredPath = config('licenses.output_path');
+
+        return is_string($configuredPath) && $configuredPath !== ''
+            ? $configuredPath
+            : storage_path('app/licenses.json');
     }
 }

@@ -30,11 +30,30 @@ jobs:
           grep -q '^AI_PROVIDER=mock$' .env.ci
           grep -q '^GEMINI_API_KEY=$' .env.ci
 
+  npm_audit_guard:
+    name: npm_audit_guard
+    runs-on: ubuntu-latest
+    needs: [ai_guardrails]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Node/npm versions
+        run: |
+          node --version
+          npm --version
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: npm audit (high/critical gate)
+        run: npm audit --audit-level=high
 
   pint:
     name: pint
     runs-on: ubuntu-latest
-    needs: [ai_guardrails]
+    needs: [ai_guardrails, npm_audit_guard]
 
     steps:
       - name: Checkout
@@ -57,7 +76,7 @@ jobs:
   phpstan:
     name: phpstan
     runs-on: ubuntu-latest
-    needs: [ai_guardrails]
+    needs: [ai_guardrails, npm_audit_guard]
 
     steps:
       - name: Checkout
@@ -80,7 +99,7 @@ jobs:
   pest_acceptance:
     name: pest_acceptance
     runs-on: ubuntu-latest
-    needs: [ai_guardrails]
+    needs: [ai_guardrails, npm_audit_guard]
 
     steps:
       - name: Checkout
@@ -112,7 +131,7 @@ jobs:
   pest_coverage:
     name: pest_coverage
     runs-on: ubuntu-latest
-    needs: [ai_guardrails]
+    needs: [ai_guardrails, npm_audit_guard]
 
     steps:
       - name: Checkout

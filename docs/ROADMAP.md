@@ -77,10 +77,11 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 # 🎨 Phase 3 – UI/UX‑Optimierung (geplant)
 
-- Dark Mode → **geplant**
-- bessere Panels → **geplant**
-- mobile Optimierung → **geplant**
+- Dark Mode → **✅ umgesetzt**
+- bessere Panels → **teilweise umgesetzt, weitere Polishes geplant**
+- mobile Optimierung → **✅ Basis umgesetzt**
 - Export der Analyse (ohne PDF‑Generierung) → **geplant**
+- Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise) → **geplant als Follow-up nach Commit 29**
 
 ## 1. Legal‑Seiten & Compliance (geplant für Commit 20b)
 - Impressum erstellen  
@@ -212,11 +213,10 @@ Mutation-Testing wird als optionales Engineering-Tool vorbereitet (nicht im Stan
 
 # 🚫 Nicht geplant (Stand MVP)
 
-- Datenbank  
-- KI‑Features  
-- User‑Accounts  
-- Tracking  
-- Speicherung von Nutzerdaten  
+- Tracking / Analytics  
+- Mandanten-/Teamverwaltung  
+- Produktive Cloud-/Deployment-Strategie vor Abschluss des User-/LLM-Blocks  
+- Lokales LLM-Hosting im MVP  
 
 ---
 
@@ -226,7 +226,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-04-20)
+# 📊 Aktueller Stand (2026-04-23)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
@@ -244,12 +244,14 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 26: Profile-Ausbau ohne Auth (abgeschlossen)
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
+- Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
 
 ## 🔄 In Arbeit
-- (kein aktiver Commit-Block)
+- Commit 30: CV-Verwaltung (User-Dashboard, Multi-CV, Pagination, `resume_tokens[]`-Cutover)
 
 ## 📋 Geplant
-- Commit 29+: User/Auth/AuthZ + rudimentäre Userverwaltung
+- Commit 29 Follow-up: Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise)
+- Commit 30+: Ausbau der CV-Verwaltung nach MVP-Cut (z. B. Filter, Suche, Pagination-Konfigurierbarkeit)
 - **Phase 5: Provider-agnostischer LLM-Layer**
   - AbstractLlmAiAnalyzer als gemeinsame Basis
   - Plugin-Konzept für provider-spezifische Eigenheiten

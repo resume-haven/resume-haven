@@ -2,13 +2,14 @@
     "$schema": "https://www.schemastore.org/package.json",
     "private": true,
     "type": "module",
+    "web-types": "./web-types.json",
     "scripts": {
-        "build": "tailwindcss -i ./resources/css/app.css -o ./public/build/app.css --minify",
+        "build": "tailwindcss -i ./resources/css/app.css -o ./public/build/app.css --minify && cp node_modules/alpinejs/dist/cdn.min.js public/build/alpinejs.min.js",
         "dev": "tailwindcss -i ./resources/css/app.css -o ./public/build/app.css --watch"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.24",
-        "axios": "^1.11.0",
+        "axios": "^1.15.2",
         "concurrently": "^9.0.1",
         "postcss": "^8.5.6",
         "tailwindcss": "^3.4.19"
@@ -24,6 +25,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "alpinejs": "^3.15.11",
         "ansi-regex": "^5.0.1",
         "ansi-styles": "^4.3.0",
         "asynckit": "^0.4.0",

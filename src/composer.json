@@ -68,7 +68,7 @@
         "test:pest-mutation": "vendor/bin/pest --mutate --path=app/Domains",
         "test:pest-security": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php",
         "test:pest-security-strict": "vendor/bin/pest tests/Feature/SecurityAuditTest.php tests/Feature/ApiErrorHandlingTest.php tests/Unit/ValidateInputActionTest.php --stop-on-failure",
-        "test:pest-coverage": "vendor/bin/pest --coverage --min=95",
+        "test:pest-coverage": "vendor/bin/pest --coverage --min=99",
         "test:pest-coverage-report": [
                 "@php -r \"is_dir('coverage-report') || mkdir('coverage-report', 0777, true);\"",
                 "vendor/bin/pest --coverage --coverage-clover=coverage-report/clover.xml --coverage-html=coverage-report/html --min=99"
