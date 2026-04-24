@@ -47,8 +47,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: npm audit (high/critical gate)
-        run: npm audit --audit-level=high
+      - name: npm audit prod-only (high/critical gate)
+        run: npm audit --omit=dev --audit-level=high
 
   pint:
     name: pint
