@@ -6,13 +6,14 @@ use App\Domains\Profile\Dto\StoredResumeListItemDto;
 use App\Domains\Profile\Dto\StoredResumePageDto;
 use App\Domains\Profile\Queries\ListStoredResumesQuery;
 use App\Http\Controllers\ListStoredResumesController;
+use App\Support\Session\ResumeTokenSession;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-function makeProfileRequest(int $page, mixed $resumeToken): Request
+function makeProfileRequest(int $page, mixed $resumeToken, mixed $resumeTokens = null): Request
 {
     $request = Request::create('/profile', 'GET', ['page' => $page]);
 
@@ -20,6 +21,10 @@ function makeProfileRequest(int $page, mixed $resumeToken): Request
     $session = app('session')->driver('array');
     $session->start();
     $session->put('resume_token', $resumeToken);
+
+    if ($resumeTokens !== null) {
+        $session->put('resume_tokens', $resumeTokens);
+    }
 
     $request->setLaravelSession($session);
 
@@ -58,7 +63,7 @@ describe('ListStoredResumesController', function (): void {
             })
             ->andReturn($pageDto);
 
-        $controller = new ListStoredResumesController();
+        $controller = new ListStoredResumesController(new ResumeTokenSession());
         $view = $controller($request, $dispatcher);
 
         expect($view->name())->toBe('profile.index')
@@ -81,7 +86,7 @@ describe('ListStoredResumesController', function (): void {
             })
             ->andReturn(new StoredResumePageDto(items: [], currentPage: 3, lastPage: 3, perPage: 10, total: 0));
 
-        $controller = new ListStoredResumesController();
+        $controller = new ListStoredResumesController(new ResumeTokenSession());
         $controller($request, $dispatcher);
 
         expect(true)->toBeTrue();
@@ -94,7 +99,7 @@ describe('ListStoredResumesController', function (): void {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher->shouldNotReceive('dispatch');
 
-        $controller = new ListStoredResumesController();
+        $controller = new ListStoredResumesController(new ResumeTokenSession());
 
         try {
             $controller($request, $dispatcher);
@@ -102,5 +107,26 @@ describe('ListStoredResumesController', function (): void {
         } catch (HttpException $exception) {
             expect($exception->getStatusCode())->toBe(403);
         }
+    });
+
+    test('uses latest token from resume_tokens when current key is missing', function (): void {
+        Auth::shouldReceive('id')->once()->andReturn(8);
+
+        $request = makeProfileRequest(1, null, ['TOKEN-OLD', 'TOKEN-NEW']);
+
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher->shouldReceive('dispatch')
+            ->once()
+            ->withArgs(function (ListStoredResumesQuery $query): bool {
+                return $query->userId === 8
+                    && $query->page === 1
+                    && $query->currentToken === 'TOKEN-NEW';
+            })
+            ->andReturn(new StoredResumePageDto(items: [], currentPage: 1, lastPage: 1, perPage: 10, total: 0));
+
+        $controller = new ListStoredResumesController(new ResumeTokenSession());
+        $controller($request, $dispatcher);
+
+        expect(true)->toBeTrue();
     });
 });

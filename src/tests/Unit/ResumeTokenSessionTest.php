@@ -88,4 +88,31 @@ describe('ResumeTokenSession', function (): void {
 
         expect($manager->normalize('not-an-array'))->toBe([]);
     });
+
+    test('current returns current token key when available', function (): void {
+        $session = makeArraySession();
+        $manager = new ResumeTokenSession();
+
+        $manager->add($session, 'TOKEN-1');
+        $manager->add($session, 'TOKEN-2');
+
+        expect($manager->current($session))->toBe('TOKEN-2');
+    });
+
+    test('current falls back to latest token from array when current key is missing', function (): void {
+        $session = makeArraySession();
+        $manager = new ResumeTokenSession();
+
+        $session->put(ResumeTokenSession::TOKENS_KEY, ['TOKEN-1', 'TOKEN-2']);
+        $session->forget(ResumeTokenSession::CURRENT_TOKEN_KEY);
+
+        expect($manager->current($session))->toBe('TOKEN-2');
+    });
+
+    test('current returns null when no token exists in session', function (): void {
+        $session = makeArraySession();
+        $manager = new ResumeTokenSession();
+
+        expect($manager->current($session))->toBeNull();
+    });
 });
