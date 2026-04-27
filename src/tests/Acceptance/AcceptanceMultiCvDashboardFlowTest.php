@@ -90,3 +90,100 @@ test('nutzende sehen im dashboard nur eigene cvs mit pagination und current-toke
     $pageTwo->assertDontSee(acceptanceDashboardToken('F', 1));
     $pageTwo->assertSee('Seite 2 von 2');
 });
+
+test('owner loescht aktuellen token und session setzt auf verbleibenden token zurueck', function (): void {
+    $user = User::factory()->create();
+
+    $remainingToken = acceptanceDashboardToken('R', 1);
+    $currentToken = acceptanceDashboardToken('R', 2);
+
+    storeAcceptanceDashboardResume($user, $remainingToken, 'Owner CV 1 mit Laravel Erfahrung.', Carbon::now()->subMinutes(2));
+    storeAcceptanceDashboardResume($user, $currentToken, 'Owner CV 2 mit PHP und Docker Erfahrung.', Carbon::now()->subMinute());
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertRedirect(route('analyze', absolute: false));
+
+    $deleteResponse = $this
+        ->withSession([
+            'resume_tokens' => [$remainingToken, $currentToken],
+            'resume_token' => $currentToken,
+        ])
+        ->delete(route('profile.delete', ['token' => $currentToken]));
+
+    $deleteResponse->assertRedirect(route('profile.index'));
+    $deleteResponse->assertSessionHas('success', 'Lebenslauf wurde geloescht.');
+    $deleteResponse->assertSessionHas('resume_tokens', [$remainingToken]);
+    $deleteResponse->assertSessionHas('resume_token', $remainingToken);
+    $this->assertDatabaseMissing('stored_resumes', ['token' => $currentToken]);
+
+    $dashboardResponse = $this
+        ->withSession([
+            'resume_tokens' => [$remainingToken],
+            'resume_token' => $remainingToken,
+        ])
+        ->get(route('profile.index'));
+
+    $dashboardResponse->assertOk();
+    $dashboardResponse->assertSee($remainingToken);
+    $dashboardResponse->assertDontSee($currentToken);
+    $dashboardResponse->assertSee('Aktueller Token');
+});
+
+test('regular user darf fremden cv nicht loeschen und session bleibt unveraendert', function (): void {
+    $owner = User::factory()->create();
+    $user = User::factory()->create();
+
+    $ownToken = acceptanceDashboardToken('U', 1);
+    $foreignToken = acceptanceDashboardToken('F', 2);
+
+    storeAcceptanceDashboardResume($user, $ownToken, 'Eigenes CV des Users.', Carbon::now()->subMinutes(2));
+    storeAcceptanceDashboardResume($owner, $foreignToken, 'Fremdes CV fuer AuthZ-Test.', Carbon::now()->subMinute());
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertRedirect(route('analyze', absolute: false));
+
+    $deleteResponse = $this
+        ->withSession([
+            'resume_tokens' => [$ownToken, $foreignToken],
+            'resume_token' => $foreignToken,
+        ])
+        ->delete(route('profile.delete', ['token' => $foreignToken]));
+
+    $deleteResponse->assertForbidden();
+    $deleteResponse->assertSessionHas('resume_tokens', [$ownToken, $foreignToken]);
+    $deleteResponse->assertSessionHas('resume_token', $foreignToken);
+    $this->assertDatabaseHas('stored_resumes', ['token' => $foreignToken]);
+});
+
+test('admin darf fremden cv loeschen und session current-token faellt auf verbleibenden token zurueck', function (): void {
+    $owner = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    $adminToken = acceptanceDashboardToken('A', 9);
+    $foreignToken = acceptanceDashboardToken('Z', 9);
+
+    storeAcceptanceDashboardResume($admin, $adminToken, 'Eigenes Admin-CV.', Carbon::now()->subMinutes(2));
+    storeAcceptanceDashboardResume($owner, $foreignToken, 'Fremdes CV fuer Admin-Delete.', Carbon::now()->subMinute());
+
+    $this->post('/login', [
+        'email' => $admin->email,
+        'password' => 'password',
+    ])->assertRedirect(route('analyze', absolute: false));
+
+    $deleteResponse = $this
+        ->withSession([
+            'resume_tokens' => [$adminToken, $foreignToken],
+            'resume_token' => $foreignToken,
+        ])
+        ->delete(route('profile.delete', ['token' => $foreignToken]));
+
+    $deleteResponse->assertRedirect(route('profile.index'));
+    $deleteResponse->assertSessionHas('resume_tokens', [$adminToken]);
+    $deleteResponse->assertSessionHas('resume_token', $adminToken);
+    $this->assertDatabaseMissing('stored_resumes', ['token' => $foreignToken]);
+    $this->assertDatabaseHas('stored_resumes', ['token' => $adminToken]);
+});
