@@ -91,4 +91,32 @@ describe('AppServiceProvider', function () {
         $instance = $app->make(AiAnalyzerInterface::class);
         expect($instance)->toBeInstanceOf(MockAiAnalyzer::class);
     });
+
+    test('wirft Exception wenn ai.analyzers keine array-konfiguration ist', function () {
+        $app = app();
+        config([
+            'ai.provider' => 'mock',
+            'ai.analyzers' => 'invalid',
+        ]);
+
+        (new AppServiceProvider($app))->register();
+
+        expect(fn () => $app->make(AiAnalyzerInterface::class))
+            ->toThrow(InvalidArgumentException::class, 'AI analyzers configuration must be an array.');
+    });
+
+    test('wirft Exception wenn analyzer-klasse das interface nicht implementiert', function () {
+        $app = app();
+        config([
+            'ai.provider' => 'bad',
+            'ai.analyzers' => [
+                'bad' => stdClass::class,
+            ],
+        ]);
+
+        (new AppServiceProvider($app))->register();
+
+        expect(fn () => $app->make(AiAnalyzerInterface::class))
+            ->toThrow(InvalidArgumentException::class, 'AI analyzer class must implement '.AiAnalyzerInterface::class.'.');
+    });
 });

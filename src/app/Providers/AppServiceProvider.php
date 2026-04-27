@@ -28,15 +28,28 @@ class AppServiceProvider extends ServiceProvider
                 throw new \InvalidArgumentException('AI provider configuration must be a string.');
             }
 
-            /** @var array<string, class-string<AiAnalyzerInterface>> $analyzers */
             $analyzers = config('ai.analyzers', []);
+
+            if (! is_array($analyzers)) {
+                throw new \InvalidArgumentException('AI analyzers configuration must be an array.');
+            }
 
             if (! array_key_exists($provider, $analyzers)) {
                 $available = implode(', ', array_keys($analyzers));
                 throw new \InvalidArgumentException('Unknown AI provider: '.$provider.'. Available: '.$available);
             }
 
-            return $app->make($analyzers[$provider]);
+            $analyzerClass = $analyzers[$provider];
+
+            if (! is_string($analyzerClass)) {
+                throw new \InvalidArgumentException('AI analyzer class must be a string.');
+            }
+
+            if (! is_a($analyzerClass, AiAnalyzerInterface::class, true)) {
+                throw new \InvalidArgumentException('AI analyzer class must implement '.AiAnalyzerInterface::class.'.');
+            }
+
+            return $app->make($analyzerClass);
         });
     }
 
