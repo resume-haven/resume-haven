@@ -60,4 +60,35 @@ describe('AppServiceProvider', function () {
 
         expect($instance)->toBeInstanceOf(MockAiAnalyzer::class);
     });
+
+    test('fehlermeldung nennt alle verfuegbaren provider dynamisch aus dem registry', function () {
+        $app = app();
+        config([
+            'ai.provider'   => 'unknown',
+            'ai.analyzers'  => [
+                'mock'   => MockAiAnalyzer::class,
+                'gemini' => GeminiAiAnalyzer::class,
+            ],
+        ]);
+
+        (new AppServiceProvider($app))->register();
+
+        expect(fn () => $app->make(AiAnalyzerInterface::class))
+            ->toThrow(InvalidArgumentException::class, 'Available: mock, gemini');
+    });
+
+    test('bindet neuen provider wenn analyzer-registry um eintrag erweitert wird', function () {
+        $app = app();
+        config([
+            'ai.provider'  => 'mock',
+            'ai.analyzers' => [
+                'mock' => MockAiAnalyzer::class,
+            ],
+        ]);
+
+        (new AppServiceProvider($app))->register();
+
+        $instance = $app->make(AiAnalyzerInterface::class);
+        expect($instance)->toBeInstanceOf(MockAiAnalyzer::class);
+    });
 });

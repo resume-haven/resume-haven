@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use App\Services\AiAnalyzer\GeminiAiAnalyzer;
+use App\Services\AiAnalyzer\MockAiAnalyzer;
 
 return [
     /*
@@ -17,6 +19,24 @@ return [
     */
 
     'provider' => env('AI_PROVIDER', 'mock'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Analyzer Registry
+    |--------------------------------------------------------------------------
+    |
+    | Maps each provider key to its concrete AiAnalyzerInterface implementation.
+    | Adding a new LLM provider only requires a new entry here + the class itself –
+    | no changes to AppServiceProvider are needed.
+    |
+    | Order matters: the first key appears first in error messages.
+    |
+    */
+
+    'analyzers' => [
+        'mock'   => MockAiAnalyzer::class,
+        'gemini' => GeminiAiAnalyzer::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -119,7 +139,7 @@ return [
         'gemini' => [
             'driver' => 'gemini',
             'key' => env('GEMINI_API_KEY'),
-            'api_version' => env('gemini-2.5-flash', 'gemini-3-flash'),
+            'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
         ],
 
         'groq' => [

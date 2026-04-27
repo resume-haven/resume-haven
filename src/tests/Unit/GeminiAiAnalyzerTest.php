@@ -23,13 +23,13 @@ describe('GeminiAiAnalyzer', function () {
     });
 
     test('isAvailable ist true wenn API-Key gesetzt ist', function () {
-        config(['ai.gemini.api_key' => 'test-key']);
+        config(['ai.providers.gemini.key' => 'test-key']);
 
         expect(analyzer()->isAvailable())->toBeTrue();
     });
 
     test('isAvailable ist false wenn API-Key leer ist', function () {
-        config(['ai.gemini.api_key' => '']);
+        config(['ai.providers.gemini.key' => '']);
 
         expect(analyzer()->isAvailable())->toBeFalse();
     });
