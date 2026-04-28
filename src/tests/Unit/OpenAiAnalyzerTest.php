@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
 use App\Services\AiAnalyzer\Actions\ValidateAiResponseAction;
 use App\Services\AiAnalyzer\OpenAiAnalyzer;
+use App\Ai\Agents\Analyzer;
 
 describe('OpenAiAnalyzer', function () {
     function openAiAnalyzer(): OpenAiAnalyzer
@@ -13,6 +14,11 @@ describe('OpenAiAnalyzer', function () {
             public function exposedMapProviderException(Throwable $exception): Throwable
             {
                 return $this->mapProviderException($exception);
+            }
+
+            public function exposedCreateAnalyzer(): Analyzer
+            {
+                return $this->createAnalyzer();
             }
         };
     }
@@ -38,5 +44,17 @@ describe('OpenAiAnalyzer', function () {
 
         expect($mapped)->toBeInstanceOf(RuntimeException::class);
         expect($mapped->getMessage())->toContain('OpenAI API rate limit erreicht');
+    });
+
+    test('mapProviderException gibt bei nicht-rate-limit die originale exception zurueck', function () {
+        $exception = new RuntimeException('service unavailable');
+
+        $mapped = openAiAnalyzer()->exposedMapProviderException($exception);
+
+        expect($mapped)->toBe($exception);
+    });
+
+    test('createAnalyzer gibt Analyzer-Instanz zurueck', function () {
+        expect(openAiAnalyzer()->exposedCreateAnalyzer())->toBeInstanceOf(Analyzer::class);
     });
 });
