@@ -8,13 +8,7 @@ use App\Ai\Agents\Analyzer;
 use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
 use App\Services\AiAnalyzer\Actions\ValidateAiResponseAction;
 
-/**
- * Gemini AI Analyzer - Production Implementation
- *
- * Verwendet Laravel AI Package mit Gemini
- * Delegiert Response-Validierung und Parsing an dedizierte Actions.
- */
-class GeminiAiAnalyzer extends AbstractLlmAiAnalyzer
+class OpenAiAnalyzer extends AbstractLlmAiAnalyzer
 {
     public function __construct(
         ValidateAiResponseAction $validateResponse,
@@ -25,12 +19,12 @@ class GeminiAiAnalyzer extends AbstractLlmAiAnalyzer
 
     public function isAvailable(): bool
     {
-        return ! empty(config('ai.providers.gemini.key'));
+        return ! empty(config('ai.providers.openai.key'));
     }
 
     public function getProviderName(): string
     {
-        return 'gemini';
+        return 'openai';
     }
 
     protected function createAnalyzer(): Analyzer
@@ -42,8 +36,8 @@ class GeminiAiAnalyzer extends AbstractLlmAiAnalyzer
     {
         $message = strtolower($exception->getMessage());
 
-        if (str_contains($message, 'quota') || str_contains($message, 'rate limit')) {
-            return new \RuntimeException('Gemini API rate limit erreicht', 0, $exception);
+        if (str_contains($message, 'rate limit') || str_contains($message, '429')) {
+            return new \RuntimeException('OpenAI API rate limit erreicht', 0, $exception);
         }
 
         return $exception;

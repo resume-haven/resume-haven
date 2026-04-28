@@ -9,6 +9,7 @@ use App\Policies\ProfilePolicy;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
+use App\Services\AiAnalyzer\OpenAiAnalyzer;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -36,6 +37,17 @@ describe('AppServiceProvider', function () {
         expect($instance)->toBeInstanceOf(GeminiAiAnalyzer::class);
     });
 
+    test('bindet OpenAiAnalyzer wenn provider=openai', function () {
+        $app = app();
+        config(['ai.provider' => 'openai']);
+
+        (new AppServiceProvider($app))->register();
+
+        $instance = $app->make(AiAnalyzerInterface::class);
+
+        expect($instance)->toBeInstanceOf(OpenAiAnalyzer::class);
+    });
+
     test('wirft Exception bei ungueltigem provider-String', function () {
         $app = app();
         config(['ai.provider' => 'invalid']);
@@ -43,7 +55,7 @@ describe('AppServiceProvider', function () {
         (new AppServiceProvider($app))->register();
 
         expect(fn () => $app->make(AiAnalyzerInterface::class))
-            ->toThrow(InvalidArgumentException::class, 'Unknown AI provider: invalid. Available: mock, gemini');
+            ->toThrow(InvalidArgumentException::class, 'Unknown AI provider: invalid. Available: mock, gemini, openai');
     });
 
     test('wirft Exception wenn provider kein String ist', function () {

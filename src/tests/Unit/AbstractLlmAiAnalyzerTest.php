@@ -33,6 +33,21 @@ function fakeLlmAnalyzer(): AbstractLlmAiAnalyzer
             $this->logError($exception, $request);
         }
 
+        public function exposedBuildPromptPayload(AnalyzeRequestDto $request): string
+        {
+            return $this->buildPromptPayload($request);
+        }
+
+        public function exposedMapProviderException(Throwable $exception): Throwable
+        {
+            return $this->mapProviderException($exception);
+        }
+
+        public function exposedGetUserFriendlyErrorMessage(Throwable $exception): string
+        {
+            return $this->getUserFriendlyErrorMessage($exception);
+        }
+
         protected function createAnalyzer(): Analyzer
         {
             return new Analyzer();
@@ -44,15 +59,17 @@ function fakeLlmAnalyzerForAnalyze(
     string $response,
     ?Throwable $exception = null,
     ?ValidateAiResponseAction $validateAction = null,
+    ?Throwable $mappedException = null,
 ): AbstractLlmAiAnalyzer {
     $validateAction ??= new ValidateAiResponseAction();
 
-    return new class ($validateAction, new ParseAiResponseAction(), $response, $exception) extends AbstractLlmAiAnalyzer {
+    return new class ($validateAction, new ParseAiResponseAction(), $response, $exception, $mappedException) extends AbstractLlmAiAnalyzer {
         public function __construct(
             ValidateAiResponseAction $validateResponse,
             ParseAiResponseAction $parseResponse,
             private string $response,
             private ?Throwable $exception,
+            private ?Throwable $mappedException,
         ) {
             parent::__construct($validateResponse, $parseResponse);
         }
@@ -79,6 +96,11 @@ function fakeLlmAnalyzerForAnalyze(
         protected function createAnalyzer(): Analyzer
         {
             return new Analyzer();
+        }
+
+        public function mapProviderException(Throwable $exception): Throwable
+        {
+            return $this->mappedException ?? $exception;
         }
     };
 }
@@ -158,5 +180,46 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
         expect((string) $result->error)->toContain('ungültig');
         expect($result->experiences)->toBe([]);
+    });
+
+    test('analyze verwendet provider-spezifisches Exception-Mapping', function () {
+        Log::shouldReceive('error')->once();
+
+        $target = fakeLlmAnalyzerForAnalyze(
+            response: '{}',
+            exception: new RuntimeException('raw timeout'),
+            mappedException: new RuntimeException('api mapped provider error'),
+        );
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect((string) $result->error)->toContain('KI-API');
+    });
+
+    test('buildPromptPayload wirft exception bei json-encoding fehler', function () {
+        $target = fakeLlmAnalyzer();
+
+        $request = new AnalyzeRequestDto("\xB1\x31", 'cv');
+
+        expect(fn () => $target->exposedBuildPromptPayload($request))
+            ->toThrow(RuntimeException::class, 'JSON-Encoding fehlgeschlagen');
+    });
+
+    test('mapProviderException gibt im default die originale exception zurueck', function () {
+        $target = fakeLlmAnalyzer();
+        $exception = new RuntimeException('keine provider-spezifische map');
+
+        expect($target->exposedMapProviderException($exception))->toBe($exception);
+    });
+
+    test('getUserFriendlyErrorMessage mappt connection und network auf netzwerkfehler', function () {
+        $target = fakeLlmAnalyzer();
+
+        $connectionMessage = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('connection reset by peer'));
+        $networkMessage = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('network unreachable while sending'));
+
+        expect($connectionMessage)->toContain('Netzwerkfehler');
+        expect($networkMessage)->toContain('Netzwerkfehler');
     });
 });

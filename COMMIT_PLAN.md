@@ -4,7 +4,7 @@ Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.
 Abgeschlossene Details sind in die Historie ausgelagert.
 
 **Letzte Aktualisierung:** 2026-04-28  
-**Aktueller Stand:** Commit 31 abgeschlossen, LLM-Block in Arbeit
+**Aktueller Stand:** Commit 31 abgeschlossen, Commit 32 (L2) in Arbeit
 
 ---
 
@@ -22,7 +22,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
 
 ### In Arbeit
-- LLM-Block: Provider-agnostischer AI-Layer (Fortsetzung nach L1)
+- Commit 32 (L2): Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping
 
 ### In Planung (Folge)
 - Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
@@ -35,10 +35,16 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
-  - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
+  - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch) ← **Commit 32**
   - Commit L3: Erster Zweit-Provider als Proof of Concept
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
+
+### Commit 32 - L2 Plugin-Interface + OpenAI (in Arbeit)
+
+- **Ziel:** Provider-Hooks formalisieren und `AI_PROVIDER=openai` direkt auswählbar machen.
+- **Umfang:** `LlmProviderPluginInterface`, Hook-Integration im `AbstractLlmAiAnalyzer`, `OpenAiAnalyzer`, Config-/Binding- und Test-Erweiterung.
+- **Wichtige Entscheidung:** Umsetzung als **ein** Commit (nicht gesplittet).
 
 ---
 
