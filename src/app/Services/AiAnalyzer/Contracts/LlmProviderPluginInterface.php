@@ -15,4 +15,3 @@ interface LlmProviderPluginInterface
 
     public function mapProviderException(\Throwable $exception): \Throwable;
 }
-

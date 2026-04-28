@@ -10,7 +10,7 @@ describe('OpenAiAnalyzer', function () {
     function openAiAnalyzer(): OpenAiAnalyzer
     {
         return new class (new ValidateAiResponseAction(), new ParseAiResponseAction()) extends OpenAiAnalyzer {
-            public function exposedMapProviderException(\Throwable $exception): \Throwable
+            public function exposedMapProviderException(Throwable $exception): Throwable
             {
                 return $this->mapProviderException($exception);
             }
@@ -40,5 +40,3 @@ describe('OpenAiAnalyzer', function () {
         expect($mapped->getMessage())->toContain('OpenAI API rate limit erreicht');
     });
 });
-
-

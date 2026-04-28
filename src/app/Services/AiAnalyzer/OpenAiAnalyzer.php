@@ -43,4 +43,3 @@ class OpenAiAnalyzer extends AbstractLlmAiAnalyzer
         return $exception;
     }
 }
-
