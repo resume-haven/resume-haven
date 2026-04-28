@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace App\Domains\Profile\Actions;
 
+use App\Support\Session\ResumeTokenSession;
 use Illuminate\Http\Request;
 
 final class ResolveBaselineKeyAction
 {
+    public function __construct(
+        private ResumeTokenSession $resumeTokenSession,
+    ) {}
+
     public function execute(Request $request): string
     {
-        $resumeToken = $request->session()->get('resume_token');
+        $resumeToken = $this->resumeTokenSession->current($request->session());
 
-        if (is_string($resumeToken) && $resumeToken !== '') {
+        if ($resumeToken !== null) {
             return 'token:'.$resumeToken;
         }
 

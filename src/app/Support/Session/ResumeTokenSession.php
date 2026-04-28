@@ -38,6 +38,23 @@ final class ResumeTokenSession
         $session->put(self::CURRENT_TOKEN_KEY, $token);
     }
 
+    public function current(Session $session): ?string
+    {
+        $currentToken = $session->get(self::CURRENT_TOKEN_KEY);
+
+        if (is_string($currentToken) && $currentToken !== '') {
+            return $currentToken;
+        }
+
+        $tokens = $this->all($session);
+
+        if ($tokens === []) {
+            return null;
+        }
+
+        return $tokens[array_key_last($tokens)];
+    }
+
     public function remove(Session $session, string $token): void
     {
         $tokens = array_values(array_filter(

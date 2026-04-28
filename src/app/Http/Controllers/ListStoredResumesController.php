@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Domains\Profile\Dto\StoredResumePageDto;
 use App\Domains\Profile\Queries\ListStoredResumesQuery;
+use App\Support\Session\ResumeTokenSession;
 use Illuminate\Bus\Dispatcher;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Auth;
 
 final class ListStoredResumesController extends Controller
 {
+    public function __construct(
+        private ResumeTokenSession $resumeTokenSession,
+    ) {}
+
     public function __invoke(Request $request, Dispatcher $dispatcher): View
     {
         $authId = Auth::id();
@@ -23,8 +28,7 @@ final class ListStoredResumesController extends Controller
             abort(403);
         }
 
-        $currentToken = $request->session()->get('resume_token');
-        $currentToken = is_string($currentToken) && $currentToken !== '' ? $currentToken : null;
+        $currentToken = $this->resumeTokenSession->current($request->session());
 
         $page = max((int) $request->integer('page', 1), 1);
 

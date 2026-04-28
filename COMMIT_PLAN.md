@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-23  
-**Aktueller Stand:** Commit 29 abgeschlossen, Commit 30 in Arbeit (Branch: `feature/commit-30-multi-cv-crud`)
+**Letzte Aktualisierung:** 2026-04-28  
+**Aktueller Stand:** Commit 31 abgeschlossen, LLM-Block in Arbeit
 
 ---
 
@@ -18,17 +18,22 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 27: Acceptance-Tests Kernflows (abgeschlossen)
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 - Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
+- Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
+- Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
 
 ### In Arbeit
-- Commit 30: CV-Verwaltung (Branch: `feature/commit-30-multi-cv-crud`)
+- LLM-Block: Provider-agnostischer AI-Layer (Fortsetzung nach L1)
 
 ### In Planung (Folge)
-- LLM-Block: Provider-agnostischer AI-Layer
 - Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
 
+### Commit-31 Reihenfolge (abgeschlossen)
+- 3) Acceptance-Gate fuer Multi-CV erweitern (S, niedriges Risiko)
+- 1) Autorisierter Delete-Flow mit Session-Token-Cleanup (M, mittleres Risiko)
+- 2) Session-Token-Handling vereinheitlichen (S-M, niedrig-mittleres Risiko)
+
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 30:** CV-Verwaltung (User-Dashboard, Multi-CV, Pagination, `resume_tokens[]`-Cutover) ← **aktuell**
-- **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
+- **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
   - Commit L3: Erster Zweit-Provider als Proof of Concept
@@ -115,7 +120,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ## Commit 30 — CV-Verwaltung (Multi-CV CRUD)
 
 **Branch:** `feature/commit-30-multi-cv-crud`  
-**Status:** In Arbeit
+**Status:** Abgeschlossen
 
 ### Ziel
 - Ein paginiertes User-Dashboard fuer mehrere gespeicherte CVs bereitstellen

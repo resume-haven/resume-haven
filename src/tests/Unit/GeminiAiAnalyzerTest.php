@@ -12,10 +12,32 @@ use Illuminate\Support\Facades\Log;
 describe('GeminiAiAnalyzer', function () {
     function analyzer(): GeminiAiAnalyzer
     {
-        return new GeminiAiAnalyzer(
-            new ValidateAiResponseAction(),
-            new ParseAiResponseAction(),
-        );
+        return new class (new ValidateAiResponseAction(), new ParseAiResponseAction()) extends GeminiAiAnalyzer {
+            public function exposedSanitizeInput(string $input): string
+            {
+                return $this->sanitizeInput($input);
+            }
+
+            public function exposedBuildSanitizedRequest(AnalyzeRequestDto $request): AnalyzeRequestDto
+            {
+                return $this->buildSanitizedRequest($request);
+            }
+
+            public function exposedGetUserFriendlyErrorMessage(Throwable $exception): string
+            {
+                return $this->getUserFriendlyErrorMessage($exception);
+            }
+
+            public function exposedBuildErrorResult(AnalyzeRequestDto $request, Throwable $exception): AnalyzeResultDto
+            {
+                return $this->buildErrorResult($request, $exception);
+            }
+
+            public function exposedLogError(Throwable $exception, AnalyzeRequestDto $request): void
+            {
+                $this->logError($exception, $request);
+            }
+        };
     }
 
     test('getProviderName liefert gemini', function () {
@@ -23,35 +45,31 @@ describe('GeminiAiAnalyzer', function () {
     });
 
     test('isAvailable ist true wenn API-Key gesetzt ist', function () {
-        config(['ai.gemini.api_key' => 'test-key']);
+        config(['ai.providers.gemini.key' => 'test-key']);
 
         expect(analyzer()->isAvailable())->toBeTrue();
     });
 
     test('isAvailable ist false wenn API-Key leer ist', function () {
-        config(['ai.gemini.api_key' => '']);
+        config(['ai.providers.gemini.key' => '']);
 
         expect(analyzer()->isAvailable())->toBeFalse();
     });
 
     test('sanitizeInput entfernt Null-Bytes, trimmt und normalisiert Zeilenumbrüche', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'sanitizeInput');
-        $method->setAccessible(true);
 
         $raw = "  foo\0bar\r\nline2  ";
-        $sanitized = $method->invoke($target, $raw);
+        $sanitized = $target->exposedSanitizeInput($raw);
 
         expect($sanitized)->toBe("foobar\nline2");
     });
 
     test('buildSanitizedRequest sanitiziert beide Eingaben', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'buildSanitizedRequest');
-        $method->setAccessible(true);
 
         $request = new AnalyzeRequestDto("  job\0\r\n ", " cv\0\r\n ");
-        $sanitizedRequest = $method->invoke($target, $request);
+        $sanitizedRequest = $target->exposedBuildSanitizedRequest($request);
 
         expect($sanitizedRequest)->toBeInstanceOf(AnalyzeRequestDto::class);
         expect($sanitizedRequest->jobText())->toBe('job');
@@ -60,31 +78,22 @@ describe('GeminiAiAnalyzer', function () {
 
     test('getUserFriendlyErrorMessage mappt timeout', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'getUserFriendlyErrorMessage');
-        $method->setAccessible(true);
-
-        $msg = $method->invoke($target, new RuntimeException('Request timeout while calling api'));
+        $msg = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('Request timeout while calling api'));
 
         expect($msg)->toContain('Timeout');
     });
 
     test('getUserFriendlyErrorMessage mappt json', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'getUserFriendlyErrorMessage');
-        $method->setAccessible(true);
-
-        $msg = $method->invoke($target, new RuntimeException('json parse error'));
+        $msg = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('json parse error'));
 
         expect($msg)->toContain('ungültig');
     });
 
     test('getUserFriendlyErrorMessage mappt connection und network', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'getUserFriendlyErrorMessage');
-        $method->setAccessible(true);
-
-        $msg1 = $method->invoke($target, new RuntimeException('connection refused'));
-        $msg2 = $method->invoke($target, new RuntimeException('network interrupted'));
+        $msg1 = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('connection refused'));
+        $msg2 = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('network interrupted'));
 
         expect($msg1)->toContain('Netzwerkfehler');
         expect($msg2)->toContain('Netzwerkfehler');
@@ -92,11 +101,8 @@ describe('GeminiAiAnalyzer', function () {
 
     test('getUserFriendlyErrorMessage mappt api und default', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'getUserFriendlyErrorMessage');
-        $method->setAccessible(true);
-
-        $apiMsg = $method->invoke($target, new RuntimeException('api unavailable'));
-        $defaultMsg = $method->invoke($target, new RuntimeException('unexpected failure'));
+        $apiMsg = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('api unavailable'));
+        $defaultMsg = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('unexpected failure'));
 
         expect($apiMsg)->toContain('KI-API');
         expect($defaultMsg)->toBe('Die Analyse ist fehlgeschlagen. Bitte versuchen Sie es erneut.');
@@ -104,11 +110,9 @@ describe('GeminiAiAnalyzer', function () {
 
     test('buildErrorResult baut leeres Ergebnis mit Fehlermeldung', function () {
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'buildErrorResult');
-        $method->setAccessible(true);
 
         $request = new AnalyzeRequestDto('job', 'cv');
-        $result = $method->invoke($target, $request, new RuntimeException('api down'));
+        $result = $target->exposedBuildErrorResult($request, new RuntimeException('api down'));
 
         expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
         expect($result->job_text)->toBe('job');
@@ -132,10 +136,7 @@ describe('GeminiAiAnalyzer', function () {
         });
 
         $target = analyzer();
-        $method = new ReflectionMethod($target, 'logError');
-        $method->setAccessible(true);
-
-        $method->invoke($target, new RuntimeException('boom'), new AnalyzeRequestDto('job', 'cv'));
+        $target->exposedLogError(new RuntimeException('boom'), new AnalyzeRequestDto('job', 'cv'));
     });
 
     test('analyze faengt Fehler ab und gibt Error-DTO zurueck', function () {

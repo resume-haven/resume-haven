@@ -15,6 +15,11 @@ class MockableGeminiAiAnalyzer extends GeminiAiAnalyzer
 {
     public ?Analyzer $injectedAnalyzer = null;
 
+    public function exposedCreateAnalyzer(): Analyzer
+    {
+        return $this->createAnalyzer();
+    }
+
     protected function createAnalyzer(): Analyzer
     {
         if ($this->injectedAnalyzer !== null) {

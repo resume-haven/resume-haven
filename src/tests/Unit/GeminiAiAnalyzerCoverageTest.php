@@ -7,27 +7,9 @@ use App\Dto\AnalyzeRequestDto;
 use App\Dto\AnalyzeResultDto;
 use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
 use App\Services\AiAnalyzer\Actions\ValidateAiResponseAction;
-use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Responses\StructuredAgentResponse;
-
-/**
- * Testable subclass: erlaubt das Injizieren eines gemockten Analyzers
- * für den callAi()-Pfad ohne echte API-Calls.
- */
-class MockableGeminiAiAnalyzer extends GeminiAiAnalyzer
-{
-    public ?Analyzer $injectedAnalyzer = null;
-
-    protected function createAnalyzer(): Analyzer
-    {
-        if ($this->injectedAnalyzer !== null) {
-            return $this->injectedAnalyzer;
-        }
-
-        return parent::createAnalyzer();
-    }
-}
+use Tests\Unit\MockableGeminiAiAnalyzer;
 
 function mockableAnalyzer(): MockableGeminiAiAnalyzer
 {
@@ -158,10 +140,7 @@ describe('GeminiAiAnalyzer Coverage', function () {
     test('createAnalyzer() gibt Analyzer-Instanz zurueck wenn kein Mock injiziert ist', function () {
         $analyzer = mockableAnalyzer();
 
-        $method = new ReflectionMethod($analyzer, 'createAnalyzer');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($analyzer);
+        $result = $analyzer->exposedCreateAnalyzer();
 
         expect($result)->toBeInstanceOf(Analyzer::class);
     });
