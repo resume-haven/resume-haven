@@ -3,9 +3,15 @@
 declare(strict_types=1);
 
 use App\Providers\AppServiceProvider;
+use App\Listeners\AutoClaimResumesListener;
+use App\Models\StoredResume;
+use App\Policies\ProfilePolicy;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 
 describe('AppServiceProvider', function () {
     test('bindet MockAiAnalyzer wenn provider=mock', function () {
@@ -118,5 +124,34 @@ describe('AppServiceProvider', function () {
 
         expect(fn () => $app->make(AiAnalyzerInterface::class))
             ->toThrow(InvalidArgumentException::class, 'AI analyzer class must implement '.AiAnalyzerInterface::class.'.');
+    });
+
+    test('wirft Exception wenn analyzer-klasse kein String ist', function () {
+        $app = app();
+        config([
+            'ai.provider' => 'bad',
+            'ai.analyzers' => [
+                'bad' => ['not-a-class-string'],
+            ],
+        ]);
+
+        (new AppServiceProvider($app))->register();
+
+        expect(fn () => $app->make(AiAnalyzerInterface::class))
+            ->toThrow(InvalidArgumentException::class, 'AI analyzer class must be a string.');
+    });
+
+    test('boot registriert login-listener und policy', function () {
+        $app = app();
+
+        Event::shouldReceive('listen')
+            ->once()
+            ->with(Login::class, AutoClaimResumesListener::class);
+
+        Gate::shouldReceive('policy')
+            ->once()
+            ->with(StoredResume::class, ProfilePolicy::class);
+
+        (new AppServiceProvider($app))->boot();
     });
 });
