@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-24  
-**Aktueller Stand:** Commit 30 abgeschlossen, Commit 31 in Planung
+**Letzte Aktualisierung:** 2026-04-28  
+**Aktueller Stand:** Commit 31 abgeschlossen, LLM-Block in Arbeit
 
 ---
 
@@ -19,22 +19,21 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 - Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
 - Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
+- Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
 
 ### In Arbeit
-- Commit 31: vorbereitet (Reihenfolge festgelegt: 3, 1, 2)
+- LLM-Block: Provider-agnostischer AI-Layer (Fortsetzung nach L1)
 
 ### In Planung (Folge)
-- LLM-Block: Provider-agnostischer AI-Layer
 - Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
 
-### Commit-31 Reihenfolge (vereinbart)
+### Commit-31 Reihenfolge (abgeschlossen)
 - 3) Acceptance-Gate fuer Multi-CV erweitern (S, niedriges Risiko)
 - 1) Autorisierter Delete-Flow mit Session-Token-Cleanup (M, mittleres Risiko)
 - 2) Session-Token-Handling vereinheitlichen (S-M, niedrig-mittleres Risiko)
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
-- **Commit 30:** CV-Verwaltung (User-Dashboard, Multi-CV, Pagination, `resume_tokens[]`-Cutover) ← **aktuell**
-- **LLM-Block (nach Commit 28):** Provider-agnostischer AI-Layer
+- **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch)
   - Commit L3: Erster Zweit-Provider als Proof of Concept

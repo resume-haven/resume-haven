@@ -31,6 +31,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 28: Architecture-Tests & Engineering-Haertung
 - Commit 29: Auth + Rollen + Claim-Flow
 - Commit 30: CV-Verwaltung (Multi-CV CRUD, Dashboard/Pagination, Session-Token-Cutover, Coverage-Hardening)
+- Commit 31: Multi-CV Delete/AuthZ-Gate + LLM-Basisrefactoring (`AbstractLlmAiAnalyzer`, provider-generische Registry)
 
 ## Detaillierte Einzelplaene
 
