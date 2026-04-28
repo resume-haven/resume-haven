@@ -3,6 +3,7 @@
 declare(strict_types=1);
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
+use App\Services\AiAnalyzer\OpenAiAnalyzer;
 
 return [
     /*
@@ -11,7 +12,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option controls which AI provider implementation to use.
-    | Available options: 'mock', 'gemini'
+    | Available options: 'mock', 'gemini', 'openai'
     |
     | - mock: Development mode, no API calls, predefined test data
     | - gemini: Production mode, real AI requests via Gemini
@@ -36,6 +37,7 @@ return [
     'analyzers' => [
         'mock'   => MockAiAnalyzer::class,
         'gemini' => GeminiAiAnalyzer::class,
+        'openai' => OpenAiAnalyzer::class,
     ],
 
     /*

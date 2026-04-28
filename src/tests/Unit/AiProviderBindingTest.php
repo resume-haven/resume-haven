@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
+use App\Services\AiAnalyzer\OpenAiAnalyzer;
 
 it('bindet MockAiAnalyzer wenn AI_PROVIDER=mock', function () {
     config(['ai.provider' => 'mock']);
@@ -22,6 +23,15 @@ it('bindet GeminiAiAnalyzer wenn AI_PROVIDER=gemini', function () {
 
     expect($analyzer)->toBeInstanceOf(GeminiAiAnalyzer::class);
     expect($analyzer->getProviderName())->toBe('gemini');
+});
+
+it('bindet OpenAiAnalyzer wenn AI_PROVIDER=openai', function () {
+    config(['ai.provider' => 'openai']);
+
+    $analyzer = app(AiAnalyzerInterface::class);
+
+    expect($analyzer)->toBeInstanceOf(OpenAiAnalyzer::class);
+    expect($analyzer->getProviderName())->toBe('openai');
 });
 
 it('wirft Exception bei unbekanntem Provider', function () {

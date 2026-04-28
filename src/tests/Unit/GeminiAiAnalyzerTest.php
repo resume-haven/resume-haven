@@ -37,6 +37,11 @@ describe('GeminiAiAnalyzer', function () {
             {
                 $this->logError($exception, $request);
             }
+
+            public function exposedMapProviderException(Throwable $exception): Throwable
+            {
+                return $this->mapProviderException($exception);
+            }
         };
     }
 
@@ -159,5 +164,12 @@ describe('GeminiAiAnalyzer', function () {
 
         expect($result->requirements)->toBe([]);
         expect($result->experiences)->toBe([]);
+    });
+
+    test('mapProviderException mappt gemini rate-limit meldungen provider-spezifisch', function () {
+        $mapped = analyzer()->exposedMapProviderException(new RuntimeException('rate limit reached'));
+
+        expect($mapped)->toBeInstanceOf(RuntimeException::class);
+        expect($mapped->getMessage())->toContain('Gemini API rate limit erreicht');
     });
 });

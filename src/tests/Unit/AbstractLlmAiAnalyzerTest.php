@@ -44,15 +44,17 @@ function fakeLlmAnalyzerForAnalyze(
     string $response,
     ?Throwable $exception = null,
     ?ValidateAiResponseAction $validateAction = null,
+    ?Throwable $mappedException = null,
 ): AbstractLlmAiAnalyzer {
     $validateAction ??= new ValidateAiResponseAction();
 
-    return new class ($validateAction, new ParseAiResponseAction(), $response, $exception) extends AbstractLlmAiAnalyzer {
+    return new class ($validateAction, new ParseAiResponseAction(), $response, $exception, $mappedException) extends AbstractLlmAiAnalyzer {
         public function __construct(
             ValidateAiResponseAction $validateResponse,
             ParseAiResponseAction $parseResponse,
             private string $response,
             private ?Throwable $exception,
+            private ?Throwable $mappedException,
         ) {
             parent::__construct($validateResponse, $parseResponse);
         }
@@ -79,6 +81,11 @@ function fakeLlmAnalyzerForAnalyze(
         protected function createAnalyzer(): Analyzer
         {
             return new Analyzer();
+        }
+
+        public function mapProviderException(Throwable $exception): Throwable
+        {
+            return $this->mappedException ?? $exception;
         }
     };
 }
@@ -158,5 +165,20 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
         expect((string) $result->error)->toContain('ungültig');
         expect($result->experiences)->toBe([]);
+    });
+
+    test('analyze verwendet provider-spezifisches Exception-Mapping', function () {
+        Log::shouldReceive('error')->once();
+
+        $target = fakeLlmAnalyzerForAnalyze(
+            response: '{}',
+            exception: new RuntimeException('raw timeout'),
+            mappedException: new RuntimeException('api mapped provider error'),
+        );
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect((string) $result->error)->toContain('KI-API');
     });
 });

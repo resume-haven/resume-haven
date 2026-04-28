@@ -10,10 +10,11 @@ use App\Dto\AnalyzeResultDto;
 use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
 use App\Services\AiAnalyzer\Actions\ValidateAiResponseAction;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
+use App\Services\AiAnalyzer\Contracts\LlmProviderPluginInterface;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 
-abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface
+abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProviderPluginInterface
 {
     public function __construct(
         private ValidateAiResponseAction $validateResponse,
@@ -35,9 +36,10 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface
 
             return $this->parseResponse->execute($data, $request);
         } catch (\Throwable $e) {
-            $this->logError($e, $request);
+            $mappedException = $this->mapProviderException($e);
+            $this->logError($mappedException, $request);
 
-            return $this->buildErrorResult($request, $e);
+            return $this->buildErrorResult($request, $mappedException);
         }
     }
 
@@ -53,14 +55,27 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface
 
     protected function callAi(AnalyzeRequestDto $sanitizedRequest): string
     {
-        $jsonData = json_encode($sanitizedRequest->toArray());
+        $payload = $this->buildPromptPayload($sanitizedRequest);
+
+        /** @var StructuredAgentResponse $response */
+        $response = $this->createAnalyzer()->prompt($payload);
+
+        return $this->normalizeResponse($response);
+    }
+
+    public function buildPromptPayload(AnalyzeRequestDto $request): string
+    {
+        $jsonData = json_encode($request->toArray());
+
         if ($jsonData === false) {
             throw new \RuntimeException('JSON-Encoding fehlgeschlagen');
         }
 
-        /** @var StructuredAgentResponse $response */
-        $response = $this->createAnalyzer()->prompt($jsonData);
+        return $jsonData;
+    }
 
+    public function normalizeResponse(StructuredAgentResponse $response): string
+    {
         $rawResponse = json_encode($response->toArray());
 
         if ($rawResponse === false) {
@@ -68,6 +83,11 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface
         }
 
         return $rawResponse;
+    }
+
+    public function mapProviderException(\Throwable $exception): \Throwable
+    {
+        return $exception;
     }
 
     protected function sanitizeInput(string $input): string
