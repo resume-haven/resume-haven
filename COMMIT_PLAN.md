@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-28  
-**Aktueller Stand:** Commit 31 abgeschlossen, Commit 32 (L2) in Arbeit
+**Letzte Aktualisierung:** 2026-04-30  
+**Aktueller Stand:** Commit 32 abgeschlossen, Commit 33 (L3) in Arbeit
 
 ---
 
@@ -20,9 +20,10 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
 - Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
 - Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
+- Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
 
 ### In Arbeit
-- Commit 32 (L2): Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping
+- Commit 33 (L3): Anthropic Provider PoC + minimaler E2E-Analyse-Pfad
 
 ### In Planung (Folge)
 - Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
@@ -35,16 +36,22 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
-  - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch) ← **Commit 32**
-  - Commit L3: Erster Zweit-Provider als Proof of Concept
+  - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch) ✅ **Commit 32**
+  - Commit L3: Erster Zweit-Provider als Proof of Concept ← **Commit 33**
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
 
-### Commit 32 - L2 Plugin-Interface + OpenAI (in Arbeit)
+### Commit 32 - L2 Plugin-Interface + OpenAI (abgeschlossen)
 
 - **Ziel:** Provider-Hooks formalisieren und `AI_PROVIDER=openai` direkt auswählbar machen.
 - **Umfang:** `LlmProviderPluginInterface`, Hook-Integration im `AbstractLlmAiAnalyzer`, `OpenAiAnalyzer`, Config-/Binding- und Test-Erweiterung.
 - **Wichtige Entscheidung:** Umsetzung als **ein** Commit (nicht gesplittet).
+
+### Commit 33 - L3 Anthropic Provider PoC (in Arbeit)
+
+- **Ziel:** Zweiten Provider als PoC integrieren und das Plugin-Interface im minimalen E2E-Analysepfad validieren.
+- **Umfang:** `AnthropicAiAnalyzer`, Config-/Binding-Erweiterung, provider-spezifisches Mapping, minimaler no-egress E2E-Testpfad.
+- **Nicht-Scope:** Kein Provider-Fallback, kein Retry-/Backoff-Framework, keine UI-Änderungen.
 
 ---
 
@@ -172,7 +179,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 - CI/Branch-Protection wurde in Commit 23 abgeschlossen
 - Planung wurde auf produktnahen Mehrwert neu priorisiert (`A,B,D,C,E`)
-- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist die Multi-CV-Verwaltung
+- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist der LLM-Block (Commit 33)
 - Deployment wird bewusst spaeter und kontextabhaengig neu bewertet
 
 ---
@@ -190,6 +197,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 28: `docs/history/PLANNING_COMMIT_28.md`
 - Detailplanung Commit 29: `docs/history/PLANNING_COMMIT_29.md`
 - Detailplanung Commit 30: `docs/history/PLANNING_COMMIT_30.md`
+- Detailplanung Commit 32: `docs/history/PLANNING_COMMIT_32.md`
+- Detailplanung Commit 33: `docs/history/PLANNING_COMMIT_33.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---

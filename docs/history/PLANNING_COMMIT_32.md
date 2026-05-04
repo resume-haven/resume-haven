@@ -1,8 +1,9 @@
 # Detailplanung Commit 32 — L2 Plugin-Interface + OpenAI Auswahl
 
 **Branch:** `feature/commit-32-llm-provider-plugin-interface`  
-**Status:** In Arbeit  
-**Erstellt:** 2026-04-28
+**Status:** Abgeschlossen  
+**Erstellt:** 2026-04-28  
+**Abgeschlossen:** 2026-04-30
 
 ---
 
@@ -123,4 +124,5 @@ als konkrete Auswahl ohne Domain-Aenderungen funktioniert.
 - Roadmap: `../ROADMAP.md`
 - Vorheriger Detailplan: `PLANNING_COMMIT_30.md`
 - Historie-Index: `../COMMIT_HISTORY_INDEX.md`
+
 

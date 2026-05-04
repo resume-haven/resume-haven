@@ -7,6 +7,7 @@ use App\Listeners\AutoClaimResumesListener;
 use App\Models\StoredResume;
 use App\Policies\ProfilePolicy;
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
+use App\Services\AiAnalyzer\AnthropicAiAnalyzer;
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
 use App\Services\AiAnalyzer\OpenAiAnalyzer;
@@ -48,6 +49,17 @@ describe('AppServiceProvider', function () {
         expect($instance)->toBeInstanceOf(OpenAiAnalyzer::class);
     });
 
+    test('bindet AnthropicAiAnalyzer wenn provider=anthropic', function () {
+        $app = app();
+        config(['ai.provider' => 'anthropic']);
+
+        (new AppServiceProvider($app))->register();
+
+        $instance = $app->make(AiAnalyzerInterface::class);
+
+        expect($instance)->toBeInstanceOf(AnthropicAiAnalyzer::class);
+    });
+
     test('wirft Exception bei ungueltigem provider-String', function () {
         $app = app();
         config(['ai.provider' => 'invalid']);
@@ -55,7 +67,7 @@ describe('AppServiceProvider', function () {
         (new AppServiceProvider($app))->register();
 
         expect(fn () => $app->make(AiAnalyzerInterface::class))
-            ->toThrow(InvalidArgumentException::class, 'Unknown AI provider: invalid. Available: mock, gemini, openai');
+            ->toThrow(InvalidArgumentException::class, 'Unknown AI provider: invalid. Available: mock, gemini, openai, anthropic');
     });
 
     test('wirft Exception wenn provider kein String ist', function () {
