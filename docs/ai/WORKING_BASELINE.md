@@ -49,8 +49,8 @@ Bei stark gewachsenem Chatkontext diese Datei als Reset-Basis verwenden:
 **Tagesaktuelle Session-Zusammenfassung:**
 Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorhanden).
 
-**Aktueller Branch:** `feature/commit-29-auth-roles-claim`  
-**Fokus:** Laravel Breeze (Minimal-Auth), `UserRole`-Enum, Auto-Claim-Flow, `ProfileRepository`-Erweiterung — Details in `docs/history/PLANNING_COMMIT_29.md`.
+**Aktueller Arbeitsmodus:** Agent-Mode (branch-agnostisch)  
+**Fokus:** LLM-Block Phase 5, aktuell Commit 33 (L3 Anthropic Provider PoC) — Details in `docs/history/PLANNING_COMMIT_33.md`.
 
 **Empfohlene Reset-Reihenfolge:**
 1. Diese Datei (`WORKING_BASELINE.md`)
@@ -83,5 +83,5 @@ Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorha
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-21  
-**Version**: 1.3 (Commit-29-Branch und Fokus eingetragen)
+**Letzte Aktualisierung**: 2026-04-30  
+**Version**: 1.4 (branch-agnostischer Agent-Mode und Commit-33-Fokus)

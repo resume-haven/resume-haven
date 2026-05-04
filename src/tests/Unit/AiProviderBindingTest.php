@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Services\AiAnalyzer\Contracts\AiAnalyzerInterface;
+use App\Services\AiAnalyzer\AnthropicAiAnalyzer;
 use App\Services\AiAnalyzer\GeminiAiAnalyzer;
 use App\Services\AiAnalyzer\MockAiAnalyzer;
 use App\Services\AiAnalyzer\OpenAiAnalyzer;
@@ -32,6 +33,15 @@ it('bindet OpenAiAnalyzer wenn AI_PROVIDER=openai', function () {
 
     expect($analyzer)->toBeInstanceOf(OpenAiAnalyzer::class);
     expect($analyzer->getProviderName())->toBe('openai');
+});
+
+it('bindet AnthropicAiAnalyzer wenn AI_PROVIDER=anthropic', function () {
+    config(['ai.provider' => 'anthropic']);
+
+    $analyzer = app(AiAnalyzerInterface::class);
+
+    expect($analyzer)->toBeInstanceOf(AnthropicAiAnalyzer::class);
+    expect($analyzer->getProviderName())->toBe('anthropic');
 });
 
 it('wirft Exception bei unbekanntem Provider', function () {
