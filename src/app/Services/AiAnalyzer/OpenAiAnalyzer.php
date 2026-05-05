@@ -42,4 +42,15 @@ class OpenAiAnalyzer extends AbstractLlmAiAnalyzer
 
         return $exception;
     }
+
+    protected function classifyProviderTransientException(\Throwable $exception): ?string
+    {
+        $message = strtolower($exception->getMessage());
+
+        if (str_contains($message, 'rate limit') || str_contains($message, '429')) {
+            return 'openai:rate_limit';
+        }
+
+        return null;
+    }
 }

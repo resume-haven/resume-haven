@@ -75,4 +75,19 @@ class AnthropicAiAnalyzer extends AbstractLlmAiAnalyzer
         // Standard-Fallback auf generisches Exception-Mapping
         return $exception;
     }
+
+    protected function classifyProviderTransientException(\Throwable $exception): ?string
+    {
+        $message = strtolower($exception->getMessage());
+
+        if (str_contains($message, 'rate_limit') || str_contains($message, '429')) {
+            return 'anthropic:rate_limit';
+        }
+
+        if (str_contains($message, 'overloaded')) {
+            return 'anthropic:overloaded';
+        }
+
+        return null;
+    }
 }

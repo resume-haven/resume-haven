@@ -16,6 +16,16 @@ use Laravel\Ai\Responses\StructuredAgentResponse;
 
 abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProviderPluginInterface
 {
+    /**
+     * @var array{'retry_attempt': int, 'max_attempts': int, 'transient_classifier': string|null, 'retry_exhausted': bool}
+     */
+    private array $lastRetryContext = [
+        'retry_attempt' => 1,
+        'max_attempts' => 1,
+        'transient_classifier' => null,
+        'retry_exhausted' => false,
+    ];
+
     public function __construct(
         private ValidateAiResponseAction $validateResponse,
         private ParseAiResponseAction $parseResponse,
@@ -23,6 +33,8 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
 
     public function analyze(AnalyzeRequestDto $request): AnalyzeResultDto
     {
+        $this->resetRetryContext();
+
         try {
             $sanitizedRequest = $this->buildSanitizedRequest($request);
             $response = $this->callAi($sanitizedRequest);
@@ -54,6 +66,45 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
     }
 
     protected function callAi(AnalyzeRequestDto $sanitizedRequest): string
+    {
+        $retryEnabled = $this->isRetryEnabled();
+        $maxAttempts = $retryEnabled ? $this->resolveMaxAttempts() : 1;
+        $backoffMilliseconds = $this->resolveBackoffMilliseconds();
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                $response = $this->performAiCall($sanitizedRequest);
+
+                $this->lastRetryContext = [
+                    'retry_attempt' => $attempt,
+                    'max_attempts' => $maxAttempts,
+                    'transient_classifier' => null,
+                    'retry_exhausted' => false,
+                ];
+
+                return $response;
+            } catch (\Throwable $exception) {
+                $transientClassifier = $this->classifyTransientException($exception);
+
+                $this->lastRetryContext = [
+                    'retry_attempt' => $attempt,
+                    'max_attempts' => $maxAttempts,
+                    'transient_classifier' => $transientClassifier,
+                    'retry_exhausted' => $retryEnabled && $transientClassifier !== null && $attempt >= $maxAttempts,
+                ];
+
+                if (! $retryEnabled || $transientClassifier === null || $attempt >= $maxAttempts) {
+                    throw $exception;
+                }
+
+                $this->pauseBeforeRetry($attempt, $backoffMilliseconds);
+            }
+        }
+
+        throw new \RuntimeException('AI-Aufruf konnte nach Wiederholungsversuchen nicht abgeschlossen werden.');
+    }
+
+    protected function performAiCall(AnalyzeRequestDto $sanitizedRequest): string
     {
         $payload = $this->buildPromptPayload($sanitizedRequest);
 
@@ -90,6 +141,16 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
         return $exception;
     }
 
+    protected function classifyTransientException(\Throwable $exception): ?string
+    {
+        return $this->classifyProviderTransientException($exception) ?? $this->classifyGlobalTransientException($exception);
+    }
+
+    protected function classifyProviderTransientException(\Throwable $exception): ?string
+    {
+        return null;
+    }
+
     protected function sanitizeInput(string $input): string
     {
         $input = str_replace("\0", '', $input);
@@ -107,6 +168,7 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
             'exception_message' => $exception->getMessage(),
             'job_text_length' => strlen($request->jobText()),
             'cv_text_length' => strlen($request->cvText()),
+            ...$this->lastRetryContext,
             'timestamp' => now()->toIso8601String(),
         ]);
     }
@@ -143,10 +205,101 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
             return 'Netzwerkfehler bei der Verbindung zur KI. Bitte prüfen Sie Ihre Internetverbindung.';
         }
 
+        if (str_contains($message, 'rate limit') || str_contains($message, '429')) {
+            return 'Die KI ist momentan ausgelastet. Bitte versuchen Sie es in Kürze erneut.';
+        }
+
+        if (str_contains($message, 'overloaded') || str_contains($message, 'überlastet')) {
+            return 'Die KI ist momentan überlastet. Bitte versuchen Sie es später erneut.';
+        }
+
         if (str_contains($message, 'api')) {
             return 'Die KI-API antwortet nicht. Bitte versuchen Sie es später erneut.';
         }
 
         return 'Die Analyse ist fehlgeschlagen. Bitte versuchen Sie es erneut.';
+    }
+
+    protected function pauseBeforeRetry(int $attempt, int $backoffMilliseconds): void
+    {
+        if ($backoffMilliseconds <= 0) {
+            return;
+        }
+
+        usleep($backoffMilliseconds * 1000);
+    }
+
+    private function isRetryEnabled(): bool
+    {
+        return (bool) config('ai.retry.enabled', true);
+    }
+
+    private function resolveMaxAttempts(): int
+    {
+        $configuredMaxAttempts = config('ai.retry.max_attempts', 2);
+
+        if (is_int($configuredMaxAttempts)) {
+            return max(1, $configuredMaxAttempts);
+        }
+
+        if (is_numeric($configuredMaxAttempts)) {
+            return max(1, (int) $configuredMaxAttempts);
+        }
+
+        return 2;
+    }
+
+    private function resolveBackoffMilliseconds(): int
+    {
+        $configuredBackoff = config('ai.retry.backoff_ms', 150);
+
+        if (is_int($configuredBackoff)) {
+            return max(0, $configuredBackoff);
+        }
+
+        if (is_numeric($configuredBackoff)) {
+            return max(0, (int) $configuredBackoff);
+        }
+
+        return 150;
+    }
+
+    private function resetRetryContext(): void
+    {
+        $maxAttempts = $this->isRetryEnabled() ? $this->resolveMaxAttempts() : 1;
+
+        $this->lastRetryContext = [
+            'retry_attempt' => 1,
+            'max_attempts' => $maxAttempts,
+            'transient_classifier' => null,
+            'retry_exhausted' => false,
+        ];
+    }
+
+    private function classifyGlobalTransientException(\Throwable $exception): ?string
+    {
+        $message = strtolower($exception->getMessage());
+
+        if (str_contains($message, 'timeout')) {
+            return 'global:timeout';
+        }
+
+        if (str_contains($message, '429') || str_contains($message, 'rate limit') || str_contains($message, 'too many requests')) {
+            return 'global:rate_limit';
+        }
+
+        if (str_contains($message, 'overloaded')) {
+            return 'global:overloaded';
+        }
+
+        if (str_contains($message, 'connection')) {
+            return 'global:connection';
+        }
+
+        if (str_contains($message, 'network')) {
+            return 'global:network';
+        }
+
+        return null;
     }
 }

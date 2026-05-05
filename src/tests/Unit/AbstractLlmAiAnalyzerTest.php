@@ -48,6 +48,11 @@ function fakeLlmAnalyzer(): AbstractLlmAiAnalyzer
             return $this->getUserFriendlyErrorMessage($exception);
         }
 
+        public function exposedClassifyTransientException(Throwable $exception): ?string
+        {
+            return $this->classifyTransientException($exception);
+        }
+
         protected function createAnalyzer(): Analyzer
         {
             return new Analyzer();
@@ -84,7 +89,7 @@ function fakeLlmAnalyzerForAnalyze(
             return 'fake-provider';
         }
 
-        protected function callAi(AnalyzeRequestDto $sanitizedRequest): string
+        protected function performAiCall(AnalyzeRequestDto $sanitizedRequest): string
         {
             if ($this->exception !== null) {
                 throw $this->exception;
@@ -92,6 +97,8 @@ function fakeLlmAnalyzerForAnalyze(
 
             return $this->response;
         }
+
+        protected function pauseBeforeRetry(int $attempt, int $backoffMilliseconds): void {}
 
         protected function createAnalyzer(): Analyzer
         {
@@ -101,6 +108,74 @@ function fakeLlmAnalyzerForAnalyze(
         public function mapProviderException(Throwable $exception): Throwable
         {
             return $this->mappedException ?? $exception;
+        }
+    };
+}
+
+function fakeLlmAnalyzerForRetrySequence(array $attemptOutcomes)
+{
+    return new class (new ValidateAiResponseAction(), new ParseAiResponseAction(), $attemptOutcomes) extends AbstractLlmAiAnalyzer {
+        /**
+         * @param array<int, Throwable|string> $attemptOutcomes
+         */
+        public function __construct(
+            ValidateAiResponseAction $validateResponse,
+            ParseAiResponseAction $parseResponse,
+            private array $attemptOutcomes,
+        ) {
+            parent::__construct($validateResponse, $parseResponse);
+        }
+
+        /**
+         * @var list<int>
+         */
+        private array $pauseHistory = [];
+
+        private int $attemptCount = 0;
+
+        public function isAvailable(): bool
+        {
+            return true;
+        }
+
+        public function getProviderName(): string
+        {
+            return 'fake-provider';
+        }
+
+        /**
+         * @return list<int>
+         */
+        public function exposedPauseHistory(): array
+        {
+            return $this->pauseHistory;
+        }
+
+        public function exposedAttemptCount(): int
+        {
+            return $this->attemptCount;
+        }
+
+        protected function performAiCall(AnalyzeRequestDto $sanitizedRequest): string
+        {
+            $outcome = $this->attemptOutcomes[$this->attemptCount] ?? end($this->attemptOutcomes);
+            $this->attemptCount++;
+
+            if ($outcome instanceof Throwable) {
+                throw $outcome;
+            }
+
+            return (string) $outcome;
+        }
+
+        protected function pauseBeforeRetry(int $attempt, int $backoffMilliseconds): void
+        {
+            $this->pauseHistory[] = $backoffMilliseconds;
+        }
+
+        protected function createAnalyzer(): Analyzer
+        {
+            return new Analyzer();
         }
     };
 }
@@ -120,6 +195,10 @@ describe('AbstractLlmAiAnalyzer', function () {
         Log::shouldReceive('error')->once()->withArgs(function (string $message, array $context): bool {
             expect($message)->toBe('AI Analysis failed');
             expect($context['provider'])->toBe('fake-provider');
+            expect($context['retry_attempt'])->toBe(1);
+            expect($context['max_attempts'])->toBe(1);
+            expect($context['transient_classifier'])->toBeNull();
+            expect($context['retry_exhausted'])->toBeFalse();
 
             return true;
         });
@@ -161,6 +240,93 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
         expect((string) $result->error)->toContain('Timeout');
         expect($result->requirements)->toBe([]);
+    });
+
+    test('analyze retryt bei transientem fehler und liefert beim zweiten versuch ein ergebnis', function () {
+        config([
+            'ai.retry.enabled' => true,
+            'ai.retry.max_attempts' => 2,
+            'ai.retry.backoff_ms' => 150,
+        ]);
+
+        $target = fakeLlmAnalyzerForRetrySequence([
+            new RuntimeException('gateway timeout'),
+            json_encode([
+                'requirements' => ['PHP'],
+                'experiences' => ['Laravel'],
+                'matches' => [
+                    ['requirement' => 'PHP', 'experience' => 'Laravel'],
+                ],
+                'gaps' => [],
+                'tags' => ['matches' => [], 'gaps' => []],
+                'recommendations' => [],
+            ], JSON_THROW_ON_ERROR),
+        ]);
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect($result->error)->toBeNull();
+        expect($target->exposedAttemptCount())->toBe(2);
+        expect($target->exposedPauseHistory())->toBe([150]);
+    });
+
+    test('analyze bricht bei nicht transientem fehler sofort ab und loggt retry-metadaten', function () {
+        config([
+            'ai.retry.enabled' => true,
+            'ai.retry.max_attempts' => 2,
+            'ai.retry.backoff_ms' => 150,
+        ]);
+
+        Log::shouldReceive('error')->once()->withArgs(function (string $message, array $context): bool {
+            expect($message)->toBe('AI Analysis failed');
+            expect($context['retry_attempt'])->toBe(1);
+            expect($context['max_attempts'])->toBe(2);
+            expect($context['transient_classifier'])->toBeNull();
+            expect($context['retry_exhausted'])->toBeFalse();
+
+            return true;
+        });
+
+        $target = fakeLlmAnalyzerForRetrySequence([
+            new RuntimeException('validation failed'),
+        ]);
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect($target->exposedAttemptCount())->toBe(1);
+        expect($target->exposedPauseHistory())->toBe([]);
+        expect((string) $result->error)->toBe('Die Analyse ist fehlgeschlagen. Bitte versuchen Sie es erneut.');
+    });
+
+    test('analyze respektiert retry deaktiviert als rollback-pfad', function () {
+        config([
+            'ai.retry.enabled' => false,
+            'ai.retry.max_attempts' => 5,
+            'ai.retry.backoff_ms' => 150,
+        ]);
+
+        Log::shouldReceive('error')->once()->withArgs(function (string $message, array $context): bool {
+            expect($message)->toBe('AI Analysis failed');
+            expect($context['retry_attempt'])->toBe(1);
+            expect($context['max_attempts'])->toBe(1);
+            expect($context['transient_classifier'])->toBe('global:timeout');
+            expect($context['retry_exhausted'])->toBeFalse();
+
+            return true;
+        });
+
+        $target = fakeLlmAnalyzerForRetrySequence([
+            new RuntimeException('gateway timeout'),
+        ]);
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect($target->exposedAttemptCount())->toBe(1);
+        expect($target->exposedPauseHistory())->toBe([]);
+        expect((string) $result->error)->toContain('Timeout');
     });
 
     test('analyze behandelt json decode ohne array als fehlerpfad', function () {
@@ -221,5 +387,20 @@ describe('AbstractLlmAiAnalyzer', function () {
 
         expect($connectionMessage)->toContain('Netzwerkfehler');
         expect($networkMessage)->toContain('Netzwerkfehler');
+    });
+
+    test('getUserFriendlyErrorMessage mappt rate limit auf ausgelastete ki', function () {
+        $target = fakeLlmAnalyzer();
+
+        $message = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('HTTP 429 rate limit'));
+
+        expect($message)->toContain('ausgelastet');
+    });
+
+    test('classifyTransientException nutzt globalen fallback fuer timeout', function () {
+        $target = fakeLlmAnalyzer();
+
+        expect($target->exposedClassifyTransientException(new RuntimeException('gateway timeout')))
+            ->toBe('global:timeout');
     });
 });
