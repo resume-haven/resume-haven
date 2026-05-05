@@ -53,6 +53,11 @@ function fakeLlmAnalyzer(): AbstractLlmAiAnalyzer
             return $this->classifyTransientException($exception);
         }
 
+        public function exposedPauseBeforeRetry(int $attempt, int $backoffMilliseconds): void
+        {
+            $this->pauseBeforeRetry($attempt, $backoffMilliseconds);
+        }
+
         protected function createAnalyzer(): Analyzer
         {
             return new Analyzer();
@@ -271,6 +276,35 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($target->exposedPauseHistory())->toBe([150]);
     });
 
+    test('analyze verwendet numerische string-config fuer retries und backoff', function () {
+        config([
+            'ai.retry.enabled' => true,
+            'ai.retry.max_attempts' => '3',
+            'ai.retry.backoff_ms' => '7',
+        ]);
+
+        $target = fakeLlmAnalyzerForRetrySequence([
+            new RuntimeException('gateway timeout'),
+            new RuntimeException('gateway timeout'),
+            json_encode([
+                'requirements' => ['PHP'],
+                'experiences' => ['Laravel'],
+                'matches' => [
+                    ['requirement' => 'PHP', 'experience' => 'Laravel'],
+                ],
+                'gaps' => [],
+                'tags' => ['matches' => [], 'gaps' => []],
+                'recommendations' => [],
+            ], JSON_THROW_ON_ERROR),
+        ]);
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result->error)->toBeNull();
+        expect($target->exposedAttemptCount())->toBe(3);
+        expect($target->exposedPauseHistory())->toBe([7, 7]);
+    });
+
     test('analyze bricht bei nicht transientem fehler sofort ab und loggt retry-metadaten', function () {
         config([
             'ai.retry.enabled' => true,
@@ -327,6 +361,36 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($target->exposedAttemptCount())->toBe(1);
         expect($target->exposedPauseHistory())->toBe([]);
         expect((string) $result->error)->toContain('Timeout');
+    });
+
+    test('analyze faellt bei ungueltiger retry-config auf defaults zurueck und markiert retry exhausted', function () {
+        config([
+            'ai.retry.enabled' => true,
+            'ai.retry.max_attempts' => ['ungueltig'],
+            'ai.retry.backoff_ms' => ['ungueltig'],
+        ]);
+
+        Log::shouldReceive('error')->once()->withArgs(function (string $message, array $context): bool {
+            expect($message)->toBe('AI Analysis failed');
+            expect($context['retry_attempt'])->toBe(2);
+            expect($context['max_attempts'])->toBe(2);
+            expect($context['transient_classifier'])->toBe('global:rate_limit');
+            expect($context['retry_exhausted'])->toBeTrue();
+
+            return true;
+        });
+
+        $target = fakeLlmAnalyzerForRetrySequence([
+            new RuntimeException('HTTP 429 rate limit'),
+            new RuntimeException('HTTP 429 rate limit'),
+        ]);
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect($target->exposedAttemptCount())->toBe(2);
+        expect($target->exposedPauseHistory())->toBe([150]);
+        expect((string) $result->error)->toContain('ausgelastet');
     });
 
     test('analyze behandelt json decode ohne array als fehlerpfad', function () {
@@ -397,10 +461,42 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($message)->toContain('ausgelastet');
     });
 
+    test('getUserFriendlyErrorMessage mappt overloaded auf ueberlastete ki', function () {
+        $target = fakeLlmAnalyzer();
+
+        $message = $target->exposedGetUserFriendlyErrorMessage(new RuntimeException('service overloaded'));
+
+        expect($message)->toContain('überlastet');
+    });
+
+    test('pauseBeforeRetry ignoriert nicht positive backoff-werte und wartet bei positiven werten', function () {
+        $target = fakeLlmAnalyzer();
+
+        $startedWithoutBackoff = hrtime(true);
+        $target->exposedPauseBeforeRetry(1, 0);
+        $elapsedWithoutBackoff = hrtime(true) - $startedWithoutBackoff;
+
+        $startedWithBackoff = hrtime(true);
+        $target->exposedPauseBeforeRetry(1, 5);
+        $elapsedWithBackoff = hrtime(true) - $startedWithBackoff;
+
+        expect($elapsedWithoutBackoff)->toBeGreaterThanOrEqual(0);
+        expect($elapsedWithBackoff)->toBeGreaterThan(1_000_000);
+    });
+
     test('classifyTransientException nutzt globalen fallback fuer timeout', function () {
         $target = fakeLlmAnalyzer();
 
         expect($target->exposedClassifyTransientException(new RuntimeException('gateway timeout')))
             ->toBe('global:timeout');
+    });
+
+    test('classifyTransientException erkennt globale rate-limit und overloaded fallback-pfade', function () {
+        $target = fakeLlmAnalyzer();
+
+        expect($target->exposedClassifyTransientException(new RuntimeException('too many requests')))
+            ->toBe('global:rate_limit');
+        expect($target->exposedClassifyTransientException(new RuntimeException('service overloaded')))
+            ->toBe('global:overloaded');
     });
 });

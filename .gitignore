@@ -93,3 +93,4 @@ docker-compose.override.yml
 /tmp-pint-cta.log
 /tmp-regression.log
 /tmp-full-coverage.log
+/src/build/
