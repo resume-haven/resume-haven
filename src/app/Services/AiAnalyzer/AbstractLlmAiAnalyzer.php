@@ -71,7 +71,9 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
         $maxAttempts = $retryEnabled ? $this->resolveMaxAttempts() : 1;
         $backoffMilliseconds = $this->resolveBackoffMilliseconds();
 
-        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+        $attempt = 1;
+
+        while (true) {
             try {
                 $response = $this->performAiCall($sanitizedRequest);
 
@@ -98,10 +100,9 @@ abstract class AbstractLlmAiAnalyzer implements AiAnalyzerInterface, LlmProvider
                 }
 
                 $this->pauseBeforeRetry($attempt, $backoffMilliseconds);
+                $attempt++;
             }
         }
-
-        throw new \RuntimeException('AI-Aufruf konnte nach Wiederholungsversuchen nicht abgeschlossen werden.');
     }
 
     protected function performAiCall(AnalyzeRequestDto $sanitizedRequest): string
