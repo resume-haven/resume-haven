@@ -6,6 +6,13 @@
     <div class="max-w-md mx-auto bg-white dark:bg-neutral-dark rounded-lg shadow p-6">
         <h1 class="text-2xl font-bold mb-6">Registrieren</h1>
 
+        @if (is_string(session('resume_token')) && session('resume_token') !== '')
+            <div class="mb-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 p-3">
+                <p class="text-sm font-semibold text-blue-900 dark:text-blue-100">Analyse-Ergebnis bereit zum Zuordnen</p>
+                <p class="mt-1 text-sm text-blue-800 dark:text-blue-200">Nach der Registrierung wird dein gespeicherter Lebenslauf automatisch deinem Konto zugeordnet.</p>
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('register') }}" class="space-y-4">
             @csrf
 

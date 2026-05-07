@@ -19,6 +19,12 @@ class AnalyzeController extends Controller
     {
         $viewData = $this->executeAnalyzeFlow->execute($request);
 
-        return view('result', $viewData->toArray());
+        $viewDataArray = $viewData->toArray();
+
+        if ($request->hasSession()) {
+            $request->session()->put('analysis_result_view_data', $viewDataArray);
+        }
+
+        return view('result', $viewDataArray);
     }
 }

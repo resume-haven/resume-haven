@@ -29,7 +29,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        return redirect()->intended(route('analyze', absolute: false));
+        $defaultRoute = $request->session()->has('resume_token') ? 'result.show' : 'analyze';
+
+        return redirect()->intended(route($defaultRoute, absolute: false));
     }
 
     /**

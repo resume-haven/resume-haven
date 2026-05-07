@@ -56,6 +56,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('analyze', absolute: false));
+        $targetRoute = $request->session()->has('resume_token') ? 'result.show' : 'analyze';
+
+        return redirect(route($targetRoute, absolute: false));
     }
 }

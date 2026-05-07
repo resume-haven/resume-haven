@@ -27,8 +27,9 @@ it('auto-claims stored resume on login when resume_token exists in session', fun
         'password' => 'password',
     ]);
 
-    $response->assertRedirect(route('analyze', absolute: false));
+    $response->assertRedirect(route('result.show', absolute: false));
     $response->assertSessionHas('resume_claimed', true);
+    $response->assertSessionHas('resume_claimed_notice', 'Dein gespeicherter Lebenslauf wurde automatisch deinem Konto zugeordnet.');
 
     expect(StoredResume::query()->where('token', $token)->value('user_id'))->toBe($user->id);
 });
