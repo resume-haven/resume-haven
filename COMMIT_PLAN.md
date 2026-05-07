@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-05-04  
-**Aktueller Stand:** Commit 33 abgeschlossen, Commit 34 (L4) in Arbeit
+**Letzte Aktualisierung:** 2026-05-07  
+**Aktueller Stand:** Commit 34 abgeschlossen, Commit 35 (Auth/Claim UX-Polish) in Arbeit
 
 ---
 
@@ -22,9 +22,10 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
 - Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
 - Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad (abgeschlossen)
+- Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
 
 ### In Arbeit
-- Commit 34 (L4): Konfigurierbarer Retry-PoC + Error-Hardening im AI-Layer
+- Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback)
 
 ### In Planung (Folge)
 - Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
@@ -39,8 +40,9 @@ Abgeschlossene Details sind in die Historie ausgelagert.
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch) ✅ **Commit 32**
   - Commit L3: Erster Zweit-Provider als Proof of Concept ✅ **Commit 33**
-  - Commit L4: Konfigurierbarer Retry-PoC + Error-Hardening ← **Commit 34**
+  - Commit L4: Konfigurierbarer Retry-PoC + Error-Hardening ✅ **Commit 34**
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
+- **Auth/Claim UX-Polish (naechster Commit):** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ← **Commit 35**
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
 
 ### Commit 32 - L2 Plugin-Interface + OpenAI (abgeschlossen)
@@ -55,11 +57,17 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **Umfang:** `AnthropicAiAnalyzer`, Config-/Binding-Erweiterung, provider-spezifisches Mapping, minimaler no-egress E2E-Testpfad.
 - **Nicht-Scope:** Kein Provider-Fallback, kein Retry-/Backoff-Framework, keine UI-Änderungen.
 
-### Commit 34 - L4 Retry-PoC + Error-Hardening (in Arbeit)
+### Commit 34 - L4 Retry-PoC + Error-Hardening (abgeschlossen)
 
 - **Ziel:** Transiente AI-Fehler robuster behandeln, ohne Provider-Fallback oder Scope-Creep in Richtung Deployment.
 - **Umfang:** Konfigurierbarer Retry-PoC im `AbstractLlmAiAnalyzer`, provider-spezifische Transient-Heuristiken, erweitertes Logging, expliziter Rollback per Config.
 - **Nicht-Scope:** Kein Provider-Fallback, keine UI-Änderungen, keine Deployment-Neueinordnung, kein vollwertiges Retry-/Backoff-Framework.
+
+### Commit 35 - Auth/Claim UX-Polish (in Arbeit)
+
+- **Ziel:** Auth-/Claim-Flow aus Nutzersicht konsistent machen, ohne neue Domain-Features einzufuehren.
+- **Umfang:** `result.show`-Route fuer Session-basierten Ergebnis-Restore, expliziter Session-Key `analysis_result_view_data`, claim-spezifische Redirect-Hinweise, Back-Button-freundliche Persistenz, Auth-/Result-Microcopy schaerfen.
+- **Nicht-Scope:** Keine neue Domain-Logik fuer Claiming, kein Dashboard-Ausbau, keine Deployment-Arbeit.
 
 ---
 
@@ -187,7 +195,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 - CI/Branch-Protection wurde in Commit 23 abgeschlossen
 - Planung wurde auf produktnahen Mehrwert neu priorisiert (`A,B,D,C,E`)
-- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist der LLM-Block (Commit 34)
+- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist Commit 35 (Auth/Claim UX-Polish)
 - Deployment wird bewusst spaeter und kontextabhaengig neu bewertet
 
 ---
@@ -208,6 +216,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 32: `docs/history/PLANNING_COMMIT_32.md`
 - Detailplanung Commit 33: `docs/history/PLANNING_COMMIT_33.md`
 - Detailplanung Commit 34: `docs/history/PLANNING_COMMIT_34.md`
+- Detailplanung Commit 35: `docs/history/PLANNING_COMMIT_35.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---

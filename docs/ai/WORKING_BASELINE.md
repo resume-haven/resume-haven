@@ -50,7 +50,7 @@ Bei stark gewachsenem Chatkontext diese Datei als Reset-Basis verwenden:
 Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorhanden).
 
 **Aktueller Arbeitsmodus:** Agent-Mode (branch-agnostisch)  
-**Fokus:** LLM-Block Phase 5, aktuell Commit 34 (L4 Retry-PoC + Error-Hardening) — Details in `docs/history/PLANNING_COMMIT_34.md`.
+**Fokus:** Commit 35 (Auth/Claim UX-Polish) mit `result.show`, explizitem Session-Key `analysis_result_view_data` und claim-spezifischem Redirect-/Feedback-Polish — Details in `docs/history/PLANNING_COMMIT_35.md`.
 
 **Empfohlene Reset-Reihenfolge:**
 1. Diese Datei (`WORKING_BASELINE.md`)
@@ -83,5 +83,5 @@ Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorha
 
 ---
 
-**Letzte Aktualisierung**: 2026-05-04  
-**Version**: 1.5 (Commit-34-Fokus mit Retry-PoC und Error-Hardening)
+**Letzte Aktualisierung**: 2026-05-07  
+**Version**: 1.6 (Commit-35-Fokus mit Auth/Claim UX-Polish)
