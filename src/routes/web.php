@@ -9,6 +9,7 @@ use App\Http\Controllers\DeleteStoredResumeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\ListStoredResumesController;
 use App\Http\Controllers\LoadResumeController;
+use App\Http\Controllers\ShowResultController;
 use App\Http\Controllers\StoreResumeController;
 use App\Http\Controllers\UseCompetenceResumeController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,7 @@ Route::get('/analyze', function () {
 })->name('analyze');
 
 Route::post('/analyze', AnalyzeController::class)->name('analyze.submit');
+Route::get('/result', ShowResultController::class)->name('result.show');
 
 Route::post('/profile/store', StoreResumeController::class)->name('profile.store');
 Route::post('/profile/competence-resume', BuildCompetenceResumeController::class)->name('profile.competence-resume');

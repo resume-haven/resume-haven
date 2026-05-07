@@ -28,6 +28,9 @@ test('akzeptiert gültige Eingaben und zeigt die Ergebnis-View', function () {
     $response->assertViewIs('result');
     $response->assertViewHas('job_text', str_repeat('A', 31));
     $response->assertViewHas('cv_text', str_repeat('B', 31));
+    $response->assertSessionHas('analysis_result_view_data');
+    $response->assertSessionHas('analysis_result_view_data.job_text', str_repeat('A', 31));
+    $response->assertSessionHas('analysis_result_view_data.cv_text', str_repeat('B', 31));
 
     $viewResult = $response->viewData('result');
     expect($viewResult)->toBeArray();

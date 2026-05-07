@@ -10,17 +10,27 @@
         @php
             $resumeToken = session('resume_token');
             $resumeBelongsToUser = session('resume_claimed', false) === true;
+            $resumeClaimedNotice = session('resume_claimed_notice');
         @endphp
+
+        @if (is_string($resumeClaimedNotice) && $resumeClaimedNotice !== '')
+            <div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 p-4">
+                <p class="text-sm font-semibold text-green-900 dark:text-green-100">{{ $resumeClaimedNotice }}</p>
+            </div>
+        @endif
 
         @if (is_string($resumeToken) && $resumeToken !== '' && ! auth()->check())
             <div class="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 p-4">
-                <p class="text-sm font-semibold text-blue-900 dark:text-blue-100">Lebenslauf sichern</p>
+                <p class="text-sm font-semibold text-blue-900 dark:text-blue-100">Analyse-Ergebnis sichern</p>
                 <p class="text-sm text-blue-800 dark:text-blue-200 mt-1">
-                    Erstelle ein Konto, damit dein gespeicherter Lebenslauf automatisch deinem Profil zugeordnet wird.
+                    Erstelle ein Konto, damit dein gespeicherter Lebenslauf und dieses Analyse-Ergebnis automatisch deinem Profil zugeordnet werden.
                 </p>
-                <div class="mt-3">
+                <div class="mt-3 flex flex-wrap gap-2">
                     <a href="{{ route('register') }}" class="inline-flex items-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2">
-                        CV sichern &amp; Konto erstellen
+                        Ergebnis sichern &amp; Konto erstellen
+                    </a>
+                    <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg border border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900 text-sm px-4 py-2">
+                        Bereits ein Konto? Jetzt einloggen
                     </a>
                 </div>
             </div>

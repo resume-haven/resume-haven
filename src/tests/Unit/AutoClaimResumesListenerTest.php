@@ -127,5 +127,6 @@ describe('AutoClaimResumesListener', function (): void {
         $listener->handle(new Login('web', $user, false));
 
         expect($request->session()->get('resume_claimed'))->toBeTrue();
+        expect($request->session()->get('resume_claimed_notice'))->toBe('Dein gespeicherter Lebenslauf wurde automatisch deinem Konto zugeordnet.');
     });
 });

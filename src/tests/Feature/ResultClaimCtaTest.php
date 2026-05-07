@@ -33,7 +33,9 @@ test('zeigt claim-cta fuer gaeste mit resume_token in session', function (): voi
     ]);
 
     $response->assertStatus(200);
-    $response->assertSee('CV sichern &amp; Konto erstellen', false);
+    $response->assertSee('Analyse-Ergebnis sichern');
+    $response->assertSee('Ergebnis sichern &amp; Konto erstellen', false);
+    $response->assertSee('Bereits ein Konto? Jetzt einloggen');
     $response->assertDontSee('CV deinem Konto zugeordnet');
 });
 
@@ -63,7 +65,7 @@ test('zeigt kein claim-cta fuer eingeloggte nutzende', function (): void {
     ]);
 
     $response->assertStatus(200);
-    $response->assertDontSee('CV sichern &amp; Konto erstellen', false);
+    $response->assertDontSee('Ergebnis sichern &amp; Konto erstellen', false);
     $response->assertDontSee('CV deinem Konto zugeordnet');
 });
 
@@ -87,12 +89,14 @@ test('zeigt success-hinweis wenn resume bereits geclaimt ist', function (): void
     $response = $this->actingAs($user)->withSession([
         'resume_token' => str_repeat('T', 32),
         'resume_claimed' => true,
+        'resume_claimed_notice' => 'Dein gespeicherter Lebenslauf wurde automatisch deinem Konto zugeordnet.',
     ])->post('/analyze', [
         'job_text' => str_repeat('A', 31),
         'cv_text' => str_repeat('B', 31),
     ]);
 
     $response->assertStatus(200);
+    $response->assertSee('Dein gespeicherter Lebenslauf wurde automatisch deinem Konto zugeordnet.');
     $response->assertSee('CV deinem Konto zugeordnet');
-    $response->assertDontSee('CV sichern &amp; Konto erstellen', false);
+    $response->assertDontSee('Ergebnis sichern &amp; Konto erstellen', false);
 });

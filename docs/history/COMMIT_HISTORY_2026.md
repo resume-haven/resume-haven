@@ -32,6 +32,9 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 29: Auth + Rollen + Claim-Flow
 - Commit 30: CV-Verwaltung (Multi-CV CRUD, Dashboard/Pagination, Session-Token-Cutover, Coverage-Hardening)
 - Commit 31: Multi-CV Delete/AuthZ-Gate + LLM-Basisrefactoring (`AbstractLlmAiAnalyzer`, provider-generische Registry)
+- Commit 32: L2 Plugin-Interface + OpenAI-Auswahl + provider-spezifisches Exception-Mapping
+- Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad
+- Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (inkl. Coverage-Hardening auf `AbstractLlmAiAnalyzer`)
 
 ## Detaillierte Einzelplaene
 
@@ -43,6 +46,10 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - [`PLANNING_COMMIT_28.md`](PLANNING_COMMIT_28.md) (abgeschlossen)
 - [`PLANNING_COMMIT_29.md`](PLANNING_COMMIT_29.md) (abgeschlossen)
 - [`PLANNING_COMMIT_30.md`](PLANNING_COMMIT_30.md) (abgeschlossen)
+- [`PLANNING_COMMIT_32.md`](PLANNING_COMMIT_32.md) (abgeschlossen)
+- [`PLANNING_COMMIT_33.md`](PLANNING_COMMIT_33.md) (abgeschlossen)
+- [`PLANNING_COMMIT_34.md`](PLANNING_COMMIT_34.md) (abgeschlossen)
+- [`PLANNING_COMMIT_35.md`](PLANNING_COMMIT_35.md) (in Arbeit)
 - [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 
 ## Hinweis

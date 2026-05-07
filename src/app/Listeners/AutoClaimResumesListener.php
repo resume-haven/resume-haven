@@ -40,5 +40,6 @@ class AutoClaimResumesListener
         }
 
         $request->session()->put('resume_claimed', true);
+        $request->session()->flash('resume_claimed_notice', 'Dein gespeicherter Lebenslauf wurde automatisch deinem Konto zugeordnet.');
     }
 }
