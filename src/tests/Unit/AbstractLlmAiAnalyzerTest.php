@@ -9,6 +9,7 @@ use App\Services\AiAnalyzer\AbstractLlmAiAnalyzer;
 use App\Services\AiAnalyzer\Actions\ParseAiResponseAction;
 use App\Services\AiAnalyzer\Actions\ValidateAiResponseAction;
 use Illuminate\Support\Facades\Log;
+use Laravel\Ai\Responses\StructuredAgentResponse;
 
 function fakeLlmAnalyzer(): AbstractLlmAiAnalyzer
 {
@@ -185,6 +186,34 @@ function fakeLlmAnalyzerForRetrySequence(array $attemptOutcomes)
     };
 }
 
+function fakeLlmAnalyzerWithInjectedAnalyzer(Analyzer $analyzer): AbstractLlmAiAnalyzer
+{
+    return new class (new ValidateAiResponseAction(), new ParseAiResponseAction(), $analyzer) extends AbstractLlmAiAnalyzer {
+        public function __construct(
+            ValidateAiResponseAction $validateResponse,
+            ParseAiResponseAction $parseResponse,
+            private Analyzer $analyzer,
+        ) {
+            parent::__construct($validateResponse, $parseResponse);
+        }
+
+        public function isAvailable(): bool
+        {
+            return true;
+        }
+
+        public function getProviderName(): string
+        {
+            return 'fake-provider';
+        }
+
+        protected function createAnalyzer(): Analyzer
+        {
+            return $this->analyzer;
+        }
+    };
+}
+
 describe('AbstractLlmAiAnalyzer', function () {
     test('buildSanitizedRequest sanitisiert geerbte Eingaben provider-agnostisch', function () {
         $target = fakeLlmAnalyzer();
@@ -245,6 +274,59 @@ describe('AbstractLlmAiAnalyzer', function () {
         expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
         expect((string) $result->error)->toContain('Timeout');
         expect($result->requirements)->toBe([]);
+    });
+
+    test('analyze nutzt performAiCall und normalizeResponse ueber createAnalyzer im happy path', function () {
+        $responseData = [
+            'requirements' => ['PHP'],
+            'experiences' => ['Laravel'],
+            'matches' => [
+                ['requirement' => 'PHP', 'experience' => 'Laravel'],
+            ],
+            'gaps' => [],
+            'tags' => ['matches' => [], 'gaps' => []],
+            'recommendations' => [],
+        ];
+
+        $mockResponse = Mockery::mock(StructuredAgentResponse::class);
+        $mockResponse->shouldReceive('toArray')->once()->andReturn($responseData);
+
+        $mockAnalyzer = Mockery::mock(Analyzer::class);
+        $mockAnalyzer->shouldReceive('prompt')->once()->withArgs(function (string $payload): bool {
+            $decodedPayload = json_decode($payload, true);
+
+            expect($decodedPayload)->toBe([
+                'job_text' => "Jobtitel\nmit Zeilenumbruch",
+                'cv_text' => 'CV mit Nullbyte',
+            ]);
+
+            return true;
+        })->andReturn($mockResponse);
+
+        $target = fakeLlmAnalyzerWithInjectedAnalyzer($mockAnalyzer);
+
+        $result = $target->analyze(new AnalyzeRequestDto("  Jobtitel\r\nmit Zeilenumbruch  ", "\0CV mit Nullbyte\0  "));
+
+        expect($result->error)->toBeNull();
+        expect($result->requirements)->toBe(['PHP']);
+        expect($result->experiences)->toBe(['Laravel']);
+    });
+
+    test('analyze behandelt normalizeResponse encoding-fehler als fehlerpfad', function () {
+        Log::shouldReceive('error')->once();
+
+        $mockResponse = Mockery::mock(StructuredAgentResponse::class);
+        $mockResponse->shouldReceive('toArray')->once()->andReturn(['broken' => "\xB1\x31"]);
+
+        $mockAnalyzer = Mockery::mock(Analyzer::class);
+        $mockAnalyzer->shouldReceive('prompt')->once()->andReturn($mockResponse);
+
+        $target = fakeLlmAnalyzerWithInjectedAnalyzer($mockAnalyzer);
+
+        $result = $target->analyze(new AnalyzeRequestDto('job', 'cv'));
+
+        expect($result)->toBeInstanceOf(AnalyzeResultDto::class);
+        expect((string) $result->error)->toBe('Die Analyse ist fehlgeschlagen. Bitte versuchen Sie es erneut.');
     });
 
     test('analyze retryt bei transientem fehler und liefert beim zweiten versuch ein ergebnis', function () {
@@ -498,5 +580,16 @@ describe('AbstractLlmAiAnalyzer', function () {
             ->toBe('global:rate_limit');
         expect($target->exposedClassifyTransientException(new RuntimeException('service overloaded')))
             ->toBe('global:overloaded');
+    });
+
+    test('classifyTransientException erkennt connection, network und null-fallback', function () {
+        $target = fakeLlmAnalyzer();
+
+        expect($target->exposedClassifyTransientException(new RuntimeException('connection reset by peer')))
+            ->toBe('global:connection');
+        expect($target->exposedClassifyTransientException(new RuntimeException('network unreachable')))
+            ->toBe('global:network');
+        expect($target->exposedClassifyTransientException(new RuntimeException('not transient at all')))
+            ->toBeNull();
     });
 });
