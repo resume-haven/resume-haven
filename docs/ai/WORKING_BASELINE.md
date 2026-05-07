@@ -34,7 +34,7 @@ Sie dient als "Soft-Reset" und hat Vorrang fuer den Tageskontext.
    - Coverage-Mindestwert gemaess Projektkonfiguration (aktuell 95%).
 
 5. AI und Fehlerrobustheit
-   - Provider austauschbar (aktuell Gemini/Mock ueber Interface-Binding).
+   - Provider austauschbar (aktuell Mock, Gemini, OpenAI, Anthropic ueber Interface-Binding).
    - API-Timeouts, leere/ungueltige Antworten und Parsing-Fehler robust behandeln.
    - Cache-Verhalten reproduzierbar und testbar halten.
 
@@ -50,7 +50,7 @@ Bei stark gewachsenem Chatkontext diese Datei als Reset-Basis verwenden:
 Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorhanden).
 
 **Aktueller Arbeitsmodus:** Agent-Mode (branch-agnostisch)  
-**Fokus:** LLM-Block Phase 5, aktuell Commit 33 (L3 Anthropic Provider PoC) — Details in `docs/history/PLANNING_COMMIT_33.md`.
+**Fokus:** LLM-Block Phase 5, aktuell Commit 34 (L4 Retry-PoC + Error-Hardening) — Details in `docs/history/PLANNING_COMMIT_34.md`.
 
 **Empfohlene Reset-Reihenfolge:**
 1. Diese Datei (`WORKING_BASELINE.md`)
@@ -83,5 +83,5 @@ Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorha
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-30  
-**Version**: 1.4 (branch-agnostischer Agent-Mode und Commit-33-Fokus)
+**Letzte Aktualisierung**: 2026-05-04  
+**Version**: 1.5 (Commit-34-Fokus mit Retry-PoC und Error-Hardening)

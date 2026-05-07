@@ -20,6 +20,11 @@ describe('OpenAiAnalyzer', function () {
             {
                 return $this->createAnalyzer();
             }
+
+            public function exposedClassifyTransientException(Throwable $exception): ?string
+            {
+                return $this->classifyTransientException($exception);
+            }
         };
     }
 
@@ -56,5 +61,14 @@ describe('OpenAiAnalyzer', function () {
 
     test('createAnalyzer gibt Analyzer-Instanz zurueck', function () {
         expect(openAiAnalyzer()->exposedCreateAnalyzer())->toBeInstanceOf(Analyzer::class);
+    });
+
+    test('classifyTransientException erkennt openai transient ueber provider und globalen fallback', function () {
+        $target = openAiAnalyzer();
+
+        expect($target->exposedClassifyTransientException(new RuntimeException('HTTP 429 rate limit')))
+            ->toBe('openai:rate_limit');
+        expect($target->exposedClassifyTransientException(new RuntimeException('request timeout')))
+            ->toBe('global:timeout');
     });
 });

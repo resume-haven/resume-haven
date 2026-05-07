@@ -107,3 +107,84 @@ test('Lizenzen-Seite zeigt Versionsspalte fuer Admins', function () {
         }
     }
 });
+
+test('Lizenzen-Seite nutzt Storage-Fallback wenn storage app Datei fehlt', function () {
+    Storage::fake();
+
+    $targetPath = storage_path('app/licenses.json');
+    File::delete($targetPath);
+
+    Storage::put('licenses.json', json_encode([
+        'php' => [['name' => 'fallback/package', 'version' => '1.0.0', 'license' => 'MIT']],
+        'node' => [],
+        'generated_at' => '2026-05-05T08:00:00+00:00',
+    ], JSON_THROW_ON_ERROR));
+
+    $response = $this->get(route('legal.lizenzen'));
+
+    $response->assertStatus(200);
+    $response->assertViewHas('php');
+    $response->assertViewHas('generated_at', '2026-05-05T08:00:00+00:00');
+});
+
+test('Lizenzen-Seite ignoriert ungueltiges JSON robust', function () {
+    $targetPath = storage_path('app/licenses.json');
+    $backupPath = storage_path('app/licenses.json.bak-invalid-json');
+
+    if (File::exists($backupPath)) {
+        File::delete($backupPath);
+    }
+
+    if (File::exists($targetPath)) {
+        File::copy($targetPath, $backupPath);
+    }
+
+    try {
+        File::put($targetPath, '{invalid json');
+
+        $response = $this->get(route('legal.lizenzen'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('php', []);
+        $response->assertViewHas('node', []);
+        $response->assertViewHas('generated_at', null);
+    } finally {
+        File::delete($targetPath);
+
+        if (File::exists($backupPath)) {
+            File::move($backupPath, $targetPath);
+        }
+    }
+});
+
+test('Lizenzen-Seite verwendet Defaultwerte bei partiellen Keys', function () {
+    $targetPath = storage_path('app/licenses.json');
+    $backupPath = storage_path('app/licenses.json.bak-partial');
+
+    if (File::exists($backupPath)) {
+        File::delete($backupPath);
+    }
+
+    if (File::exists($targetPath)) {
+        File::copy($targetPath, $backupPath);
+    }
+
+    try {
+        File::put($targetPath, json_encode([
+            'node' => [['name' => 'node-only', 'version' => '1.0.0', 'license' => 'MIT']],
+        ], JSON_THROW_ON_ERROR));
+
+        $response = $this->get(route('legal.lizenzen'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('php', []);
+        $response->assertViewHas('node');
+        $response->assertViewHas('generated_at', null);
+    } finally {
+        File::delete($targetPath);
+
+        if (File::exists($backupPath)) {
+            File::move($backupPath, $targetPath);
+        }
+    }
+});

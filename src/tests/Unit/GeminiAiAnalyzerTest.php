@@ -42,6 +42,11 @@ describe('GeminiAiAnalyzer', function () {
             {
                 return $this->mapProviderException($exception);
             }
+
+            public function exposedClassifyTransientException(Throwable $exception): ?string
+            {
+                return $this->classifyTransientException($exception);
+            }
         };
     }
 
@@ -171,5 +176,14 @@ describe('GeminiAiAnalyzer', function () {
 
         expect($mapped)->toBeInstanceOf(RuntimeException::class);
         expect($mapped->getMessage())->toContain('Gemini API rate limit erreicht');
+    });
+
+    test('classifyTransientException erkennt gemini transient ueber provider und globalen fallback', function () {
+        $target = analyzer();
+
+        expect($target->exposedClassifyTransientException(new RuntimeException('quota exceeded')))
+            ->toBe('gemini:rate_limit');
+        expect($target->exposedClassifyTransientException(new RuntimeException('network unreachable')))
+            ->toBe('global:network');
     });
 });

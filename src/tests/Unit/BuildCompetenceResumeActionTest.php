@@ -56,3 +56,35 @@ it('nutzt die hoechste erkannte Jahresangabe und dedupliziert Alias-Treffer', fu
     expect(array_values(array_filter($dto->domains, static fn (string $domain): bool => $domain === 'E-Commerce')))->toHaveCount(1);
     expect($dto->summary)->toContain('Berufserfahrung: 10+ Jahre');
 });
+
+it('erkennt singular und englische jahresangaben korrekt', function () {
+    $action = new BuildCompetenceResumeAction();
+
+    $cvText = 'Ich habe 1 Jahr Erfahrung mit PHP und 2 year in Laravel Projekten.';
+
+    $dto = $action->execute($cvText);
+
+    expect($dto->yearsExperience)->toBe(2);
+    expect($dto->summary)->toContain('Berufserfahrung: 2+ Jahre');
+});
+
+it('begrenzt summary auf die vorgesehenen max-anzahlen pro cluster', function () {
+    $action = new BuildCompetenceResumeAction();
+
+    $cvText = '12 Jahre Erfahrung mit php laravel symfony javascript typescript html css sql mysql docker kubernetes redis git rest graphql phpunit pest tdd ddd cqrs clean architecture linux aws azure gcp. '
+        .'Ich arbeite in team mentoring lead agil scrum kanban probleml eigenverantwort. '
+        .'Domainen: hr erp saas finanz e-commerce health logistik.';
+
+    $dto = $action->execute($cvText);
+
+    expect(count($dto->hardSkills))->toBeGreaterThan(6);
+    expect(count($dto->softSkills))->toBeGreaterThan(4);
+    expect(count($dto->domains))->toBeGreaterThan(4);
+
+    expect($dto->summary)->toContain('Technischer Fokus:');
+    expect($dto->summary)->toContain('Staerken:');
+    expect($dto->summary)->toContain('Domainen:');
+
+    // Domain-Teil ist auf 4 Einträge begrenzt, daher fehlt das 5. erkannte Label im Summary.
+    expect($dto->summary)->not->toContain('HealthTech');
+});

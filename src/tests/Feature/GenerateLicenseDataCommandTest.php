@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use App\Console\Commands\GenerateLicenseDataCommand;
 
 beforeEach(function () {
     $testFilesDirectory = storage_path('framework/testing/licenses');
@@ -300,4 +301,55 @@ it('ignoriert ungueltige dependencies wenn package-lock dependencies kein array 
         ->and($data)->toBeArray()
         ->and($data['node'] ?? [])->toHaveCount(1)
         ->and(($data['node'][0]['name'] ?? null))->toBe('pkg-two');
+});
+
+it('nutzt default output path wenn config-path ungueltig ist', function () {
+    config()->set('licenses.output_path', ['invalid']);
+
+    $defaultOutputPath = storage_path('app/licenses.json');
+    File::delete($defaultOutputPath);
+
+    try {
+        $exitCode = Artisan::call('licenses:generate');
+
+        expect($exitCode)->toBe(0);
+        expect(File::exists($defaultOutputPath))->toBeTrue();
+    } finally {
+        File::delete($defaultOutputPath);
+    }
+});
+
+it('deckt resolve path helper und license formatter ueber reflection ab', function () {
+    $command = app(GenerateLicenseDataCommand::class);
+    $reflection = new ReflectionClass($command);
+
+    $resolveComposer = $reflection->getMethod('resolveComposerLockPath');
+    $resolveComposer->setAccessible(true);
+    $resolvePackage = $reflection->getMethod('resolvePackageLockPath');
+    $resolvePackage->setAccessible(true);
+    $resolveOutput = $reflection->getMethod('resolveOutputPath');
+    $resolveOutput->setAccessible(true);
+    $formatLicense = $reflection->getMethod('formatLicense');
+    $formatLicense->setAccessible(true);
+
+    config()->set('licenses.composer_lock_path', '');
+    config()->set('licenses.package_lock_path', null);
+    config()->set('licenses.output_path', []);
+
+    expect($resolveComposer->invoke($command))->toBe(base_path('composer.lock'));
+    expect($resolvePackage->invoke($command))->toBe(base_path('package-lock.json'));
+    expect($resolveOutput->invoke($command))->toBe(storage_path('app/licenses.json'));
+
+    config()->set('licenses.composer_lock_path', '/tmp/custom-composer.lock');
+    config()->set('licenses.package_lock_path', '/tmp/custom-package-lock.json');
+    config()->set('licenses.output_path', '/tmp/custom-licenses.json');
+
+    expect($resolveComposer->invoke($command))->toBe('/tmp/custom-composer.lock');
+    expect($resolvePackage->invoke($command))->toBe('/tmp/custom-package-lock.json');
+    expect($resolveOutput->invoke($command))->toBe('/tmp/custom-licenses.json');
+
+    expect($formatLicense->invoke($command, ['MIT', 'Apache-2.0']))->toBe('MIT, Apache-2.0');
+    expect($formatLicense->invoke($command, []))->toBe('unknown');
+    expect($formatLicense->invoke($command, 'BSD-3-Clause'))->toBe('BSD-3-Clause');
+    expect($formatLicense->invoke($command, null))->toBe('unknown');
 });

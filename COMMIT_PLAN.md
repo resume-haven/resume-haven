@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-04-30  
-**Aktueller Stand:** Commit 32 abgeschlossen, Commit 33 (L3) in Arbeit
+**Letzte Aktualisierung:** 2026-05-04  
+**Aktueller Stand:** Commit 33 abgeschlossen, Commit 34 (L4) in Arbeit
 
 ---
 
@@ -21,9 +21,10 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
 - Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
 - Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
+- Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad (abgeschlossen)
 
 ### In Arbeit
-- Commit 33 (L3): Anthropic Provider PoC + minimaler E2E-Analyse-Pfad
+- Commit 34 (L4): Konfigurierbarer Retry-PoC + Error-Hardening im AI-Layer
 
 ### In Planung (Folge)
 - Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
@@ -37,7 +38,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**
   - Commit L1: `AbstractLlmAiAnalyzer` extrahieren, `GeminiAiAnalyzer` umstellen
   - Commit L2: Plugin-Interface + Config-Erweiterung (`AI_PROVIDER` generisch) ✅ **Commit 32**
-  - Commit L3: Erster Zweit-Provider als Proof of Concept ← **Commit 33**
+  - Commit L3: Erster Zweit-Provider als Proof of Concept ✅ **Commit 33**
+  - Commit L4: Konfigurierbarer Retry-PoC + Error-Hardening ← **Commit 34**
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
 
@@ -47,11 +49,17 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **Umfang:** `LlmProviderPluginInterface`, Hook-Integration im `AbstractLlmAiAnalyzer`, `OpenAiAnalyzer`, Config-/Binding- und Test-Erweiterung.
 - **Wichtige Entscheidung:** Umsetzung als **ein** Commit (nicht gesplittet).
 
-### Commit 33 - L3 Anthropic Provider PoC (in Arbeit)
+### Commit 33 - L3 Anthropic Provider PoC (abgeschlossen)
 
 - **Ziel:** Zweiten Provider als PoC integrieren und das Plugin-Interface im minimalen E2E-Analysepfad validieren.
 - **Umfang:** `AnthropicAiAnalyzer`, Config-/Binding-Erweiterung, provider-spezifisches Mapping, minimaler no-egress E2E-Testpfad.
 - **Nicht-Scope:** Kein Provider-Fallback, kein Retry-/Backoff-Framework, keine UI-Änderungen.
+
+### Commit 34 - L4 Retry-PoC + Error-Hardening (in Arbeit)
+
+- **Ziel:** Transiente AI-Fehler robuster behandeln, ohne Provider-Fallback oder Scope-Creep in Richtung Deployment.
+- **Umfang:** Konfigurierbarer Retry-PoC im `AbstractLlmAiAnalyzer`, provider-spezifische Transient-Heuristiken, erweitertes Logging, expliziter Rollback per Config.
+- **Nicht-Scope:** Kein Provider-Fallback, keine UI-Änderungen, keine Deployment-Neueinordnung, kein vollwertiges Retry-/Backoff-Framework.
 
 ---
 
@@ -179,7 +187,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 - CI/Branch-Protection wurde in Commit 23 abgeschlossen
 - Planung wurde auf produktnahen Mehrwert neu priorisiert (`A,B,D,C,E`)
-- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist der LLM-Block (Commit 33)
+- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist der LLM-Block (Commit 34)
 - Deployment wird bewusst spaeter und kontextabhaengig neu bewertet
 
 ---
@@ -199,6 +207,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 30: `docs/history/PLANNING_COMMIT_30.md`
 - Detailplanung Commit 32: `docs/history/PLANNING_COMMIT_32.md`
 - Detailplanung Commit 33: `docs/history/PLANNING_COMMIT_33.md`
+- Detailplanung Commit 34: `docs/history/PLANNING_COMMIT_34.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---

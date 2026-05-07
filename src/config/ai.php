@@ -66,6 +66,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Retry Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Minimaler Retry-PoC für transiente AI-Fehler. Das Verhalten kann über
+    | Config vollständig deaktiviert werden, um auf Single-Attempt zurückzufallen.
+    |
+    */
+
+    'retry' => [
+        'enabled' => env('AI_RETRY_ENABLED', true),
+        'max_attempts' => env('AI_RETRY_MAX_ATTEMPTS', 2),
+        'backoff_ms' => env('AI_RETRY_BACKOFF_MS', 150),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Default AI Provider Names
     |--------------------------------------------------------------------------
     |

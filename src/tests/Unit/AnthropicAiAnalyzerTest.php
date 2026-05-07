@@ -12,10 +12,17 @@ use App\Services\AiAnalyzer\Contracts\LlmProviderPluginInterface;
 describe('AnthropicAiAnalyzer', function () {
     function anthropicAnalyzer(): AnthropicAiAnalyzer
     {
-        return new AnthropicAiAnalyzer(
-            new ValidateAiResponseAction(),
-            new ParseAiResponseAction()
-        );
+        return new class (new ValidateAiResponseAction(), new ParseAiResponseAction()) extends AnthropicAiAnalyzer {
+            public function exposedClassifyTransientException(Throwable $exception): ?string
+            {
+                return $this->classifyTransientException($exception);
+            }
+
+            public function exposedCreateAnalyzer(): Analyzer
+            {
+                return $this->createAnalyzer();
+            }
+        };
     }
 
     describe('Provider Identity', function () {
@@ -141,15 +148,23 @@ describe('AnthropicAiAnalyzer', function () {
 
             expect($mapped)->toBeInstanceOf(Throwable::class);
         });
+
+        it('classifyTransientException erkennt anthropic transient ueber provider und globalen fallback', function () {
+            $analyzer = anthropicAnalyzer();
+
+            expect($analyzer->exposedClassifyTransientException(new RuntimeException('rate_limit_error: API rate limit exceeded')))
+                ->toBe('anthropic:rate_limit');
+            expect($analyzer->exposedClassifyTransientException(new RuntimeException('overloaded_error: service temporarily unavailable')))
+                ->toBe('anthropic:overloaded');
+            expect($analyzer->exposedClassifyTransientException(new RuntimeException('connection reset by peer')))
+                ->toBe('global:connection');
+        });
     });
 
     describe('Analyzer Creation', function () {
         it('createAnalyzer gibt Analyzer-Instanz zurueck', function () {
             $analyzer = anthropicAnalyzer();
-            $createAnalyzer = new ReflectionMethod($analyzer, 'createAnalyzer');
-            $createAnalyzer->setAccessible(true);
-
-            $result = $createAnalyzer->invoke($analyzer);
+            $result = $analyzer->exposedCreateAnalyzer();
 
             expect($result)->toBeInstanceOf(Analyzer::class);
         });

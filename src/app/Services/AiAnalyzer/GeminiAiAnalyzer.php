@@ -48,4 +48,15 @@ class GeminiAiAnalyzer extends AbstractLlmAiAnalyzer
 
         return $exception;
     }
+
+    protected function classifyProviderTransientException(\Throwable $exception): ?string
+    {
+        $message = strtolower($exception->getMessage());
+
+        if (str_contains($message, 'quota') || str_contains($message, 'rate limit')) {
+            return 'gemini:rate_limit';
+        }
+
+        return null;
+    }
 }
