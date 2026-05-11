@@ -75,13 +75,13 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
-# 🎨 Phase 3 – UI/UX‑Optimierung (geplant)
+# 🎨 Phase 3 – UI/UX‑Optimierung (in Arbeit)
 
 - Dark Mode → **✅ umgesetzt**
 - bessere Panels → **teilweise umgesetzt, weitere Polishes geplant**
 - mobile Optimierung → **✅ Basis umgesetzt**
 - Export der Analyse (ohne PDF‑Generierung) → **geplant**
-- Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise) → **geplant als Follow-up nach Commit 29**
+- Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise) → **✅ abgeschlossen in Commit 35**
 
 ## 1. Legal‑Seiten & Compliance (geplant für Commit 20b)
 - Impressum erstellen  
@@ -104,7 +104,7 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
-# 🔌 Phase 5 – Provider-agnostischer LLM-Layer (geplant)
+# 🔌 Phase 5 – Provider-agnostischer LLM-Layer (teilweise umgesetzt)
 
 ## Ziel
 
@@ -226,7 +226,7 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-04-24)
+# 📊 Aktueller Stand (2026-05-11)
 
 ## ✅ Abgeschlossen
 - Phase 1 (MVP): Komplett umgesetzt
@@ -246,20 +246,21 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 - Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
 - Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
+- Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
+- Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
+- Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad (abgeschlossen)
+- Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
+- Commit 35: Auth/Claim UX-Polish (Result-Restore + tokenbasierte Redirects + Claim-Feedback) (abgeschlossen)
 
 ## 🔄 In Arbeit
-- Commit 31: Reihenfolge **3 → 1 → 2**
-  - 3) Acceptance-Gate fuer Multi-CV ausbauen
-  - 1) Delete-Flow (Owner/Admin) mit Session-Cleanup
-  - 2) Session-Token-Handling vereinheitlichen
+- Commit 36: Roadmap-Planung & Doku-Sync
+  - Statusangleichung zwischen `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md` und `docs/history/COMMIT_HISTORY_2026.md`
+  - Priorisierung des nächsten Umsetzungs-Commits nach Commit 35
 
 ## 📋 Geplant
-- Commit 29 Follow-up: Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise)
 - Commit 30+: Ausbau der CV-Verwaltung nach MVP-Cut (z. B. Filter, Suche, Pagination-Konfigurierbarkeit)
-- **Phase 5: Provider-agnostischer LLM-Layer**
-  - AbstractLlmAiAnalyzer als gemeinsame Basis
-  - Plugin-Konzept für provider-spezifische Eigenheiten
-  - Erster Zweit-Provider als Proof of Concept
+- **Phase 5: Provider-agnostischer LLM-Layer (Restarbeiten)**
+  - Offene Entscheidungen zu Plugin-Interface/Fallback/Provider-Konfiguration
   - Offene Fragen: siehe Phase-5-Abschnitt oben
 - GitHub CI/CD Workflow (Commit 23 ✅)
 - arc42 Dokumentationsstruktur
