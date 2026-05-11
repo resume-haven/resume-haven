@@ -7,34 +7,33 @@ This document describes the rules and expectations for contributions to the proj
 
 # 🎯 Project philosophy
 
-ResumeHaven is a deliberately **minimalist**, **rules-based** analysis tool.
-The MVP should:
+ResumeHaven is a deliberately **structured**, **quality-driven** AI-assisted resume analysis tool.
+The MVP is designed to be:
 
 - clearly structured
 - easy to understand
 - without unnecessary complexity
-- without AI
-- without database
-- without user accounts
+- backed by SOLID & DDD principles
+- thoroughly tested (min. 95% coverage)
 
-be.
-
-Please adhere to these principles when posting.
+Please adhere to these principles when contributing.
 
 ---
 
 # 🧱 Architecture principles
 
-- The analysis is carried out via the **AnalysisEngine**.
+- The analysis is carried out via the **AnalysisEngine** with AI support.
 - The engine consists of:
   - JobExtractor
   - ResumeExtractor
   - Matchers
   - Taggers
-- The engine returns a `AnalysisResult`.
-- Controllers are thin and contain no logic.
+  - AI Analyzer (Gemini / Mock)
+- The engine returns an `AnalysisResult`.
+- Controllers are thin and contain no business logic (Single Action Controllers).
 - Views are minimalist and use TailwindCSS.
-- No storage of user data.
+- CQRS pattern (Commands/Queries strictly separated).
+- Repository pattern (no raw SQL outside repositories).
 
 ---
 
@@ -45,12 +44,12 @@ ResumeHaven uses Docker:
 - php-fpm (PHP 8.5)
 - nginx
 - node (Tailwind build)
-- email pit
+- Mailpit (test mailbox)
 
 Start the environment:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Install Laravel:
@@ -77,10 +76,18 @@ npm run dev
 Please ensure that all tests run successfully:
 
 ```bash
-php artisan test
+make test
 ```
 
-New features must be covered with tests.
+New features must be covered with tests (minimum 95% coverage).
+
+Run full quality gate before submitting a PR:
+
+```bash
+make test
+make phpstan
+make pint-fix
+```
 
 ---
 
@@ -91,15 +98,13 @@ Please note:
 - PRs need to be small and focused
 - Commit messages clear and descriptive
 - No new dependencies without discussion
-- No AI features without explicit approval
-- No database introduction
+- All changes must pass CI (Pint + PHPStan Level 9 + Tests + Coverage ≥ 95%)
+- Follow the [Coding Guidelines](CODING_GUIDELINES.md)
 
 ---
 
 # 📚 Documentation
 
-All architecture and concept documents are in the repo:
+All architecture and concept documents are in `docs/`.
 
-`resume-haven-ideas/`
-
-Please keep the documentation up to date if
+Please keep the documentation up to date when making significant changes.

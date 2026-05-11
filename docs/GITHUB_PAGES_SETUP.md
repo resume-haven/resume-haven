@@ -58,15 +58,15 @@ https://guidoschade.github.io/resume-haven/
 
 ```
 resume-haven/
-├── _config.yml              # Jekyll-Konfiguration (Root)
-├── README.md                # Projekt-Hauptseite
+├── _config.yml              # Jekyll configuration (Root)
+├── README.md                # Project main page
 │
 └── docs/                    # GitHub Pages Source
-    ├── _config.yml          # Jekyll-Konfiguration (docs/)
-    ├── index.md             # Haupt-Index (wird zu /)
-    ├── README.md            # Fallback (Kopie von index.md)
-    ├── ARCHITECTURE.md      # Wird zu /ARCHITECTURE
-    ├── CODING_GUIDELINES.md # Wird zu /CODING_GUIDELINES
+    ├── _config.yml          # Jekyll configuration (docs/)
+    ├── index.md             # Main index (becomes /)
+    ├── README.md            # Fallback (copy of index.md)
+    ├── ARCHITECTURE.md      # Becomes /ARCHITECTURE
+    ├── CODING_GUIDELINES.md # Becomes /CODING_GUIDELINES
     ├── AGENTS.md
     ├── ROADMAP.md
     ├── CONTRIBUTING.md
@@ -117,7 +117,7 @@ Currently configured: **Cayman**
 
 Change theme to `docs/_config.yml`:
 ```yaml
-theme: jekyll-theme-minimal  # Beispiel
+theme: jekyll-theme-minimal  # Example
 ```
 
 ---
@@ -131,7 +131,7 @@ Edit `docs/_config.yml`:
 navigation:
   - title: Home
     url: /
-  - title: Architektur
+  - title: Architecture
     url: /ARCHITECTURE
 ```
 

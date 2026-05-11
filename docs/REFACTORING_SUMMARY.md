@@ -25,7 +25,7 @@ Refactoring the monolithic controller structure into a **domain-driven, command/
 ```
 app/Domains/Analysis/
 ├── Commands/
-│   └── AnalyzeJobAndResumeCommand.php (Request-Object mit handle())
+│   └── AnalyzeJobAndResumeCommand.php (Request object with handle())
 ├── Handlers/
 │   └── AnalyzeJobAndResumeHandler.php (Orchestrator)
 ├── UseCases/
@@ -69,7 +69,7 @@ app/Domains/Analysis/
 
 **Before (94 lines):**
 ```php
-// Validierung + Cache + Service + Demo-Mode + Error-Handling + View
+// Validation + Cache + Service + Demo-Mode + Error-Handling + View
 ```
 
 **After (34 lines):**
@@ -123,23 +123,23 @@ public function analyze(Request $request): View
 HTTP POST /analyze
     ↓
 AnalyzeController::analyze()
-    ├─ Validierung
-    ├─ DTO erstellen
-    ├─ Command erstellen
+    ├─ Validation
+    ├─ Create DTO
+    ├─ Create Command
     ↓
 Bus::dispatch(Command)
     ↓
 Command::handle(Handler)
     ↓
 AnalyzeJobAndResumeHandler::handle()
-    ├─ 1. GetCachedAnalysisAction (Cache prüfen)
-    ├─ 2. AnalyzeApplicationService (AI-Analyse)
-    │   └─ Fehler-Propagation prüfen
-    ├─ 3. MatchingUseCase::handle() (Matching)
-    ├─ 4. GapAnalysisUseCase::handle() (Gap-Analyse)
-    ├─ 5. StoreCachedAnalysisAction (Cache speichern)
+    ├─ 1. GetCachedAnalysisAction (check cache)
+    ├─ 2. AnalyzeApplicationService (AI analysis)
+    │   └─ Check error propagation
+    ├─ 3. MatchingUseCase::handle() (matching)
+    ├─ 4. GapAnalysisUseCase::handle() (gap analysis)
+    ├─ 5. StoreCachedAnalysisAction (store in cache)
     ↓
-AnalyzeResultDto (zurück zu Controller)
+AnalyzeResultDto (back to controller)
     ↓
 View('result', $data)
 ```

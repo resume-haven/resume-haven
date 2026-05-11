@@ -17,7 +17,7 @@ Guide to local development with Docker.
 
 ```bash
 docker compose up -d
-# oder mit Make:
+# or with Make:
 make docker-up
 ```
 
@@ -36,26 +36,26 @@ Access: **http://localhost:8080**
 ### **Setup & Installation**
 
 ```bash
-make setup          # Projekt initialisieren (Composer, NPM, Migrations)
-make docker-up      # Container starten
-docker compose logs # Logs anzeigen
+make setup          # Initialize project (Composer, NPM, Migrations)
+make docker-up      # Start containers
+docker compose logs # Show logs
 ```
 
 ### **Tests**
 
 ```bash
-make test                   # Alle Tests (Pest)
-make test-unit              # Unit-Tests nur
-make test-feature           # Feature-Tests nur
-make test-acceptance        # Acceptance-Tests nur (Kernflows)
-make test-acceptance-gate   # Pint + PHPStan + Acceptance-Tests
-make test-security          # OWASP-orientierte Security-Tests
-make test-security-strict   # Erweiterte Security-Tests (stop-on-failure)
-make test-security-gate     # Security-Tests + PHPStan + Pint-Analyse
-make test-coverage          # Tests mit Coverage (benötigt Xdebug, min 95%)
-make test-coverage-report   # Coverage-Dateien (clover+xml/html)
-make coverage-open          # Öffnet HTML-Coverage-Report im Browser
-make coverage-clean         # Löscht alte Coverage-Reports
+make test                   # All tests (Pest)
+make test-unit              # Unit tests only
+make test-feature           # Feature tests only
+make test-acceptance        # Acceptance tests only (core flows)
+make test-acceptance-gate   # Pint + PHPStan + Acceptance tests
+make test-security          # OWASP-oriented security tests
+make test-security-strict   # Extended security tests (stop-on-failure)
+make test-security-gate     # Security tests + PHPStan + Pint analysis
+make test-coverage          # Tests with coverage (requires Xdebug, min 95%)
+make test-coverage-report   # Coverage files (clover+xml/html)
+make coverage-open          # Opens HTML coverage report in browser
+make coverage-clean         # Deletes old coverage reports
 ```
 
 **Code Coverage Requirements:**
@@ -66,34 +66,34 @@ make coverage-clean         # Löscht alte Coverage-Reports
 ### **Code Quality**
 
 ```bash
-make pint-fix       # Code automatisch formatieren
-make pint-analyse   # Nur Analyse (kein Fix)
-make phpstan        # Statische Analyse
+make pint-fix       # Format code automatically
+make pint-analyse   # Analysis only (no fix)
+make phpstan        # Static analysis
 ```
 
 ### **Shells & Containers**
 
 ```bash
-make php-shell      # Bash im PHP-Container
-make node-shell     # Shell im Node-Container
-make nginx-shell    # Shell im Nginx-Container
+make php-shell      # Bash in PHP container
+make node-shell     # Shell in Node container
+make nginx-shell    # Shell in Nginx container
 ```
 
 ### **Database**
 
 ```bash
-make db-migrate     # Migrationen ausführen
-make db-seed        # Seeds laden
-make db-migrate-refresh  # Reset + Re-Migrate + Seed
+make db-migrate     # Run migrations
+make db-seed        # Load seeds
+make db-migrate-refresh  # Reset + re-migrate + seed
 ```
 
 ### **Cache & Services**
 
 ```bash
-make php-cache-clear    # Laravel-Cache leeren
-make docker-logs        # Docker-Logs folgen
-make docker-restart     # Container neu starten (schnell)
-make docker-rebuild     # Neuer Build (nach Docker-Änderungen)
+make php-cache-clear    # Clear Laravel cache
+make docker-logs        # Follow Docker logs
+make docker-restart     # Restart containers (fast)
+make docker-rebuild     # New build (after Docker changes)
 ```
 
 ---
@@ -104,18 +104,18 @@ See **[Debugging Guide](./DEBUGGING.md)** for complete instructions.
 
 **Quick Start:**
 ```bash
-make debug-on       # Xdebug aktivieren (debug + coverage)
-make debug-status   # Status prüfen
-make php-shell      # Shell (XDEBUG_CONFIG ist bereits gesetzt)
+make debug-on       # Enable Xdebug (debug + coverage)
+make debug-status   # Check status
+make php-shell      # Shell (XDEBUG_CONFIG is already set)
 ```
 
 **Coverage reports:**
 ```bash
-make debug-on               # Xdebug aktivieren
-make test-coverage          # Coverage-Check (min 95%)
-make test-coverage-report   # Coverage-Dateien unter src/coverage-report/
-make coverage-open          # HTML-Report im Browser öffnen
-make coverage-clean         # Alte Reports löschen
+make debug-on               # Enable Xdebug
+make test-coverage          # Coverage check (min 95%)
+make test-coverage-report   # Coverage files under src/coverage-report/
+make coverage-open          # Open HTML report in browser
+make coverage-clean         # Delete old reports
 ```
 
 Then set the breakpoint to port 9003 in the IDE and run the script!
@@ -124,27 +124,27 @@ Then set the breakpoint to port 9003 in the IDE and run the script!
 
 ## 📊 Workflow for development
 
-### **Typical developer tag:**
+### **Typical developer day:**
 
 ```bash
-# Morgens
-make docker-up          # Container starten
-make php-shell          # In Container gehen
-composer install        # Falls nötig
-php artisan migrate     # Migrations ausführen
+# Morning
+make docker-up          # Start containers
+make php-shell          # Enter container
+composer install        # If needed
+php artisan migrate     # Run migrations
 
-# Während Entwicklung
-make test               # Tests nach jeder Änderung
-make pint-fix           # Code formatieren
-make phpstan            # Analyse vor Commit
+# During development
+make test               # Tests after every change
+make pint-fix           # Format code
+make phpstan            # Analysis before commit
 
-# Debugging nötig?
-make debug-on           # Xdebug an
-make php-shell          # Debuggen
-make debug-off          # Xdebug aus (schneller)
+# Need debugging?
+make debug-on           # Enable Xdebug
+make php-shell          # Debug
+make debug-off          # Disable Xdebug (faster)
 
-# Feierabend
-make docker-down        # Container stoppen
+# End of day
+make docker-down        # Stop containers
 ```
 
 ---
@@ -154,12 +154,12 @@ make docker-down        # Container stoppen
 ```bash
 make php-shell
 
-# Im Container:
+# Inside container:
 php artisan tinker              # PHP REPL
 vendor/bin/pest                 # Tests
-php artisan make:migration xyz  # Neue Migration
-php artisan route:list          # Routes anzeigen
-composer install                # Abhängigkeiten
+php artisan make:migration xyz  # New migration
+php artisan route:list          # Show routes
+composer install                # Dependencies
 ```
 
 ---
@@ -169,24 +169,24 @@ composer install                # Abhängigkeiten
 ### **Container not reachable?**
 
 ```bash
-docker ps                   # Laufen alle Container?
-docker compose logs         # Fehler in den Logs?
-make docker-restart         # Schnell neu starten
-make docker-rebuild         # Komplett neu bauen
+docker ps                   # Are all containers running?
+docker compose logs         # Errors in the logs?
+make docker-restart         # Quick restart
+make docker-rebuild         # Full rebuild
 ```
 
 ### **Port already occupied?**
 
 ```bash
-sudo lsof -i :8080         # Wer nutzt Port 8080?
-make docker-down            # Container stoppen
+sudo lsof -i :8080         # Who is using port 8080?
+make docker-down            # Stop containers
 ```
 
 ### **Clear cache/data?**
 
 ```bash
-make docker-clean           # Container + Volumes löschen
-make docker-up              # Neu starten (frisch!)
+make docker-clean           # Delete containers + volumes
+make docker-up              # Restart (fresh!)
 ```
 
 ---
@@ -294,18 +294,18 @@ Use this template for security-relevant changes (input validation, auth, externa
 ### 1) Minimum security test run
 
 ```bash
-# Basis-Qualitätsgates
+# Basic quality gates
 make test
 make phpstan
 make pint-analyse
 
-# gezielte Security-Tests
+# Targeted security tests
 make test-security
 
-# optional: strikter Lauf
+# Optional: strict run
 make test-security-strict
 
-# empfohlen vor Merge
+# Recommended before merge
 make test-security-gate
 ```
 

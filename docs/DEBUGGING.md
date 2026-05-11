@@ -7,10 +7,10 @@ Complete guide to local debugging with Xdebug in Docker.
 ## ⚡ Quick Start
 
 ```bash
-make debug-on       # Xdebug aktivieren
-make debug-status   # Status prüfen
-make php-shell      # In Container gehen (XDEBUG_CONFIG ist bereits gesetzt!)
-php artisan tinker  # Debuggen!
+make debug-on       # Enable Xdebug
+make debug-status   # Check status
+make php-shell      # Enter container (XDEBUG_CONFIG is already set!)
+php artisan tinker  # Debug!
 ```
 
 ---
@@ -41,7 +41,7 @@ php artisan tinker  # Debuggen!
 2. **Xdebug configuration (only if installed):**
 ```ini
 [xdebug]
-; Modi: debug (Debugger), coverage (Code-Coverage)
+; Modes: debug (Debugger), coverage (Code-Coverage)
 xdebug.mode=debug,coverage
 xdebug.start_with_request=yes
 xdebug.discover_client_host=true
@@ -182,9 +182,9 @@ IDE must listen on port 9003!
 make debug-on
 make php-shell
 
-# Im Code:
+# In the code:
 dd($variable);  // Laravel Dump & Die
-// oder
+// or
 var_dump($variable);  // PHP Standard
 ```
 
@@ -194,10 +194,10 @@ var_dump($variable);  // PHP Standard
 make debug-on
 make php-shell
 
-# Im Code:
+# In the code:
 Log::info('Debug: ', ['data' => $variable]);
 
-# Logs anzeigen:
+# Show logs:
 tail -f storage/logs/laravel.log
 ```
 
@@ -218,11 +218,11 @@ vendor/bin/pest tests/Feature/AnalyzeControllerTest.php
 ### **Generate coverage reports:**
 
 ```bash
-make debug-on                      # Xdebug mit coverage-Mode aktivieren
-make test-coverage                 # Coverage-Check in Konsole (min 95%)
-make test-coverage-report          # Dateien erzeugen (Clover + HTML)
-make coverage-open                 # HTML-Report im Browser öffnen
-make coverage-clean                # Alte Reports löschen
+make debug-on                      # Enable Xdebug with coverage mode
+make test-coverage                 # Coverage check in console (min 95%)
+make test-coverage-report          # Generate files (Clover + HTML)
+make coverage-open                 # Open HTML report in browser
+make coverage-clean                # Delete old reports
 ```
 
 **Coverage files in the file system:**
@@ -238,7 +238,7 @@ make coverage-clean                # Alte Reports löschen
 
 ## 📊 Performance comparison
 
-| Fashion | Speed ​​| Code Coverage | Debugger | Usage |
+| Mode | Speed | Code Coverage | Debugger | Usage |
 |-------|-------|---------------|----------|------------|
 | **debug off** | ✅ 1x (normal) | ❌ No | ❌ No | Normal development |
 | **debug on** | 🐢 0.5x (50% slower) | ✅ Yes | ✅ Yes | Debugging + Coverage |
@@ -263,7 +263,7 @@ make coverage-clean                # Alte Reports löschen
 ### **"Port 9003 already in use"?**
 
 ```bash
-# Andere IDE-Session schließen oder anderen Port:
+# Close other IDE session or use a different port:
 sudo lsof -i :9003
 kill -9 <PID>
 ```
@@ -273,8 +273,8 @@ kill -9 <PID>
 ```bash
 make debug-status
 
-# Sollte anzeigen:
-# ✅ Xdebug ist INSTALLIERT
+# Should display:
+# ✅ Xdebug is INSTALLED
 ```
 
 If not: run `make debug-on` again.

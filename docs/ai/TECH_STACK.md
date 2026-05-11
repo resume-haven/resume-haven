@@ -124,7 +124,7 @@ docker exec resumehaven-node npm run build
 
 ### Migrations
 ```bash
-php artisan migrate              # Migrationen ausführen
+php artisan migrate              # Run migrations
 php artisan migrate:fresh --seed # Reset + Seed
 ```
 
@@ -137,51 +137,51 @@ php artisan migrate:fresh --seed # Reset + Seed
 
 ### Tests & Coverage
 ```bash
-make test                   # Alle Tests (Pest)
-make test-unit              # Nur Unit-Tests
-make test-feature           # Nur Feature-Tests
-make test-coverage          # Coverage-Check (min 95%)
-make test-coverage-report   # HTML-Report erzeugen
-make coverage-open          # Report im Browser
-make coverage-clean         # Reports löschen
+make test                   # All tests (Pest)
+make test-unit              # Unit tests only
+make test-feature           # Feature tests only
+make test-coverage          # Coverage check (min 95%)
+make test-coverage-report   # Generate HTML report
+make coverage-open          # Open report in browser
+make coverage-clean         # Delete reports
 ```
 
 ### Code quality
 ```bash
-make phpstan                # Static Analysis (Level 9)
-make pint-fix               # Code-Formatting
-make pint-analyse           # Nur Analyse (kein Fix)
+make phpstan                # Static analysis (Level 9)
+make pint-fix               # Code formatting
+make pint-analyse           # Analysis only (no fix)
 ```
 
 ### Debugging
 ```bash
-make debug-on               # Xdebug aktivieren (rebuild)
-make debug-off              # Xdebug deaktivieren
-make debug-status           # Status prüfen
+make debug-on               # Enable Xdebug (rebuild)
+make debug-off              # Disable Xdebug
+make debug-status           # Check status
 ```
 
 ### Docker
 ```bash
-make docker-up              # Container starten
-make docker-down            # Container stoppen
-make docker-restart         # Schneller Neustart
-make docker-rebuild         # Neuer Build
-make docker-clean           # Volumes löschen
+make docker-up              # Start containers
+make docker-down            # Stop containers
+make docker-restart         # Quick restart
+make docker-rebuild         # New build
+make docker-clean           # Delete volumes
 ```
 
 ### Shell access
 ```bash
-make php-shell              # Bash im PHP-Container
-make node-shell             # Shell im Node-Container
-make nginx-shell            # Shell im Nginx-Container
+make php-shell              # Bash in PHP container
+make node-shell             # Shell in Node container
+make nginx-shell            # Shell in Nginx container
 ```
 
 ### Cache & DB
 ```bash
-make php-cache-clear        # Laravel-Cache leeren
-make db-migrate             # Migrationen ausführen
-make db-seed                # Seeds laden
-make cache-clear-analysis   # Analyse-Cache leeren
+make php-cache-clear        # Clear Laravel cache
+make db-migrate             # Run migrations
+make db-seed                # Load seeds
+make cache-clear-analysis   # Clear analysis cache
 ```
 
 ---

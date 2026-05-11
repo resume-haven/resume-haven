@@ -4,7 +4,7 @@ Welcome to the **ResumeHaven** documentation!
 Here you will find all important information about the architecture, development and use of the project.
 
 > 🌐 **This documentation is also available online:**
-> [GitHub Pages](__TK49__ (after activation)
+> [GitHub Pages](https://github.com/pages) *(after activation)*
 > [GitHub Pages Setup Guide](GITHUB_PAGES_SETUP.md)
 
 ---
@@ -155,10 +155,10 @@ Long-term vision and feature roadmap for ResumeHaven.
 **Contents:**
 - MVP features (current)
 - Planned features (Phase 2, 3, ...)
--Technical improvements
+- Technical improvements
 - UI/UX enhancements
 - API development
-- schedule
+- Timeline
 
 **For whom:** Product owners, stakeholders, developers
 
@@ -219,7 +219,7 @@ Complete Xdebug guide for VSCode/PhpStorm including coverage reports.
 Guidelines for contributions to the project.
 
 **Contents:**
--How can I contribute?
+- How can I contribute?
 - Code of Conduct
 - Pull request process
 - Branch strategy
@@ -250,7 +250,7 @@ Guidelines for contributions to the project.
 ### For Product Owners
 
 1. **Vision**: Read [`ROADMAP.md`](ROADMAP.md)
-2. **Status**: Lake [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
+2. **Status**: See [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
 3. **Architecture Overview**: Read [`ARCHITECTURE.md`](ARCHITECTURE.md) (Chapters 1-3)
 
 ### For Contributors
@@ -308,5 +308,5 @@ Guidelines for contributions to the project.
 
 ---
 
-**Last updated**: 2026-03-09
-**Version**: 2.1 (incl. WORKING_BASELINE as soft reset entry)
+**Last updated**: 2026-05-11
+**Version**: 2.2

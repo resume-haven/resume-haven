@@ -233,22 +233,22 @@ Legacy services (will be gradually migrated to domains):
 HTTP POST /analyze
     ↓
 AnalyzeController::__invoke()
-    ├─ Validierung (Laravel Validator)
-    ├─ DTO erstellen (AnalyzeRequestDto)
-    ├─ Command erstellen (AnalyzeJobAndResumeCommand)
+    ├─ Validation (Laravel Validator)
+    ├─ Create DTO (AnalyzeRequestDto)
+    ├─ Create Command (AnalyzeJobAndResumeCommand)
     ↓
 Bus::dispatch(Command)
     ↓
 AnalyzeJobAndResumeCommand::handle(Handler)
     ↓
 AnalyzeJobAndResumeHandler::handle()
-    ├─ 1. GetCachedAnalysisAction (Cache prüfen)
-    ├─ 2. AnalyzeApplicationService (AI-Analyse)
-    ├─ 3. MatchingUseCase::handle() (Matching)
-    ├─ 4. GapAnalysisUseCase::handle() (Gap-Analyse)
-    ├─ 5. StoreCachedAnalysisAction (Cache speichern)
+    ├─ 1. GetCachedAnalysisAction (check cache)
+    ├─ 2. AnalyzeApplicationService (AI analysis)
+    ├─ 3. MatchingUseCase::handle() (matching)
+    ├─ 4. GapAnalysisUseCase::handle() (gap analysis)
+    ├─ 5. StoreCachedAnalysisAction (store in cache)
     ↓
-AnalyzeResultDto (zurück zu Controller)
+AnalyzeResultDto (back to controller)
     ↓
 View('result', $data)
 ```

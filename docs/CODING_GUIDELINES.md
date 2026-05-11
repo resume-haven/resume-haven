@@ -235,10 +235,10 @@ class AnalyzeJobAndResumeHandler
 
     public function handle(AnalyzeJobAndResumeCommand $command): AnalyzeResultDto
     {
-        // 1. Cache prüfen
-        // 2. Business-Logic ausführen
-        // 3. Ergebnis cachen
-        // 4. DTO zurückgeben
+        // 1. Check cache
+        // 2. Execute business logic
+        // 3. Cache result
+        // 4. Return DTO
     }
 }
 ```
@@ -499,10 +499,10 @@ it('MatchingUseCase findet korrekte Matches', function () {
 ### Feature Test Pattern
 
 ```php
-test('POST /analyze zeigt Analyseergebnis', function () {
+test('POST /analyze shows analysis result', function () {
     $response = post('/analyze', [
-        'job_text' => 'PHP Developer gesucht',
-        'cv_text' => '5 Jahre PHP Erfahrung',
+        'job_text' => 'PHP Developer wanted',
+        'cv_text' => '5 years PHP experience',
     ]);
     
     $response->assertStatus(200);
@@ -549,8 +549,8 @@ make phpstan
 We use **Laravel Pint** for consistent code style:
 
 ```bash
-make pint-fix    # Auto-Fix
-make pint-analyse # Nur prüfen
+make pint-fix    # Auto-fix
+make pint-analyse # Check only (no fix)
 ```
 
 **What Pint checks:**
@@ -595,19 +595,19 @@ class AnalyzeJobAndResumeHandler
         try {
             $analyzeResult = $this->analyzeService->analyze($command->request);
             
-            // Fehler aus Service übernehmen
+            // Propagate error from service
             if ($analyzeResult->error !== null) {
                 return $analyzeResult;
             }
             
-            // ... weitere Verarbeitung
+            // ... further processing
         } catch (\Throwable $e) {
-            // Fallback-DTO mit Fehler
+            // Fallback DTO with error
             return new AnalyzeResultDto(
                 $command->request->jobText(),
                 $command->request->cvText(),
                 [], [], [], [],
-                'AI-Analyse fehlgeschlagen: ' . $e->getMessage()
+                'AI analysis failed: ' . $e->getMessage()
             );
         }
     }
@@ -686,11 +686,11 @@ Every commit and every PR MUST adhere to the SOLID principles.
 
 **Example (good):**
 ```php
-// Eine Klasse = Eine Verantwortung
+// One class = one responsibility
 class CalculateScoreAction {
     public function execute(array $matches, array $gaps): ScoreResultDto {
         $total = count($matches) + count($gaps);
-        if ($total === 0) return new ScoreResultDto(0, 'Keine Daten', ...);
+        if ($total === 0) return new ScoreResultDto(0, 'No data', ...);
         
         $percentage = (int) round((count($matches) / $total) * 100);
         return new ScoreResultDto($percentage, $this->getRating($percentage), ...);
@@ -772,10 +772,10 @@ class AnalyzeJobAndResumeHandler {
     ) {}
 }
 
-// ❌ SCHLECHT: Dependency zu Konkretion
+// ❌ BAD: Dependency on concrete class
 class AnalyzeJobAndResumeHandler {
     public function __construct(
-        private GeminiAiAnalyzer $geminiAnalyzer,  // Konkrete Klasse!
+        private GeminiAiAnalyzer $geminiAnalyzer,  // Concrete class!
     ) {}
 }
 ```
@@ -839,9 +839,9 @@ class AnalyzeJobAndResumeHandler {
 ```php
 class ReportService {
     public function __construct(
-        private GeminiAiAnalyzer $gemini,        // Konkrete Klasse!
-        private MySqlRepository $repository,      // Konkrete Klasse!
-        private SendGridMailer $mailer,          // Konkrete Klasse!
+        private GeminiAiAnalyzer $gemini,        // Concrete class!
+        private MySqlRepository $repository,      // Concrete class!
+        private SendGridMailer $mailer,          // Concrete class!
     ) {}
 }
 
@@ -926,7 +926,7 @@ readonly class AnalyzeJobAndResumeCommand {
 // Handler
 class AnalyzeJobAndResumeHandler {
     public function handle(AnalyzeJobAndResumeCommand $command): AnalyzeResultDto {
-        // Write Operation: Erstellt Analyse-Ergebnis
+        // Write Operation: Creates analysis result
         return new AnalyzeResultDto(...);
     }
 }

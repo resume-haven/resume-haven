@@ -73,25 +73,25 @@ compares with each other and **evaluates them in a structured manner**.
 ```
 app/Domains/Analysis/
 ├── Commands/         # CQRS Commands (Write)
-├── Handlers/         # Command-Handler (orchestriert UseCases)
-├── UseCases/         # Business-Logic
+├── Handlers/         # Command handlers (orchestrates UseCases)
+├── UseCases/         # Business logic
 │   ├── ValidateInputUseCase/
-│   ├── ExtractDataUseCase/      (geplant, noch nicht genutzt)
+│   ├── ExtractDataUseCase/      (planned, not yet active)
 │   ├── MatchingUseCase/
 │   ├── GapAnalysisUseCase/
 │   ├── ScoringUseCase/
 │   └── GenerateTagsUseCase/
-├── Cache/            # Cache-Layer
+├── Cache/            # Cache layer
 │   ├── Actions/
 │   └── Repositories/
 └── Dto/              # Data Transfer Objects (immutable)
 
 app/Domains/Profile/
-├── Commands/         # CV speichern
-├── Queries/          # CV per Token laden
-├── Handlers/         # Orchestrierung Store/Load
+├── Commands/         # Store CV
+├── Queries/          # Load CV by token
+├── Handlers/         # Orchestration Store/Load
 ├── Actions/          # Token, Encrypt, Decrypt
-├── Repositories/     # StoredResume-Persistenz
+├── Repositories/     # StoredResume persistence
 └── Dto/              # StoreResumeDto, ResumeTokenDto, LoadedResumeDto
 ```
 
@@ -234,10 +234,10 @@ readonly class ScoreResultDto
 {
     public function __construct(
         public int $percentage,          // 0-100
-        public string $rating,           // "Geringe/Mittlere/Hohe Übereinstimmung"
-        public string $bgColor,          // Tailwind-Klasse
-        public string $textColor,        // Tailwind-Klasse
-        public string $barColor,         // Tailwind-Klasse
+        public string $rating,           // "Low/Medium/High Match"
+        public string $bgColor,          // Tailwind class
+        public string $textColor,        // Tailwind class
+        public string $barColor,         // Tailwind class
         public int $matchCount,
         public int $gapCount,
     ) {}
@@ -258,16 +258,16 @@ readonly class ScoreResultDto
 4. AnalyzeJobAndResumeCommand (DTO)
    ↓
 5. AnalyzeJobAndResumeHandler
-   ├─→ Cache-Check (GetCachedAnalysisAction)
-   ├─→ AI-Analyse (GeminiAiAnalyzer / MockAiAnalyzer)
+   ├─→ Cache check (GetCachedAnalysisAction)
+   ├─→ AI analysis (GeminiAiAnalyzer / MockAiAnalyzer)
    ├─→ Matching (MatchingUseCase)
-   ├─→ Gap-Analysis (GapAnalysisUseCase)
-   ├─→ Tag-Generation (GenerateTagsAction)
-   └─→ Cache-Store (StoreCachedAnalysisAction)
+   ├─→ Gap analysis (GapAnalysisUseCase)
+   ├─→ Tag generation (GenerateTagsAction)
+   └─→ Cache store (StoreCachedAnalysisAction)
    ↓
 6. ScoringUseCase::handle()
    ↓
-7. BuildAnalyzeViewDataAction (DTO für View)
+7. BuildAnalyzeViewDataAction (DTO for view)
    ↓
 8. result.blade.php (UI)
 ```
@@ -288,8 +288,8 @@ readonly class ScoreResultDto
 - ❌ No production hosting (Docker-Dev only)
 - ❌ No email integration (only Mailpit for testing)
 - ❌ No real-time collaboration
-- ❌ No internationalization (only German)
-- ⚠️ No user-based encryption for saved CVs yet
+- ❌ No internationalization (English UI planned)
+  ⚠️ No user-based encryption for saved CVs yet
 
 ---
 
@@ -304,8 +304,8 @@ readonly class ScoreResultDto
 - **Bounded Context `Profile`:**
   - User accounts
   - Resume management
-  -Preferences
-  - secure, user-based encryption
+  - Preferences
+  - Secure, user-based encryption
 - **Bounded Context `Reporting`:**
   - Analysis history
   - statistics
