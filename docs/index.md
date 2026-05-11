@@ -1,214 +1,214 @@
-# 📚 ResumeHaven – Dokumentation
+# 📚 ResumeHaven – Documentation
 
-Willkommen zur Dokumentation von **ResumeHaven**!  
-Hier findest du alle wichtigen Informationen zur Architektur, Entwicklung und Nutzung des Projekts.
+Welcome to the **ResumeHaven** documentation!
+Here you will find all important information about the architecture, development and use of the project.
 
-> 🌐 **Diese Dokumentation ist auch online verfügbar:**  
-> [GitHub Pages](https://username.github.io/resume-haven/) (nach Aktivierung)  
-> [Setup-Anleitung für GitHub Pages](GITHUB_PAGES_SETUP.md)
+> 🌐 **This documentation is also available online:**
+> [GitHub Pages](__TK49__ (after activation)
+> [GitHub Pages Setup Guide](GITHUB_PAGES_SETUP.md)
 
 ---
 
-## 🗂️ Übersicht
+## 🗂️ Overview
 
-### 🏗️ Architektur & Design
+### 🏗️ Architecture & Design
 
 #### [**ARCHITECTURE.md**](ARCHITECTURE.md)
-Vollständige technische Architektur-Dokumentation des Projekts.
+Complete technical architecture documentation of the project.
 
-**Inhalt:**
-- Überblick über Domain-Driven Design
+**Contents:**
+- Overview of Domain Driven Design
 - Command/Handler Pattern
-- UseCase & Action Pattern
-- Repository Pattern
-- Request-Flow Diagramme
-- Dependency Management
-- Testing-Strategie
-- Zukünftige Erweiterungen
+- UseCase & Action Patterns
+- Repository Patterns
+- Request flow diagrams
+- Dependency management
+- Testing strategy
+- Future expansions
 
-**Für wen:** Entwickler, die die technische Architektur verstehen wollen
+**For whom:** Developers who want to understand the technical architecture
 
 
 #### [**CODING_GUIDELINES.md**](CODING_GUIDELINES.md)
-Umfassende Best Practices und Coding-Standards für das Projekt.
+Comprehensive best practices and coding standards for the project.
 
-**Inhalt:**
+**Contents:**
 - SOLID Principles & DRY
-- Projekt-Struktur (Domain-Struktur)
-- Namenskonventionen
-- Domain-Driven Design Guidelines
+- Project structure (domain structure)
+- Naming conventions
+- Domain Driven Design Guidelines
 - Commands, Handlers, UseCases, Actions
 - DTOs (Data Transfer Objects)
 - Repositories
 - Controllers (Single Action)
-- Testing (Unit, Feature, Integration)
+- Testing (unit, feature, integration)
 - Code Quality (PHPStan, Pint)
-- Error Handling
-- Checkliste für neue Features
+- Error handling
+- Checklist for new features
 
-**Für wen:** Alle Entwickler, die am Projekt arbeiten
+**For whom:** All developers working on the project
 
 
 #### [**REFACTORING_SUMMARY.md**](REFACTORING_SUMMARY.md)
-Zusammenfassung der Domain-Architektur-Refaktorierung (Commit 15a).
+Summary of domain architecture refactoring (Commit 15a).
 
-**Inhalt:**
-- Ziel der Refaktorierung
-- Was wurde umgesetzt (Pattern, Struktur)
-- Vorher/Nachher-Vergleich
-- Controller-Reduktion (94 → 34 Zeilen)
-- Metriken & Quality Checks
-- Request-Flow Diagramm
-- Lessons Learned
-- Nächste Schritte
+**Contents:**
+- Goal of the refactoring
+- What was implemented (pattern, structure)
+- Before/after comparison
+- Controller reduction (94 → 34 lines)
+- Metrics & Quality Checks
+- Request flow diagram
+- Lessons learned
+- Next Steps
 
-**Für wen:** Entwickler, die verstehen wollen, warum die Architektur so ist
+**For whom:** Developers who want to understand why the architecture is the way it is
 
 
 ---
 
-### 🤖 AI & Agenten
+### 🤖 AI & Agents
 
 #### [**ai/WORKING_BASELINE.md**](ai/WORKING_BASELINE.md)
-Operativer Session-Startpunkt fuer KI-gestuetzte Arbeit (Soft-Reset-Basis).
+Operational session starting point for AI-supported work (soft reset basis).
 
-**Inhalt:**
-- Verbindliche Tages-Baseline fuer KI-Sessions
-- Prioritaet: aktueller Repository-Stand
-- Architektur- und Qualitaets-Leitplanken in Kurzform
-- Reset-Protokoll fuer lange Chat-Verlaeufe
+**Contents:**
+- Binding daily baseline for AI sessions
+- Priority: current repository status
+- Architecture and quality guidelines in short form
+- Reset protocol for long chat histories
 
-**Für wen:** KI-Agenten und Entwickler fuer einen schnellen, konsistenten Einstieg
+**For whom:** AI agents and developers for a quick, consistent start
 
 #### [**ai/SESSION_RESUME_2026-03-09.md**](ai/SESSION_RESUME_2026-03-09.md)
-Tagesaktuelle Zusammenfassung (Soft-Reset nach Kontextverlust).
+Daily updated summary (soft reset after loss of context).
 
-**Inhalt:**
-- Was wurde heute erreicht (Kontext-Konsolidierung, Dokumentations-Updates)
-- Aktueller Projekt-Stand (Commit 20b abgeschlossen)
-- Nächste geplante Commits (21, 21a, 22)
-- Soft-Reset-Protokoll und Lesefolge
-- Action Items für neue Sessions
+**Contents:**
+- What was achieved today (context consolidation, documentation updates)
+- Current project status (Commit 20b completed)
+- Next scheduled commits (21, 21a, 22)
+- Soft reset protocol and reading sequence
+- Action items for new sessions
 
-**Für wen:** KI-Agenten nach Kontext-Reset, Entwickler beim Wiedereinstieg nach längerer Pause
+**For whom:** AI agents after context reset, developers returning after a long break
 
 #### [**ai/AGENT_CONTEXT.md**](ai/AGENT_CONTEXT.md)
-Zentrale Arbeitsregeln für KI-Agenten (GitHub Copilot, etc.)
+Central work rules for AI agents (GitHub Copilot, etc.)
 
-**Inhalt:**
-- CQRS (strict mode, phasenweise Einführung)
-- SOLID-Prinzipien (Pflicht-Review-Gate)
+**Contents:**
+- CQRS (strict mode, phased introduction)
+- SOLID principles (mandatory review gate)
 - Domain-Driven Design (Bounded Contexts)
-- Quality-Gates (Tests, Coverage, PHPStan, Pint)
+- Quality gates (tests, coverage, PHPStan, Pint)
 - Definition of Done
-- Code-Review-Checkliste
+- Code review checklist
 
-**Für wen:** KI-Agenten, Entwickler, die die Architekturprinzipien verstehen wollen
+**For whom:** AI agents, developers who want to understand architectural principles
 
 #### [**ai/PROJECT_OVERVIEW.md**](ai/PROJECT_OVERVIEW.md)
-Projektüberblick und MVP-Scope
+Project overview and MVP scope
 
-**Inhalt:**
-- Was ist ResumeHaven?
-- MVP-Funktionsumfang
-- Architektur-Kurzform
-- Datenstrukturen (Kern-DTOs)
-- Request-Flow
+**Contents:**
+- What is ResumeHaven?
+- MVP feature set
+- Architecture short form
+- Data structures (core DTOs)
+- Request flow
 - Roadmap
 
-**Für wen:** Neue Entwickler, Product Owner, KI-Agenten
+**For whom:** New developers, product owners, AI agents
 
 #### [**ai/TECH_STACK.md**](ai/TECH_STACK.md)
-Technologie-Stack und Konfiguration
+Technology stack and configuration
 
-**Inhalt:**
-- Versionen (PHP, Laravel, Pest, PHPStan, etc.)
-- Docker-Services
-- Make-Kommandos
-- Konfiguration (.env)
+**Contents:**
+- Versions (PHP, Laravel, Pest, PHPStan, etc.)
+- Docker Services
+- Make commands
+- Configuration (.env)
 - URLs
-- Update-Strategie
+- Update strategy
 
-**Für wen:** DevOps, Entwickler, KI-Agenten
+**For whom:** DevOps, developers, AI agents
 
 #### [**AGENTS.md**](AGENTS.md)
-Dokumentation der AI-Agenten und deren Verwendung.
+Documentation of AI agents and their use.
 
-**Inhalt:**
-- Übersicht über verwendete AI-Agenten
-- Agent-Konfiguration
-- Prompt-Engineering
-- Integration mit Laravel AI
-- Verwendung von Structured Outputs
-- **Verweis auf neue Kontext-Struktur**
+**Contents:**
+- Overview of AI agents used
+- Agent configuration
+- Prompt engineering
+- Integration with Laravel AI
+- Use of structured outputs
+- **Reference to new context structure**
 
-**Für wen:** Entwickler, die mit den AI-Agenten arbeiten
+**For whom:** Developers working with the AI ​​agents
 
 
 ---
 
-### 🛣️ Projekt-Planung
+### 🛣️ Project planning
 
 #### [**ROADMAP.md**](ROADMAP.md)
-Langfristige Vision und Feature-Roadmap für ResumeHaven.
+Long-term vision and feature roadmap for ResumeHaven.
 
-**Inhalt:**
-- MVP-Features (aktuell)
-- Geplante Features (Phase 2, 3, ...)
-- Technische Verbesserungen
-- UI/UX Enhancements
-- API-Entwicklung
-- Zeitplan
+**Contents:**
+- MVP features (current)
+- Planned features (Phase 2, 3, ...)
+-Technical improvements
+- UI/UX enhancements
+- API development
+- schedule
 
-**Für wen:** Product Owner, Stakeholder, Entwickler
+**For whom:** Product owners, stakeholders, developers
 
 
 #### [**../COMMIT_PLAN.md**](../COMMIT_PLAN.md)
-Aktiver, verschlankter Commit-Plan mit aktuellem Fokus und naechsten Schritten.
+Active, streamlined commit plan with current focus and next steps.
 
-**Inhalt:**
-- Aktueller Stand (Active Plan)
-- Commit 24 Fokus + DoD
-- Priorisierte Folge-Reihenfolge
-- Decision Log und Verweise
+**Contents:**
+- Current status (Active Plan)
+- Commit 24 Focus + DoD
+- Prioritized follow orders
+- Decision log and references
 
 #### [**COMMIT_HISTORY_INDEX.md**](COMMIT_HISTORY_INDEX.md)
-Einstieg in die ausgelagerte Commit-Historie.
+Entry into the outsourced commit history.
 
-**Inhalt:**
-- Links auf archivierte Commit-Zusammenfassungen
-- Trennung von aktivem Plan und Historie
+**Contents:**
+- Links to archived commit summaries
+- Separation of active plan and history
 
 #### [**history/COMMIT_HISTORY_2026.md**](history/COMMIT_HISTORY_2026.md)
-Kompakte Historie der abgeschlossenen Commits (1-24).
+Compact history of completed commits (1-24).
 
 #### [**history/COMMIT_22_IMPLEMENTATION_GUIDE.md**](history/COMMIT_22_IMPLEMENTATION_GUIDE.md)
-Historischer Implementierungsleitfaden fuer den `Profile`-Context aus Commit 22.
+Historical implementation guide for the `Profile` context from commit 22.
 
 #### [**history/COMMIT_24_IMPLEMENTATION_GUIDE.md**](history/COMMIT_24_IMPLEMENTATION_GUIDE.md)
-Historischer Implementierungsleitfaden fuer Commit 24 (Kompetenzlebenslaeufe I).
+Historical implementation guide for Commit 24 (Competency CVs I).
 
 ---
 
-### 🛠️ Entwicklung & Debugging
+### 🛠️ Development & Debugging
 
 #### [**DEVELOPMENT.md**](DEVELOPMENT.md)
-Lokales Entwicklungs-Setup mit Docker, Makefile-Kommandos und Workflow-Empfehlungen.
+Local development setup with Docker, Makefile commands and workflow recommendations.
 
-**Inhalt:**
-- Setup & Start der Container
-- Tests, Linting, PHPStan
-- Shell-/DB-Kommandos
-- Xdebug-Quickstart und Coverage-Workflows
+**Contents:**
+- Setup & start of the containers
+- Testing, linting, PHPStan
+- Shell/DB commands
+- Xdebug quickstart and coverage workflows
 
 #### [**DEBUGGING.md**](DEBUGGING.md)
-Vollständige Xdebug-Anleitung für VSCode/PhpStorm inkl. Coverage-Reports.
+Complete Xdebug guide for VSCode/PhpStorm including coverage reports.
 
-**Inhalt:**
+**Contents:**
 - `make debug-on/off/status`
-- IDE-Setup (Port 9003, Path-Mapping)
-- CLI-Debugging
-- Coverage in Konsole und als Dateien (`coverage-report/`)
+- IDE setup (port 9003, path mapping)
+- CLI debugging
+- Coverage in console and as files (`coverage-report/`)
 - Troubleshooting
 
 ---
@@ -216,97 +216,97 @@ Vollständige Xdebug-Anleitung für VSCode/PhpStorm inkl. Coverage-Reports.
 ### 🤝 Contributing
 
 #### [**CONTRIBUTING.md**](CONTRIBUTING.md)
-Richtlinien für Beiträge zum Projekt.
+Guidelines for contributions to the project.
 
-**Inhalt:**
-- Wie kann ich beitragen?
+**Contents:**
+-How can I contribute?
 - Code of Conduct
-- Pull Request Prozess
-- Branch-Strategie
-- Commit-Konventionen
-- Testing-Anforderungen
+- Pull request process
+- Branch strategy
+- Commit conventions
+- Testing requirements
 
-**Für wen:** Externe Contributor, Team-Mitglieder
+**For whom:** External contributors, team members
 
-
----
-
-## 🚀 Schnelleinstieg
-
-### Für KI-Agenten (Copilot, Windsurf, etc.)
-
-1. **Einstieg (Soft-Reset)**: Lies [`ai/WORKING_BASELINE.md`](ai/WORKING_BASELINE.md)
-2. **Arbeitsregeln**: Lies [`ai/AGENT_CONTEXT.md`](ai/AGENT_CONTEXT.md)
-3. **Projektüberblick**: Lies [`ai/PROJECT_OVERVIEW.md`](ai/PROJECT_OVERVIEW.md)
-4. **Architektur**: Lies [`ARCHITECTURE.md`](ARCHITECTURE.md)
-
-### Für Entwickler
-
-1. **Start**: Lies [`../README.md`](../README.md) für Installation & Setup
-2. **Architektur verstehen**: Lies [`ARCHITECTURE.md`](ARCHITECTURE.md)
-3. **Coding Standards**: Lies [`CODING_GUIDELINES.md`](CODING_GUIDELINES.md)
-4. **Feature entwickeln**: Folge der Checkliste in `CODING_GUIDELINES.md`
-
-### Für Product Owner
-
-1. **Vision**: Lies [`ROADMAP.md`](ROADMAP.md)
-2. **Status**: Siehe [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
-3. **Architektur-Überblick**: Lies [`ARCHITECTURE.md`](ARCHITECTURE.md) (Kapitel 1-3)
-
-### Für Contributor
-
-1. **Guidelines**: Lies [`CONTRIBUTING.md`](CONTRIBUTING.md)
-2. **Coding Standards**: Lies [`CODING_GUIDELINES.md`](CODING_GUIDELINES.md)
-3. **Architektur**: Lies [`ARCHITECTURE.md`](ARCHITECTURE.md)
 
 ---
 
-## 📖 Weitere Dokumentation
+## 🚀 Quick start
 
-### Im Root-Verzeichnis
+### For AI agents (copilot, windsurf, etc.)
 
-- **[README.md](../README.md)**: Projekt-Übersicht, Installation, Quick Start
-- **[COMMIT_PLAN.md](../COMMIT_PLAN.md)**: Detaillierter Entwicklungsplan (Commit-by-Commit)
-- **[LICENSE.md](../LICENSE.md)**: Lizenzinformationen
+1. **Getting started (soft reset)**: Read [`ai/WORKING_BASELINE.md`](ai/WORKING_BASELINE.md)
+2. **Work Rules**: Read [`ai/AGENT_CONTEXT.md`](ai/AGENT_CONTEXT.md)
+3. **Project Overview**: Read [`ai/PROJECT_OVERVIEW.md`](ai/PROJECT_OVERVIEW.md)
+4. **Architecture**: Read [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
+### For developers
+
+1. **Start**: Read [`../README.md`](../README.md) for installation & setup
+2. **Understanding Architecture**: Read [`ARCHITECTURE.md`](ARCHITECTURE.md)
+3. **Coding Standards**: Read [`CODING_GUIDELINES.md`](CODING_GUIDELINES.md)
+4. **Develop feature**: Follow the checklist in `CODING_GUIDELINES.md`
+
+### For Product Owners
+
+1. **Vision**: Read [`ROADMAP.md`](ROADMAP.md)
+2. **Status**: Lake [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
+3. **Architecture Overview**: Read [`ARCHITECTURE.md`](ARCHITECTURE.md) (Chapters 1-3)
+
+### For Contributors
+
+1. **Guidelines**: Read [`CONTRIBUTING.md`](CONTRIBUTING.md)
+2. **Coding Standards**: Read [`CODING_GUIDELINES.md`](CODING_GUIDELINES.md)
+3. **Architecture**: Read [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
+---
+
+## 📖 More documentation
+
+### In the root directory
+
+- **[README.md](../README.md)**: Project overview, installation, quick start
+- **[COMMIT_PLAN.md](../COMMIT_PLAN.md)**: Detailed development plan (commit-by-commit)
+- **[LICENSE.md](../LICENSE.md)**: License information
 
 ### In `.github/`
 
-- **[copilot-instructions.md](../.github/copilot-instructions.md)**: GitHub Copilot Konfiguration
-- **[agents/](../.github/agents/)**: Agent-Definitionen
+- **[copilot-instructions.md](../.github/copilot-instructions.md)**: GitHub Copilot configuration
+- **[agents/](../.github/agents/)**: Agent definitions
 
 ---
 
-## 🔍 Suche nach Themen
+## 🔍 Search by topic
 
-| Thema | Datei |
+| Topic | File |
 |-------|-------|
-| **CQRS (Command Query)** | `ai/AGENT_CONTEXT.md`, `ARCHITECTURE.md` (Kap. 2.1) |
-| **SOLID-Prinzipien** | `ai/AGENT_CONTEXT.md`, `CODING_GUIDELINES.md` (Kap. 2) |
-| **Interface-based Design** | `ai/AGENT_CONTEXT.md`, `CODING_GUIDELINES.md`, `ARCHITECTURE.md` (Kap. 9) |
-| **Domain-Driven Design (DDD)** | `ai/AGENT_CONTEXT.md`, `ARCHITECTURE.md`, `CODING_GUIDELINES.md` |
-| **Command/Handler Pattern** | `ARCHITECTURE.md` (Kap. 2.1), `CODING_GUIDELINES.md` (Kap. 5) |
-| **UseCase & Actions** | `CODING_GUIDELINES.md` (Kap. 6) |
-| **DTOs** | `CODING_GUIDELINES.md` (Kap. 7), `ai/PROJECT_OVERVIEW.md` |
-| **Repositories** | `CODING_GUIDELINES.md` (Kap. 8) |
-| **Controller Best Practices** | `CODING_GUIDELINES.md` (Kap. 9) |
-| **Testing** | `CODING_GUIDELINES.md` (Kap. 10), `ai/AGENT_CONTEXT.md` |
-| **PHPStan & Code Quality** | `CODING_GUIDELINES.md` (Kap. 11), `ai/TECH_STACK.md` |
-| **Error Handling** | `CODING_GUIDELINES.md` (Kap. 12) |
-| **Refactoring-Geschichte** | `REFACTORING_SUMMARY.md` |
-| **AI-Integration** | `AGENTS.md`, `ai/PROJECT_OVERVIEW.md` |
-| **Tech Stack & Versionen** | `ai/TECH_STACK.md` |
-| **Feature-Roadmap** | `ROADMAP.md`, `../COMMIT_PLAN.md` |
+| **CQRS (Command Query)** | `ai/AGENT_CONTEXT.md`, `ARCHITECTURE.md` (Section 2.1) |
+| **SOLID Principles** | `ai/AGENT_CONTEXT.md`, `CODING_GUIDELINES.md` (Chapter 2) |
+| **Interface-based design** | `ai/AGENT_CONTEXT.md`, `CODING_GUIDELINES.md`, `ARCHITECTURE.md` (Chapter 9) |
+| **Domain Driven Design (DDD)** | `ai/AGENT_CONTEXT.md`, `ARCHITECTURE.md`, `CODING_GUIDELINES.md` |
+| **Command/Handler Pattern** | `ARCHITECTURE.md` (Chapter 2.1), `CODING_GUIDELINES.md` (Chapter 5) |
+| **UseCase & Actions** | `CODING_GUIDELINES.md` (Ch. 6) |
+| **DTOs** | `CODING_GUIDELINES.md` (Ch. 7), `ai/PROJECT_OVERVIEW.md` |
+| **Repositories** | `CODING_GUIDELINES.md` (Ch. 8) |
+| **Controller Best Practices** | `CODING_GUIDELINES.md` (Ch. 9) |
+| **Testing** | `CODING_GUIDELINES.md` (Ch. 10), `ai/AGENT_CONTEXT.md` |
+| **PHPStan & Code Quality** | `CODING_GUIDELINES.md` (ch. 11), `ai/TECH_STACK.md` |
+| **Error Handling** | `CODING_GUIDELINES.md` (Ch. 12) |
+| **Refactoring story** | `REFACTORING_SUMMARY.md` |
+| **AI integration** | `AGENTS.md`, `ai/PROJECT_OVERVIEW.md` |
+| **Tech Stack & Versions** | `ai/TECH_STACK.md` |
+| **Feature Roadmap** | `ROADMAP.md`, `../COMMIT_PLAN.md` |
 | **Contribution Process** | `CONTRIBUTING.md`, `../.github/PULL_REQUEST_TEMPLATE.md` |
 
 ---
 
-## 📝 Hinweise
+## 📝Notes
 
-- **Immer aktuell halten**: Diese Dokumentation sollte bei größeren Änderungen aktualisiert werden
-- **Praxisbeispiele**: Siehe `CODING_GUIDELINES.md` für konkrete Code-Beispiele
-- **Fragen?**: Erstelle ein Issue oder kontaktiere das Team
+- **Always keep it up to date**: This documentation should be updated when major changes occur
+- **Practical Examples**: See `CODING_GUIDELINES.md` for specific code examples
+- **Questions?**: Create an issue or contact the team
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-09  
-**Version**: 2.1 (inkl. WORKING_BASELINE als Soft-Reset-Einstieg)
+**Last updated**: 2026-03-09
+**Version**: 2.1 (incl. WORKING_BASELINE as soft reset entry)

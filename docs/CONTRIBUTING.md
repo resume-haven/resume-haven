@@ -1,59 +1,59 @@
 # Contributing to ResumeHaven
 
-Vielen Dank für dein Interesse an ResumeHaven!  
-Dieses Dokument beschreibt die Regeln und Erwartungen für Beiträge zum Projekt.
+Thank you for your interest in ResumeHaven!
+This document describes the rules and expectations for contributions to the project.
 
 ---
 
-# 🎯 Projektphilosophie
+# 🎯 Project philosophy
 
-ResumeHaven ist ein bewusst **minimalistisches**, **regelbasiertes** Analyse‑Tool.  
-Das MVP soll:
+ResumeHaven is a deliberately **minimalist**, **rules-based** analysis tool.
+The MVP should:
 
-- klar strukturiert  
-- leicht verständlich  
-- ohne unnötige Komplexität  
-- ohne KI  
-- ohne Datenbank  
-- ohne User‑Accounts  
+- clearly structured
+- easy to understand
+- without unnecessary complexity
+- without AI
+- without database
+- without user accounts
 
-sein.
+be.
 
-Bitte halte dich bei Beiträgen an diese Prinzipien.
-
----
-
-# 🧱 Architekturgrundsätze
-
-- Die Analyse erfolgt über die **AnalysisEngine**.  
-- Die Engine besteht aus:  
-  - JobExtractor  
-  - ResumeExtractor  
-  - Matcher  
-  - Tagger  
-- Die Engine liefert ein `AnalysisResult`.  
-- Controller sind dünn und enthalten keine Logik.  
-- Views sind minimalistisch und nutzen TailwindCSS.  
-- Keine Speicherung von Nutzerdaten.
+Please adhere to these principles when posting.
 
 ---
 
-# 🛠️ Entwicklungsumgebung
+# 🧱 Architecture principles
 
-ResumeHaven nutzt Docker:
+- The analysis is carried out via the **AnalysisEngine**.
+- The engine consists of:
+  - JobExtractor
+  - ResumeExtractor
+  - Matchers
+  - Taggers
+- The engine returns a `AnalysisResult`.
+- Controllers are thin and contain no logic.
+- Views are minimalist and use TailwindCSS.
+- No storage of user data.
 
-- php-fpm (PHP 8.5)  
-- nginx  
-- node (Tailwind Build)  
-- mailpit  
+---
 
-Starte die Umgebung:
+# 🛠️ Development environment
+
+ResumeHaven uses Docker:
+
+- php-fpm (PHP 8.5)
+- nginx
+- node (Tailwind build)
+- email pit
+
+Start the environment:
 
 ```bash
 docker-compose up --build
 ```
 
-Laravel installieren:
+Install Laravel:
 
 ```bash
 docker exec -it php bash
@@ -62,7 +62,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Tailwind starten:
+Start Tailwind:
 
 ```bash
 docker exec -it node bash
@@ -74,32 +74,32 @@ npm run dev
 
 # 🧪 Tests
 
-Bitte stelle sicher, dass alle Tests erfolgreich laufen:
+Please ensure that all tests run successfully:
 
 ```bash
 php artisan test
 ```
 
-Neue Features müssen mit Tests abgedeckt werden.
+New features must be covered with tests.
 
 ---
 
 # 📦 Pull Requests
 
-Bitte beachte:
+Please note:
 
-- PRs müssen klein und fokussiert sein  
-- Commit‑Nachrichten klar und beschreibend  
-- Keine neuen Abhängigkeiten ohne Diskussion  
-- Keine KI‑Features ohne explizite Freigabe  
-- Keine Datenbankeinführung  
+- PRs need to be small and focused
+- Commit messages clear and descriptive
+- No new dependencies without discussion
+- No AI features without explicit approval
+- No database introduction
 
 ---
 
-# 📚 Dokumentation
+# 📚 Documentation
 
-Alle Architektur‑ und Konzeptdokumente befinden sich im Repo:
+All architecture and concept documents are in the repo:
 
 `resume-haven-ideas/`
 
-Bitte halte die Dokumentation aktuell, wenn
+Please keep the documentation up to date if

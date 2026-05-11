@@ -1,66 +1,66 @@
-# ResumeHaven – Commit 21a Final Status
+# ResumeHaven - Commit 21a Final Status
 
-**Datum:** 2026-03-10  
-**Status:** ✅ Vollständig abgeschlossen
-
----
-
-## 🎯 Zusammenfassung
-
-Commit 21a implementiert vollständige Dark-Mode-Unterstützung mit System-Präferenz-Detection, manueller Toggle-Funktion und persistenter Speicherung der User-Präferenz.
+**Date:** 2026-03-10
+**Status:** ✅ Completely completed
 
 ---
 
-## ✅ Implementierte Features
+## 🎯 Summary
 
-### 1. Tailwind Dark-Mode
-- `darkMode: 'class'` in `tailwind.config.js`
-- Class-based Toggle (nicht media-query)
-- Alle Views mit `dark:` Varianten ausgestattet
+Commit 21a implements full dark mode support with system preference detection, manual toggle functionality and persistent user preference storage.
 
-### 2. JavaScript Dark-Mode Manager
-- **Implementierung:** Inline-Script im `<head>` von `app.blade.php`
-- **Globales Objekt:** `window.DarkModeManager`
-- **Toggle-Funktion:** `DarkModeManager.toggle()`
-- **System-Präferenz:** Automatische Detection via `prefers-color-scheme`
-- **Persistierung:** LocalStorage (`darkMode: 'true'|'false'`)
-- **Initialisierung:** Vor Page-Render (kein Flackern)
+---
 
-### 3. UI-Integration
-- Toggle-Button im Header (neben Mobile-Menu)
-- Sun Icon 🌞 für Light Mode
-- Moon Icon 🌙 für Dark Mode
-- Aria-Labels für Accessibility
-- Responsive Design
+## ✅ Implemented features
 
-### 4. Dark-Mode CSS
+### 1. Tailwind Dark Mode
+- `darkMode: 'class'` to `tailwind.config.js`
+- Class-based toggle (not media query)
+- All views equipped with `dark:` variants
+
+### 2. JavaScript Dark Mode Manager
+- **Implementation:** Inline script in `<head>` of `app.blade.php`
+- **Global Object:** `window.DarkModeManager`
+- **Toggle function:** `DarkModeManager.toggle()`
+- **System preference:** Automatic detection via `prefers-color-scheme`
+- **Persistence:** LocalStorage (`darkMode: 'true'|'false'`)
+- **Initialization:** Before page render (no flickering)
+
+### 3. UI integration
+- Toggle button in the header (next to mobile menu)
+- Sun Icon 🌞 for Light Mode
+- Moon Icon 🌙 for Dark Mode
+- Aria labels for accessibility
+- Responsive design
+
+### 4. Dark mode CSS
 - HTML/Body: `dark:bg-neutral-dark dark:text-text-dark`
 - Header: `dark:bg-neutral-dark dark:border-gray-700`
 - Footer: `dark:bg-neutral-dark dark:border-gray-700`
 - Navigation: `dark:text-gray-400`
 - Buttons: `dark:hover:bg-gray-800`
 
-### 5. Feature-Tests
-- 10 neue Tests in `DarkModeTest.php`
-- Alle Tests grün ✅
+### 5. Feature testing
+- 10 new tests in `DarkModeTest.php`
+- All tests green ✅
 
 ---
 
-## 🐛 Bugfix (2026-03-10)
+## 🐛 Bug fix (2026-03-10)
 
 ### Problem
-`DarkModeManager is not defined` Fehler im Browser beim Klick auf Toggle-Button.
+`DarkModeManager is not defined` Error in the browser when clicking on the toggle button.
 
-### Ursache
-Toggle-Button nutzte `onclick="DarkModeManager.toggle()"`, aber separates JS-Modul wurde nicht korrekt geladen.
+###Cause
+Toggle button used `onclick="DarkModeManager.toggle()"`, but separate JS module was not loaded correctly.
 
-### Lösung
-- Inline-Script direkt im `<head>` von `app.blade.php`
-- Definiert `window.DarkModeManager` als globales Objekt
-- Initialisierung vor Page-Render
-- Kein separates JS-Modul mehr nötig
+###Solution
+- Inline script directly in `<head>` of `app.blade.php`
+- Defines `window.DarkModeManager` as a global object
+- Initialization before page render
+- No separate JS module required anymore
 
-### Code
+###Code
 ```javascript
 // In: resources/views/layouts/app.blade.php <head>
 <script>
@@ -102,52 +102,52 @@ Toggle-Button nutzte `onclick="DarkModeManager.toggle()"`, aber separates JS-Mod
 </script>
 ```
 
-### Verifikation
-- ✅ Browser: Toggle-Button funktioniert
+### Verification
+- ✅ Browser: Toggle button works
 - ✅ Tests: 194 passed (1499 assertions)
 - ✅ PHPStan: Level 9, 0 Errors
-- ✅ Pint: Code-Style konform
+- ✅ Pint: Code style compliant
 
 ---
 
-## 📊 Quality-Gates (Final)
+## 📊 Quality Gates (Final)
 
-| Metrik | Status | Details |
+| Metric | Status | Details |
 |--------|--------|---------|
 | **Tests** | ✅ PASS | 194 passed (1499 assertions) |
 | **PHPStan** | ✅ PASS | Level 9, 0 Errors |
-| **Pint** | ✅ PASS | Code-Style konform |
-| **Browser-Test** | ✅ PASS | Dark-Mode Toggle funktioniert |
-| **Assets** | ✅ PASS | Tailwind mit Dark-Mode gebaut |
+| **Pint** | ✅ PASS | Code style compliant |
+| **Browser test** | ✅ PASS | Dark mode toggle works |
+| **Assets** | ✅ PASS | Tailwind built with dark mode |
 
 ---
 
-## 📁 Geänderte Dateien
+## 📁 Changed files
 
-### Neu
-- `tests/Feature/DarkModeTest.php` (127 Zeilen)
-- `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` (Dokumentation)
+###New
+- `tests/Feature/DarkModeTest.php` (127 lines)
+- `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` (documentation)
 
-### Geändert
-- `tailwind.config.js` (+1 Zeile: `darkMode: 'class'`)
-- `resources/views/layouts/app.blade.php` (+50 Zeilen: Inline Dark-Mode-Script + Toggle-Button)
+### Changed
+- `tailwind.config.js` (+1 line: `darkMode: 'class'`)
+- `resources/views/layouts/app.blade.php` (+50 lines: inline dark mode script + toggle button)
 
-### Entfernt
-- ~~`resources/js/dark-mode.js`~~ (nicht mehr nötig, Inline-Lösung verwendet)
-- ~~`resources/js/app.js` Import~~ (nicht mehr nötig)
+### Removed
+- ~~`resources/js/dark-mode.js`~~ (no longer necessary, inline solution used)
+- ~~`resources/js/app.js` Import~~ (no longer necessary)
 
 ---
 
-## 🚀 Verwendung
+## 🚀 Usage
 
-### Für Benutzer
-1. Klick auf Sun/Moon-Icon im Header
-2. Dark-Mode wird aktiviert/deaktiviert
-3. Präferenz wird automatisch gespeichert
-4. Beim nächsten Besuch wird gespeicherte Präferenz verwendet
-5. Falls keine Präferenz gespeichert: System-Präferenz wird respektiert
+### For users
+1. Click on the Sun/Moon icon in the header
+2. Dark mode is activated/deactivated
+3. Preference is saved automatically
+4. Saved preference will be used on next visit
+5. If no preference is saved: System preference is respected
 
-### Für Entwickler
+### For developers
 ```bash
 # Tests ausführen
 make test
@@ -161,42 +161,42 @@ npm run build
 
 ---
 
-## 📚 Dokumentation
+## 📚 Documentation
 
-### Aktualisierte Dateien
-1. ✅ `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` - Vollständige Implementierungsdokumentation
-2. ✅ `docs/ai/SESSION_RESUME_2026-03-09.md` - Session-Status aktualisiert
-3. ✅ `COMMIT_PLAN.md` - Commit 21a als abgeschlossen markiert
+### Updated files
+1. ✅ `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` - Complete implementation documentation
+2. ✅ `docs/ai/SESSION_RESUME_2026-03-09.md` - Session status updated
+3. ✅ `COMMIT_PLAN.md` - Commit 21a marked complete
 
-### Wichtige Hinweise
-- **Inline-Script-Ansatz:** Einfacher als separates JS-Modul, keine Build-Probleme
-- **Keine Flicker:** Initialisierung vor Page-Render
-- **Accessibility:** Aria-Labels für Screen-Reader
-- **Browser-Kompatibilität:** Modern Browsers (ES6+), localStorage, matchMedia
-
----
-
-## 🔜 Nächste Schritte
-
-**Commit 21a ist final abgeschlossen!** 🎉
-
-### Bereit für Commit 22: Lebenslauf-Speicherung
-- Anonymous CV-Storage
-- Retrieve by unique Token
-- Privacy by Design
-- DSGVO-konform
+### Important instructions
+- **Inline script approach:** Easier than separate JS module, no build issues
+- **No flicker:** Initialization before page render
+- **Accessibility:** Aria labels for screen readers
+- **Browser Compatibility:** Modern Browsers (ES6+), localStorage, matchMedia
 
 ---
 
-## 📝 Lessons Learned
+## 🔜 Next steps
 
-1. **Inline-Scripts für globale Funktionen:** Wenn onclick-Handler globale Funktionen benötigen, ist ein Inline-Script im `<head>` oft einfacher als Module Bundling.
+**Commit 21a is finally completed!** 🎉
 
-2. **Dark-Mode vor Render initialisieren:** Verhindert Flackern beim Page-Load.
+### Ready for Commit 22: CV storage
+- Anonymous CV storage
+- Retrieve by unique tokens
+- Privacy by design
+- GDPR compliant
 
-3. **Fallback auf System-Präferenz:** Gute UX wenn User keine explizite Wahl getroffen hat.
+---
 
-4. **Minimal viable Implementation:** 50 Zeilen JavaScript reichen für vollständige Dark-Mode-Funktionalität.
+## 📝 Lessons learned
+
+1. **Inline scripts for global functions:** If onclick handlers require global functions, an inline script in `<head>` is often easier than module bundling.
+
+2. **Initialize dark mode before rendering:** Prevents flickering during page load.
+
+3. **Fallback to system preference:** Good UX if user has not made an explicit choice.
+
+4. **Minimal viable implementation:** 50 lines of JavaScript are enough for full dark mode functionality.
 
 ---
 

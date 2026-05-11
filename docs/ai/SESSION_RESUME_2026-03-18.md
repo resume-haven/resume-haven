@@ -1,72 +1,71 @@
 # Session Resume - 2026-03-18
 
-Diese Datei dient als Einstiegspunkt nach einem Soft-RESET des Chat-Kontexts.
+This file serves as an entry point after a soft RESET of the chat context.
 
 ---
 
-## Aktueller Projektstand
+## Current project status
 
 - Branch: `feature/commit-25-analysis-delta-explainability`
-- Git-Status: `working tree clean` (nichts uncommitted)
-- Commit-Plan: Commit 25 ist aktiv (`In Umsetzung`)
-- Changelog: `[Unreleased]` auf aktuellen Stand gebracht
+- Git status: `working tree clean` (nothing uncommitted)
+- Commit plan: Commit 25 is active (`In Umsetzung`)
+- Changelog: `[Unreleased]` updated
 
 ---
 
-## Was ist bereits persistiert?
+## What is already persisted?
 
-### Commit-25-nahe Implementierung (persistiert)
-- Vergleichs-/Delta-Flow fuer Baseline vs. Kompetenz-CV:
+### Commit-25-near implementation (persisted)
+- Comparison/Delta Flow for Baseline vs. Competency CV:
   - `BuildAnalysisComparisonAction`
-  - Delta-DTOs (`ScoreDeltaDto`, `RecommendationDeltaDto`, `AnalysisComparisonDto`)
-  - Baseline-Persistenz (`AnalysisBaseline`, Migration, Repository, ResolveBaselineKeyAction)
-- Ergebnis-UI mit Delta/Impact-Panel in `result.blade.php`
-- Flow-Integration ueber `ExecuteAnalyzeFlowAction` -> `BuildAnalyzeViewDataAction` -> `AnalyzeViewDataDto` -> `AnalyzeController`
+  - Delta DTOs (`ScoreDeltaDto`, `RecommendationDeltaDto`, `AnalysisComparisonDto`)
+  - Baseline Persistence (`AnalysisBaseline`, Migration, Repository, ResolveBaselineKeyAction)
+- Result UI with Delta/Impact panel in `result.blade.php`
+- Flow integration via `ExecuteAnalyzeFlowAction` -> `BuildAnalyzeViewDataAction` -> `AnalyzeViewDataDto` -> `AnalyzeController`
 
-### Tests (persistiert)
-- Unit:
+### Tests (persistent)
+-Unit:
   - `BuildAnalysisComparisonActionTest`
-  - `BuildAnalyzeViewDataActionTest` (comparison-Absicherung)
-  - `AnalyzeControllerUnitTest` (comparison in View-Daten)
-- Feature:
-  - `AnalysisComparisonTest` (Verbesserung, Gleichstand, Verschlechterung)
+  - `BuildAnalyzeViewDataActionTest` (comparison protection)
+  - `AnalyzeControllerUnitTest` (comparison in view data)
+- Features:
+  - `AnalysisComparisonTest` (improvement, tie, deterioration)
   - `AnalysisBaselineRepositoryTest`
-  - `GenerateLicenseDataCommandTest` (robuste Lockfile-Faelle)
+  - `GenerateLicenseDataCommandTest` (robust lock file cases)
 
-### Hardening (persistiert)
-- `GenerateLicenseDataCommand` gegen invalides `composer.lock`-Format gehaertet
-- Leere License-Arrays werden als `unknown` normalisiert
+### Hardening (persisted)
+- `GenerateLicenseDataCommand` hardened against invalid `composer.lock` format
+- Empty license arrays are normalized as `unknown`
 
 ---
 
-## Verifizierte Quality-Gates (Stand dieser Session)
+## Verified quality gates (as of this session)
 
-- Pest Coverage: `98.4 %` (Minimum `95 %`)
+- Plague Coverage: `98.4 %` (Minimum `95 %`)
 - PHPStan: `0 Errors` (Level 9)
 - Pint: `pass`
-- Letzter Voll-Lauf: `254 tests`, `1764 assertions`
+- Last full run: `254 tests`, `1764 assertions`
 
 ---
 
-## Soft-RESET Start-Reihenfolge
+## Soft RESET start order
 
 1. `docs/ai/WORKING_BASELINE.md`
-2. `docs/ai/SESSION_RESUME_2026-03-18.md` (diese Datei)
+2. `docs/ai/SESSION_RESUME_2026-03-18.md` (this file)
 3. `COMMIT_PLAN.md`
 4. `docs/ai/AGENT_CONTEXT.md`
 5. `CHANGELOG.md` (`[Unreleased]`)
 
 ---
 
-## Offene Schwerpunkte nach Reset
+## Open focal points after reset
 
-- Commit 25 finalisieren (Rest-Slice + Abschlussdoku)
-- Optionaler Coverage-Hotspot danach:
-  - `Services/AiAnalyzer/GeminiAiAnalyzer` (weiter ausbauen)
+- Finalize commit 25 (rest slice + final documentation)
+- Optional coverage hotspot afterwards:
+  - `Services/AiAnalyzer/GeminiAiAnalyzer` (further expand)
 
 ---
 
-**Erstellt:** 2026-03-18
-**Zweck:** Tagesaktueller Soft-RESET-Einstieg
-**Geltung:** Bis zur naechsten groesseren Statusaenderung in Commit 25
-
+**Created:** 2026-03-18
+**Purpose:** Daily soft RESET entry
+**Valid:** Until the next major status change in commit 25

@@ -1,215 +1,215 @@
-# Commit 21a – Dark-Mode Support
+# Commit 21a – Dark mode support
 
-**Status:** ✅ Abgeschlossen (2026-03-09)
+**Status:** ✅ Completed (2026-03-09)
 
-**Zweck:** Vollständige Dark-Mode-Unterstützung mit System-Präferenz-Detection, Toggle-Button und persistenter User-Präferenz.
+**Purpose:** Full dark mode support with system preference detection, toggle button and persistent user preference.
 
 ---
 
-## ✅ Was wurde umgesetzt
+## ✅ What was implemented
 
-### 1. Tailwind Dark-Mode Konfiguration ✅
-- `darkMode: 'class'` in `tailwind.config.js` aktiviert
-- Class-based Dark-Mode (nicht media-query)
-- Erlaubt manuellen Toggle per JavaScript
+### 1. Tailwind Dark Mode Configuration ✅
+- `darkMode: 'class'` activated in `tailwind.config.js`
+- Class-based dark mode (not media query)
+- Allows manual toggle via JavaScript
 
-### 2. Dark-Mode JavaScript Manager ✅
-- **Inline-Script im Layout:** `resources/views/layouts/app.blade.php`
-- `window.DarkModeManager` als globales Objekt
+### 2. Dark Mode JavaScript Manager ✅
+- **Inline script in layout:** `resources/views/layouts/app.blade.php`
+- `window.DarkModeManager` as a global object
 - Features:
-  - System-Präferenz-Detection (`prefers-color-scheme`)
-  - LocalStorage-Persistierung (`darkMode` key)
-  - Toggle-Funktion (`DarkModeManager.toggle()`)
-  - Initialisierung vor Page-Render (kein Flackern)
-  - Minimale, fokussierte Implementierung (ca. 50 Zeilen)
+  - System preference detection (`prefers-color-scheme`)
+  - LocalStorage persistence (`darkMode` key)
+  - Toggle function (`DarkModeManager.toggle()`)
+  - Initialization before page render (no flickering)
+  - Minimal, focused implementation (around 50 lines)
 
-### 3. Layout-Integration ✅
-- Dark-Mode Toggle Button im Header
+### 3. Layout integration ✅
+- Dark mode toggle button in the header
 - Sun Icon (Light Mode) 🌞
 - Moon Icon (Dark Mode) 🌙
-- Aria-Labels für Accessibility
-- Responsive Design (funktioniert mit Mobile Menu)
+- Aria labels for accessibility
+- Responsive Design (works with Mobile Menu)
 
-### 4. Dark-Mode CSS für alle Komponenten ✅
-- HTML Element: `dark:bg-neutral-dark dark:text-text-dark`
+### 4. Dark mode CSS for all components ✅
+- HTML element: `dark:bg-neutral-dark dark:text-text-dark`
 - Header: `dark:bg-neutral-dark dark:border-gray-700`
 - Footer: `dark:bg-neutral-dark dark:border-gray-700`
 - Navigation: `dark:text-gray-400`
 - Buttons: `dark:hover:bg-gray-800`
-- Alle bestehenden Views bereits dark-mode-ready
+- All existing views are already dark mode ready
 
-### 5. Feature-Tests ✅
-- `tests/Feature/DarkModeTest.php` (10 Tests)
-- Toggle-Button vorhanden
-- Icons vorhanden
-- Dark-Mode-Klassen in HTML/Header/Footer
-- Tailwind Config prüft `darkMode: 'class'`
-- Alle Standard-Seiten getestet
+### 5. Feature testing ✅
+- `tests/Feature/DarkModeTest.php` (10 tests)
+- Toggle button available
+- Icons available
+- Dark mode classes in HTML/Header/Footer
+- Tailwind Config checks `darkMode: 'class'`
+- All standard pages tested
 
-### 6. Quality-Gates ✅
+### 6. Quality gates ✅
 - **Tests:** 194 passed (1499 assertions) ✅
 - **PHPStan:** Level 9, 0 Errors ✅
-- **Pint:** Code-Style konform ✅
-- **Assets:** Neu gebaut mit Tailwind Dark-Mode Support ✅
+- **Pint:** Code style compliant ✅
+- **Assets:** Newly built with Tailwind dark mode support ✅
 
 ---
 
-## 🎯 Funktionsweise
+## 🎯 How it works
 
-### System-Präferenz als Default
-Beim ersten Besuch wird die Browser-/OS-Präferenz erkannt:
+### System preference as default
+On the first visit, the browser/OS preference is recognized:
 ```javascript
 window.matchMedia('(prefers-color-scheme: dark)').matches
 ```
 
-### Manueller Toggle
-User kann Dark-Mode manuell ein-/ausschalten:
+### Manual toggle
+User can switch dark mode on/off manually:
 ```javascript
 DarkModeManager.toggle()
 ```
 
-### Persistierung
-User-Präferenz wird in `localStorage` gespeichert:
+### Persistence
+User preference is stored in `localStorage`:
 ```javascript
 localStorage.setItem('darkMode', 'true' | 'false')
 ```
 
-### HTML-Klasse
-Dark-Mode wird über CSS-Klasse aktiviert:
+### HTML class
+Dark mode is activated via CSS class:
 ```html
 <html class="dark">
 ```
 
-Tailwind erkennt die Klasse und aktiviert alle `dark:` Varianten.
+Tailwind recognizes the class and activates all `dark:` variants.
 
 ---
 
-## 📐 Implementierte Dateien
+## 📐 Implemented files
 
 ### JavaScript
-- **Inline-Script in `resources/views/layouts/app.blade.php`**
-  - DarkModeManager als globales `window.DarkModeManager` Objekt
-  - Initialisierung im `<head>` vor Page-Render
-  - Kein separates JS-Modul nötig (minimale Implementierung)
+- **Inline script in `resources/views/layouts/app.blade.php`**
+  - DarkModeManager as a global `window.DarkModeManager` object
+  - Initialization in `<head>` before page render
+  - No separate JS module required (minimal implementation)
 
 ### Tailwind Config
-- **`tailwind.config.js`** (aktualisiert)
-  - `darkMode: 'class'` aktiviert
+- **`tailwind.config.js`** (updated)
+  - `darkMode: 'class'` activated
 
-### Layout
-- **`resources/views/layouts/app.blade.php`** (aktualisiert)
-  - Inline Dark-Mode-Script im `<head>`
-  - Dark-Mode Toggle Button im Header
-  - Sun/Moon Icons
-  - Dark-Mode CSS-Klassen für HTML/Body/Header/Footer
+###Layout
+- **`resources/views/layouts/app.blade.php`** (updated)
+  - Inline dark mode script in `<head>`
+  - Dark mode toggle button in the header
+  - Sun/Moon icons
+  - Dark mode CSS classes for HTML/Body/Header/Footer
 
 ### Tests
-- **`tests/Feature/DarkModeTest.php`** (neu)
-  - 10 Feature-Tests für Dark-Mode-Funktionalität
+- **`tests/Feature/DarkModeTest.php`** (new)
+  - 10 feature tests for dark mode functionality
 
 ---
 
-## 🚀 Verwendung
+## 🚀 Usage
 
-### Für Entwickler
+### For developers
 
-**Assets neu bauen:**
+**Rebuild assets:**
 ```bash
 npm run build
 # oder im Watch-Mode:
 npm run dev
 ```
 
-**Tests ausführen:**
+**Run tests:**
 ```bash
 make test-feature
 # oder spezifisch:
 vendor/bin/pest tests/Feature/DarkModeTest.php
 ```
 
-### Für User
+### For users
 
-**Toggle-Button verwenden:**
-- Klick auf Sun/Moon-Icon im Header
-- Präferenz wird automatisch gespeichert
-- Beim nächsten Besuch wird gespeicherte Präferenz angewendet
+**Use toggle button:**
+- Click on the Sun/Moon icon in the header
+- Preference is saved automatically
+- Saved preference will be applied on next visit
 
-**System-Präferenz respektieren:**
-- Wenn User nicht manuell gewählt hat
-- Wird automatisch OS-/Browser-Einstellung verwendet
-- Updates der System-Präferenz werden live erkannt
-
----
-
-## 🧪 Test-Abdeckung
-
-### Feature-Tests (10 Tests)
-1. ✅ Dark-Mode Toggle Button im Header vorhanden
-2. ✅ Sun Icon für Light Mode sichtbar
-3. ✅ Moon Icon für Dark Mode sichtbar
-4. ✅ Dark-Mode Klassen auf HTML Element
-5. ✅ Dark-Mode JavaScript geladen (app.css)
-6. ✅ Header hat Dark-Mode Support
-7. ✅ Footer hat Dark-Mode Support
-8. ✅ Tailwind darkMode Config aktiviert
-9. ✅ Alle Standard-Seiten haben Dark-Mode Support
-10. ✅ Mobile Menu Button hat Dark-Mode Support
+**Respect system preference:**
+- If user did not select manually
+- Automatically uses OS/browser setting
+- System preference updates are detected live
 
 ---
 
-## 📊 Metriken
+## 🧪 Test coverage
 
-- **Neue Dateien:** 1 (DarkModeTest.php)
-- **Geänderte Dateien:** 2 (tailwind.config.js, app.blade.php)
-- **Neue Tests:** 10
-- **Code-Zeilen JavaScript:** ~50 (Inline-Script)
-- **Code-Zeilen Tests:** ~127
-- **Implementierungsansatz:** Inline-Script statt separates Modul (einfacher, schneller, keine Build-Probleme)
+### Feature testing (10 tests)
+1. ✅ Dark mode toggle button present in the header
+2. ✅ Sun icon visible for light mode
+3. ✅ Moon icon visible for dark mode
+4. ✅ Dark mode classes on HTML elements
+5. ✅ Dark mode JavaScript loaded (app.css)
+6. ✅ Header has dark mode support
+7. ✅ Footer has dark mode support
+8. ✅ Tailwind darkMode Config activated
+9. ✅ All standard sites have dark mode support
+10. ✅ Mobile Menu Button has dark mode support
 
 ---
 
-## 🔄 Nächste Schritte
+## 📊 Metrics
 
-**Commit 21a ist abgeschlossen!**
+- **New files:** 1 (DarkModeTest.php)
+- **Changed files:** 2 (tailwind.config.js, app.blade.php)
+- **New Tests:** 10
+- **Lines of JavaScript code:** ~50 (inline script)
+- **Lines of Code Tests:** ~127
+- **Implementation approach:** Inline script instead of separate module (easier, faster, no build problems)
 
-### Commit 22: Lebenslauf-Speicherung (geplant)
-- Anonymous CV-Storage
-- Retrieve by unique Token
-- Privacy by Design
+---
+
+## 🔄 Next steps
+
+**Commit 21a is complete!**
+
+### Commit 22: Resume storage (planned)
+- Anonymous CV storage
+- Retrieve by unique tokens
+- Privacy by design
 
 ### Commit 23+: CI/CD & Deployment
 - GitHub Actions
-- Production-Deployment (IONOS)
+- Production deployment (IONOS)
 
 ---
 
-## 🐛 Bekannte Limitierungen
+## 🐛 Known limitations
 
-### MVP-Scope
-- ✅ Keine JavaScript-Frameworks nötig (Vanilla JS)
-- ✅ Keine zusätzlichen Dependencies
-- ✅ Browser-Kompatibilität: Modern Browsers (ES6+)
-- ✅ Keine Server-Side Dark-Mode Detection (nur Client-Side)
+### MVP scope
+- ✅ No JavaScript frameworks required (Vanilla JS)
+- ✅ No additional dependencies
+- ✅ Browser Compatibility: Modern Browsers (ES6+)
+- ✅ No server-side dark mode detection (only client-side)
 
-### Zukünftige Erweiterungen (Post-MVP)
-- Dark-Mode-Präferenz in User-Account speichern (wenn Accounts implementiert)
-- Dark-Mode-Vorschau in Settings
-- Automatischer Wechsel basierend auf Tageszeit
+### Future Expansions (Post-MVP)
+- Save dark mode preference in user account (if accounts implemented)
+- Dark mode preview in Settings
+- Automatic switching based on time of day
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Problem: "DarkModeManager is not defined" Fehler
+### Problem: "DarkModeManager is not defined" error
 
-**Ursache:** Toggle-Button nutzt `onclick="DarkModeManager.toggle()"`, aber globales Objekt fehlt.
+**Cause:** Toggle button uses `onclick="DarkModeManager.toggle()"`, but global object is missing.
 
-**Lösung (implementiert):**
-- Inline-Script im `<head>` definiert `window.DarkModeManager` global
-- Script wird vor Page-Render ausgeführt
-- Kein separates JS-Modul nötig (einfachere Implementierung)
+**Solution (implemented):**
+- Inline script in `<head>` defines `window.DarkModeManager` globally
+- Script is executed before page render
+- No separate JS module required (easier implementation)
 
-**Code-Snippet:**
+**Code snippet:**
 ```javascript
 window.DarkModeManager = {
     toggle() {
@@ -219,11 +219,11 @@ window.DarkModeManager = {
 };
 ```
 
-**Status:** ✅ Behoben (2026-03-10)
+**Status:** ✅ Fixed (2026-03-10)
 
 ---
 
-## 📚 Referenzen
+## 📚 References
 
 - **Tailwind Dark Mode Docs:** https://tailwindcss.com/docs/dark-mode
 - **MDN prefers-color-scheme:** https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
@@ -231,11 +231,5 @@ window.DarkModeManager = {
 
 ---
 
-**Letzte Aktualisierung:** 2026-03-10  
-**Version:** 1.1 (Commit 21a abgeschlossen, DarkModeManager-Fix dokumentiert)
-
-
-
-
-
-
+**Last updated:** 2026-03-10
+**Version:** 1.1 (Commit 21a completed, DarkModeManager fix documented)

@@ -1,91 +1,91 @@
-# Commit 20b – Implementierungsanleitung
+# Commit 20b - Implementation Guide
 
-**Status:** ✅ Abgeschlossen (2026-03-09)
+**Status:** ✅ Completed (2026-03-09)
 
-**Quick Start für die Umsetzung von Legal-Seiten**
+**Quick start for the implementation of legal pages**
 
 ---
 
-## ✅ Implementierungs-Ergebnis
+## ✅ Implementation result
 
-**Commit 20b wurde erfolgreich abgeschlossen!**
+**Commit 20b was completed successfully!**
 
-### Was wurde umgesetzt:
+### What was implemented:
 
-#### Phase 1: Routes & Controller ✅
-- `LegalController` mit named methods (impressum, datenschutz, lizenzen)
-- `ContactController` mit show/submit methods
-- Routes in `routes/web.php` definiert
+#### Phase 1: Routes & Controllers ✅
+- `LegalController` with named methods (imprint, data protection, licenses)
+- `ContactController` with show/submit methods
+- Routes defined in `routes/web.php`
 
 #### Phase 2: Views ✅
 - `resources/views/legal/impressum.blade.php`
 - `resources/views/legal/datenschutz.blade.php`
 - `resources/views/legal/kontakt.blade.php`
 - `resources/views/legal/lizenzen.blade.php`
-- Alle Views mit TailwindCSS + Dark-Mode Support
+- All views with TailwindCSS + dark mode support
 
-#### Phase 3: Footer-Navigation ✅
-- Footer in `resources/views/layouts/app.blade.php` erweitert
-- Legal-Links (Impressum, Datenschutz, Kontakt, Lizenzen)
-- Responsive Design (Stack vertikal < 768px)
+#### Phase 3: Footer navigation ✅
+- Footer expanded in `resources/views/layouts/app.blade.php`
+- Legal links (imprint, data protection, contact, licenses)
+- Responsive design (stack vertical < 768px)
 
-#### Phase 4: Kontaktformular ✅
-- `ContactRequest` Form Request mit Validierung
-- `ContactRequestDto` für Type-Safe Data Transfer
-- CSRF-Protection aktiv
-- Success/Error-Messages im Frontend
+#### Phase 4: Contact form ✅
+- `ContactRequest` Form Request with validation
+- `ContactRequestDto` for Type-Safe Data Transfer
+- CSRF protection active
+- Success/Error messages in the frontend
 
-#### Phase 5: Lizenzen-Generator ✅
-- `GenerateLicenseDataCommand` implementiert
-- Parst `composer.lock` und `package-lock.json`
-- Speichert in `storage/app/licenses.json`
-- Composer-Script: `composer run licenses:generate`
- - Makefile-Target: `make licenses-generate` ✅
-- **Status:** Erfolgreich generiert (78 PHP-Pakete, 203 Node-Pakete)
+#### Phase 5: License Generator ✅
+- `GenerateLicenseDataCommand` implemented
+- Parses `composer.lock` and `package-lock.json`
+- Saves in `storage/app/licenses.json`
+- Composer script: `composer run licenses:generate`
+ - Makefile target: `make licenses-generate` ✅
+- **Status:** Generated successfully (78 PHP packages, 203 node packages)
 
 #### Phase 6: Tests ✅
-- `tests/Feature/LegalPagesTest.php` (4 Tests)
-- `tests/Feature/ContactFormTest.php` (5 Tests)
-- `tests/Feature/FooterNavigationTest.php` (1 Test)
-- `tests/Feature/LicensesPageTest.php` (2 Tests)
-- Alle Tests grün ✅
+- `tests/Feature/LegalPagesTest.php` (4 tests)
+- `tests/Feature/ContactFormTest.php` (5 tests)
+- `tests/Feature/FooterNavigationTest.php` (1 test)
+- `tests/Feature/LicensesPageTest.php` (2 tests)
+- All tests green ✅
 
-#### Quality-Gates ✅
+#### Quality Gates ✅
 - PHPStan Level 9: 0 Errors ✅
-- Pint: Code-Style konform ✅
-- Test-Coverage: 98.2% ✅
+- Pint: Code style compliant ✅
+- Test coverage: 98.2% ✅
 
 ---
 
-## 📚 Nützliche Referenzen (falls Anpassungen nötig)
+## 📚 Useful references (if adjustments are needed)
 
-## 🚀 Start der Implementierung
+## 🚀 Start of implementation
 
-### Option 1: Ich (Copilot) führe die Implementierung durch
+### Option 1: I (copilot) carry out the implementation
 
-**Wenn du möchtest, dass ich die Implementierung übernehme:**
+**If you want me to do the implementation:**
 
-1. Sage einfach: **"Start mit Commit 20b Implementierung"**
-2. Ich arbeite dann systematisch die Phasen ab:
-   - Phase 1: Routes + Controller
+1. Just say: **"Start with commit 20b implementation"**
+2. I then systematically work through the phases:
+   - Phase 1: Routes + Controllers
    - Phase 2: Views
-   - Phase 3: Footer
-   - Phase 4-5: Kontaktformular
-   - Phase 6: Lizenzen
-   - Phase 7: Tests
+   - Phase 3: Footers
+   - Phase 4-5: Contact form
+   - Phase 6: Licenses
+   - Phase 7: Testing
    - Phase 8: Quality Gates
 
-3. Nach jedem Schritt führe ich Tests aus und zeige dir den Status
+3. After each step I run tests and show you the status
 
 ---
 
-### Option 2: Du implementierst selbst (mit meiner Unterstützung)
+### Option 2: You implement yourself (with my support)
 
-**Wenn du selbst implementieren möchtest:**
+**If you want to implement it yourself:**
 
-Folge der **Step-by-Step-Reihenfolge** in `docs/history/PLANNING_COMMIT_20b.md`:
+Follow the **step-by-step order** in `docs/history/PLANNING_COMMIT_20b.md`:
 
-#### Step 1: Statische Seiten (Quick Win - ~30min)
+#### Step 1: Static Pages (Quick Win - ~30min)
 
 ```bash
 # 1. Branch erstellen
@@ -105,11 +105,11 @@ mkdir -p resources/views/legal
 make test-feature
 ```
 
-**Dann frage mich:** "Ist Step 1 korrekt?" → Ich reviewe deinen Code
+**Then ask myself:** “Is Step 1 correct?” → I review your code
 
 ---
 
-#### Step 2: Kontaktformular (~1h)
+#### Step 2: Contact form (~1h)
 
 ```bash
 # 1. Form Request erstellen
@@ -131,11 +131,11 @@ php artisan make:controller ContactController
 make test-feature
 ```
 
-**Dann frage mich:** "Review Kontaktformular" → Ich prüfe Security + Validierung
+**Then ask myself:** “Review contact form” → I check security + validation
 
 ---
 
-#### Step 3: Lizenzen-Generator (~1h)
+#### Step 3: License generator (~1h)
 
 ```bash
 # 1. Command erstellen
@@ -166,7 +166,7 @@ php artisan licenses:generate
 make test
 ```
 
-**Dann frage mich:** "Review Lizenzen-Generator" → Ich prüfe Parsing-Logik
+**Then ask myself:** "Review License Generator" → I check parsing logic
 
 ---
 
@@ -197,9 +197,9 @@ Closes #20b"
 
 ---
 
-## 📋 Code-Vorlagen
+## 📋 Code templates
 
-### composer.json (Scripts erweitern)
+### composer.json (extend scripts)
 
 ```json
 {
@@ -225,7 +225,7 @@ Closes #20b"
 }
 ```
 
-### Makefile (Target hinzufügen)
+### Makefile (add target)
 
 ```makefile
 # --- LICENSES ---
@@ -238,7 +238,7 @@ licenses-local: ## Lizenzen lokal generieren (ohne Docker)
 
 ---
 
-## 📋 Code-Vorlagen
+## 📋 Code templates
 
 ### LegalController.php (Basic)
 
@@ -298,7 +298,7 @@ Route::get('/kontakt', [ContactController::class, 'show'])->name('contact.show')
 Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.submit');
 ```
 
-### View-Vorlage (impressum.blade.php)
+### View template (imprint.blade.php)
 
 ```blade
 @extends('layouts.app')
@@ -338,7 +338,7 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 @endsection
 ```
 
-### Footer-Update (layouts/app.blade.php)
+### Footer update (layouts/app.blade.php)
 
 ```blade
 <!-- Footer -->
@@ -365,56 +365,56 @@ Route::post('/kontakt', [ContactController::class, 'submit'])->name('contact.sub
 
 ---
 
-## 📊 Nächste Schritte nach Commit 20b
+## 📊 Next steps after commit 20b
 
-**Commit 20b ist abgeschlossen!** Die folgenden Commits sind geplant:
+**Commit 20b is complete!** The following commits are planned:
 
 ### Commit 21: Responsive Layout & Mobile-First
-- Mobile-optimierte Layouts für alle Seiten
-- Touch-optimierte Interaktionen
-- Responsive Breakpoints (sm, md, lg, xl)
-- Progressive Enhancement
+- Mobile-optimized layouts for all pages
+- Touch optimized interactions
+- Responsive breakpoints (sm, md, lg, xl)
+-Progressive Enhancement
 
-### Commit 21a: Dark-Mode Support
-- System-Präferenz-Detection
-- Toggle-Button für manuellen Wechsel
-- Persistente User-Präferenz (LocalStorage)
-- Dark-Mode für alle Komponenten
+### Commit 21a: Dark mode support
+- System preference detection
+- Toggle button for manual switching
+- Persistent user preference (LocalStorage)
+- Dark mode for all components
 
-### Commit 22: Lebenslauf-Speicherung
-- Anonymous CV-Storage
-- Retrieve by unique Token
-- Privacy by Design (kein User-Account nötig)
+### Commit 22: Resume storage
+- Anonymous CV storage
+- Retrieve by unique tokens
+- Privacy by Design (no user account required)
 
 ---
 
-## 📚 Weitere Dokumentation
+## 📚 More documentation
 
-- **Detailplanung:** `docs/history/PLANNING_COMMIT_20b.md`
-- **Commit-Plan:** `COMMIT_PLAN.md`
-- **Architektur:** `docs/ARCHITECTURE.md`
+- **Detailed planning:** `docs/history/PLANNING_COMMIT_20b.md`
+- **Commit plan:** `COMMIT_PLAN.md`
+- **Architecture:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
-- **Soft-Reset Baseline:** `docs/ai/WORKING_BASELINE.md`
+- **Soft reset baseline:** `docs/ai/WORKING_BASELINE.md`
 
 ---
 
-## 🔄 Kontext-Reset nach Commit 20b
+## 🔄 Context reset after commit 20b
 
-**Falls Kontext verloren geht, starte mit:**
+**If context is lost, start with:**
 
-1. Lies `docs/ai/WORKING_BASELINE.md` (Soft-Reset-Einstieg)
-2. Prüfe `COMMIT_PLAN.md` für Status-Überblick
-3. Prüfe `docs/history/COMMIT_20b_IMPLEMENTATION_GUIDE.md` (diese Datei) für Details
-4. Repository-Stand ist Source of Truth
+1. Read `docs/ai/WORKING_BASELINE.md` (soft reset entry)
+2. Check `COMMIT_PLAN.md` for status overview
+3. Check `docs/history/COMMIT_20b_IMPLEMENTATION_GUIDE.md` (this file) for details
+4. Repository status is source of truth
 
-**Aktueller Stand:**
-- ✅ Commit 20b abgeschlossen (Legal-Seiten & Vertrauen)
-- 🔄 Commit 21 (Responsive Layout) als nächstes geplant
-- Tests: Alle grün ✅
+**Current status:**
+- ✅ Commit 20b completed (legal sites & trust)
+- 🔄 Commit 21 (Responsive Layout) planned next
+- Tests: All green ✅
 - PHPStan: Level 9, 0 Errors ✅
 - Coverage: 98.2% ✅
 
 ---
 
-**Letzte Aktualisierung:** 2026-03-09  
-**Version:** 2.0 (Commit 20b abgeschlossen, bereit für Commit 21)
+**Last updated:** 2026-03-09
+**Version:** 2.0 (commit 20b completed, ready for commit 21)

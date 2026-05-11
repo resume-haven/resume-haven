@@ -1,60 +1,60 @@
-# GitHub Pages Setup für ResumeHaven
+# GitHub Pages Setup for ResumeHaven
 
-Diese Anleitung beschreibt, wie die Dokumentation auf GitHub Pages veröffentlicht wird.
-
----
-
-## 📋 Voraussetzungen
-
-- Repository auf GitHub
-- Admin-Zugriff auf das Repository
-- `docs/` Verzeichnis mit Dokumentation (✅ bereits vorhanden)
+This guide describes how to publish documentation to GitHub Pages.
 
 ---
 
-## 🚀 GitHub Pages aktivieren
+## 📋 Requirements
 
-### Schritt 1: Repository Settings öffnen
+- Repository on GitHub
+- Admin access to the repository
+- `docs/` Directory with documentation (✅ already exists)
 
-1. Gehe zu deinem Repository auf GitHub
-2. Klicke auf **Settings** (⚙️)
-3. Scrolle im linken Menü zu **Pages**
+---
 
-### Schritt 2: Source konfigurieren
+## 🚀 Enable GitHub Pages
 
-1. **Source**: Wähle `Deploy from a branch`
-2. **Branch**: Wähle `main` (oder `master`)
-3. **Folder**: Wähle `/docs`
-4. Klicke auf **Save**
+### Step 1: Open Repository Settings
 
-### Schritt 3: Theme auswählen (optional)
+1. Go to your repository on GitHub
+2. Click on **Settings** (⚙️)
+3. Scroll to **Pages** in the left menu
 
-1. Im Pages-Bereich auf **Choose a theme** klicken
-2. Ein Theme auswählen (z.B. Cayman, Minimal, Slate)
-3. Oder: `_config.yml` manuell anpassen (bereits vorhanden)
+### Step 2: Configure Source
 
-### Schritt 4: Warten
+1. **Source**: Select `Deploy from a branch`
+2. **Branch**: Select `main` (or `master`)
+3. **Folder**: Select `/docs`
+4. Click on **Save**
 
-GitHub Pages baut die Seite automatisch. Das dauert ca. 1-2 Minuten.
+### Step 3: Select theme (optional)
+
+1. In the Pages area click on **Choose a theme**
+2. Select a theme (e.g. Cayman, Minimal, Slate)
+3. Or: adjust `_config.yml` manually (already exists)
+
+### Step 4: Wait
+
+GitHub Pages builds the page automatically. This takes about 1-2 minutes.
 
 ---
 
 ## 🌐 URL
 
-Deine Dokumentation ist dann verfügbar unter:
+Your documentation will then be available at:
 
 ```
 https://<username>.github.io/<repository-name>/
 ```
 
-Beispiel:
+Example:
 ```
 https://guidoschade.github.io/resume-haven/
 ```
 
 ---
 
-## 📁 Aktuelle Struktur (GitHub Pages-kompatibel)
+## 📁 Current structure (GitHub Pages compatible)
 
 ```
 resume-haven/
@@ -73,9 +73,9 @@ resume-haven/
     └── REFACTORING_SUMMARY.md
 ```
 
-### URLs nach Veröffentlichung:
+### URLs after publication:
 
-| Datei | URL |
+| File | URL |
 |-------|-----|
 | `docs/index.md` | `https://username.github.io/repo/` |
 | `docs/ARCHITECTURE.md` | `https://username.github.io/repo/ARCHITECTURE` |
@@ -83,50 +83,50 @@ resume-haven/
 
 ---
 
-## ✅ Checkliste
+## ✅ Checklist
 
-- [x] `docs/` Verzeichnis mit Markdown-Dateien erstellt
-- [x] `docs/index.md` als Haupt-Index erstellt
-- [x] `docs/README.md` als Fallback erstellt
-- [x] `docs/_config.yml` für Jekyll erstellt
-- [x] Links in Markdown-Dateien sind relativ (z.B. `[Link](ARCHITECTURE.md)`)
-- [ ] GitHub Pages in Repository Settings aktiviert
-- [ ] Theme ausgewählt (oder in `_config.yml` gesetzt)
-- [ ] Nach 1-2 Minuten: URL testen
+- [x] `docs/` Directory created with Markdown files
+- [x] `docs/index.md` created as main index
+- [x] `docs/README.md` created as a fallback
+- [x] `docs/_config.yml` created for Jekyll
+- [x] Links in Markdown files are relative (e.g. `[Link](ARCHITECTURE.md)`)
+- [ ] GitHub Pages enabled in Repository Settings
+- [ ] Theme selected (or set in `_config.yml`)
+- [ ] After 1-2 minutes: Test URL
 
 ---
 
 ## 🎨 Themes
 
-GitHub Pages unterstützt folgende Jekyll-Themes standardmäßig:
+GitHub Pages supports the following Jekyll themes by default:
 
-1. **Cayman** (modern, clean) - **empfohlen** ✅
-2. **Minimal** (sehr einfach)
-3. **Slate** (dunkel)
-4. **Architect** (technisch)
-5. **Tactile** (klassisch)
-6. **Dinky** (kompakt)
-7. **Leap Day** (frisch)
+1. **Cayman** (modern, clean) - **recommended** ✅
+2. **Minimal** (very simple)
+3. **Slate** (dark)
+4. **Architect** (technical)
+5. **Tactile** (classic)
+6. **Dinky** (compact)
+7. **Leap Day** (fresh)
 8. **Merlot** (elegant)
-9. **Midnight** (dunkel, techno)
-10. **Modernist** (minimalistisch)
+9. **Midnight** (dark, techno)
+10. **Modernist** (minimalist)
 11. **Time Machine** (retro)
-12. **Hacker** (Terminal-Style)
+12. **Hacker** (Terminal style)
 
-Aktuell konfiguriert: **Cayman**
+Currently configured: **Cayman**
 
-Theme ändern in `docs/_config.yml`:
+Change theme to `docs/_config.yml`:
 ```yaml
 theme: jekyll-theme-minimal  # Beispiel
 ```
 
 ---
 
-## 🔧 Anpassungen
+## 🔧 Customizations
 
-### Navigation anpassen
+### Customize navigation
 
-Editiere `docs/_config.yml`:
+Edit `docs/_config.yml`:
 ```yaml
 navigation:
   - title: Home
@@ -135,36 +135,36 @@ navigation:
     url: /ARCHITECTURE
 ```
 
-### Custom Domain
+### Custom domain
 
 1. In Repository Settings → Pages → Custom domain
-2. Domain eintragen (z.B. `docs.resumehaven.io`)
-3. DNS-Records bei Domain-Provider setzen
+2. Enter domain (e.g. `docs.resumehaven.io`)
+3. Set DNS records with domain providers
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Seite zeigt nicht
+### Page not showing
 
-1. **Prüfen**: Settings → Pages → "Your site is ready to be published at..."
-2. **Warten**: Build dauert 1-2 Minuten
-3. **Actions prüfen**: GitHub Actions → "pages-build-deployment"
+1. **Check**: Settings → Pages → "Your site is ready to be published at..."
+2. **Wait**: Build takes 1-2 minutes
+3. **Check Actions**: GitHub Actions → "pages-build-deployment"
 
-### Links funktionieren nicht
+### Links don't work
 
-1. **Relative Links nutzen**: `[Text](ARCHITECTURE.md)` statt absolute URLs
-2. **Keine `.html` Extension**: GitHub Pages konvertiert `.md` automatisch
+1. **Use relative links**: `[Text](ARCHITECTURE.md)` instead of absolute URLs
+2. **No `.html` Extension**: GitHub Pages automatically converts `.md`
 
-### Theme wird nicht angewendet
+### Theme is not applied
 
-1. **Cache leeren**: Strg+F5 im Browser
-2. **_config.yml prüfen**: Syntax korrekt?
-3. **Build-Log prüfen**: GitHub Actions → pages-build-deployment
+1. **Clear cache**: Ctrl+F5 in the browser
+2. **Check _config.yml**: Syntax correct?
+3. **Check build log**: GitHub Actions → pages-build-deployment
 
 ---
 
-## 📚 Weitere Infos
+## 📚 More info
 
 - **GitHub Pages Docs**: https://docs.github.com/en/pages
 - **Jekyll Docs**: https://jekyllrb.com/docs/
@@ -172,5 +172,4 @@ navigation:
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-02
-
+**Last updated**: 2026-03-02

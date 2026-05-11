@@ -1,69 +1,69 @@
-# 🎯 Planungstag – 04.03.2026
-**Datum:** 04.03.2026  
-**Status:** MVP-Phase – Fokus-Entscheidungen und Priorisierungen  
-**Autor:** Guido & GitHub Copilot  
+# 🎯 Planning day – March 4th, 2026
+**Date:** March 4, 2026
+**Status:** MVP phase – focus decisions and prioritizations
+**Author:** Guido & GitHub Copilot
 ---
-## 📌 Produktvision (Nord-Stern)
-ResumeHaven unterstützt Menschen dabei, hochwertige und passgenaue Bewerbungsunterlagen zu erstellen, indem es Stellenausschreibungen und persönliche Profile intelligent analysiert.
-**Aktueller Stand (nach Commit 16c):**
-- ✅ Textbasierte Analyse mit KI (Gemini)
-- ✅ Extraktion Anforderungen/Erfahrungen
-- ✅ Matching & Gap-Analyse
-- ✅ Strukturierte UI mit Panels
-- ✅ Analysis Caching mit DB
-- ✅ Mock-Modus für Entwicklung
-- ✅ Tag-basierte Darstellung (Matches/Gaps)
-- ✅ Domain-Driven Architektur
-- ✅ Hohe Code-Qualität (PHPStan, Pint, Pest)
+## 📌 Product vision (North Star)
+ResumeHaven helps people create high-quality, tailored application documents by intelligently analyzing job advertisements and personal profiles.
+**Current status (after commit 16c):**
+- ✅ Text-based analysis with AI (Gemini)
+- ✅ Extraction requirements/experiences
+- ✅ Matching & gap analysis
+- ✅ Structured UI with panels
+- ✅ Analysis Caching with DB
+- ✅ Mock mode for development
+- ✅ Tag-based display (matches/gaps)
+- ✅ Domain Driven Architecture
+- ✅ High code quality (PHPStan, Pint, Pest)
 ---
-## 🎯 Fokus-Entscheidungen (04.03.2026)
-### 1️⃣ Priorisierung: C → B → A
-**C – Security Härtung (Commit 19):**
-- Prompt-Injection-Härtung
-- Input-Validierung
-- Error-Handling für API-Timeouts
-- CSRF-Protection review
-- SQL-Injection-Prävention
+## 🎯 Focus Decisions (03/04/2026)
+### 1️⃣ Prioritization: C → B → A
+**C – Security Hardening (Commit 19):**
+- Prompt injection hardening
+- Input validation
+- Error handling for API timeouts
+- CSRF Protection review
+- SQL injection prevention
 **B – Layout/UX (Commit 20):**
-- Responsive Design (Mobile-First)
-- Dark-Mode Support
+- Responsive design (mobile-first)
+- Dark mode support
 - Accessibility (WCAG 2.1 AA)
-- Verbesserte Spacing & Typografie
-**A – Code-Qualität (Commit 21):**
+- Improved spacing & typography
+**A – Code Quality (Commit 21):**
 - PHPStan Level 9
-- Zusätzliche Pest-Tests
-- Dokumentation & Refactoring
-### 2️⃣ CV-Speicherung: Option B
-- DB-gespeichert (SQLite/MySQL)
-- Keine User-Authentifizierung im MVP
-- Session-/Hash-basiert (anonym)
-- Cleanup nach 90 Tagen (optional)
-### 3️⃣ Dokumentation: Option C
-- Deutsche Doku bleibt aktuell
-- Englische Übersetzung nach MVP-Abschluss
-- Code-Kommentare in English
+- Additional plague testing
+- Documentation & refactoring
+### 2️⃣ CV storage: Option B
+- DB stored (SQLite/MySQL)
+- No user authentication in MVP
+- Session/hash based (anonymous)
+- Cleanup after 90 days (optional)
+### 3️⃣ Documentation: Option C
+- German documentary remains current
+- English translation after MVP completion
+- Code comments in English
 ---
-## 📊 Commit-Planung
-| Commit | Thema | Phase | Status |
+## 📊 Commit scheduling
+| Commit | Topic | phase | Status |
 |--------|-------|-------|--------|
-| 19 | Security Härtung | C | 🚀 Nächst |
-| 19a | Prompt-Injection-Tests | C | Geplant |
-| 19b | Input-Validierung | C | Geplant |
-| 20 | Responsive Layout | B | Geplant |
-| 20a | Mobile-First CSS | B | Geplant |
-| 20b | Dark-Mode | B | Geplant |
-| 21 | Code-Qualität (L9) | A | Geplant |
-| 21a | Unit-Tests | A | Geplant |
-| 22 | CV-Speicherung | Feature | Geplant |
-| 22a | Cleanup-Cronjob | Feature | Optional |
+| 19 | Security hardening | C | 🚀 Next |
+| 19a | Prompt injection testing | C | Planned |
+| 19b | Input validation | C | Planned |
+| 20 | Responsive Layout | B | Planned |
+| 20a | Mobile-First CSS | B | Planned |
+| 20b | Dark mode | B | Planned |
+| 21 | Code Quality (L9) | A | Planned |
+| 21a | Unit testing | A | Planned |
+| 22 | CV storage | Feature | Planned |
+| 22a | Cleanup cron job | Feature | Optional |
 ---
-## ✅ MVP-Abschluss definiert durch:
-1. ✅ Funktional: Alle Commits 1–22 umgesetzt
-2. ✅ Sicherheit: Keine bekannten Lücken
-3. ✅ Qualität: PHPStan L9, >90% Coverage
-4. ✅ UX: Responsive, Dark-Mode, WCAG 2.1 AA
-5. ✅ Dokumentation: README, ARCHITECTURE, GUIDELINES komplett
-6. ✅ Deployment: IONOS Webspace ready
+## ✅ MVP completion defined by:
+1. ✅ Functional: All commits 1-22 implemented
+2. ✅ Security: No known gaps
+3. ✅ Quality: PHPStan L9, >90% coverage
+4. ✅ UX: Responsive, dark mode, WCAG 2.1 AA
+5. ✅ Documentation: README, ARCHITECTURE, GUIDELINES complete
+6. ✅ Deployment: IONOS web space ready
 ---
-**Gültig ab:** 04.03.2026  
-**Nächste Review:** Nach Commit 21
+**Valid from:** March 4, 2026
+**Next review:** After commit 21

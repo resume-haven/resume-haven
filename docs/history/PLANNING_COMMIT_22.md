@@ -1,66 +1,66 @@
-# Commit 22 – Anonyme CV-Speicherung (Profile Context)
+# Commit 22 – Anonymous CV storage (Profile Context)
 
-**Branch:** `feature/commit-22-profile-cv-storage`  
-**Status:** 🔄 In Umsetzung (Basis implementiert)  
-**Erstellt:** 2026-03-10
-
----
-
-> **Umsetzungsstand:** Siehe `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md` fuer den bereits implementierten Basis-Flow und die verifizierten Quality Gates.
+**Branch:** `feature/commit-22-profile-cv-storage`
+**Status:** 🔄 In implementation (Basic implemented)
+**Created:** 2026-03-10
 
 ---
 
-## 🎯 Ziel
+> **Implementation status:** See `docs/history/COMMIT_22_IMPLEMENTATION_GUIDE.md` for the already implemented basic flow and the verified quality gates.
 
-Implementierung eines neuen Bounded Context `Profile` für anonyme CV-Speicherung und -Wiederherstellung über URL-Token. User können ihren CV speichern und über einen sicheren Link später wiederverwenden, ohne User-Account.
+---
+
+## 🎯 Target
+
+Implemented a new Bounded Context `Profile` for anonymous CV storage and restore via URL tokens. Users can save their CV and reuse it later via a secure link, without a user account.
 
 ---
 
 ## ✅ Scope (MVP)
 
-### Funktional
-- ✅ CV speichern (verschlüsselt, token-basiert)
-- ✅ CV laden über URL-Token
-- ✅ Token-Generierung (URL-safe Base64, nicht erratbar)
-- ✅ Verschlüsselung mit Token als Secret (MVP-Kompromiss)
-- ✅ Unbegrenzte Gültigkeit (kein TTL im MVP)
-- ✅ UI-Integration in `/analyze` (Speichern/Laden-Buttons)
+### Functional
+- ✅ Save CV (encrypted, token-based)
+- ✅ Load CV via URL token
+- ✅ Token generation (URL-safe Base64, cannot be guessed)
+- ✅ Encryption with token as secret (MVP compromise)
+- ✅ Unlimited validity (no TTL in MVP)
+- ✅ UI integration in `/analyze` (save/load buttons)
 
-### Technisch
-- ✅ Neuer Bounded Context `Profile` (`app/Domains/Profile/`)
+### Technically
+- ✅ New Bounded Context `Profile` (`app/Domains/Profile/`)
 - ✅ CQRS: `StoreResumeCommand` + `GetResumeByTokenQuery`
-- ✅ Single-Action-Controller (`StoreResumeController`, `LoadResumeController`)
+- ✅ Single action controller (`StoreResumeController`, `LoadResumeController`)
 - ✅ Repository Pattern (`ProfileRepository`)
 - ✅ Migration + Model (`StoredResume`)
 - ✅ Immutable DTOs (`StoreResumeDto`, `ResumeTokenDto`)
 - ✅ Pest Tests (Feature + Unit + Security)
-- ✅ PHPStan Level 9 + Pint konform
+- ✅ PHPStan Level 9 + Pint compliant
 
 ---
 
-## 🚫 Nicht im Scope (MVP)
+## 🚫 Out of Scope (MVP)
 
-### Funktional
-- ❌ User-Accounts (kommt später)
-- ❌ Mehrere CVs pro User (nur 1 CV pro Token)
-- ❌ CV-Verlauf / Historie
-- ❌ CV-Bearbeitung (nur neu speichern)
-- ❌ TTL / Ablaufdatum (unbegrenzt im MVP)
-- ❌ Manuelle Token-Wahl (nur automatisch generiert)
+### Functional
+- ❌ User accounts (coming later)
+- ❌ Multiple CVs per user (only 1 CV per token)
+- ❌ CV history/history
+- ❌ CV editing (re-save only)
+- ❌ TTL / Expiration Date (unlimited in MVP)
+- ❌ Manual token election (auto-generated only)
 
-### Technisch
-- ❌ Separate Encryption Keys pro User
-- ❌ Key Rotation
-- ❌ Audit Log für Zugriffe
-- ❌ Rate Limiting auf Storage
+### Technically
+- ❌ Separate encryption keys per user
+- ❌ Key rotation
+- ❌ Audit log for access
+- ❌ Rate limiting on storage
 
 ---
 
-## 🏗️ Architektur-Entscheidungen
+## 🏗️ Architecture decisions
 
-### 1. Token-Design
+### 1. Token design
 
-**Entscheidung:** URL-safe Base64, 32 Bytes zufällig
+**Decision:** URL-safe Base64, 32 bytes random
 
 ```php
 // Beispiel-Token
@@ -68,22 +68,22 @@ $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
 // Ergebnis: "xK8vQmP3nR-_7dY2..." (~43 Zeichen)
 ```
 
-**Begründung:**
-- ✅ Nicht erratbar (256 Bit Entropie)
-- ✅ URL-safe (keine Probleme mit `+`/`/`)
-- ✅ Kompakt (~43 Zeichen)
-- ✅ Standard PHP-Funktionen
+**Reason:**
+- ✅ Unguessable (256 bit entropy)
+- ✅ URL safe (no problems with `+`/`/`)
+- ✅ Compact (~43 characters)
+- ✅ Standard PHP functions
 
 **Security:**
-- Token ist URL-Parameter: HTTPS Pflicht (Production)
-- Kein Token-Reuse möglich (jeder Speichervorgang = neuer Token)
-- Token-Brute-Force praktisch unmöglich
+- Token is URL parameter: HTTPS mandatory (production)
+- No token reuse possible (every save = new token)
+- Token brute force virtually impossible
 
 ---
 
-### 2. Verschlüsselung (MVP-Kompromiss)
+### 2. Encryption (MVP compromise)
 
-**Entscheidung:** Token dient im MVP als Basis fuer das Encryption Secret
+**Decision:** Token serves as the basis for the encryption secret in the MVP
 
 ```php
 $key = hash('sha256', $token, true);
@@ -91,22 +91,22 @@ $iv = random_bytes(12);
 $cipherText = openssl_encrypt($cvText, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
 ```
 
-**Begründung (MVP):**
-- ✅ Keine separate Key-Verwaltung nötig
-- ✅ Token muss sowieso sicher und nicht erratbar sein
-- ✅ Daten at-rest verschlüsselt
-- ✅ Robuste, lokale Implementierung ohne zusätzlichen Infrastrukturbedarf
+**Reason (MVP):**
+- ✅ No separate key management required
+- ✅ Tokens must be secure and unguessable anyway
+- ✅ Data encrypted at rest
+- ✅ Robust, local implementation without additional infrastructure requirements
 
-**⚠️ Technische Schuld:**
-- ❌ Token-Verlust = Datenverlust (keine Recovery)
-- ❌ Keine Key-Rotation möglich
-- ❌ User-basiertes Modell später benötigt Refactoring
+**⚠️ Technical Debt:**
+- ❌ Token loss = data loss (no recovery)
+- ❌ No key rotation possible
+- ❌ User-based model later needs refactoring
 
-**🔄 Migration zu User-basierter Verschlüsselung (Post-MVP):**
+**🔄 Migration to user-based encryption (Post-MVP):**
 
-**WICHTIG:** Diese Planung ist **verpflichtend** vor Implementierung von User-Accounts durchzuführen!
+**IMPORTANT:** This planning is **mandatory** before implementing user accounts!
 
-**Zielarchitektur (Phase 3, ~Commit 35+):**
+**Target architecture (Phase 3, ~Commit 35+):**
 ```
 User-Modell mit separatem Encryption Key
 ├─ User besitzt Master Key (verschlüsselt mit Passwort)
@@ -115,39 +115,39 @@ User-Modell mit separatem Encryption Key
 └─ Key Rotation möglich
 ```
 
-**Migrations-Schritte (grob):**
+**Migration steps (rough):**
 
-1. **Planung (Pflicht vor Commit ~35):**
-   - Threat-Modelling für Key-Management
-   - Entscheidung: Key Derivation (PBKDF2/Argon2) vs. HSM
-   - Recovery-Strategie (Backup-Codes? E-Mail-Reset?)
-   - Data-Migration-Plan für bestehende anonyme CVs
+1. **Planning (mandatory before commit ~35):**
+   - Threat modeling for key management
+   - Decision: Key Derivation (PBKDF2/Argon2) vs. HSM
+   - Recovery strategy (backup codes? Email reset?)
+   - Data migration plan for existing anonymous CVs
 
-2. **Implementierung:**
-   - Neue `users` Tabelle mit `encryption_key_hash`
-   - `stored_resumes` Relation zu `users` (nullable für Migration)
-   - Re-Encryption Job für alte Token-basierte CVs
-   - Auth-Middleware für Profile-Routen
+2. **Implementation:**
+   - New `users` table with `encryption_key_hash`
+   - `stored_resumes` Relation to `users` (nullable for migration)
+   - Re-encryption job for old token-based CVs
+   - Auth middleware for profile routes
 
 3. **Testing:**
-   - Backwards-Compatibility für anonyme CVs
-   - Key-Rotation-Tests
-   - Recovery-Flow-Tests
+   - Backwards compatibility for anonymous CVs
+   - Key rotation testing
+   - Recovery flow testing
 
-4. **Dokumentation:**
-   - Security-Audit der neuen Architektur
-   - User-Communication über Änderungen
-   - Migration-Guide für bestehende Tokens
+4. **Documentation:**
+   - Security audit of the new architecture
+   - User communication about changes
+   - Migration guide for existing tokens
 
-**Status:** ⏳ **Noch nicht geplant** (kommt vor User-Accounts)
+**Status:** ⏳ **Not yet planned** (comes before user accounts)
 
 ---
 
 ### 3. Bounded Context `Profile`
 
-**Entscheidung:** Neuer Context neben `Analysis`
+**Decision:** New context next to `Analysis`
 
-**Struktur:**
+**Structure:**
 ```
 app/Domains/Profile/
 ├── Commands/
@@ -169,149 +169,149 @@ app/Domains/Profile/
     └── LoadedResumeDto.php
 ```
 
-**Context-Abgrenzung:**
-- **`Profile`**: CV-Speicherung, -Laden, Token-Verwaltung
-- **`Analysis`**: Bleibt unverändert, nutzt CV-Text als Input
-- **Interaction**: `Analysis` kennt `Profile` nicht (Entkopplung)
+**Context demarcation:**
+- **`Profile`**: CV storage, loading, token management
+- **`Analysis`**: Remains unchanged, uses CV text as input
+- **Interaction**: `Analysis` does not know `Profile` (decoupling)
 
 ---
 
-## 📋 Implementierungs-Phasen
+## 📋 Implementation phases
 
-Siehe vollständige Code-Beispiele in `COMMIT_PLAN.md` (Commit 22 Abschnitt).
+See full code examples in `COMMIT_PLAN.md` (Commit 22 section).
 
-### Phase 1: Domain-Struktur & Datenmodell (~30min)
+### Phase 1: Domain structure & data model (~30min)
 - Migration `create_stored_resumes_table`
-  - Felder: `token`, `encrypted_cv`, `last_accessed_at`, `timestamps`
+  - Fields: `token`, `encrypted_cv`, `last_accessed_at`, `timestamps`
 - Model `StoredResume`
-- Context-Verzeichnisstruktur anlegen
+- Create context directory structure
 
-### Phase 2: Domain-Logic (CQRS) (~2h)
+### Phase 2: Domain Logic (CQRS) (~2h)
 - DTOs (immutable, readonly)
 - Actions (Generate, Encrypt, Decrypt)
 - Repository (store, getByToken, touchLastAccessed)
 - Command + Handler (Write)
 - Query + Handler (Read)
 
-### Phase 3: HTTP-Layer (~1h)
+### Phase 3: HTTP layer (~1h)
 - Routes: `POST /profile/store`, `GET /profile/load/{token}`
-- Single-Action-Controller
-- FormRequest (Validierung)
+- Single action controller
+- FormRequest (validation)
 
-### Phase 4: UI-Integration (~1h)
-- Analyze-View: "💾 CV speichern" Button
-- JavaScript: Async POST, Token-Link kopieren
-- Success/Error-Messages
-- CV-Laden automatisch bei Token-URL
+### Phase 4: UI integration (~1h)
+- Analyze view: “💾 Save CV” button
+- JavaScript: Async POST, copy token link
+- Success/Error messages
+- CV loading automatically at token URL
 
 ### Phase 5: Tests (~1.5h)
-- Feature: Speichern/Laden (Happy Path + Errors)
-- Unit: Token-Gen, Encrypt/Decrypt, Repository
-- Security: Token-Uniqueness, SQL-Injection, Brute-Force
+- Feature: Save/Load (Happy Path + Errors)
+- Unit: Token Gen, Encrypt/Decrypt, Repository
+- Security: Token uniqueness, SQL injection, brute force
 
 ---
 
 ## ✅ Definition of Done (DoD)
 
-### Funktional
-- [ ] CV kann über UI gespeichert werden
-- [ ] Token wird generiert und angezeigt
-- [ ] CV kann über Token-Link geladen werden
-- [ ] CV-Text wird in Analyze-Form eingetragen
-- [ ] Fehlerbehandlung für ungültige/fehlende Tokens
-- [ ] Fehlerbehandlung für Entschlüsselungsfehler
+### Functional
+- [ ] CV can be saved via UI
+- [ ] Token is generated and displayed
+- [ ] CV can be loaded via token link
+- [ ] CV text is entered in Analyze form
+- [ ] Error handling for invalid/missing tokens
+- [ ] Error handling for decryption errors
 
-### Technisch
-- [ ] Migration erstellt und ausgeführt
-- [ ] Model `StoredResume` erstellt
-- [ ] Bounded Context `Profile` strukturiert
-- [ ] CQRS: Command + Query + Handlers implementiert
-- [ ] Actions implementiert (Generate, Encrypt, Decrypt)
-- [ ] Repository implementiert
-- [ ] Single-Action-Controller implementiert
-- [ ] Routes registriert
-- [ ] UI integriert (Speichern/Laden-Buttons)
+### Technically
+- [ ] Migration created and executed
+- [ ] Model `StoredResume` created
+- [ ] Bounded Context `Profile` structured
+- [ ] CQRS: Command + Query + Handlers implemented
+- [ ] Actions implemented (Generate, Encrypt, Decrypt)
+- [ ] Repository implemented
+- [ ] Single-action controller implemented
+- [ ] Routes registered
+- [ ] UI integrated (save/load buttons)
 
 ### Tests
-- [ ] Feature-Tests: Speichern/Laden (Happy Path)
-- [ ] Feature-Tests: Fehlerszenarien (ungültige Tokens, zu kurzer CV)
-- [ ] Unit-Tests: Token-Generierung
-- [ ] Unit-Tests: Verschlüsselung/Entschlüsselung
-- [ ] Security-Tests: Token-Uniqueness, SQL-Injection
-- [ ] Alle Tests grün (100% Pass)
+- [ ] Feature testing: Save/Load (Happy Path)
+- [ ] Feature testing: error scenarios (invalid tokens, CV too short)
+- [ ] Unit testing: token generation
+- [ ] Unit tests: encryption/decryption
+- [ ] Security tests: token uniqueness, SQL injection
+- [ ] All tests green (100% pass)
 
-### Quality-Gates
+### Quality gates
 - [ ] PHPStan Level 9: 0 Errors
-- [ ] Pint: Code-Style konform
-- [ ] Test-Coverage ≥ 95%
-- [ ] Dokumentation aktualisiert (`ARCHITECTURE.md`, `CODING_GUIDELINES.md`)
+- [ ] Pint: Code style compliant
+- [ ] Test coverage ≥ 95%
+- [ ] Documentation updated (`ARCHITECTURE.md`, `CODING_GUIDELINES.md`)
 
 ---
 
-## 📚 Dokumentations-Updates
+## 📚 Documentation updates
 
 ### `docs/ARCHITECTURE.md`
-- [ ] Bounded Context `Profile` hinzufügen
-- [ ] CQRS-Struktur dokumentieren
-- [ ] Context-Abgrenzung zu `Analysis` erklären
-- [ ] Migrations-Hinweis für User-basierte Verschlüsselung
+- [ ] Add Bounded Context `Profile`
+- [ ] Document CQRS structure
+- [ ] Explain context distinction to `Analysis`
+- [ ] Migration note for user-based encryption
 
 ### `docs/CODING_GUIDELINES.md`
-- [ ] Krypto-Regeln für Commit 22 dokumentieren
-- [ ] Token-Format (URL-safe Base64) festlegen
-- [ ] MVP-Kompromisse klar markieren
+- [ ] Document crypto rules for commit 22
+- [ ] Set token format (URL-safe Base64).
+- [ ] Clearly highlight MVP trade-offs
 
 ### `docs/ai/PROJECT_OVERVIEW.md`
-- [ ] "NICHT im MVP" aktualisieren (CV-Speicherung → ✅)
-- [ ] Roadmap: User-basierte Verschlüsselung als Pflichtschritt aufnehmen
+- [ ] Update "NOT in MVP" (CV storage → ✅)
+- [ ] Roadmap: Include user-based encryption as a mandatory step
 
 ---
 
-## 🐛 Bekannte Limitierungen (MVP)
+## 🐛 Known Limitations (MVP)
 
-### Security
-- ⚠️ Token-Verlust = Datenverlust (keine Recovery)
-- ⚠️ Keine Key-Rotation möglich
-- ⚠️ Token-Sharing = voller Zugriff (kein Schutz)
+###Security
+- ⚠️ Token loss = data loss (no recovery)
+- ⚠️ No key rotation possible
+- ⚠️ Token sharing = full access (no protection)
 
-### Funktional
-- ⚠️ Kein TTL (unbegrenzte Speicherung)
-- ⚠️ Keine Multi-CV-Verwaltung
-- ⚠️ Keine CV-Historie
+### Functional
+- ⚠️ No TTL (unlimited storage)
+- ⚠️ No multi-CV management
+- ⚠️ No CV history
 
 ### Performance
-- ⚠️ Keine Cleanup-Routine für alte CVs (kommt später)
+- ⚠️ No cleanup routine for old CVs (coming later)
 
 ---
 
-## 🔄 Zukünftige Erweiterungen (Post-MVP)
+## 🔄 Future Expansions (Post-MVP)
 
-### Phase 3 (~Commit 35+): User-Accounts & sichere Verschlüsselung
-- **VOR Implementierung:** Detaillierte Planung verpflichtend!
-- User-basierte Master Keys
+### Phase 3 (~Commit 35+): User accounts & secure encryption
+- **BEFORE implementation:** Detailed planning is mandatory!
+- User-based master keys
 - Key Derivation (PBKDF2/Argon2)
-- Recovery-Mechanismus
-- Re-Encryption für alte anonyme CVs
+- Recovery mechanism
+- Re-encryption for old anonymous CVs
 
-### Phase 4 (~Commit 40+): CV-Management
-- Mehrere CVs pro User
-- CV-Versionierung
-- CV-Templates
-- Export-Funktionen
-
----
-
-## ⏱️ Geschätzter Aufwand
-
-- **Phase 1 (Datenmodell):** ~30min
-- **Phase 2 (Domain-Logic):** ~2h
-- **Phase 3 (HTTP-Layer):** ~1h
-- **Phase 4 (UI-Integration):** ~1h
-- **Phase 5 (Tests):** ~1.5h
-- **Dokumentation:** ~30min
-- **Gesamt:** ~6.5h
+### Phase 4 (~Commit 40+): CV management
+- Multiple CVs per user
+- CV versioning
+- CV templates
+- Export functions
 
 ---
 
-**Letzte Aktualisierung:** 2026-03-10  
-**Version:** 1.0 (Detaillierte Planung für Commit 22)
+## ⏱️ Estimated effort
+
+- **Phase 1 (data model):** ~30min
+- **Phase 2 (Domain Logic):** ~2h
+- **Phase 3 (HTTP layer):** ~1h
+- **Phase 4 (UI integration):** ~1h
+- **Phase 5 (tests):** ~1.5h
+- **Documentation:** ~30min
+- **Total:** ~6.5h
+
+---
+
+**Last updated:** 2026-03-10
+**Version:** 1.0 (Detailed planning for Commit 22)

@@ -1,15 +1,15 @@
 # ResumeHaven – Coding Guidelines
 
-Dieses Dokument definiert die Coding-Standards und Best Practices für das ResumeHaven-Projekt.
+This document defines the coding standards and best practices for the ResumeHaven project.
 
 ---
 
-## 📋 Inhaltsverzeichnis
+## 📋 Table of Contents
 
-1. [Allgemeine Prinzipien](#1-allgemeine-prinzipien)
-2. [Projekt-Struktur](#2-projekt-struktur)
-3. [Namenskonventionen](#3-namenskonventionen)
-4. [Domain-Driven Design](#4-domain-driven-design)
+1. [General Principles](#1-general-principles)
+2. [Project Structure](#2-project-structure)
+3. [Naming Conventions](#3-naming conventions)
+4. [Domain Driven Design](#4-domain-driven-design)
 5. [Commands & Handlers](#5-commands--handlers)
 6. [UseCases & Actions](#6-usecases--actions)
 7. [DTOs (Data Transfer Objects)](#7-dtos-data-transfer-objects)
@@ -21,61 +21,61 @@ Dieses Dokument definiert die Coding-Standards und Best Practices für das Resum
 
 ---
 
-## 1. Allgemeine Prinzipien
+##1. General principles
 
 ### SOLID Principles
 
-Wir folgen den **SOLID-Prinzipien**:
+We follow the **SOLID principles**:
 
-- **S**ingle Responsibility Principle: Eine Klasse = eine Verantwortung
-- **O**pen/Closed Principle: Offen für Erweiterung, geschlossen für Änderung
-- **L**iskov Substitution Principle: Subtypen müssen austauschbar sein
-- **I**nterface Segregation Principle: Kleine, fokussierte Interfaces
-- **D**ependency Inversion Principle: Abhängigkeiten auf Abstraktionen
+- **S**ingle Responsibility Principle: One class = one responsibility
+- **O**pen/Closed Principle: Open to expansion, closed to change
+- **L**iskov Substitution Principle: Subtypes must be interchangeable
+- **I**interface Segregation Principle: Small, focused interfaces
+- **D**ependency Inversion Principle: Dependencies on abstractions
 
 ### OWASP Security by Design
 
-Sicherheitsanforderungen sind **Pflicht** und werden nach OWASP-Empfehlungen umgesetzt.
+Security requirements are **mandatory** and are implemented according to OWASP recommendations.
 
-- Eingaben grundsätzlich als untrusted behandeln
-- Output Context-Aware escapen/encoden
-- AuthN/AuthZ strikt trennen und prüfen
-- Secrets niemals im Code, nur via Config/Env
-- Security-Regression-Tests bei sicherheitsrelevanten Änderungen
-- Prompt-/Input-Injection explizit abwehren
+- Always treat input as untrusted
+- Escape/encode output context-aware
+- Strictly separate and check AuthN/AuthZ
+- Secrets never in code, only via Config/Env
+- Security regression tests for security-relevant changes
+- Explicitly warn off prompt/input injection
 
-#### OWASP Mapping (Top 10 -> Projektregeln)
+#### OWASP Mapping (Top 10 -> Project Rules)
 
-| OWASP Top 10 | Risiko im Projekt | Verbindliche Maßnahme | Test-/Review-Check |
+| OWASP Top 10 | Risk in the project | Binding measure | Test/Review Check |
 |---|---|---|---|
-| A01 Broken Access Control | Unberechtigter Zugriff auf Endpunkte | Route-/Policy-Prüfung, keine impliziten Admin-Pfade | Feature-Tests für erlaubte/verbotene Zugriffe |
-| A02 Cryptographic Failures | Unsichere Speicherung/Übertragung | Keine Secrets im Code, sichere Defaults, HTTPS in Prod | Secret-Scan + Config-Review |
-| A03 Injection | SQL/XSS/Prompt-Injection | Input-Validierung, Prepared Statements, Output-Encoding, Prompt-Härtung | Security-Tests (SQL/XSS/Prompt-Patterns) |
-| A04 Insecure Design | Fehlende Sicherheitsanforderungen | Threat-aware Design in UseCases + Review-Checkliste | PR-Check gegen OWASP-Tabelle |
-| A05 Security Misconfiguration | Unsichere Defaults | Sichere Env-/Config-Werte, Debug nur lokal | Config-Review + Smoke-Tests |
-| A06 Vulnerable Components | Verwundbare Dependencies | Regelmäßige Updates via Renovate + CVE-Checks | Dependency-Update-PRs + CVE-Report |
-| A07 Identification/Auth Failures | Schwache Auth-Mechanik | Laravel Auth/Policies, keine Eigenbau-Auth | Feature-Tests für Login/Authorization |
-| A08 Software/Data Integrity Failures | Manipulierte Abhängigkeiten/Builds | Lockfiles, reproduzierbare Builds, signierte Releases (später) | CI-Checks auf Lockfile-Änderungen |
-| A09 Logging/Monitoring Failures | Sicherheitsvorfälle unentdeckt | Strukturierte Security-Logs ohne Secrets | Log-Review in Security-Tests |
-| A10 SSRF | Externe Calls auf interne Ziele | Whitelisting/Timeouts bei externen Requests | Tests für blockierte Ziel-Hosts |
+| A01 Broken Access Control | Unauthorized access to endpoints | Route/policy check, no implicit admin paths | Feature testing for allowed/denied access |
+| A02 Cryptographic Failures | Insecure storage/transmission | No secrets in the code, secure defaults, HTTPS in Prod | Secret Scan + Config Review |
+| A03 Injection | SQL/XSS/Prompt Injection | Input validation, prepared statements, output encoding, prompt hardening | Security tests (SQL/XSS/Prompt patterns) |
+| A04 Insecure Design | Lack of security requirements | Threat-aware design in use cases + review checklist | PR check against OWASP table |
+| A05 Security Misconfiguration | Unsafe defaults | Safe env/config values, debug locally only | Config review + smoke tests |
+| A06 Vulnerable Components | Vulnerable Dependencies | Regular updates via Renovate + CVE checks | Dependency update PRs + CVE report |
+| A07 Identification/Auth Failures | Weak auth mechanics | Laravel Auth/Policies, no self-made auth | Feature testing for Login/Authorization |
+| A08 Software/Data Integrity Failures | Manipulated dependencies/builds | Lock files, reproducible builds, signed releases (later) | CI checks for lock file changes |
+| A09 Logging/Monitoring Failures | Security incidents undetected | Structured security logs without secrets | Log review in security testing |
+| A10 SSRF | External calls to internal targets | Whitelisting/timeouts for external requests | Blocked Target Hosts Tests |
 
 ### DRY (Don't Repeat Yourself)
 
-- Keine Code-Duplizierung
-- Wiederverwendbare Komponenten erstellen
-- Zentrale DTOs und Actions nutzen
+- No code duplication
+- Create reusable components
+- Use central DTOs and actions
 
 ### KISS (Keep It Simple, Stupid)
 
-- Vermeide Over-Engineering
-- Klare, verständliche Lösungen bevorzugen
-- Komplexität nur wo nötig
+- Avoid over engineering
+- Favor clear, understandable solutions
+- Complexity only where necessary
 
 ---
 
-## 2. Projekt-Struktur
+##2. Project structure
 
-### Domain-Struktur
+### Domain structure
 
 ```
 app/Domains/
@@ -96,20 +96,20 @@ app/Domains/
     └── Events/          # Domain Events (für später)
 ```
 
-### Warum diese Struktur?
+### Why this structure?
 
-- **Domain-fokussiert**: Geschäftslogik ist in Domains organisiert
-- **UseCase-orientiert**: Wiederverwendbare Business-Logic
-- **Testbar**: Jede Komponente isoliert testbar
-- **Skalierbar**: Neue Domains einfach hinzufügen
+- **Domain Focused**: Business logic is organized into domains
+- **UseCase-oriented**: Reusable business logic
+- **Testable**: Each component can be tested in isolation
+- **Scalable**: Easily add new domains
 
 ---
 
-## 3. Namenskonventionen
+##3. Naming conventions
 
-### Dateien & Klassen
+### Files & Classes
 
-| Typ | Namenskonvention | Beispiel |
+| Type | Naming convention | Example |
 |-----|------------------|----------|
 | **Command** | `{Verb}{Noun}Command` | `AnalyzeJobAndResumeCommand` |
 | **Handler** | `{Command}Handler` | `AnalyzeJobAndResumeHandler` |
@@ -121,33 +121,33 @@ app/Domains/
 | **Controller** | `{Noun}Controller` | `AnalyzeController` |
 | **Model** | `{Noun}` | `AnalysisCache` |
 
-### Methoden
+###Methods
 
-| Typ | Namenskonvention | Beispiel |
+| Type | Naming convention | Example |
 |-----|------------------|----------|
 | **Command/Query Handler** | `handle()` | `public function handle(Command $cmd)` |
 | **Action** | `execute()` | `public function execute(array $data)` |
-| **Repository** | CRUD-Verben | `getByHash()`, `store()`, `update()` |
+| **Repository** | CRUD verbs | `getByHash()`, `store()`, `update()` |
 
-### Variablen
+### Variables
 
-- **camelCase** für Variablen: `$jobText`, `$analyzeResult`
-- **snake_case** für Datenbank-Felder: `job_text`, `request_hash`
-- **PascalCase** für Klassen: `AnalyzeController`
+- **camelCase** for variables: `$jobText`, `$analyzeResult`
+- **snake_case** for database fields: `job_text`, `request_hash`
+- **PascalCase** for classes: `AnalyzeController`
 
 ---
 
-## 4. Domain-Driven Design
+##4. Domain Driven Design
 
-### Neue Domain erstellen
+### Create new domain
 
-**Schritt 1**: Verzeichnisstruktur anlegen
+**Step 1**: Create directory structure
 
 ```bash
 mkdir -p app/Domains/NewDomain/{Commands,Handlers,UseCases,Dto,Cache}
 ```
 
-**Schritt 2**: Command erstellen
+**Step 2**: Create command
 
 ```php
 <?php
@@ -166,7 +166,7 @@ class DoSomethingCommand
 }
 ```
 
-**Schritt 3**: Handler erstellen
+**Step 3**: Create handler
 
 ```php
 <?php
@@ -187,7 +187,7 @@ class DoSomethingHandler
 }
 ```
 
-**Schritt 4**: Service Provider registrieren
+**Step 4**: Register service providers
 
 ```php
 // In AnalysisDomainServiceProvider oder neuem Provider
@@ -197,11 +197,11 @@ $this->app->singleton(SomeAction::class);
 
 ---
 
-## 5. Commands & Handlers
+##5. Commands & Handlers
 
-### Command-Pattern
+### Command pattern
 
-**Commands sind immutable Request-Objekte:**
+**Commands are immutable request objects:**
 
 ```php
 class AnalyzeJobAndResumeCommand
@@ -218,9 +218,9 @@ class AnalyzeJobAndResumeCommand
 }
 ```
 
-### Handler-Pattern
+### Handler pattern
 
-**Handlers orchestrieren UseCases:**
+**Handlers orchestrate UseCases:**
 
 ```php
 class AnalyzeJobAndResumeHandler
@@ -246,23 +246,23 @@ class AnalyzeJobAndResumeHandler
 **Best Practices:**
 
 ✅ **DO**:
-- Handler orchestriert nur (kein Business-Logic-Code)
-- Dependencies via Constructor Injection
-- Klare Schritte kommentieren
-- DTO zurückgeben
+- Handler only orchestrates (no business logic code)
+- Dependencies via constructor injection
+- Comment on clear steps
+- Return DTO
 
 ❌ **DON'T**:
-- Keine direkte DB-Queries im Handler
-- Keine Business-Logic im Handler
-- Keine Service Locator Pattern (`app()->make()` vermeiden)
+- No direct DB queries in the handler
+- No business logic in the handler
+- No Service Locator Pattern (avoid `app()->make()`)
 
 ---
 
 ## 6. UseCases & Actions
 
-### UseCase-Pattern
+### UseCase pattern
 
-**UseCases kapseln wiederverwendbare Business-Logic:**
+**UseCases encapsulate reusable business logic:**
 
 ```php
 class MatchingUseCase
@@ -279,9 +279,9 @@ class MatchingUseCase
 }
 ```
 
-### Action-Pattern
+### Action patterns
 
-**Actions sind granulare, wiederverwendbare Logik:**
+**Actions are granular, reusable logic:**
 
 ```php
 class MatchAction
@@ -302,23 +302,23 @@ class MatchAction
 **Best Practices:**
 
 ✅ **DO**:
-- Eine Action = eine Aufgabe
-- Type-Hints für alle Parameter und Return-Types
-- PHPDoc für komplexe Array-Typen
-- Pure Functions wo möglich (keine Side-Effects)
+- One action = one task
+- Type hints for all parameters and return types
+- PHPDoc for complex array types
+- Pure functions where possible (no side effects)
 
 ❌ **DON'T**:
-- Keine God-Actions (zu viel Verantwortung)
-- Keine direkten DB-Queries (Repository nutzen)
-- Keine Service-Aufrufe (Dependencies injizieren)
+- No God actions (too much responsibility)
+- No direct DB queries (use repository)
+- No service calls (inject dependencies)
 
 ---
 
-## 7. DTOs (Data Transfer Objects)
+##7. DTOs (Data Transfer Objects)
 
-### DTO-Pattern
+### DTO pattern
 
-**DTOs sind immutable Datencontainer:**
+**DTOs are immutable data containers:**
 
 ```php
 readonly class AnalyzeResultDto
@@ -357,31 +357,31 @@ readonly class AnalyzeResultDto
 **Best Practices:**
 
 ✅ **DO**:
-- `readonly class` oder `public readonly` Properties verwenden
-- PHPDoc für komplexe Array-Typen ergänzen
-- `toArray()` Methode nur für Transport/Serialisierung bereitstellen
-- `fromArray()` nur dort verwenden, wo externe Daten sicher typisiert werden müssen
-- DTOs klein und use-case-spezifisch halten (z. B. `StoreResumeDto`, `LoadedResumeDto`)
+- Use `readonly class` or `public readonly` properties
+- Add PHPDoc for complex array types
+- `toArray()` Provide method for transport/serialization only
+- Only use `fromArray()` where external data needs to be safely typed
+- Keep DTOs small and use case specific (e.g. `StoreResumeDto`, `LoadedResumeDto`)
 
 ❌ **DON'T**:
-- Keine Setter (immutable!)
-- Keine Business-Logic im DTO
-- Keine Persistenz- oder Infrastruktur-Logik im DTO
-- Keine Validierung im DTO ausser minimalen Type-Checks
+- No setters (immutable!)
+- No business logic in the DTO
+- No persistence or infrastructure logic in the DTO
+- No validation in the DTO other than minimal type checks
 
-### DTO-Regel für neue Features
+### DTO rule for new features
 
-- Commands, Queries und Handler kommunizieren bevorzugt über DTOs.
-- Views erhalten keine Domain-Models direkt, sondern View-Daten oder DTO-konvertierte Arrays.
-- Bei sensiblen Daten immer explizit festlegen, welche Felder transportiert werden.
+- Commands, queries and handlers prefer to communicate via DTOs.
+- Views do not receive domain models directly, but rather view data or DTO-converted arrays.
+- For sensitive data, always explicitly specify which fields are transported.
 
 ---
 
-## 8. Repositories
+##8. Repositories
 
-### Repository-Pattern
+### Repository pattern
 
-**Repositories abstrahieren Persistence:**
+**Repositories abstract persistence:**
 
 ```php
 class AnalysisCacheRepository
@@ -408,23 +408,23 @@ class AnalysisCacheRepository
 **Best Practices:**
 
 ✅ **DO**:
-- Klare Methoden-Namen (CRUD-orientiert)
-- Type-Hints für alle Parameter
-- Eloquent-Queries nur im Repository
-- Exceptions werfen bei Fehlern
+- Clear method names (CRUD-oriented)
+- Type hints for all parameters
+- Eloquent queries only in the repository
+- Exceptions are thrown on errors
 
 ❌ **DON'T**:
-- Keine Business-Logic im Repository
-- Keine komplexen Joins (lieber mehrere Queries)
-- Keine Raw-SQL (Eloquent nutzen)
+- No business logic in the repository
+- No complex joins (rather several queries)
+- No raw SQL (use eloquently)
 
 ---
 
-## 9. Controllers
+##9. Controllers
 
 ### Single Action Controllers
 
-**Controller sind dünn und delegieren an Actions, Commands oder Queries:**
+**Controllers are thin and delegate to actions, commands or queries:**
 
 ```php
 class StoreResumeController extends Controller
@@ -447,39 +447,39 @@ class StoreResumeController extends Controller
 **Best Practices:**
 
 ✅ **DO**:
-- `__invoke()` fuer HTTP-Endpunkte mit einer klaren Aufgabe nutzen
-- Validierung im Form Request oder im Controller-Einstieg halten
-- Commands/Queries/Actions fuer Business-Logic verwenden
-- Type-Hint fuer `dispatch()`-Return dokumentieren
-- Nur Redirects/Views/Responses zusammensetzen
+- Use `__invoke()` for HTTP endpoints with a clear task
+- Keep validation in the form request or in the controller entry
+- Use commands/queries/actions for business logic
+- Document type hint for `dispatch()` return
+- Only assemble redirects/views/responses
 
 ❌ **DON'T**:
-- Keine Business-Logic im Controller
-- Keine direkten DB-Queries im Controller
-- Keine kryptografischen Operationen im Controller
-- Keine komplexen Transformationen oder Fallback-Orchestrierung im Controller
+- No business logic in the controller
+- No direct DB queries in the controller
+- No cryptographic operations in the controller
+- No complex transformations or fallback orchestration in the controller
 
-### Sicherheitsregeln fuer tokenbasierte Speicherung
+### Security rules for token-based storage
 
-- Token muessen mit `random_bytes()` erzeugt und URL-safe kodiert werden.
-- Sensible Inhalte duerfen nie im Klartext persistiert werden.
-- Kryptografie gehoert in dedizierte Actions, nicht in Controller oder Views.
-- MVP-Ausnahmen wie "Token als Secret" muessen explizit dokumentiert und spaeter migriert werden.
-- Fehler bei Entschluesselung oder ungueltigen Tokens muessen sicher und benutzerfreundlich behandelt werden.
+- Tokens must be generated with `random_bytes()` and encoded in a URL-safe manner.
+- Sensitive content may never be persisted in plain text.
+- Cryptography belongs in dedicated actions, not in controllers or views.
+- MVP exceptions such as “Token as Secret” must be explicitly documented and migrated later.
+- Decryption errors or invalid tokens must be handled securely and in a user-friendly manner.
 
 ---
 
-## 10. Testing
+##10. Testing
 
-### Test-Strategie
+###Test strategy
 
-**3 Test-Typen:**
+**3 test types:**
 
-1. **Unit-Tests**: Teste einzelne Komponenten isoliert
-2. **Feature-Tests**: Teste HTTP-Requests end-to-end
-3. **Integration-Tests**: Teste Zusammenspiel mehrerer Komponenten
+1. **Unit testing**: Test individual components in isolation
+2. **Feature testing**: Test HTTP requests end-to-end
+3. **Integration testing**: Test the interaction of several components
 
-### Unit-Test Pattern
+### Unit test patterns
 
 ```php
 it('MatchingUseCase findet korrekte Matches', function () {
@@ -496,7 +496,7 @@ it('MatchingUseCase findet korrekte Matches', function () {
 });
 ```
 
-### Feature-Test Pattern
+### Feature Test Pattern
 
 ```php
 test('POST /analyze zeigt Analyseergebnis', function () {
@@ -514,78 +514,78 @@ test('POST /analyze zeigt Analyseergebnis', function () {
 **Best Practices:**
 
 ✅ **DO**:
-- Mock externe Services (AI, API)
-- Nutze RefreshDatabase für DB-Tests
-- Teste Happy-Path UND Error-Cases
-- Descriptive Test-Namen
+- Mock external services (AI, API)
+- Use RefreshDatabase for DB testing
+- Test happy path AND error cases
+- Descriptive test names
 
 ❌ **DON'T**:
-- Keine Tests für Framework-Code
-- Keine Tests für Getter/Setter
-- Keine Tests für triviale Logik
+- No testing for framework code
+- No tests for getters/setters
+- No tests for trivial logic
 
 ---
 
-## 11. Code Quality
+##11. Code quality
 
 ### PHPStan (Level 9)
 
-Wir nutzen **PHPStan Level 9** (strengstes Level):
+We use **PHPStan Level 9** (strictest level):
 
 ```bash
 make phpstan
 ```
 
-**Was PHPStan prüft:**
+**What PHPStan checks:**
 
-- Type-Safety (alle Parameter/Returns typisiert)
+- Type safety (all parameters/returns typed)
 - Unused Variables
-- Dead Code
-- Mögliche Null-Pointer
-- Array-Key-Existence
+- Dead code
+- Possible null pointers
+- Array key existence
 
-### Laravel Pint (Code-Style)
+### Laravel Pint (code style)
 
-Wir nutzen **Laravel Pint** für konsistenten Code-Style:
+We use **Laravel Pint** for consistent code style:
 
 ```bash
 make pint-fix    # Auto-Fix
 make pint-analyse # Nur prüfen
 ```
 
-**Was Pint prüft:**
+**What Pint checks:**
 
-- PSR-12 Standard
+- PSR-12 standard
 - Laravel Conventions
-- Import-Sortierung
-- Spacing & Indentation
+- Import sorting
+- Spacing & indentation
 
-### Best Practices
+### Best practices
 
 ✅ **DO**:
-- `declare(strict_types=1);` in jeder PHP-Datei
-- Type-Hints für alle Properties, Parameter, Returns
-- PHPDoc für komplexe Array-Typen
-- Readonly Properties wo möglich
+- `declare(strict_types=1);` in every PHP file
+- Type hints for all properties, parameters, returns
+- PHPDoc for complex array types
+- Readonly properties where possible
 
 ❌ **DON'T**:
-- Keine `@phpstan-ignore` ohne Kommentar
-- Keine `mixed` Types (spezifisch sein)
-- Keine Suppress-Warnings
+- No `@phpstan-ignore` without comment
+- No `mixed` Types (be specific)
+- No suppress warnings
 
 ---
 
-## 12. Error Handling
+##12. Error handling
 
-### Exception-Handling
+### Exception handling
 
-**Strategie:**
+**Strategy:**
 
-1. **Try-Catch in Handlers** (nicht in Actions)
-2. **Spezifische Exceptions werfen**
-3. **DTOs mit Error-Property zurückgeben**
+1. **Try-Catch in Handlers** (not in Actions)
+2. **Throw specific exceptions**
+3. **Return DTOs with Error property**
 
-### Beispiel
+###Examples
 
 ```php
 class AnalyzeJobAndResumeHandler
@@ -617,19 +617,19 @@ class AnalyzeJobAndResumeHandler
 **Best Practices:**
 
 ✅ **DO**:
-- Generische Exceptions catchen (`\Throwable`)
-- Fehler-Kontext loggen
-- User-friendly Error-Messages
-- Fallback-Werte zurückgeben
+- Catch generic exceptions (`\Throwable`)
+- Log error context
+- User-friendly error messages
+- Return fallback values
 
 ❌ **DON'T**:
-- Keine leeren Catch-Blöcke
-- Keine Exception-Suppression
-- Keine technischen Details an User
+- No empty catch blocks
+- No exception suppression
+- No technical details to users
 
 ---
 
-## 📚 Weitere Ressourcen
+## 📚 More resources
 
 - **Laravel Docs**: https://laravel.com/docs
 - **PHPStan**: https://phpstan.org/
@@ -639,52 +639,52 @@ class AnalyzeJobAndResumeHandler
 
 ---
 
-## 🤖 KI-Agent Spezifische Regeln
+## 🤖 AI Agent Specific Rules
 
-### Test-Enforcement
-- **Jede Änderung benötigt Tests** (Pest 3)
-- Nach Codeänderungen: `php artisan test --compact` oder `make test`
-- Mindestens Feature-Tests, idealerweise auch Unit-Tests
-- Coverage-Minimum: **95%**
+### Test enforcement
+- **Every change requires testing** (Plague 3)
+- After code changes: `php artisan test --compact` or `make test`
+- At least feature tests, ideally also unit tests
+- Coverage minimum: **95%**
 
-### Pint-Formatting
-- **Nach jeder PHP-Änderung:** `vendor/bin/pint --dirty --format agent`
-- Oder via Makefile: `make pint-fix`
-- Formatierung ist nicht optional, sondern Pflicht
+### Pint formatting
+- **After each PHP change:** `vendor/bin/pint --dirty --format agent`
+- Or via Makefile: `make pint-fix`
+- Formatting is not optional, but mandatory
 
-### PHPStan-Validierung
-- **Level 9 ist Pflicht**
-- Keine neuen Errors einführen
-- Bei Bedarf Baseline aktualisieren: `vendor/bin/phpstan analyse --generate-baseline`
+### PHPStan validation
+- **Level 9 is mandatory**
+- Do not introduce new errors
+- Update baseline if necessary: ​​`vendor/bin/phpstan analyse --generate-baseline`
 - Command: `make phpstan`
 
-### Coverage-Gate
-- **Minimum:** 95% Total Coverage
+### Coverage gate
+- **Minimum:** 95% total coverage
 - **GeminiAiAnalyzer.php:** ≥80%
-- Tests vor Commit ausführen: `make test-coverage`
-- HTML-Report: `make test-coverage-report && make coverage-open`
+- Run tests before commit: `make test-coverage`
+- HTML report: `make test-coverage-report && make coverage-open`
 
-### Dokumentation
-- Nur auf explizite Anfrage Dokumentationsdateien erstellen
-- PHPDoc für alle Public Methods
-- Komplexe Logik kommentieren (Warum, nicht Was)
+### Documentation
+- Only create documentation files upon explicit request
+- PHPDoc for all public methods
+- Commenting on complex logic (why, not what)
 
 ---
 
 ## 🛡️ Architecture Enforcement
 
-### SOLID-Gate (Pflicht-Review)
+### SOLID Gate (mandatory review)
 
-Jeder Commit und jeder PR MUSS die SOLID-Prinzipien einhalten.
+Every commit and every PR MUST adhere to the SOLID principles.
 
 #### Single Responsibility Principle (SRP)
-**Checkliste:**
-- [ ] Jede Klasse hat nur eine Verantwortlichkeit
-- [ ] Methoden sind < 20 Zeilen
-- [ ] Klassen sind < 200 Zeilen
+**Checklist:**
+- [ ] Each class only has one responsibility
+- [ ] Methods are < 20 lines
+- [ ] Classes are < 200 lines
 - [ ] Cyclomatic Complexity < 5
 
-**Beispiel (gut):**
+**Example (good):**
 ```php
 // Eine Klasse = Eine Verantwortung
 class CalculateScoreAction {
@@ -698,7 +698,7 @@ class CalculateScoreAction {
 }
 ```
 
-**Beispiel (schlecht):**
+**Example (bathroom):**
 ```php
 // Zu viele Verantwortlichkeiten!
 class AnalyzeController {
@@ -719,12 +719,12 @@ class AnalyzeController {
 ```
 
 #### Open/Closed Principle (OCP)
-**Checkliste:**
-- [ ] Neue Features ohne Änderung bestehender Klassen
-- [ ] Interfaces für austauschbare Komponenten
-- [ ] Strategy Pattern für verschiedene Implementierungen
+**Checklist:**
+- [ ] New features without changing existing classes
+- [ ] Interfaces for interchangeable components
+- [ ] Strategy Pattern for different implementations
 
-**Beispiel:**
+**Example:**
 ```php
 // Interface definieren
 interface AiAnalyzerInterface {
@@ -745,24 +745,24 @@ $this->app->bind(AiAnalyzerInterface::class, function ($app) {
 ```
 
 #### Liskov Substitution Principle (LSP)
-**Checkliste:**
-- [ ] Interfaces sind austauschbar ohne Breaking Changes
-- [ ] Subtypen halten Interface-Kontrakt ein
-- [ ] Keine Exception-Änderungen in Subtypen
+**Checklist:**
+- [ ] Interfaces are interchangeable without breaking changes
+- [ ] Subtypes comply with interface contract
+- [ ] No exception changes in subtypes
 
 #### Interface Segregation Principle (ISP)
-**Checkliste:**
-- [ ] Interfaces sind klein und fokussiert
-- [ ] Keine "fetten" Interfaces mit vielen Methoden
-- [ ] Clients abhängig nur von benötigten Methods
+**Checklist:**
+- [ ] Interfaces are small and focused
+- [ ] No "fat" interfaces with many methods
+- [ ] Clients depend only on required methods
 
 #### Dependency Inversion Principle (DIP)
-**Checkliste:**
-- [ ] Dependencies via Constructor Injection
-- [ ] Abhängigkeiten zu Abstraktionen (Interfaces), nicht zu Konkretionen
-- [ ] Kein `new` in Business-Logic (außer DTOs)
+**Checklist:**
+- [ ] Dependencies via constructor injection
+- [ ] Dependencies on abstractions (interfaces), not on concretions
+- [ ] No `new` in business logic (except DTOs)
 
-**Beispiel:**
+**Example:**
 ```php
 // ✅ GUT: Dependency zu Interface
 class AnalyzeJobAndResumeHandler {
@@ -784,18 +784,18 @@ class AnalyzeJobAndResumeHandler {
 
 ### Interface-based Design (Program to an Interface)
 
-**Grundprinzip:** Code sollte gegen Abstractions (Interfaces) programmiert werden, nicht gegen Konkretionen.
+**Basic principle:** Code should be programmed against abstractions (interfaces), not against concretions.
 
-#### Wann ein Interface erstellen?
+#### When to create an interface?
 
-**✅ JA — Interface erstellen:**
-- Mehrere Implementierungen existieren oder geplant sind
-- Implementierung austauschbar sein soll
-- External Dependencies (API, DB, Cache)
-- Strategie-Pattern benötigt wird
-- Unit-Tests mit Mocks nötig sind
+**✅ YES — Create interface:**
+- Several implementations exist or are planned
+- Implementation should be interchangeable
+- External dependencies (API, DB, cache)
+- Strategy pattern is needed
+- Unit tests with mocks are necessary
 
-**Beispiel:**
+**Example:**
 ```php
 // Interface
 interface CacheRepositoryInterface {
@@ -827,15 +827,15 @@ class AnalyzeJobAndResumeHandler {
 }
 ```
 
-**❌ NEIN — Kein Interface nötig:**
-- Nur eine Implementierung und keine weitere geplant
-- Reine Data Objects (DTOs)
-- Simple Actions ohne External Dependencies
-- Laravel Framework-Klassen (Controller, Models)
+**❌ NO — No interface required:**
+- Just one implementation and no more planned
+- Pure Data Objects (DTOs)
+- Simple actions without external dependencies
+- Laravel Framework classes (Controllers, Models)
 
-#### Anti-Patterns vermeiden
+#### Avoid anti-patterns
 
-**❌ SCHLECHT: Konkrete Abhängigkeiten**
+**❌ BAD: Concrete dependencies**
 ```php
 class ReportService {
     public function __construct(
@@ -851,7 +851,7 @@ class ReportService {
 // → Verletzt OCP (Neue Provider = Code-Änderung nötig)
 ```
 
-**✅ GUT: Interface-basierte Abhängigkeiten**
+**✅ GOOD: Interface-based dependencies**
 ```php
 class ReportService {
     public function __construct(
@@ -869,19 +869,19 @@ class ReportService {
 
 #### Naming Convention
 
-| Typ | Convention | Beispiel |
+| Type | Convention | Example |
 |-----|------------|----------|
 | **Service** | `{Noun}Interface` | `AiAnalyzerInterface` |
 | **Repository** | `{Noun}RepositoryInterface` | `CacheRepositoryInterface` |
 | **Strategy** | `{Noun}StrategyInterface` | `ScoringStrategyInterface` |
-| **Provider** | `{Noun}ProviderInterface` | `RecommendationProviderInterface` |
+| **Providers** | `{Noun}ProviderInterface` | `RecommendationProviderInterface` |
 
-**NICHT verwenden:**
-- `I{Noun}` (C#-Style, z.B. `IAiAnalyzer`)
-- `{Noun}Contract` (Laravel alt, deprecated)
-- `Abstract{Noun}` (das sind abstrakte Klassen, keine Interfaces)
+**DO NOT use:**
+- `I{Noun}` (C# style, e.g. `IAiAnalyzer`)
+- `{Noun}Contract` (Laravel old, deprecated)
+- `Abstract{Noun}` (these are abstract classes, not interfaces)
 
-#### Verzeichnisstruktur
+#### Directory structure
 
 ```
 app/Domains/{Context}/
@@ -891,29 +891,29 @@ app/Domains/{Context}/
     └── ScoringStrategyInterface.php
 ```
 
-#### Interface-Checklist
+#### Interface checklist
 
-- [ ] Interface liegt in `Contracts/` Unterordner
-- [ ] Methoden vollständig typisiert (Parameter + Return)
-- [ ] PHPDoc für komplexe Array-Typen
-- [ ] Mindestens 2 Implementierungen (aktuell oder geplant)
-- [ ] Interface-Name endet auf `Interface`
-- [ ] Keine Business-Logic im Interface (nur Signaturen)
+- [ ] Interface is located in `Contracts/` subfolder
+- [ ] Methods fully typed (parameter + return)
+- [ ] PHPDoc for complex array types
+- [ ] At least 2 implementations (current or planned)
+- [ ] Interface name ends in `Interface`
+- [ ] No business logic in the interface (only signatures)
 
 ---
 
-### CQRS-Enforcement (Strict Mode)
+### CQRS enforcement (strict mode)
 
-Commands und Queries müssen strikt getrennt sein.
+Commands and queries must be strictly separated.
 
 #### Commands (Write Operations)
-**Regeln:**
-- [ ] Ändern Zustand
-- [ ] Geben `void` oder Bestätigungs-DTO zurück
-- [ ] Liegen in `app/Domains/{Context}/Commands/`
-- [ ] Handler liegt in `app/Domains/{Context}/Handlers/`
+**Regulate:**
+- [ ] Change state
+- [ ] Return `void` or confirmation DTO
+- [ ] Lying in `app/Domains/{Context}/Commands/`
+- [ ] Handler is located in `app/Domains/{Context}/Handlers/`
 
-**Beispiel:**
+**Example:**
 ```php
 // Command DTO
 readonly class AnalyzeJobAndResumeCommand {
@@ -933,13 +933,13 @@ class AnalyzeJobAndResumeHandler {
 ```
 
 #### Queries (Read Operations)
-**Regeln:**
-- [ ] Ändern **keinen** Zustand
-- [ ] Geben DTO oder Collection zurück
-- [ ] Liegen in `app/Domains/{Context}/Queries/`
-- [ ] Query-Handler liegt in `app/Domains/{Context}/Handlers/`
+**Regulate:**
+- [ ] Change **no** state
+- [ ] Return DTO or Collection
+- [ ] Lying in `app/Domains/{Context}/Queries/`
+- [ ] Query handler is in `app/Domains/{Context}/Handlers/`
 
-**Beispiel (geplant):**
+**Example (planned):**
 ```php
 // Query DTO
 readonly class GetCachedAnalysisQuery {
@@ -959,24 +959,24 @@ class GetCachedAnalysisQueryHandler {
 
 ---
 
-### DDD-Enforcement
+### DDD enforcement
 
-Code muss in korrekten Bounded Contexts organisiert sein.
+Code must be organized in correctly bounded contexts.
 
 #### Bounded Context Rules
-**Checkliste:**
-- [ ] Code liegt in `app/Domains/{Context}/`
-- [ ] Keine Cross-Context-Dependencies (außer via DTOs/Events)
-- [ ] Ubiquitous Language in Code verwendet
-- [ ] Models sind Aggregate Roots
+**Checklist:**
+- [ ] Code is in `app/Domains/{Context}/`
+- [ ] No cross-context dependencies (except via DTOs/events)
+- [ ] Ubiquitous Language used in code
+- [ ] Models are aggregate roots
 
-**Aktuelle Contexts:** `Analysis`, `Profile`
+**Current Contexts:** `Analysis`, `Profile`
 
-**Weitere Contexts (Roadmap):**
+**Other contexts (roadmap):**
 - `Recommendations` (Phase 4, ~Commit 30+)
 - `Reporting` (Phase 5, ~Commit 35+)
 
-**Integration zwischen Contexts:**
+**Integration between contexts:**
 ```php
 // ✅ GUT: Integration via DTO
 class RecommendationService {
@@ -1000,70 +1000,70 @@ class RecommendationService {
 
 ---
 
-## ✅ Checkliste für neue Features
+## ✅ Checklist for new features
 
-### Architektur
-- [ ] Domain-Struktur angelegt (richtiger Bounded Context)
-- [ ] Command/Query + Handler erstellt
-- [ ] UseCases + Actions implementiert
-- [ ] DTOs definiert (immutable, `readonly`)
-- [ ] Repository (falls DB-Zugriff)
-- [ ] Service Provider registriert
+###Architecture
+- [ ] Domain structure created (correct bounded context)
+- [ ] Command/Query + Handler created
+- [ ] UseCases + Actions implemented
+- [ ] DTOs defined (immutable, `readonly`)
+- [ ] Repository (if DB access)
+- [ ] Service provider registered
 
-### SOLID-Compliance
-- [ ] SRP: Jede Klasse nur eine Verantwortlichkeit
-- [ ] OCP: Erweiterbar ohne Änderung
-- [ ] LSP: Interfaces austauschbar
-- [ ] ISP: Interfaces fokussiert
+### SOLID compliance
+- [ ] SRP: Each class only one responsibility
+- [ ] OCP: Expandable without modification
+- [ ] LSP: Interfaces interchangeable
+- [ ] ISP: Interfaces focused
 - [ ] DIP: Dependencies via Constructor Injection
-- [ ] Interface-based Design: Dependencies zu Interfaces statt Konkretionen
+- [ ] Interface-based design: Dependencies on interfaces instead of concretions
 
-### CQRS-Compliance
-- [ ] Commands/Queries korrekt getrennt
-- [ ] Commands ändern Zustand, Queries nicht
-- [ ] Handler in korrektem Ordner
+### CQRS compliance
+- [ ] Commands/Queries separated correctly
+- [ ] Commands change state, queries do not
+- [ ] Handler in correct folder
 
-### DDD-Compliance
-- [ ] Code im korrekten Bounded Context
-- [ ] Keine Cross-Context-Dependencies
-- [ ] Ubiquitous Language verwendet
+### DDD compliance
+- [ ] Code in the correctly bounded context
+- [ ] No cross-context dependencies
+- [ ] Ubiquitous Language used
 
 ### Tests & Quality
-- [ ] Unit-Tests geschrieben
-- [ ] Feature-Tests geschrieben
-- [ ] Security-Tests für sicherheitsrelevante Änderungen (OWASP-orientiert)
+- [ ] Write unit tests
+- [ ] Write feature tests
+- [ ] Security tests for security-relevant changes (OWASP-oriented)
 - [ ] Coverage ≥95%
-- [ ] PHPStan Level 9 ohne Fehler
-- [ ] Pint ohne Style-Issues
+- [ ] PHPStan level 9 without errors
+- [ ] Pint without style issues
 
-### Dokumentation
-- [ ] PHPDoc für Public Methods
-- [ ] Komplexe Logik kommentiert
-- [ ] ARCHITECTURE.md aktualisiert (falls nötig)
-- [ ] README.md aktualisiert (falls nötig)
-
----
-
-**Letzte Aktualisierung**: 2026-03-10
+### Documentation
+- [ ] PHPDoc for public methods
+- [ ] Complex logic commented
+- [ ] ARCHITECTURE.md updated (if necessary)
+- [ ] README.md updated (if necessary)
 
 ---
 
-## 🛠️ Test- und Quality-Gate-Reihenfolge
+**Last updated**: 2026-03-10
 
-**Empfohlene Reihenfolge für lokale und CI-Checks:**
+---
 
-1. `make pint-fix`  → Code-Formatierung (immer zuerst, verhindert Style-Fehler)
-2. `make phpstan`   → Statische Analyse (früher Fehlerfang, schneller als Tests)
-3. `make test`      → Schneller Testlauf ohne Coverage (empfohlen für schnelles Feedback)
-4. `make test-coverage` → Führt alle Tests inkl. Coverage aus (Testlauf ist enthalten, separater `make test` ist dann nicht nötig)
+## 🛠️ Test and Quality Gate Order
 
-**Hinweise:**
-- Für schnelles Feedback: pint-fix → phpstan → test
-- Für vollständige Quality-Gates (z. B. vor Release): pint-fix → phpstan → test-coverage
-- `make test-coverage` ist langsamer, aber deckt alles ab (inkl. Testlauf)
-- Ein separater `make test` ist vor `make test-coverage` nicht nötig, da alle Tests ohnehin laufen.
+**Recommended order for local and CI checks:**
 
-(Siehe auch Skill-Kommentar im Makefile)
+1. `make pint-fix` → Code formatting (always first, prevents style errors)
+2. `make phpstan` → Static analysis (early error catching, faster than testing)
+3. `make test` → Quick test run without coverage (recommended for quick feedback)
+4. `make test-coverage` → Runs all tests including coverage (test run is included, separate `make test` is then not necessary)
+
+**Notes:**
+- For quick feedback: pint-fix → phpstan → test
+- For complete quality gates (e.g. before release): pint-fix → phpstan → test-coverage
+- `make test-coverage` is slower, but covers everything (including test run)
+- A separate `make test` is not necessary before `make test-coverage` because all tests are running anyway.
+
+(See also skill comment in the Makefile)
 
 ---
 

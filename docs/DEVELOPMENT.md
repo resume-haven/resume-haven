@@ -1,19 +1,19 @@
 # 🚀 Local Development Setup
 
-Anleitung für lokale Entwicklung mit Docker.
+Guide to local development with Docker.
 
 ---
 
-## 📦 Voraussetzungen
+## 📦 Requirements
 
 - Docker & Docker Compose
-- WSL2 (Windows) oder direkt Linux/Mac
-- Make (für `make` Kommandos)
+- WSL2 (Windows) or directly Linux/Mac
+- Make (for `make` commands)
 - Git
 
 ---
 
-## 🏗️ Container starten
+## 🏗️ Start containers
 
 ```bash
 docker compose up -d
@@ -21,17 +21,17 @@ docker compose up -d
 make docker-up
 ```
 
-Das startet:
+This starts:
 - **PHP-FPM** (Port 9000)
 - **Nginx** (Port 8080)
-- **Node** (für Assets)
-- **Mailpit** (Test-Mailbox, Port 8025)
+- **Node** (for assets)
+- **Mailpit** (test mailbox, port 8025)
 
-Zugang: **http://localhost:8080**
+Access: **http://localhost:8080**
 
 ---
 
-## 🔨 Häufige Kommandos
+## 🔨 Common commands
 
 ### **Setup & Installation**
 
@@ -58,12 +58,12 @@ make coverage-open          # Öffnet HTML-Coverage-Report im Browser
 make coverage-clean         # Löscht alte Coverage-Reports
 ```
 
-**Code Coverage Anforderungen:**
-- **Minimum:** 95% Total Coverage
+**Code Coverage Requirements:**
+- **Minimum:** 95% total coverage
 - **GeminiAiAnalyzer.php:** ≥80%
-- **Aktueller Stand:** 98.2% Total ✅
+- **Current status:** 98.2% Total ✅
 
-### **Code-Qualität**
+### **Code Quality**
 
 ```bash
 make pint-fix       # Code automatisch formatieren
@@ -71,7 +71,7 @@ make pint-analyse   # Nur Analyse (kein Fix)
 make phpstan        # Statische Analyse
 ```
 
-### **Shells & Container**
+### **Shells & Containers**
 
 ```bash
 make php-shell      # Bash im PHP-Container
@@ -79,7 +79,7 @@ make node-shell     # Shell im Node-Container
 make nginx-shell    # Shell im Nginx-Container
 ```
 
-### **Datenbank**
+### **Database**
 
 ```bash
 make db-migrate     # Migrationen ausführen
@@ -98,9 +98,9 @@ make docker-rebuild     # Neuer Build (nach Docker-Änderungen)
 
 ---
 
-## 🐛 Debugging mit Xdebug
+## 🐛 Debugging with Xdebug
 
-Siehe **[Debugging Guide](./DEBUGGING.md)** für vollständige Anleitung.
+See **[Debugging Guide](./DEBUGGING.md)** for complete instructions.
 
 **Quick Start:**
 ```bash
@@ -109,7 +109,7 @@ make debug-status   # Status prüfen
 make php-shell      # Shell (XDEBUG_CONFIG ist bereits gesetzt)
 ```
 
-**Coverage-Reports:**
+**Coverage reports:**
 ```bash
 make debug-on               # Xdebug aktivieren
 make test-coverage          # Coverage-Check (min 95%)
@@ -118,13 +118,13 @@ make coverage-open          # HTML-Report im Browser öffnen
 make coverage-clean         # Alte Reports löschen
 ```
 
-Dann in IDE auf Port 9003 Breakpoint setzen und Script ausführen!
+Then set the breakpoint to port 9003 in the IDE and run the script!
 
 ---
 
-## 📊 Workflow für Entwicklung
+## 📊 Workflow for development
 
-### **Typischer Developer-Tag:**
+### **Typical developer tag:**
 
 ```bash
 # Morgens
@@ -149,7 +149,7 @@ make docker-down        # Container stoppen
 
 ---
 
-## 🐚 PHP-Shell Tipps
+## 🐚 PHP Shell Tips
 
 ```bash
 make php-shell
@@ -166,7 +166,7 @@ composer install                # Abhängigkeiten
 
 ## 🔄 Docker troubleshooting
 
-### **Container nicht erreichbar?**
+### **Container not reachable?**
 
 ```bash
 docker ps                   # Laufen alle Container?
@@ -175,14 +175,14 @@ make docker-restart         # Schnell neu starten
 make docker-rebuild         # Komplett neu bauen
 ```
 
-### **Port schon belegt?**
+### **Port already occupied?**
 
 ```bash
 sudo lsof -i :8080         # Wer nutzt Port 8080?
 make docker-down            # Container stoppen
 ```
 
-### **Cache/Daten löschen?**
+### **Clear cache/data?**
 
 ```bash
 make docker-clean           # Container + Volumes löschen
@@ -193,105 +193,105 @@ make docker-up              # Neu starten (frisch!)
 
 ## 🔁 GitHub CI & Branch Protection (Commit 23)
 
-### CI-Workflow
+### CI workflow
 
-Der Workflow liegt in:
+The workflow lies in:
 - `.github/workflows/ci.yml`
 
-Aktive Jobs:
+Active jobs:
 - `pint`
 - `phpstan`
-- `pest_acceptance` (Kernflows + Edge-Cases, `AI_PROVIDER=mock`)
-- `pest_coverage` (inkl. Coverage-Gate `>=95%`)
+- `pest_acceptance` (core flows + edge cases, `AI_PROVIDER=mock`)
+- `pest_coverage` (incl. coverage gate `>=95%`)
 
-Trigger:
-- `push` (alle Branches ausser `main`)
-- `pull_request` auf `main`
-- `workflow_dispatch` (manuell)
+Triggers:
+- `push` (all branches except `main`)
+- `pull_request` to `main`
+- `workflow_dispatch` (manual)
 
-Coverage-Artefakte:
-- Upload als GitHub Artifact `coverage-report`
-- Retention: 7 Tage
+Coverage artifacts:
+- Upload as GitHub Artifact `coverage-report`
+- Retention: 7 days
 
-### CI-Umgebungsdatei
+### CI environment file
 
-- `src/.env.ci` enthaelt die CI-spezifischen Defaultwerte
-- `AI_PROVIDER=mock` verhindert externe API-Abhaengigkeiten
-- `GEMINI_API_KEY` bleibt als leerer Platzhalter
-- `APP_KEY` wird im Workflow zur Laufzeit erzeugt
+- `src/.env.ci` contains the CI-specific default values
+- `AI_PROVIDER=mock` prevents external API dependencies
+- `GEMINI_API_KEY` remains as an empty placeholder
+- `APP_KEY` is created in the workflow at runtime
 
 ### Codecov Setup (public repository)
 
-1. Bei `codecov.io` mit GitHub anmelden
-2. Repository aktivieren
-3. Keine Tokens notwendig (public Repo)
-4. Workflow lädt `src/coverage-report/clover.xml` hoch
+1. Sign in to `codecov.io` using GitHub
+2. Activate repository
+3. No tokens necessary (public repo)
+4. Workflow uploads `src/coverage-report/clover.xml`
 
-### Status-Badges
+### Status Badges
 
-Im `README.md` sind drei Badges vorgesehen:
+Three badges are provided in the `README.md`:
 - CI (GitHub Actions)
 - Coverage (Codecov)
 - PHPStan Level 9
 
-Hinweis: Ersetze in den Badge-URLs `<owner>/<repo>` durch den echten GitHub-Pfad.
+Note: In the badge URLs, replace `<owner>/<repo>` with the real GitHub path.
 
-### Branch-Protection fuer `main`
+### Branch protection for `main`
 
 Status:
-- **Done (im Repo):** CI-Checks existieren als Jobs `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
-- **To-do (in GitHub Settings manuell setzen):** Branch-Protection-Regel inkl. Required Checks aktivieren
+- **Done (in the repo):** CI checks exist as jobs `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
+- **To-do (set manually in GitHub Settings):** Activate branch protection rule including required checks
 
-GitHub Einstellungen (To-do):
+GitHub Settings (To-do):
 1. `Settings -> Branches -> Add rule`
-2. Branch-Pattern: `main`
-3. Aktivieren:
+2. Branch pattern: `main`
+3. Activate:
    - `Require a pull request before merging`
    - `Require status checks to pass before merging`
    - `Require branches to be up to date before merging`
    - `Do not allow bypassing the above settings`
-4. Required checks auswaehlen:
+4. Select required checks:
    - `pint`
    - `phpstan`
    - `pest_acceptance`
    - `pest_coverage`
 
-Checkliste Branch-Protection:
-- [ ] Regel fuer `main` erstellt
-- [ ] `Require a pull request before merging` aktiv
-- [ ] `Require status checks to pass before merging` aktiv
-- [ ] Required checks gesetzt: `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
+Branch protection checklist:
+- [ ] Rule created for `main`
+- [ ] `Require a pull request before merging` active
+- [ ] `Require status checks to pass before merging` active
+- [ ] Required checks set: `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
 
 ---
 
-## 📚 Weitere Dokumentation
+## 📚 More documentation
 
-| Thema | Link |
+| Topic | Link |
 |-------|------|
 | **Roadmap** | [docs/ROADMAP.md](./docs/ROADMAP.md) |
 | **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
 | **Debugging** | [docs/DEBUGGING.md](./docs/DEBUGGING.md) |
-| **Architektur** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) |
+| **Architecture** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) |
 | **Coding Guidelines** | [docs/CODING_GUIDELINES.md](./docs/CODING_GUIDELINES.md) |
 | **Contributing** | [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) |
 
 ---
 
-## ✅ Checkliste zum Starten
+## ✅ Starting checklist
 
-- [ ] Docker & Docker Compose installiert
-- [ ] `docker compose up -d` ausgeführt
-- [ ] http://localhost:8080 öffnet die Seite
-- [ ] `make php-shell` funktioniert
-- [ ] `make test` laufen die Tests grün
+- [ ] Docker & Docker Compose installed
+- [ ] `docker compose up -d` executed
+- [ ] http://localhost:8080 opens the page
+- [ ] `make php-shell` works
+- [ ] `make test` the tests run green
 
-**Viel Erfolg beim Entwickeln!** 🚀
+**Good luck developing!** 🚀
 
-## 🛡️ Security-Test-Template (OWASP-orientiert)
+## 🛡️ Security test template (OWASP-oriented)
 
-Nutze dieses Template bei sicherheitsrelevanten Änderungen (Input-Validierung, Auth, externe Requests, Prompting).
+Use this template for security-relevant changes (input validation, auth, external requests, prompting).
 
-### 1) Minimaler Sicherheits-Testlauf
+### 1) Minimum security test run
 
 ```bash
 # Basis-Qualitätsgates
@@ -309,25 +309,25 @@ make test-security-strict
 make test-security-gate
 ```
 
-### 2) PR-Checkliste Security
+### 2) PR checklist security
 
-- [ ] Eingaben als untrusted behandelt (Validation + Sanitization)
-- [ ] Output kontextgerecht escaped/encoded (kein unescaped HTML/JS)
-- [ ] CSRF für alle POST-Formulare vorhanden (`@csrf`)
-- [ ] Keine Secrets im Code (nur Config/Env)
-- [ ] Externe Requests mit Timeouts/Allowlist abgesichert
-- [ ] Prompt-/Input-Injection berücksichtigt
-- [ ] Security-Regression-Tests ergänzt/aktualisiert
+- [ ] Inputs treated as untrusted (validation + sanitization)
+- [ ] Output contextually escaped/encoded (no unescaped HTML/JS)
+- [ ] CSRF present for all POST forms (`@csrf`)
+- [ ] No secrets in the code (only Config/Env)
+- [ ] External requests secured with timeouts/allowlist
+- [ ] Prompt/input injection taken into account
+- [ ] Security regression tests added/updated
 
-### 3) OWASP-Mapping Kurzcheck
+###3) OWASP mapping quick check
 
-- **A01 Access Control**: Unauthorized Access Tests vorhanden
-- **A03 Injection**: SQL/XSS/Prompt-Injection Tests vorhanden
-- **A05 Misconfiguration**: Sichere Defaults geprüft
-- **A06 Vulnerable Components**: Dependency-Update/CVE-Check berücksichtigt
-- **A09 Logging/Monitoring**: Sicherheitsrelevante Fehler werden ohne Secrets geloggt
+- **A01 Access Control**: Unauthorized access tests present
+- **A03 Injection**: SQL/XSS/Prompt injection tests available
+- **A05 Misconfiguration**: Safe defaults checked
+- **A06 Vulnerable Components**: Dependency update/CVE check taken into account
+- **A09 Logging/Monitoring**: Security-relevant errors are logged without secrets
 
-### 4) Empfohlene Testdatei-Namen
+### 4) Recommended test file names
 
 - `tests/Feature/SecurityPromptInjectionTest.php`
 - `tests/Feature/InputValidationTest.php`

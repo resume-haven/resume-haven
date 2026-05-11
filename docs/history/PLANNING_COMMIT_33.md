@@ -1,115 +1,113 @@
-# Detailplanung Commit 33 — L3 Anthropic Provider PoC
+# Detailed planning Commit 33 — L3 Anthropic Provider PoC
 
-**Branch:** `feature/commit-33-anthropic-provider-poc`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-04-30  
-**Abgeschlossen:** 2026-05-04
-
----
-
-## Ziel
-
-Einen zweiten LLM-Provider als Proof of Concept integrieren, um das in Commit 32
-formalisierte Plugin-Interface unter realen Provider-Unterschieden zu validieren.
-Zusätzlich wird ein minimaler E2E-Analysepfad (no-egress) für den Provider-Auswahlpfad
-abgesichert.
+**Branch:** `feature/commit-33-anthropic-provider-poc`
+**Status:** Completed
+**Created:** 2026-04-30
+**Completed:** 2026-05-04
 
 ---
 
-## Entscheidungslog (Planungs-Session 2026-04-30)
+##Goal
 
-| # | Frage | Entscheidung |
+Integrate a second LLM provider as a proof of concept to do this in commit 32
+to validate formalized plugin interface under real provider differences.
+Additionally, a minimal E2E analysis path (no-egress) is used for the provider selection path
+secured.
+
+---
+
+## Decision log (planning session 2026-04-30)
+
+| # | Question | decision |
 |---|-------|--------------|
-| 1 | Provider für L3 | Anthropic |
-| 2 | E2E-Testtiefe | Minimaler Analysepfad |
-| 3 | Status im Plan | Commit 33 direkt in Arbeit |
+| 1 | Provider for L3 | Anthropic |
+| 2 | E2E Test Depth | Minimum parse path |
+| 3 | Status in plan | Commit 33 directly in progress |
 
 ---
 
-## Scope
+##Scope
 
-### Schritt 1 — Anthropic Analyzer hinzufügen
+### Step 1 — Add Anthropic Analyzer
 
-- Neuer `AnthropicAiAnalyzer` unter `Services/AiAnalyzer`
-- Implementiert bestehende L2-Hooks über `AbstractLlmAiAnalyzer`
-- Provider-spezifisches Exception-Mapping für typische Anthropic-Fehlertexte
+- New `AnthropicAiAnalyzer` under `Services/AiAnalyzer`
+- Implements existing L2 hooks via `AbstractLlmAiAnalyzer`
+- Provider-specific exception mapping for typical Anthropic error texts
 
-### Schritt 2 — Config & Binding erweitern
+### Step 2 — Expand Config & Binding
 
-- `ai.analyzers.anthropic` in `config/ai.php`
-- `ai.providers.anthropic.key` wird als Availability-Signal verwendet
-- `AppServiceProvider` bleibt config-driven (kein zusätzlicher Branch-Switch)
+- `ai.analyzers.anthropic` to `config/ai.php`
+- `ai.providers.anthropic.key` is used as an availability signal
+- `AppServiceProvider` remains config-driven (no additional branch switch)
 
-### Schritt 3 — Unit-Tests ergänzen
+### Step 3 — Add unit tests
 
-- `AnthropicAiAnalyzerTest` (Providername, Availability, Mapping)
-- Binding-Tests für `AI_PROVIDER=anthropic`
-- Guardrails bestehender Provider (`mock`, `gemini`, `openai`) bleiben grün
+- `AnthropicAiAnalyzerTest` (provider name, availability, mapping)
+- Binding tests for `AI_PROVIDER=anthropic`
+- Guardrails of existing providers (`mock`, `gemini`, `openai`) remain green
 
-### Schritt 4 — Minimaler E2E-Analysepfad
+### Step 4 — Minimum E2E analysis path
 
-- Feature-Test, der den Analysepfad mit `AI_PROVIDER=anthropic` ausführt
-- no-egress Ansatz (kontrollierter Stub/Test-Double, kein externer API-Call)
-- Ziel: End-to-End-Auswahlpfad + Ergebnis-Flow bleibt stabil
+- Feature test that runs the analysis path with `AI_PROVIDER=anthropic`
+- no-egress approach (controlled stub/test double, no external API call)
+- Goal: End-to-end selection path + result flow remains stable
 
 ---
 
-## Testkatalog
+## Test catalog
 
-### Unit
+###Unit
 
 - `AnthropicAiAnalyzer`:
   - `getProviderName()`
-  - `isAvailable()` mit/leerem Key
+  - `isAvailable()` with/empty key
   - `mapProviderException()` branch coverage
 - `AppServiceProvider`:
   - Binding `anthropic`
-  - bestehende Guard-Exceptions unverändert
+  - existing guard exceptions unchanged
 
-### Feature (minimal E2E)
+### Feature (minimum E2E)
 
-- Analyse-Flow mit `AI_PROVIDER=anthropic` liefert valide Antwortstruktur
-- Fehlerpfad wird user-friendly gemappt, ohne externen Egress
+- Analysis flow with `AI_PROVIDER=anthropic` provides valid answer structure
+- The error path is mapped in a user-friendly manner, without external egress
 
 ### Regression
 
-- Bestehende Analyzer-Suites bleiben grün
-- Keine Regression am `AiAnalyzerInterface`-Vertrag
+- Existing analyzer suites remain green
+- No regression on the `AiAnalyzerInterface` contract
 
 ---
 
-## Nicht-Scope in Commit 33
+## Non scope in commit 33
 
-- Kein Provider-Fallback (z. B. Anthropic -> OpenAI)
-- Kein Retry-/Backoff-Framework
-- Kein dritter zusätzlicher Provider
-- Keine UI-/UX-Änderungen
-- Keine Änderung an Domain-Verträgen
-
----
-
-## Erfolgskriterien
-
-- `AI_PROVIDER=anthropic` liefert eine gültige `AiAnalyzerInterface`-Instanz
-- Anthropic-spezifisches Exception-Mapping ist testbar
-- Minimaler E2E-Analysepfad ist stabil und no-egress
-- Relevante Tests, Pint und PHPStan bleiben grün
+- No provider fallback (e.g. Anthropic -> OpenAI)
+- No retry/backoff framework
+- No third additional provider
+- No UI/UX changes
+- No change to domain contracts
 
 ---
 
-## Risiken / offene Punkte
+## Success criteria
 
-- E2E-Pfad darf keine externen API-Calls triggern
-- Mapping-Logik darf bestehende generische Fehlermeldungen nicht verschlechtern
-- Scope-Creep in Richtung Fallback/Retry vermeiden
+- `AI_PROVIDER=anthropic` returns a valid `AiAnalyzerInterface` instance
+- Anthropic-specific exception mapping is testable
+- Minimum E2E analysis path is stable and no-egress
+- Relevant tests, Pint and PHPStan remain green
 
 ---
 
-## Verweise
+## Risks / open points
 
-- Aktiver Plan: `../../COMMIT_PLAN.md`
+- E2E path must not trigger external API calls
+- Mapping logic must not worsen existing generic error messages
+- Avoid scope creep towards fallback/retry
+
+---
+
+## References
+
+- Active plan: `../../COMMIT_PLAN.md`
 - Roadmap: `../ROADMAP.md`
-- Vorheriger Detailplan: `PLANNING_COMMIT_32.md`
-- Historie-Index: `../COMMIT_HISTORY_INDEX.md`
-
-
+- Previous detailed plan: `PLANNING_COMMIT_32.md`
+- History index: `../COMMIT_HISTORY_INDEX.md`

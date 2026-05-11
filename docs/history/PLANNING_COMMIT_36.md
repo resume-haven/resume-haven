@@ -1,62 +1,61 @@
-# Detailplanung Commit 36 - Roadmap-Planung & Doku-Sync
+# Detailed planning Commit 36 ​​- Roadmap planning & documentation sync
 
-**Branch:** `feature/commit-36-roadmap-planning-docs`  
-**Status:** In Arbeit  
-**Erstellt:** 2026-05-11
-
----
-
-## Ziel
-
-Nach Abschluss von Commit 35 die Planungs- und Statusdokumente auf einen konsistenten,
-nachvollziehbaren Stand bringen und die naechste Umsetzungsreihenfolge fuer Folge-Commits
-klar priorisieren.
+**Branch:** `feature/commit-36-roadmap-planning-docs`
+**Status:** In progress
+**Created:** 2026-05-11
 
 ---
 
-## Scope
+##Goal
 
-### Schritt 1 - Statusangleichung der Kern-Dokumente
-
-- `COMMIT_PLAN.md` auf Commit-35-Abschluss und Commit-36-Fokus umstellen
-- `docs/COMMIT_HISTORY_INDEX.md` auf neuen aktiven Detailplan aktualisieren
-- `docs/history/COMMIT_HISTORY_2026.md` um Commit 35 ergaenzen
-- `docs/ai/WORKING_BASELINE.md` auf Commit-36-Fokus anheben
-
-### Schritt 2 - Roadmap-Stand bereinigen
-
-- In `docs/ROADMAP.md` den Abschnitt "Aktueller Stand" auf den realen Fortschritt heben
-- Veraltete In-Arbeit-Markierungen aus Commit-31-Altstand entfernen
-- Phase-5-Fortschritt (L1-L4 abgeschlossen) und offene Folgefragen sauber trennen
-
-### Schritt 3 - Priorisierung fuer naechsten Umsetzungs-Commit
-
-- Kandidaten fuer Commit 37 vergleichbar machen (z. B. Deployment-Neueinordnung, CV-Management-Follow-up, Phase-5-Hardening)
-- Eine priorisierte Empfehlung inkl. Nicht-Scope und Risiken dokumentieren
+After completion of Commit 35, the planning and status documents to a consistent,
+provide a comprehensible status and the next implementation order for subsequent commits
+prioritize clearly.
 
 ---
 
-## Nicht-Scope in Commit 36
+##Scope
 
-- Keine Produktlogik-Implementierung
-- Keine Controller-/Domain-/Migrationsaenderungen
-- Keine Deployment-Ausfuehrung
+### Step 1 - Status alignment of the core documents
+
+- Switch `COMMIT_PLAN.md` to commit 35 completion and commit 36 ​​focus
+- Update `docs/COMMIT_HISTORY_INDEX.md` to new active detailed plan
+- Add commit 35 to `docs/history/COMMIT_HISTORY_2026.md`
+- Raise `docs/ai/WORKING_BASELINE.md` to commit 36 ​​focus
+
+### Step 2 - Clean up roadmap status
+
+- In `docs/ROADMAP.md`, raise the "Current status" section to the real progress
+- Remove obsolete in-work flags from commit 31 legacy
+- Clearly separate phase 5 progress (L1-L4 completed) and open follow-up questions
+
+### Step 3 - Prioritization for the next implementation commit
+
+- Make candidates for Commit 37 comparable (e.g. deployment reordering, CV management follow-up, phase 5 hardening)
+- Document a prioritized recommendation including non-scope and risks
 
 ---
 
-## Erfolgskriterien
+## Non scope in commit 36
 
-- Planungsdokumente sind widerspruchsfrei (Commit-Status, Fokus, aktive Detailplanung)
-- Roadmap bildet den aktuellen technischen Stand korrekt ab
-- Naechster Umsetzungs-Commit ist priorisiert und begruendet
+- No product logic implementation
+- No controller/domain/migration changes
+- No deployment execution
 
 ---
 
-## Verweise
+## Success criteria
 
-- Aktiver Plan: `../../COMMIT_PLAN.md`
+- Planning documents are consistent (commit status, focus, active detailed planning)
+- Roadmap correctly reflects the current technical status
+- The next implementation commit is prioritized and justified
+
+---
+
+## References
+
+- Active plan: `../../COMMIT_PLAN.md`
 - Working Baseline: `../ai/WORKING_BASELINE.md`
-- Historie-Index: `../COMMIT_HISTORY_INDEX.md`
-- Vorheriger Detailplan: `PLANNING_COMMIT_35.md`
+- History index: `../COMMIT_HISTORY_INDEX.md`
+- Previous detailed plan: `PLANNING_COMMIT_35.md`
 - Roadmap: `../ROADMAP.md`
-

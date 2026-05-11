@@ -1,72 +1,72 @@
-# 🏗️ ResumeHaven – Projektüberblick
+# 🏗️ ResumeHaven – Project Overview
 
-## 🎯 Was ist ResumeHaven?
+## 🎯 What is ResumeHaven?
 
-Ein **leichtgewichtiges, KI-gestütztes Analyse-Tool**, das:
-- **Stellenausschreibungen**
-- **Lebensläufe**
+A **lightweight, AI-powered analytics tool** that:
+- **Job advertisements**
+- **CVs**
 
-miteinander vergleicht und **strukturiert auswertet**.
+compares with each other and **evaluates them in a structured manner**.
 
-**Ziel:** Bewerbern zeigen, wie gut ihr Profil zu einer Stelle passt und wo Lücken bestehen.
+**Goal:** Show applicants how well their profile fits a position and where there are gaps.
 
 ---
 
-## 🧱 MVP-Funktionsumfang (aktuell)
+## 🧱 MVP feature set (current)
 
-### ✅ **Enthalten:**
+### ✅ **Included:**
 
-#### Analyse (KI-gestützt via Gemini)
-- Anforderungen aus Stellenausschreibungen extrahieren
-- Erfahrungen aus Lebensläufen extrahieren
-- Matches zwischen Anforderungen und Erfahrungen finden
-- Lücken (Gaps) identifizieren
-- Tag-basierte Darstellung (Match-Tags grün, Gap-Tags rot)
+#### Analysis (AI-supported via Gemini)
+- Extract requirements from job postings
+- Extract experiences from resumes
+- Find matches between requirements and experiences
+- Identify gaps
+- Tag-based display (match tags green, gap tags red)
 
-#### Scoring & Visualisierung
-- Score-Berechnung: `(Matches / (Matches + Gaps)) * 100`
-- Fortschrittsbalken mit Farbskala (Rot/Gelb/Grün)
-- Bewertungstext ("Geringe/Mittlere/Hohe Übereinstimmung")
+#### Scoring & Visualization
+- Score calculation: `(Matches / (Matches + Gaps)) * 100`
+- Progress bar with color scale (red/yellow/green)
+- Rating text (“Low/Medium/High Agreement”)
 
-#### Profile / CV-Speicherung
-- Anonyme CV-Speicherung über Token-Link
-- URL-safe Base64-Token mit hoher Entropie
-- Verschlüsselte Speicherung des CVs in `stored_resumes`
-- Wiederherstellung des gespeicherten CVs über `/profile/load/{token}`
-- **Auth (Commit 29):** Registrierung / Login / Logout via Laravel Breeze
-- **Auth (Commit 29):** Rollen `user` / `admin` auf `User`-Model
-- **Auth (Commit 29):** Auto-Claim — anonyme Session-CVs werden beim Login dem User zugeordnet
+#### Profiles / CV storage
+- Anonymous CV storage via token link
+- URL-safe, high-entropy Base64 token
+- Encrypted storage of the CV in `stored_resumes`
+- Restoration of saved CV via `/profile/load/{token}`
+- **Auth (Commit 29):** Registration / Login / Logout via Laravel Breeze
+- **Auth (Commit 29):** Roll `user` / `admin` to `User` model
+- **Auth (Commit 29):** Auto-Claim — anonymous session CVs are assigned to the user upon login
 
 #### Performance & Security
-- Analyse-Cache (Datenbank, Request-Hash-basiert)
-- Input-Validierung (max 50KB, Pattern-Detection)
-- Prompt-Injection-Schutz im AI-Analyzer
-- Input-Sanitization (Null-Bytes, Whitespace, Line-Endings)
-- Fehlerbehandlung für ungültige Resume-Tokens und defekte Payloads
+- Analysis cache (database, request hash based)
+- Input validation (max 50KB, pattern detection)
+- Prompt injection protection in AI Analyzer
+- Input sanitization (zero bytes, whitespace, line endings)
+- Error handling for invalid resume tokens and broken payloads
 
-#### Entwicklung
-- Mock-AI-Provider (ohne API-Kosten entwickeln)
-- Xdebug-Integration (optional)
-- 98.2% Test-Coverage
+#### Development
+- Mock AI provider (develop without API costs)
+- Xdebug integration (optional)
+- 98.2% test coverage
 - PHPStan Level 9
 
 ---
 
-### ❌ **NICHT im MVP:**
+### ❌ **NOT in MVP:**
 
-- ❌ Keine Multi-CV-Verwaltung (geplant Commit 30+)
-- ❌ Keine PDF-Generierung
-- ❌ Keine öffentliche API
-- ❌ Keine E-Mail-Benachrichtigungen (nur Mailpit für Tests, Verifizierung deaktiviert)
-- ❌ Kein Production-Deployment (aktuell nur Docker-Dev)
-- ⚠️ Keine finale User-basierte Verschlüsselung (MVP nutzt Token als Secret, Refactoring eingeplant)
-- ⚠️ `resume_token` in Session (singular) — Tech-Debt, wird mit CV-Verwaltung auf Array umgestellt
+- ❌ No multi-CV management (planned commit 30+)
+- ❌ No PDF generation
+- ❌ No public API
+- ❌ No email notifications (only Mailpit for testing, verification disabled)
+- ❌ No production deployment (currently only Docker Dev)
+- ⚠️ No final user-based encryption (MVP uses tokens as secrets, refactoring planned)
+- ⚠️ `resume_token` in Session (singular) — Tech-Debt, will be converted to array with CV management
 
 ---
 
-## 🏗️ Architektur (Kurzform)
+## 🏗️ Architecture (short form)
 
-### Domain-Driven Design (DDD)
+### Domain Driven Design (DDD)
 
 **Bounded Contexts:** `Analysis`, `Profile`
 
@@ -95,9 +95,9 @@ app/Domains/Profile/
 └── Dto/              # StoreResumeDto, ResumeTokenDto, LoadedResumeDto
 ```
 
-### Single-Action-Controller
+### Single action controller
 
-Controller sind dünn und nutzen `__invoke()`:
+Controllers are thin and use `__invoke()`:
 
 ```php
 class StoreResumeController extends Controller
@@ -117,7 +117,7 @@ class StoreResumeController extends Controller
 
 ### Repository Pattern
 
-Persistence-Abstraktion, kein Raw-SQL außer in Repositories:
+Persistence abstraction, no raw SQL except in repositories:
 
 ```php
 // app/Domains/Profile/Repositories/ProfileRepository.php
@@ -129,72 +129,72 @@ public function getByToken(string $token): ?StoredResume
 
 ---
 
-## 🎨 UI/UX-Prinzipien
+## 🎨 UI/UX principles
 
-### Design-System
-- **Minimalistisch:** Klar, professionell, keine Ablenkung
+### Design system
+- **Minimalist:** Clear, professional, no distractions
 - **TailwindCSS v3:** Utility-First
-- **Mobile-First:** Responsive umgesetzt
-- **Dark-Mode:** Implementiert mit Toggle und Persistierung
+- **Mobile-First:** Implemented responsively
+- **Dark Mode:** Implemented with toggle and persistence
 
-### Komponenten
+### Components
 - **Panels:** `rounded-lg, shadow-sm, p-6, bg-white`
 - **Buttons:** `bg-blue-600, hover:bg-blue-700, text-white, px-6, py-3, rounded-lg`
-- **Match-Tags:** `bg-green-100, text-green-700, px-3, py-1, rounded-full`
-- **Gap-Tags:** `bg-red-100, text-red-700, px-3, py-1, rounded-full`
-- **Score-Bar:** `bg-green-500` (70-100%), `bg-yellow-500` (40-70%), `bg-red-500` (0-40%)
+- **Match Tags:** `bg-green-100, text-green-700, px-3, py-1, rounded-full`
+- **Gap Tags:** `bg-red-100, text-red-700, px-3, py-1, rounded-full`
+- **Score Bar:** `bg-green-500` (70-100%), `bg-yellow-500` (40-70%), `bg-red-500` (0-40%)
 
-### Layout-Struktur (result.blade.php)
-1. **Score-Panel** (oberste Priorität)
-   - Großer Prozentsatz
-   - Fortschrittsbalken
-   - Bewertungstext
-2. **Stellenausschreibung** (read-only)
-3. **Lebenslauf** (read-only)
-4. **Anforderungen** (extrahierte Requirements)
-5. **Erfahrungen** (extrahierte Experiences)
-6. **Matches** (grüne Tags)
-7. **Gaps** (rote Tags)
+### Layout structure (result.blade.php)
+1. **Score Panel** (top priority)
+   - Big percentage
+   - Progress bar
+   - Review text
+2. **Job advertisement** (read-only)
+3. **CV** (read only)
+4. **Requirements** (extracted requirements)
+5. **Experiences** (extracted experiences)
+6. **Matches** (green tags)
+7. **Gaps** (red tags)
 
 ---
 
-## 🛡️ Validierungsregeln
+## 🛡️ Validation rules
 
-### Input-Validierung
+### Input validation
 
 #### `job_text`
 - **required**
 - **string**
 - **min:** 30 chars
 - **max:** 50KB
-- Pattern-Detection: SQL-Keywords, XSS, Event-Handler
+- Pattern detection: SQL keywords, XSS, event handlers
 
 #### `cv_text`
 - **required**
 - **string**
 - **min:** 30 chars
 - **max:** 50KB
-- Pattern-Detection: SQL-Keywords, XSS, Event-Handler
+- Pattern detection: SQL keywords, XSS, event handlers
 
-### Security-Layer
-1. **Input-Sanitization:**
-   - Null-Bytes entfernen
-   - Whitespace trimmen
-   - Line-Endings normalisieren (`\r\n` → `\n`)
+### Security layer
+1. **Input Sanitization:**
+   - Remove zero bytes
+   - Trim whitespace
+   - Normalize line endings (`\r\n` → `\n`)
 
-2. **Pattern-Detection:**
-   - SQL-Keywords (SELECT, INSERT, UPDATE, DELETE, DROP)
+2. **Pattern detection:**
+   - SQL keywords (SELECT, INSERT, UPDATE, DELETE, DROP)
    - XSS (`<script>`, `<iframe>`, `javascript:`)
-   - Event-Handler (`onclick=`, `onerror=`)
+   - Event handlers (`onclick=`, `onerror=`)
 
-3. **Prompt-Injection-Schutz:**
-   - Strikte System-Regeln im AI-Analyzer
-   - Input wird als "UNVERTRAUTER INHALT" behandelt
-   - Keine Anweisungen aus Input werden befolgt
+3. **Prompt Injection Protection:**
+   - Strict system rules in the AI ​​Analyzer
+   - Input is treated as “UNTRUSTED CONTENT”.
+   - No instructions from input are followed
 
 ---
 
-## 📦 Datenstrukturen (Kern-DTOs)
+## 📦 Data Structures (Core DTOs)
 
 ### AnalyzeRequestDto
 ```php
@@ -246,7 +246,7 @@ readonly class ScoreResultDto
 
 ---
 
-## 🔄 Request-Flow (vereinfacht)
+## 🔄 Request flow (simplified)
 
 ```
 1. User submits Form (job_text + cv_text)
@@ -274,54 +274,54 @@ readonly class ScoreResultDto
 
 ---
 
-## 🚫 Was das MVP NICHT tut
+## 🚫 What the MVP DOES NOT do
 
-### Funktional
-- ❌ Keine Multi-CV-Verwaltung
-- ❌ Keine Verlaufs-Historie (kein "Meine Analysen")
-- ❌ Keine Vergleichs-Funktion (mehrere Jobs gleichzeitig)
-- ❌ Keine PDF/Word-Upload (nur Plain-Text)
-- ❌ Kein Export (PDF/Word-Download)
+### Functional
+- ❌ No multi-CV management
+- ❌ No history (no “My Analyzes”)
+- ❌ No comparison function (several jobs at the same time)
+- ❌ No PDF/Word upload (plain text only)
+- ❌ No export (PDF/Word download)
 
-### Technisch
-- ❌ Keine öffentliche API
-- ❌ Kein Production-Hosting (nur Docker-Dev)
-- ❌ Keine E-Mail-Integration (nur Mailpit für Tests)
-- ❌ Keine Real-Time-Collaboration
-- ❌ Keine Internationalisierung (nur Deutsch)
-- ⚠️ Noch keine User-basierte Verschlüsselung fuer gespeicherte CVs
+### Technically
+- ❌ No public API
+- ❌ No production hosting (Docker-Dev only)
+- ❌ No email integration (only Mailpit for testing)
+- ❌ No real-time collaboration
+- ❌ No internationalization (only German)
+- ⚠️ No user-based encryption for saved CVs yet
 
 ---
 
 ## 📅 Roadmap (Highlights)
 
-### Naechste Schritte
-- **Commit 29 (aktuell):** Auth + Rollen + Claim-Flow (`feature/commit-29-auth-roles-claim`)
-- **Commit 30+:** CV-Verwaltung (User-Dashboard, Multi-CV, `resume_tokens[]`-Array)
-- **Recommendations/Reporting:** Weitere Entkopplung in eigene Kontexte nach MVP
+### Next Steps
+- **Commit 29 (current):** Auth + Roles + Claim Flow (`feature/commit-29-auth-roles-claim`)
+- **Commit 30+:** CV management (user dashboard, multi-CV, `resume_tokens[]` array)
+- **Recommendations/Reporting:** Further decoupling into your own contexts after MVP
 
-### Mittelfristig
+### Medium term
 - **Bounded Context `Profile`:**
-  - User-Accounts
-  - Lebenslauf-Verwaltung
-  - Praeferenzen
-  - sichere, userbasierte Verschluesselung
+  - User accounts
+  - Resume management
+  -Preferences
+  - secure, user-based encryption
 - **Bounded Context `Reporting`:**
-  - Analyse-Historie
-  - Statistiken
-  - Export-Funktionen
+  - Analysis history
+  - statistics
+  - Export functions
 
 ---
 
-## 📚 Siehe auch
+## 📚 See then
 
-- **Architektur:** `docs/ARCHITECTURE.md`
+- **Architecture:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
 - **Tech Stack:** `docs/ai/TECH_STACK.md`
-- **Agent-Kontext:** `docs/ai/AGENT_CONTEXT.md`
-- **Commit-Plan:** `COMMIT_PLAN.md`
+- **Agent Context:** `docs/ai/AGENT_CONTEXT.md`
+- **Commit plan:** `COMMIT_PLAN.md`
 
 ---
 
-**Letzte Aktualisierung**: 2026-04-21  
-**Version**: 2.3 (Commit-29 Auth/Rollen/Claim-Flow eingetragen, NICHT-MVP aktualisiert)
+**Last updated**: 2026-04-21
+**Version**: 2.3 (Commit-29 Auth/Roles/Claim-Flow entered, NOT-MVP updated)

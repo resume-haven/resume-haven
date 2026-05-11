@@ -1,164 +1,164 @@
-# ResumeHaven – Architektur
+# ResumeHaven – Architecture
 
-Dieses Dokument beschreibt die technische Architektur des ResumeHaven‑MVP.
-
----
-
-# 🧠 1. Überblick
-
-ResumeHaven ist ein **Domain-driven, Command/Query-orientiertes** Analyse‑Tool.  
-Die Architektur folgt modernen Best Practices:
-
-- **Domain-Driven Design (DDD)** (modulare Geschäftsbereiche, Bounded Contexts)
-- **CQRS (Strict Mode)** (Command/Query strikt getrennt, phasenweise Einführung)
-- **SOLID-Prinzipien** (Pflicht-Gate in jedem Commit)
-- **Single Action Controllers** (Controller sind dünn, ~34 Zeilen)
-- **Repository Pattern** (Persistence-Abstraktion)
-- **UseCase Pattern** (Business-Logic-Orchestrierung)
-- **Architecture-Tests (Pest Arch)** (automatisierte Layer- und Boundary-Validierung)
-- **Wartbarkeit, Testbarkeit, Erweiterbarkeit**
+This document describes the technical architecture of the ResumeHaven MVP.
 
 ---
 
-# 🎯 1.1 Architektur-Prinzipien
+# 🧠 1. Overview
+
+ResumeHaven is a **domain-driven, command/query-oriented** analysis tool.
+The architecture follows modern best practices:
+
+- **Domain-Driven Design (DDD)** (modular business areas, bounded contexts)
+- **CQRS (Strict Mode)** (Command/Query strictly separated, phased introduction)
+- **SOLID principles** (mandatory gate in every commit)
+- **Single Action Controllers** (controllers are thin, ~34 lines)
+- **Repository Pattern** (Persistence abstraction)
+- **UseCase Pattern** (Business Logic Orchestration)
+- **Architecture testing (Pest Arch)** (automated layer and boundary validation)
+- **Maintainability, Testability, Extensibility**
+
+---
+
+# 🎯 1.1 Architecture Principles
 
 ## CQRS (Command Query Responsibility Segregation) — Strict Mode
 
-**Regel:** Commands (Write) und Queries (Read) sind **strikt getrennt**.
+**Rule:** Commands (Write) and Queries (Read) are **strictly separated**.
 
-### Aktueller Stand (Phasenweise Einführung)
+### Current status (phased introduction)
 
-#### ✅ Phase 1 (abgeschlossen)
-- Commands implementiert: `AnalyzeJobAndResumeCommand`
-- Handlers implementiert: `AnalyzeJobAndResumeHandler`
-- Struktur: `app/Domains/Analysis/Commands/` + `Handlers/`
+#### ✅ Phase 1 (completed)
+- Commands implemented: `AnalyzeJobAndResumeCommand`
+- Handlers implemented: `AnalyzeJobAndResumeHandler`
+- Structure: `app/Domains/Analysis/Commands/` + `Handlers/`
 
-#### 🔄 Phase 2 (in Arbeit)
-- Queries für Cache-Zugriffe: `GetCachedAnalysisQuery`
-- Query-Handler: `GetCachedAnalysisQueryHandler`
-- Struktur: `app/Domains/Analysis/Queries/` + `Handlers/`
+#### 🔄 Phase 2 (in progress)
+- Queries for cache accesses: `GetCachedAnalysisQuery`
+- Query handler: `GetCachedAnalysisQueryHandler`
+- Structure: `app/Domains/Analysis/Queries/` + `Handlers/`
 
-#### ⏳ Phase 3 (geplant)
-- Alle Read-Operationen auf Queries umstellen
-- Reporting-Queries (`GetAnalysisHistoryQuery`)
-- Statistics-Queries (`GetUserStatisticsQuery`)
+#### ⏳ Phase 3 (planned)
+- Switch all read operations to queries
+- Reporting queries (`GetAnalysisHistoryQuery`)
+- Statistics queries (`GetUserStatisticsQuery`)
 
-### CQRS-Regeln
+### CQRS rules
 
 **Commands:**
-- ✅ Ändern Zustand (Write Operations)
-- ✅ Geben `void` oder Bestätigungs-DTO zurück
-- ✅ Beispiel: `AnalyzeJobAndResumeCommand` → erstellt Analyse-Ergebnis
+- ✅ Change state (Write Operations)
+- ✅ Return `void` or confirmation DTO
+- ✅ Example: `AnalyzeJobAndResumeCommand` → creates analysis result
 
 **Queries:**
-- ✅ Lesen Daten (Read Operations)
-- ✅ Ändern **keinen** Zustand
-- ✅ Geben DTO oder Collection zurück
-- ✅ Beispiel: `GetCachedAnalysisQuery` → liest Cache-Eintrag
+- ✅ Read data (Read Operations)
+- ✅ Change **no** state
+- ✅ Return DTO or Collection
+- ✅ Example: `GetCachedAnalysisQuery` → reads cache entry
 
 ---
 
-## DDD (Domain-Driven Design)
+## DDD (Domain Driven Design)
 
-**Regel:** Code ist nach fachlichen Domänen strukturiert.
+**Rule:** Code is structured according to technical domains.
 
-### Aktueller Bounded Context
+### Current Bounded Context
 
-#### `Analysis` (Haupt-Domain)
-- **Verantwortlichkeit:** Job-/CV-Analyse, Matching, Gap-Analysis, Scoring, Cache
+#### `Analysis` (main domain)
+- **Responsibility:** Job/CV analysis, matching, gap analysis, scoring, cache
 - **Ubiquitous Language:** Requirements, Experiences, Matches, Gaps, Score, Tags
-- **Struktur:** `app/Domains/Analysis/`
-- **Status:** ✅ Vollständig implementiert
+- **Structure:** `app/Domains/Analysis/`
+- **Status:** ✅ Fully implemented
 
-#### `Profile` (Commit 22) — ✅ **Basis implementiert**
-- **Verantwortlichkeit:** Anonyme CV-Speicherung, Token-Verwaltung, Verschlüsselung, Wiederherstellung
+#### `Profile` (Commit 22) — ✅ **Basic implemented**
+- **Responsibility:** Anonymous CV storage, token management, encryption, recovery
 - **Ubiquitous Language:** StoredResume, Token, EncryptedCV, LoadedResume
-- **Struktur:** `app/Domains/Profile/`
-- **Integration:** Unabhängig von `Analysis` (keine direkte Kopplung, nur CV-Text als Input in der UI)
+- **Structure:** `app/Domains/Profile/`
+- **Integration:** Independent of `Analysis` (no direct coupling, only CV text as input in the UI)
 - **Status:**
-  - ✅ CQRS-Basis mit `StoreResumeCommand` und `GetResumeByTokenQuery`
-  - ✅ Single-Action-Controller für Store/Load
-  - ✅ AES-256-GCM mit tokenbasiert abgeleitetem Secret (MVP-Kompromiss)
-  - ✅ Persistenz über `stored_resumes` + `ProfileRepository`
-  - ⚠️ **Technische Schuld:** Migration zu User-basierter Verschlüsselung vor User-Accounts verpflichtend
+  - ✅ CQRS base with `StoreResumeCommand` and `GetResumeByTokenQuery`
+  - ✅ Single action controller for store/load
+  - ✅ AES-256-GCM with token-based derived secret (MVP compromise)
+  - ✅ Persistence via `stored_resumes` + `ProfileRepository`
+  - ⚠️ **Technical Debt:** Migration to user-based encryption mandatory before user accounts
 
-### Implementierte Bounded Contexts
+### Implemented Bounded Contexts
 
-#### `Recommendations` (Phase 4, ~Commit 17+) — ✅ **Grundstruktur implementiert**
-- **Verantwortlichkeit:** KI-Empfehlungen, Verbesserungsvorschläge
+#### `Recommendations` (Phase 4, ~Commit 17+) — ✅ **Basic structure implemented**
+- **Responsibility:** AI recommendations, suggestions for improvement
 - **Ubiquitous Language:** Recommendation, Suggestion, Priority, Example
-- **Integration:** Teil von `Analysis`-Domain (zunächst als Sub-Domain)
-- **Status:** 
-  - ✅ `RecommendationDto` implementiert (immutable, typed)
-  - ✅ AI-Prompt erweitert (recommendations-Feld)
-  - ✅ Parsing-Logic (ParseAiResponseAction)
-  - ✅ UI-Component (result.blade.php)
-  - ⏳ Separate Domain-Extraktion geplant (~Commit 30+)
+- **Integration:** Part of `Analysis` domain (initially as a subdomain)
+- **Status:**
+  - ✅ `RecommendationDto` implemented (immutable, typed)
+  - ✅ AI promptly expanded (recommendations field)
+  - ✅ Parsing logic (ParseAiResponseAction)
+  - ✅ UI component (result.blade.php)
+  - ⏳ Separate domain extraction planned (~Commit 30+)
 
-### Geplante Bounded Contexts (Roadmap)
+### Planned Bounded Contexts (Roadmap)
 
 #### `Reporting` (Phase 5, ~Commit 35+)
-- **Verantwortlichkeit:** Analyse-Historie, Statistiken, Exports
+- **Responsibility:** Analysis history, statistics, exports
 - **Ubiquitous Language:** Report, History, Statistics, Export
-- **Integration:** Read-Only Zugriff auf `Analysis` + `Profile`
+- **Integration:** Read-only access to `Analysis` + `Profile`
 
-### DDD-Regeln
+### DDD rules
 
-- ✅ **Bounded Context Isolation:** Keine direkten Dependencies zwischen Contexts
-- ✅ **Communication:** Nur via DTOs, Events oder Shared Kernel
-- ✅ **Ubiquitous Language:** Code verwendet fachliche Begriffe
-- ✅ **Aggregate Roots:** Models sind Aggregate Roots ihres Contexts
+- ✅ **Bounded Context Isolation:** No direct dependencies between contexts
+- ✅ **Communication:** Only via DTOs, events or shared kernel
+- ✅ **Ubiquitous Language:** Code uses technical terms
+- ✅ **Aggregate Roots:** Models are aggregate roots of their context
 
-### Architecture-Tests (Commit 28) — ✅ Abgeschlossen
+### Architecture Tests (Commit 28) — ✅ Completed
 
-- Test-Suite: `src/tests/Architecture/`
-- `DddArchTest`: Bounded-Context-Isolation (`Analysis`/`Profile`)
-- `CqrsArchTest`: Command-/Query-Segregation und Namenskonventionen
-- `SolidArchTest`: Single-Action-Controller, Interface-Contracts, readonly-DTOs
-- Ausführung: `make test-arch` oder `composer run test:pest-arch`
+- Test suite: `src/tests/Architecture/`
+- `DddArchTest`: Bounded context isolation (`Analysis`/`Profile`)
+- `CqrsArchTest`: Command/Query segregation and naming conventions
+- `SolidArchTest`: Single action controller, interface contracts, readonly DTOs
+- Version: `make test-arch` or `composer run test:pest-arch`
 
 ---
 
-# 🧩 2. Hauptkomponenten (Neue Architektur)
+# 🧩 2. Main Components (New Architecture)
 
-## 2.1 Domain Layer
+##2.1 Domain Layers
 
 ### **Analysis Domain** (`app/Domains/Analysis/`)
 
-Die Hauptdomain für Job-/Lebenslauf-Analysen.
+The main domain for job/resume analysis.
 
 #### **Commands** (`Commands/`)
-- `AnalyzeJobAndResumeCommand`: Request-Objekt für Analyse-Anfragen
-- Enthält `handle()` Methode die Handler aufruft (Laravel Bus Pattern)
+- `AnalyzeJobAndResumeCommand`: Request object for analysis requests
+- Contains `handle()` method that calls handler (Laravel Bus Pattern)
 
 #### **Handlers** (`Handlers/`)
-- `AnalyzeJobAndResumeHandler`: Orchestriert den gesamten Analyse-Flow
-  1. Cache prüfen
-  2. AI-Analyse durchführen
-  3. Matching durchführen
-  4. Gap-Analyse durchführen
-  5. Ergebnis cachen
-  6. DTO zurückgeben
+- `AnalyzeJobAndResumeHandler`: Orchestrates the entire analysis flow
+  1. Check cache
+  2. Perform AI analysis
+  3. Perform matching
+  4. Perform gap analysis
+  5. Cache result
+  6. Return DTO
 
 #### **UseCases** (`UseCases/`)
-Kapseln wiederverwendbare Business-Logik:
+Encapsulate reusable business logic:
 
-- **ExtractDataUseCase**: Extrahiert Anforderungen und Erfahrungen
+- **ExtractDataUseCase**: Extracts requirements and experiences
   - `ExtractRequirementsAction`
   - `ExtractExperiencesAction`
   
-- **MatchingUseCase**: Findet Übereinstimmungen
+- **MatchingUseCase**: Finds matches
   - `MatchAction`
   
-- **GapAnalysisUseCase**: Identifiziert Lücken
+- **GapAnalysisUseCase**: Identifies gaps
   - `FindGapsAction`
 
 #### **Cache** (`Cache/`)
-- **Actions**: 
-  - `GetCachedAnalysisAction`: Liest aus Cache
-  - `StoreCachedAnalysisAction`: Schreibt in Cache
-- **Repositories**: 
-  - `AnalysisCacheRepository`: Abstrahiert Datenbank-Zugriff
+- **Actions**:
+  - `GetCachedAnalysisAction`: Reads from cache
+  - `StoreCachedAnalysisAction`: Writes to cache
+- **Repositories**:
+  - `AnalysisCacheRepository`: Abstracts database access
 
 #### **DTOs** (`Dto/`)
 Immutable Data Transfer Objects:
@@ -170,64 +170,64 @@ Immutable Data Transfer Objects:
 
 ### **Profile Domain** (`app/Domains/Profile/`)
 
-Die Domain für anonyme CV-Speicherung und Wiederherstellung.
+The domain for anonymous CV storage and recovery.
 
 #### **Commands** (`Commands/`)
-- `StoreResumeCommand`: Write-Request zum persistierten Speichern eines CVs
+- `StoreResumeCommand`: Write request to persist a CV
 
 #### **Queries** (`Queries/`)
-- `GetResumeByTokenQuery`: Read-Request zum Laden eines gespeicherten CVs per Token
+- `GetResumeByTokenQuery`: Read request to load a saved CV via token
 
 #### **Handlers** (`Handlers/`)
-- `StoreResumeHandler`: Generiert eindeutigen Token, verschlüsselt den CV und persistiert ihn
-- `GetResumeByTokenHandler`: Lädt gespeicherten CV, entschlüsselt ihn und aktualisiert `last_accessed_at`
+- `StoreResumeHandler`: Generates unique token, encrypts the CV and persists it
+- `GetResumeByTokenHandler`: Loads saved CV, decrypts it and updates `last_accessed_at`
 
 #### **Actions** (`Actions/`)
-- `GenerateTokenAction`: Erzeugt URL-safe Base64-Token aus 32 zufälligen Bytes
-- `EncryptResumeAction`: Verschlüsselt CV-Inhalt via AES-256-GCM
-- `DecryptResumeAction`: Entschlüsselt gespeicherte CV-Inhalte robust und fehlertolerant
+- `GenerateTokenAction`: Generates URL-safe Base64 tokens from 32 random bytes
+- `EncryptResumeAction`: Encrypts CV content via AES-256-GCM
+- `DecryptResumeAction`: Decrypts stored CV content in a robust and fault-tolerant manner
 
 #### **Repositories** (`Repositories/`)
-- `ProfileRepository`: Abstraktion über `stored_resumes`-Persistenz
+- `ProfileRepository`: Abstraction via `stored_resumes` persistence
 
 #### **DTOs** (`Dto/`)
 - `StoreResumeDto`, `ResumeTokenDto`, `LoadedResumeDto`
-- Immutable (`readonly`) und klar auf UI-/Domain-Transfer beschränkt
+- Immutable (`readonly`) and clearly limited to UI/domain transfer
 
 ---
 
-## 2.2 Application Layer
+##2.2 Application Layer
 
 ### **Controllers** (`app/Http/Controllers/`)
 
-**AnalyzeController** (~34 Zeilen, "thin"):
-1. Validierung
-2. Command erstellen
-3. Command dispatchen (Bus)
-4. View zurückgeben
+**AnalyzeController** (~34 lines, "thin"):
+1. Validation
+2. Create command
+3. Dispatch command (bus)
+4. Return view
 
-**Keine Business-Logik im Controller!**
+**No business logic in the controller!**
 
 ### **Services** (`app/Services/`)
 
-Legacy-Services (werden nach und nach in Domains migriert):
-- `AnalyzeApplicationService`: AI-Integration
-- `AnalysisCacheService`: (deprecated, wird durch Repository ersetzt)
+Legacy services (will be gradually migrated to domains):
+- `AnalyzeApplicationService`: AI integration
+- `AnalysisCacheService`: (deprecated, will be replaced by repository)
 
 ---
 
-## 2.3 Infrastructure Layer
+##2.3 Infrastructure Layer
 
 ### **Models** (`app/Models/`)
-- `AnalysisCache`: Eloquent Model für gecachte Analysen
-- `User`: User-Management (für später)
+- `AnalysisCache`: Eloquent Model for cached analytics
+- `User`: User management (for later)
 
 ### **Providers** (`app/Providers/`)
-- `AnalysisDomainServiceProvider`: Registriert Domain-Dependencies
+- `AnalysisDomainServiceProvider`: Registers domain dependencies
 
 ---
 
-# 🔄 3. Request-Flow (Neu)
+# 🔄 3. Request Flow (New)
 
 ```
 HTTP POST /analyze
@@ -257,21 +257,21 @@ View('result', $data)
 
 # 🎨 4. Views
 
-- Blade Templates  
-- TailwindCSS  
-- Minimalistisch  
-- Panels für Ergebnisse  
+- Blade templates
+- TailwindCSS
+- Minimalist
+- Panels for results
 
 ---
 
-# 🐳 5. Docker‑Architektur
+# 🐳 5. Docker architecture
 
 Services:
 
-- **php-fpm** (PHP 8.5)  
-- **nginx** (Webserver)
-- **node** (Tailwind Build)  
-- **mailpit** (lokaler SMTP)
+- **php-fpm** (PHP 8.5)
+- **nginx** (web server)
+- **node** (Tailwind Build)
+- **mailpit** (local SMTP)
 
 ---
 
@@ -279,7 +279,7 @@ Services:
 
 ## Service Provider Registration
 
-`AnalysisDomainServiceProvider` registriert:
+`AnalysisDomainServiceProvider` registered:
 - Actions (Singleton)
 - UseCases (Singleton)
 - Repositories (Singleton)
@@ -287,178 +287,178 @@ Services:
 
 ## Dependency Injection
 
-- Constructor Injection für kritische Dependencies
-- Laravel Service Container für optionale Dependencies
+- Constructor injection for critical dependencies
+- Laravel Service Container for optional dependencies
 
 ---
 
 # 🧪 7. Testing Strategy
 
-## Unit Tests
-- Testen **Handlers** isoliert (Mock Dependencies)
-- Testen **UseCases** isoliert
-- Testen **Actions** isoliert
-- **Keine HTTP-Layer-Tests** in Unit-Tests
+## Unit tests
+- Testing **Handlers** isolated (Mock Dependencies)
+- Test **UseCases** isolated
+- Test **Actions** isolated
+- **No HTTP layer tests** in unit tests
 
-## Feature Tests
-- Testen **komplette HTTP-Requests**
-- Testen **Integration** aller Komponenten
-- Mock nur externe Services (AI)
+## Feature testing
+- Testing **complete HTTP requests**
+- Testing **integration** of all components
+- Mock only external services (AI)
 
-## Test-Coverage
+## Test coverage
 - **Minimum:** 95% (enforced via `make test-coverage`)
-- **Aktuell:** 98.2% ✅
+- **Current:** 98.2% ✅
 - **Tests:** 128 (100+ Unit, 20+ Feature)
 - **Assertions:** 335+
 
-## Testing-Framework
-- **Pest 3** (Primary Framework)
+## Testing framework
+- **Plague 3** (Primary Framework)
 - **PHPUnit 11** (Underlying)
 - **Mockery** (Mocking)
 
-## Quality-Gates
+## Quality gates
 - ✅ **PHPStan:** Level 9, 0 Errors
 - ✅ **Pint:** PSR-12 + Laravel Style
 - ✅ **Coverage:** ≥95%
-- ✅ **Tests:** Alle grün
+- ✅ **Tests:** All green
 
 ---
 
-# 🚫 8. Nicht im MVP enthalten
+# 🚫 8. Not included in MVP
 
-- keine Events/Listeners (geplant für später)
-- keine API-Endpoints (nur Web-UI)
-- keine PDF‑Generierung  
-- keine Accounts/Authentication
-- keine E‑Mail‑Versand (nur Mailpit für Entwicklung)
+- no events/listeners (planned for later)
+- no API endpoints (web UI only)
+- no PDF generation
+- no accounts/authentication
+- no email sending (only mailpit for development)
 
 ---
 
 # 📌 9. Design Principles
 
 ## SOLID
-- **S**ingle Responsibility: Jede Klasse hat nur eine Aufgabe
-- **O**pen/Closed: Erweiterbar ohne Änderung
-- **L**iskov Substitution: Interfaces werden eingehalten
-- **I**nterface Segregation: Kleine, fokussierte Interfaces
-- **D**ependency Inversion: Abhängigkeiten auf Abstraktionen
+- **S**ingle Responsibility: Each class only has one task
+- **O**pen/Closed: Expandable without modification
+- **L**iskov Substitution: Interfaces are respected
+- **I**interface Segregation: Small, focused interfaces
+- **D**ependency Inversion: Dependencies on abstractions
 
-## Interface-based Design
+## Interface based design
 - **"Program to an Interface, not an Implementation"**
-- Dependencies zu Interfaces statt zu Konkretionen
-- Austauschbarkeit über Service Provider
-- Testbarkeit durch Mocking
-- **Beispiele im Projekt:**
+- Dependencies on interfaces instead of on concretions
+- Interchangeability across service providers
+- Testability through mocking
+- **Examples in the project:**
   - `AiAnalyzerInterface` (Gemini, Mock)
-  - `CacheRepositoryInterface` (geplant: Database, Redis)
+  - `CacheRepositoryInterface` (planned: Database, Redis)
 
 ## DRY (Don't Repeat Yourself)
-- Wiederverwendbare Actions
-- Zentrale DTOs
+- Reusable actions
+- Central DTOs
 - Repository Pattern
 
-## KISS (Keep It Simple, Stupid)
-- Klare Namenskonventionen
-- Verständliche Struktur
-- Keine Over-Engineering
+##KISS (Keep It Simple, Stupid)
+- Clear naming conventions
+- Understandable structure
+- No over engineering
 
 ---
 
 # 🔒 9. Security Architecture
 
-## 9.1 Input-Validierung
+##9.1 Input validation
 
 ### ValidateInputAction
 - **Location:** `app/Domains/Analysis/UseCases/ValidateInputUseCase/`
-- **Verantwortlichkeit:** Eingabe-Validierung mit Security-Checks
+- **Responsibility:** Input validation with security checks
 - **Checks:**
-  - ✅ Mindestlänge (30 Zeichen)
-  - ✅ Maximallänge (50.000 Zeichen)
-  - ✅ Prompt-Injection-Pattern-Erkennung
-  - ✅ SQL-Injection-Pattern-Erkennung
-  - ✅ Input-Sanitization
+  - ✅ Minimum length (30 characters)
+  - ✅ Maximum length (50,000 characters)
+  - ✅ Prompt injection pattern detection
+  - ✅ SQL injection pattern detection
+  - ✅ Input sanitization
 
 ### PatternDetector & InputSanitizer
 - **Location:** `app/Domains/Analysis/UseCases/ValidateInputUseCase/Validators/` & `Sanitizers/`
-- **Patterns:** SQL-Injection, Prompt-Injection, Control-Characters
+- **Patterns:** SQL injection, prompt injection, control characters
 
 ## 9.2 AI-Prompt-Security (Commit 18a)
-- ✅ Explizite Anti-Prompt-Injection-Anweisungen
-- ✅ JSON-Schema-basierte Response-Validierung
-- ✅ Type-Guards in ParseAiResponseAction
+- ✅ Explicit anti-prompt injection instructions
+- ✅ JSON schema based response validation
+- ✅ Type guards in ParseAiResponseAction
 
-## 9.3 CSRF & SQL-Injection-Prevention
-- ✅ `@csrf`-Token in Forms + Security-Tests
-- ✅ Repository Pattern mit Eloquent (Prepared Statements)
+##9.3 CSRF & SQL Injection Prevention
+- ✅ `@csrf` tokens in forms + security tests
+- ✅ Repository Pattern with Eloquent (Prepared Statements)
 
-## 9.4 Error-Handling
-- ✅ AI-Timeouts, ungültige Responses gefangen
-- ✅ User-freundliche Fehlermeldungen
+## 9.4 Error handling
+- ✅ AI timeouts, invalid responses caught
+- ✅ User-friendly error messages
 
-## 9.5 Security-Tests
+##9.5 Security tests
 - `SecurityAuditTest.php`, `ApiErrorHandlingTest.php`, `ValidateInputActionTest.php`, `ProfileResumeStorageTest.php`
 
 ---
 
-# 🔮 10. Zukunft / Erweiterbarkeit
+# 🔮 10. Future / Extensibility
 
-## Weiterentwicklung bestehender Bounded Contexts
+## Further development of existing bounded contexts
 
-### `Profile` Context (naechste Ausbaustufe)
-- **Status:** Basis in Commit 22 implementiert
-- **Naechste Features:**
-  - User-Accounts
-  - mehrere gespeicherte CVs pro Benutzer
-  - Praeferenzen / Profil-Metadaten
-  - Migration auf userbasierte Verschluesselung
-- **Integration:** Weiterhin lose Kopplung an `Analysis` via DTOs/UI-Flows
+### `Profile` Context (next expansion level)
+- **Status:** Base implemented in commit 22
+- **Next features:**
+  - User accounts
+  - multiple saved CVs per user
+  - Preferences/profile metadata
+  - Migration to user-based encryption
+- **Integration:** Continued loose coupling to `Analysis` via DTOs/UI flows
 
 ### `Recommendations` Context
 - **Commit:** ~30+
 - **Features:**
-  - KI-Empfehlungen als eigenstaendiger Kontext
-  - Verbesserungsvorschlaege
-  - Beispiel-Formulierungen
-- **Struktur:** `app/Domains/Recommendations/`
-- **Integration:** Konsumiert `Analysis`-Ergebnisse
+  - AI recommendations as an independent context
+  - Suggestions for improvement
+  - Example formulations
+- **Structure:** `app/Domains/Recommendations/`
+- **Integration:** Consumes `Analysis` results
 
 ### `Reporting` Context
 - **Commit:** ~35+
 - **Features:**
-  - Analyse-Historie
-  - Statistiken
-  - PDF/Word-Export
-- **Struktur:** `app/Domains/Reporting/`
-- **Integration:** Read-Only auf `Analysis` + `Profile`
+  - Analysis history
+  - statistics
+  - PDF/Word export
+- **Structure:** `app/Domains/Reporting/`
+- **Integration:** Read-only on `Analysis` + `Profile`
 
-## Weitere Erweiterungen
-1. **Events & Listeners** (nach MVP)
-2. **API-Layer** (RESTful API)
-3. **Queue-Processing** (Async AI-Analysen)
-4. **Multi-Tenancy** (spaeter, falls Produktvision es traegt)
+## More extensions
+1. **Events & Listeners** (according to MVP)
+2. **API layer** (RESTful API)
+3. **Queue Processing** (Async AI analyses)
+4. **Multi-Tenancy** (later, if product vision supports it)
 
-## Wie erweitern?
-- **Neue Domain hinzufügen:** `app/Domains/NewDomain/`
-  - Commands, Queries, Handlers, UseCases, DTOs
-- **Neue UseCase hinzufügen:** In bestehende Domain
-- **Neue Action hinzufügen:** In UseCase-Unterordner
-- **Neuer Command/Query:** Mit eigenem Handler
-- **Context-Integration:** Via DTOs, Events oder Shared Kernel
+## How to expand?
+- **Add new domain:** `app/Domains/NewDomain/`
+  - Commands, queries, handlers, use cases, DTOs
+- **Add new UseCase:** In existing domain
+- **Add new Action:** In UseCase subfolder
+- **New Command/Query:** With its own handler
+- **Context Integration:** Via DTOs, Events or Shared Kernel
 
 ---
 
 # 📖 11. Coding Guidelines
 
-Siehe `CODING_GUIDELINES.md` für detaillierte Best Practices.
+See `CODING_GUIDELINES.md` for detailed best practices.
 
 ---
 
-# 🎯 12. Ziel der Architektur
+# 🎯 12. Goal of architecture
 
-- **Klarheit**: Jede Komponente hat klare Verantwortung
-- **Einfachheit**: Keine unnötige Komplexität
-- **Erweiterbarkeit**: Neue Features einfach hinzufügen
-- **Testbarkeit**: Jede Komponente isoliert testbar
-- **Stabilität**: Robuste Fehlerbehandlung
-- **Performance**: Caching, optimierte DB-Queries
+- **Clarity**: Each component has clear responsibilities
+- **Simplicity**: No unnecessary complexity
+- **Expandability**: Easily add new features
+- **Testability**: Each component can be tested in isolation
+- **Stability**: Robust error handling
+- **Performance**: Caching, optimized DB queries
 

@@ -1,22 +1,22 @@
-# Commit-Historie Index
+# Commit history index
 
-Diese Seite dient als Einstieg fuer die ausgelagerte Commit-Historie.
+This page serves as an introduction to the outsourced commit history.
 
-## Ziel der Auslagerung
+## Goal of outsourcing
 
-- `COMMIT_PLAN.md` bleibt bewusst schlank und fokussiert auf den aktiven Plan.
-- Abgeschlossene Commit-Details werden hier archiviert, um Kontextrauschen zu reduzieren.
+- `COMMIT_PLAN.md` consciously stays lean and focused on the active plan.
+- Completed commit details are archived here to reduce context noise.
 
-## Historien-Dateien
+## History files
 
 - [COMMIT_HISTORY_2026.md](history/COMMIT_HISTORY_2026.md)
 
-## Bezug zum aktiven Plan
+## Reference to the active plan
 
-- Aktive Planung: [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
-- Aktiver Detailplan: [`history/PLANNING_COMMIT_36.md`](history/PLANNING_COMMIT_36.md)
-- Letzter abgeschlossener Detailplan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
-- Letzter ausgelagerter Detailplan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
-- Letzter Implementierungsleitfaden: [`history/COMMIT_24_IMPLEMENTATION_GUIDE.md`](history/COMMIT_24_IMPLEMENTATION_GUIDE.md)
-- Vorheriger abgeschlossener Detailplan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)
-- Vorheriger ausgelagerter Detailplan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)
+- Active planning: [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
+- Active detailed plan: [`history/PLANNING_COMMIT_36.md`](history/PLANNING_COMMIT_36.md)
+- Last completed detailed plan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
+- Last outsourced detailed plan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
+- Latest Implementation Guide: [`history/COMMIT_24_IMPLEMENTATION_GUIDE.md`](history/COMMIT_24_IMPLEMENTATION_GUIDE.md)
+- Previous completed detailed plan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)
+- Previous outsourced detailed plan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)

@@ -1,94 +1,93 @@
-# Commit 24 - Implementierungsleitfaden (Abgeschlossen)
+# Commit 24 - Implementation Guide (Completed)
 
-**Branch:** `feature/commit-24-competence-resume`  
-**Status:** Abgeschlossen  
-**Zeitraum:** 2026-03
-
----
-
-## Zielbild
-
-Commit 24 liefert den ersten produktnahen Kompetenzlebenslauf-Flow:
-
-- CV -> Kompetenzprofil ableiten
-- Kompetenzlebenslauf in der UI anzeigen
-- Kompetenzartefakt als Analysequelle wiederverwenden
-
-Der Fokus lag auf sofortigem Nutzerwert, klaren Flows und testbarer Architektur im bestehenden DDD/CQRS-Rahmen.
+**Branch:** `feature/commit-24-competence-resume`
+**Status:** Completed
+**Period:** 2026-03
 
 ---
 
-## Geliefert (feature-basiert)
+## Target image
 
-### 1) Kompetenzartefakt-Rendering
+Commit 24 delivers the first product-related competency resume flow:
 
-- Neue Action: `src/app/Domains/Profile/Actions/RenderCompetenceResumeTextAction.php`
-- Rendert `CompetenceResumeDto` in ein deterministisches Textartefakt
-- Enthält Fallbacks fuer leere Listen (`Keine Angabe`)
+- CV -> Derive competency profile
+- Show competency resume in UI
+- Reuse competency artifact as a source of analysis
 
-### 2) Build-Flow erweitert
+The focus was on immediate user value, clear flows and testable architecture within the existing DDD/CQRS framework.
+
+---
+
+## Delivered (feature-based)
+
+### 1) Competency artifact rendering
+
+- New action: `src/app/Domains/Profile/Actions/RenderCompetenceResumeTextAction.php`
+- Renders `CompetenceResumeDto` into a deterministic text artifact
+- Includes fallbacks for empty lists (`Keine Angabe`)
+
+### 2) Build flow extended
 
 - `src/app/Http/Controllers/BuildCompetenceResumeController.php`
-- Session-Daten ergaenzt:
+- Session data added:
   - `competence_resume_text`
   - `original_cv_text`
 
-### 3) Analyse-Reuse-Flow
+###3) Analysis Reuse Flow
 
-- Neuer Single-Action-Controller:
+- New single action controller:
   - `src/app/Http/Controllers/UseCompetenceResumeController.php`
-- Neue Route:
+- New route:
   - `POST /profile/competence-resume/use`
   - Name: `profile.competence-resume.use`
-- Verhalten:
-  - setzt `loaded_cv` auf das gerenderte Kompetenzartefakt
-  - setzt `cv_source=competence_resume`
-  - liefert validierten Fehlerpfad bei fehlendem Artefakt
+- Behave:
+  - sets `loaded_cv` to the rendered competency artifact
+  - sets `cv_source=competence_resume`
+  - provides validated error path if artifact is missing
 
-### 4) Analyze-UI erweitert
+### 4) Analyze UI expanded
 
 - `src/resources/views/analyze.blade.php`
-- Neue/erweiterte Elemente:
-  - Hinweis auf aktive Analysequelle (Kompetenzlebenslauf)
-  - Button zum Uebernehmen des Kompetenzartefakts
-  - Vorschau des Analyseartefakts
+- New/expanded elements:
+  - Reference to active analysis source (competence CV)
+  - Button to accept the competency artifact
+  - Preview the analysis artifact
 
-### 5) Testabdeckung erweitert
+### 5) Test coverage expanded
 
-- Feature-Test: `src/tests/Feature/CompetenceResumeGenerationTest.php`
-  - Session-Persistenz von `competence_resume_text`
-  - Reuse-Flow als Analysequelle
-  - Fehlerfall ohne Artefakt
-- Unit-Test: `src/tests/Unit/RenderCompetenceResumeTextActionTest.php`
-  - deterministische Ausgabe
-  - Fallback-Ausgabe
+- Feature Test: `src/tests/Feature/CompetenceResumeGenerationTest.php`
+  - Session persistence of `competence_resume_text`
+  - Reuse flow as an analysis source
+  - Error case without artifact
+- Unit test: `src/tests/Unit/RenderCompetenceResumeTextActionTest.php`
+  - deterministic output
+  - Fallback output
 
 ---
 
-## Nicht enthalten (bewusst verschoben)
+## Not included (deliberately moved)
 
 - User/Auth/AuthZ
-- Deployment/Cloud-Setup
-- Lokales LLM-Deployment
-- Erweiterte profile-gebundene Berechtigungslogik
+- Deployment/cloud setup
+- Local LLM deployment
+- Advanced profile-bound authorization logic
 
-Diese Themen bleiben in den Folgecommits eingeplant.
-
----
-
-## Qualitaetsnachweise
-
-Zum Abschluss validiert:
-
-- `make test` -> gruen
-- `make phpstan` -> 0 Errors
-- `make pint-analyse` -> gruen
+These topics will remain planned for subsequent commits.
 
 ---
 
-## Auswirkungen auf Folgeplanung
+## Quality certificates
 
-- Commit 24 abgeschlossen
-- Naechster Fokus laut aktivem Plan: Commit 25 (Analysequalitaet & Erklaerbarkeit)
-- Reuse-Flow bildet die Basis fuer spaetere Score-/Gap-Vergleiche (z. B. `Score_neu > Score_alt`)
+Finally validated:
 
+- `make test` -> green
+- `make phpstan` -> 0 errors
+- `make pint-analyse` -> green
+
+---
+
+## Impact on follow-up planning
+
+- Commit 24 completed
+- Next focus according to active plan: Commit 25 (analysis quality & explainability)
+- Reuse flow forms the basis for later score/gap comparisons (e.g. `Score_neu > Score_alt`)

@@ -1,153 +1,150 @@
-# Commit 26 - Profile-Ausbau ohne Auth
+# Commit 26 - Profile expansion without auth
 
-**Branch:** `feature/commit-26-profile-expansion-no-auth`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-03-18
+**Branch:** `feature/commit-26-profile-expansion-no-auth`
+**Status:** Completed
+**Created:** 2026-03-18
 
-### Fortschritt (2026-04-16)
-- [x] Slice 0: UX-Flow fuer Speichern/Laden/Feedback stabilisiert
-- [x] Slice 1: MVP-Retention technisch umgesetzt (Expiry beim Laden + Cleanup-Pfad)
-- [x] Slice 2: UI-Hinweise zu Datenhaltung/Lebensdauer sichtbar ergaenzt
-- [x] Slice 3: CI-Guardrails explizit gehaertet (`AI_PROVIDER=mock`, leeres `GEMINI_API_KEY`)
-- [x] Slice 4: Feature-Tests + PHPStan + Pint validiert
-
----
-
-## Ziel
-
-Profile-Funktionen ohne User-Auth lokal weiter ausbauen, mit Fokus auf UX und robuster Bedienbarkeit.
-
-Kernfragen fuer Commit 26:
-
-- Wie wird der Profile-Flow fuer Nutzende klarer und fehlertoleranter?
-- Wie setzen wir Retention im MVP pragmatisch um, ohne produktive Plattformdetails vorwegzunehmen?
-- Wie verhindern wir in CI verlässlich Datenabfluss nach extern?
+### Progress (2026-04-16)
+- [x] Slice 0: UX flow for save/load/feedback stabilized
+- [x] Slice 1: MVP retention technically implemented (expiry when loading + cleanup path)
+- [x] Slice 2: UI notes on data storage/lifespan visibly added
+- [x] Slice 3: CI guardrails explicitly hardened (`AI_PROVIDER=mock`, empty `GEMINI_API_KEY`)
+- [x] Slice 4: Feature testing + PHPStan + Pint validated
 
 ---
 
-## Scope
+##Goal
 
-### Enthalten
-- UX-first Ausbau im `Profile`-Flow (Speichern/Laden/Feedback)
-- Konsistente Fehlermeldungen und klare Erfolgshinweise
-- MVP-pragmatische Retention-Mechanik
-- Zusaetzliche UI-Hinweise zur Datenhaltung und Lebensdauer
-- CI-Guardrails als required:
+Further expand profile functions locally without user auth, with a focus on UX and robust usability.
+
+Key questions for commit 26:
+
+- How does the profile flow become clearer and more error-tolerant for users?
+- How do we pragmatically implement retention in the MVP without prejudging productive platform details?
+- How do we reliably prevent external data leakage in CI?
+
+---
+
+##Scope
+
+###Contain
+- UX-first expansion in the `Profile` flow (save/load/feedback)
+- Consistent error messages and clear indications of success
+- MVP pragmatic retention mechanics
+- Additional UI notes on data storage and lifespan
+- CI guardrails as required:
   - `AI_PROVIDER=mock`
-  - Keine externen AI-Secrets in CI
-  - No-Egress fuer AI-Pfade mit Ansatz "allow internal services only"
-- Unit-/Feature-Tests fuer neue/angepasste Flows
+  - No external AI secrets in CI
+  - No-egress for AI paths with “allow internal services only” approach
+- Unit/feature testing for new/customized flows
 
-### Nicht enthalten
+### Not included
 - User/Auth/AuthZ
-- Produktive, plattformspezifische Retention-Endarchitektur
-- Externe LLM-Provider-Integration in CI
+- Productive, platform-specific retention end architecture
+- External LLM provider integration into CI
 
 ---
 
-## Technische Leitplanken
+## Technical guard rails
 
-- DDD/CQRS/SOLID unveraendert einhalten
-- Single-Action-Controller beibehalten
-- Business-Logik in Actions/UseCases/Services
-- DTO-first und vollstaendige Typisierung (PHPStan Level 9)
-- Lokale Entwicklung ohne externen Datenabfluss
+- Adhere to DDD/CQRS/SOLID unchanged
+- Maintain single action controller
+- Business logic in Actions/UseCases/Services
+- DTO-first and complete typing (PHPStan Level 9)
+- Local development without external data leakage
 
 ---
 
-## Geplante Implementierungs-Slices
+## Planned implementation slices
 
-### Slice 0 - UX-Flow schaerfen (Profile)
-- Profile-Speichern/Laden klarer fuehrbar machen
-- Nutzerfeedback fuer Erfolg/Fehler vereinheitlichen
-- Edge-Cases (ungueltige Tokens, fehlende Sessiondaten, defekte Payloads) UX-seitig sauber kommunizieren
+### Slice 0 - Sharpen UX flow (profiles)
+- Make saving/loading profiles clearer
+- Unify user feedback for success/failure
+- Edge cases (invalid tokens, missing session data, defective payloads) communicate cleanly on the UX side
 
-### Slice 1 - MVP-Retention technisch
-- Pragmatische Retention-Regeln implementieren (ohne Plattformkopplung)
-- Bestehende Datenpfade defensiv absichern
-- Technische Loeschpfade fuer lokale Nutzung vorsehen
+### Slice 1 - MVP retention technical
+- Implement pragmatic retention rules (without platform coupling)
+- Defensively secure existing data paths
+- Provide technical deletion paths for local use
 
-### Slice 2 - UI-Hinweise Retention
-- Sichtbare Hinweise in den betroffenen Profile-Views
-- Erklaerung zu lokaler Datenhaltung und Lebensdauer
-- Hinweischarakter klar als MVP-Stand kennzeichnen
+### Slice 2 - UI Notes Retention
+- Visible information in the affected profile views
+- Explanation of local data storage and lifespan
+- Clearly indicate the MVP status
 
-### Slice 3 - CI-Guardrails (required)
-- CI strikt auf `AI_PROVIDER=mock`
-- Externe AI-Secrets in CI als unzulaessig behandeln
-- No-Egress fuer AI-Pfade mit allgemeinem Ansatz "allow internal services only"
+### Slice 3 - CI guardrails (required)
+- CI strictly on `AI_PROVIDER=mock`
+- Treat external AI secrets as invalid in CI
+- No-egress for AI paths with general approach "allow internal services only"
 
-### Slice 4 - Tests + Quality-Gates
-- Gezielte Unit-/Feature-Tests fuer Profile-Flow und Retention
-- `php artisan test --compact` (betroffene Bereiche, dann gesamter Lauf)
+### Slice 4 - Tests + Quality Gates
+- Targeted unit/feature tests for profile flow and retention
+- `php artisan test --compact` (affected areas, then entire run)
 - `make phpstan`
 - `vendor/bin/pint --dirty --format agent`
 
 ---
 
-## Erfolgskriterien (DoD)
+## Success Criteria (DoD)
 
-1. Profile-Flow ohne Auth ist robust, konsistent und nachvollziehbar.
-2. Retention ist im MVP technisch wirksam umgesetzt.
-3. Zusaetzliche UI-Hinweise zu Datenhaltung/Lebensdauer sind sichtbar.
-4. CI-Guardrails sind required und verhindern externen AI-Egress.
-5. Tests, PHPStan und Pint bleiben gruen.
-
----
-
-## Risiken & Gegenmassnahmen
-
-- **Risiko:** MVP-Retention wird mit finaler Produktlogik vermischt.  
-  **Massnahme:** Klare Trennung, offene Punkte als Technical Debt markieren.
-
-- **Risiko:** CI-Guardrails blockieren unbeabsichtigt legitime interne Pfade.  
-  **Massnahme:** "allow internal services only" klar dokumentieren und testbar machen.
-
-- **Risiko:** UX-Hinweise sind uneinheitlich oder zu versteckt.  
-  **Massnahme:** Zentrale Platzierung in betroffenen Profile-Flows und konsistente Wortwahl.
+1. Profile flow without auth is robust, consistent and traceable.
+2. Retention is technically implemented effectively in the MVP.
+3. Additional UI notes on data retention/lifespan are visible.
+4. CI guardrails are required and prevent external AI egress.
+5. Tests, PHPStan and Pint remain green.
 
 ---
 
-## Technical Debt (plattformabhaengig, getrennte Items)
+## Risks & countermeasures
 
-### TD-26-01 - Storage-Strategie finalisieren
-**Beschreibung:** Endgueltige Speicherstrategie fuer die Zielplattform festlegen (lokal/dev vs. produktiv).  
-**Definition of Ready:**
-- Zielplattform und Betriebsmodell sind entschieden.
-- Anforderungen an Datenhaltung und Zugriffsmuster sind dokumentiert.
+- **Risk:** MVP retention is mixed with final product logic.
+  **Measure:** Clear separation, mark open points as technical debt.
 
-**Definition of Done:**
-- Finales Storage-Design ist implementiert und dokumentiert.
-- Migration/Anpassung bestehender Datenpfade ist abgeschlossen.
-- Relevante Tests sind vorhanden und gruen.
+- **Risk:** CI guardrails unintentionally block legitimate internal paths.
+  **Measure:** Clearly document "allow internal services only" and make it testable.
 
-### TD-26-02 - Retention-Lifecycle finalisieren
-**Beschreibung:** Endgueltigen Lifecycle fuer Aufbewahrung/Loeschung auf Zielplattform umsetzen.  
-**Definition of Ready:**
-- Plattformbezogene Retention-Anforderungen sind geklaert.
-- Trigger fuer Loeschung (zeit- oder ereignisbasiert) sind festgelegt.
-
-**Definition of Done:**
-- Finaler Lifecycle ist implementiert (inkl. Cleanup-Mechanik).
-- Monitoring/Transparenz fuer Retention-Prozesse ist vorhanden.
-- Akzeptanztests fuer Lifecycle-Szenarien sind gruen.
-
-### TD-26-03 - Produktive Compliance-Haertung
-**Beschreibung:** Compliance-/Security-Haertung fuer Produktionsbetrieb abschliessen.  
-**Definition of Ready:**
-- Zielplattform und Compliance-Rahmen sind verbindlich festgelegt.
-- Konkrete Anforderungen (z. B. Logging, Auditing, Secrets-Handling) sind dokumentiert.
-
-**Definition of Done:**
-- Produktive Compliance-Massnahmen sind implementiert.
-- Dokumentation fuer Betrieb und Audits ist aktualisiert.
-- Security-/Regression-Tests sind gruen.
+- **Risk:** UX cues are inconsistent or too hidden.
+  **Measure:** Central placement in affected profile flows and consistent choice of words.
 
 ---
 
-## Hinweis zur Roadmap
+## Technical Debt (platform dependent, separate items)
 
-Update in `docs/ROADMAP.md` (Commit 26 von geplant -> in Arbeit) ist erfolgt.
+### TD-26-01 - Finalize storage strategy
+**Description:** Set final storage strategy for target platform (local/dev vs. productive).
+**Definition of Ready:**
+- The target platform and operating model have been decided.
+- Requirements for data storage and access patterns are documented.
 
+**Definition of Done:**
+- Final storage design is implemented and documented.
+- Migration/adaptation of existing data paths is completed.
+- Relevant tests are available and green.
 
+### TD-26-02 - Finalize retention lifecycle
+**Description:** Implement final retention/deletion lifecycle on target platform.
+**Definition of Ready:**
+- Platform-related retention requirements have been clarified.
+- Triggers for deletion (time or event based) are defined.
 
+**Definition of Done:**
+- Final lifecycle is implemented (including cleanup mechanics).
+- Monitoring/transparency for retention processes is available.
+- Acceptance tests for lifecycle scenarios are green.
+
+### TD-26-03 - Productive compliance hardening
+**Description:** Complete compliance/security hardening for production operations.
+**Definition of Ready:**
+- The target platform and compliance framework are binding.
+- Specific requirements (e.g. logging, auditing, secrets handling) are documented.
+
+**Definition of Done:**
+- Productive compliance measures are implemented.
+- Documentation for operations and audits is updated.
+- Security/regression tests are green.
+
+---
+
+##Note on the roadmap
+
+Update in `docs/ROADMAP.md` (commit 26 from planned -> in progress) has been done.
