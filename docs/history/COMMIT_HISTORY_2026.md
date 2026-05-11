@@ -35,6 +35,7 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - Commit 32: L2 Plugin-Interface + OpenAI-Auswahl + provider-spezifisches Exception-Mapping
 - Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad
 - Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (inkl. Coverage-Hardening auf `AbstractLlmAiAnalyzer`)
+- Commit 35: Auth/Claim UX-Polish (Result-Restore via `result.show`, tokenbasierte Auth-Redirects, klares Claim-Feedback)
 
 ## Detaillierte Einzelplaene
 
@@ -49,7 +50,8 @@ Diese Datei enthaelt die komprimierte Historie der bereits abgeschlossenen Commi
 - [`PLANNING_COMMIT_32.md`](PLANNING_COMMIT_32.md) (abgeschlossen)
 - [`PLANNING_COMMIT_33.md`](PLANNING_COMMIT_33.md) (abgeschlossen)
 - [`PLANNING_COMMIT_34.md`](PLANNING_COMMIT_34.md) (abgeschlossen)
-- [`PLANNING_COMMIT_35.md`](PLANNING_COMMIT_35.md) (in Arbeit)
+- [`PLANNING_COMMIT_35.md`](PLANNING_COMMIT_35.md) (abgeschlossen)
+- [`PLANNING_COMMIT_36.md`](PLANNING_COMMIT_36.md) (in Arbeit)
 - [`COMMIT_24_IMPLEMENTATION_GUIDE.md`](COMMIT_24_IMPLEMENTATION_GUIDE.md)
 
 ## Hinweis

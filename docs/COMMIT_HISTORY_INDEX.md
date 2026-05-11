@@ -14,9 +14,9 @@ Diese Seite dient als Einstieg fuer die ausgelagerte Commit-Historie.
 ## Bezug zum aktiven Plan
 
 - Aktive Planung: [`../COMMIT_PLAN.md`](../COMMIT_PLAN.md)
-- Aktiver Detailplan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
-- Letzter abgeschlossener Detailplan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)
-- Letzter ausgelagerter Detailplan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)
+- Aktiver Detailplan: [`history/PLANNING_COMMIT_36.md`](history/PLANNING_COMMIT_36.md)
+- Letzter abgeschlossener Detailplan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
+- Letzter ausgelagerter Detailplan: [`history/PLANNING_COMMIT_35.md`](history/PLANNING_COMMIT_35.md)
 - Letzter Implementierungsleitfaden: [`history/COMMIT_24_IMPLEMENTATION_GUIDE.md`](history/COMMIT_24_IMPLEMENTATION_GUIDE.md)
-- Vorheriger abgeschlossener Detailplan: [`history/PLANNING_COMMIT_33.md`](history/PLANNING_COMMIT_33.md)
-- Vorheriger ausgelagerter Detailplan: [`history/PLANNING_COMMIT_33.md`](history/PLANNING_COMMIT_33.md)
+- Vorheriger abgeschlossener Detailplan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)
+- Vorheriger ausgelagerter Detailplan: [`history/PLANNING_COMMIT_34.md`](history/PLANNING_COMMIT_34.md)

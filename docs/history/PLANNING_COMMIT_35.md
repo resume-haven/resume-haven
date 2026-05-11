@@ -1,8 +1,9 @@
-# Detailplanung Commit 35 - Auth/Claim UX-Polish
+ja, # Detailplanung Commit 35 - Auth/Claim UX-Polish
 
 **Branch:** `feature/commit-35-auth-claim-ux-polish`  
-**Status:** In Arbeit  
-**Erstellt:** 2026-05-07
+**Status:** Abgeschlossen  
+**Erstellt:** 2026-05-07  
+**Abgeschlossen:** 2026-05-11
 
 ---
 
@@ -84,4 +85,5 @@ kommuniziert ist - ohne neue Domain-Features einzufuehren.
 - Historie-Index: `../COMMIT_HISTORY_INDEX.md`
 - Vorheriger Detailplan: `PLANNING_COMMIT_34.md`
 - Roadmap: `../ROADMAP.md`
+
 

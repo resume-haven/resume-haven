@@ -50,7 +50,7 @@ Bei stark gewachsenem Chatkontext diese Datei als Reset-Basis verwenden:
 Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorhanden).
 
 **Aktueller Arbeitsmodus:** Agent-Mode (branch-agnostisch)  
-**Fokus:** Commit 35 (Auth/Claim UX-Polish) mit `result.show`, explizitem Session-Key `analysis_result_view_data` und claim-spezifischem Redirect-/Feedback-Polish — Details in `docs/history/PLANNING_COMMIT_35.md`.
+**Fokus:** Commit 36 (Roadmap-Planung & Doku-Sync) mit Statusangleichung zwischen `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md` und `docs/history/COMMIT_HISTORY_2026.md` — Details in `docs/history/PLANNING_COMMIT_36.md`.
 
 **Empfohlene Reset-Reihenfolge:**
 1. Diese Datei (`WORKING_BASELINE.md`)
@@ -83,5 +83,5 @@ Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorha
 
 ---
 
-**Letzte Aktualisierung**: 2026-05-07  
-**Version**: 1.6 (Commit-35-Fokus mit Auth/Claim UX-Polish)
+**Letzte Aktualisierung**: 2026-05-11  
+**Version**: 1.7 (Commit-36-Fokus mit Roadmap-Planung und Doku-Sync)
