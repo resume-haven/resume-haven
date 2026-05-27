@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-05-11  
-**Aktueller Stand:** Commit 35 abgeschlossen, Commit 36 (Roadmap-Planung & Doku-Sync) in Arbeit
+**Letzte Aktualisierung:** 2026-05-27  
+**Aktueller Stand:** Commit 35 abgeschlossen, Commit 36 (Roadmap-Planning & Documentation Sync) in Arbeit
 
 ---
 
@@ -26,10 +26,11 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback) (abgeschlossen)
 
 ### In Arbeit
-- Commit 36: Roadmap-Planung & Doku-Sync (Statusangleichung, Priorisierung, naechste Commit-Reihenfolge)
+- Commit 36: Roadmap-Planning & Documentation Sync (status alignment, prioritization, next commit order)
 
 ### In Planung (Folge)
-- Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
+- Commit 37: next implementation focus after Commit 36 (to be decided and documented in the roadmap and history index)
+- Deployment: re-evaluate after the user/CV and LLM blocks, not as the immediate next step
 
 ### Commit-31 Reihenfolge (abgeschlossen)
 - 3) Acceptance-Gate fuer Multi-CV erweitern (S, niedriges Risiko)
@@ -43,8 +44,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
   - Commit L3: Erster Zweit-Provider als Proof of Concept ✅ **Commit 33**
   - Commit L4: Konfigurierbarer Retry-PoC + Error-Hardening ✅ **Commit 34**
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
- - **Auth/Claim UX-Polish:** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ✅ **Commit 35**
- - **Roadmap-Planung & Doku-Sync:** Commit-/Roadmap-Status angleichen, Commit 36 priorisieren ← **Commit 36**
+- **Auth/Claim UX-Polish:** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ✅ **Commit 35**
+- **Roadmap-Planning & Documentation Sync:** align commit and roadmap status, prioritize Commit 36 ← **Commit 36**
 - **Deployment:** erst nach User-/LLM-Block neu einordnen
 
 ### Commit 32 - L2 Plugin-Interface + OpenAI (abgeschlossen)
@@ -71,7 +72,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **Umfang:** `result.show`-Route fuer Session-basierten Ergebnis-Restore, expliziter Session-Key `analysis_result_view_data`, claim-spezifische Redirect-Hinweise, Back-Button-freundliche Persistenz, Auth-/Result-Microcopy schaerfen.
 - **Nicht-Scope:** Keine neue Domain-Logik fuer Claiming, kein Dashboard-Ausbau, keine Deployment-Arbeit.
 
-### Commit 36 - Roadmap-Planung & Doku-Sync (in Arbeit)
+### Commit 36 - Roadmap-Planning & Documentation Sync (in Arbeit)
 
 - **Ziel:** Planungs- und Statusdokumente nach Abschluss von Commit 35 konsistent auf den naechsten Umsetzungsfokus ausrichten.
 - **Umfang:** Statusangleichung in `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md` sowie neuer Detailplan fuer Commit 36.

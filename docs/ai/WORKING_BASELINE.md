@@ -3,7 +3,7 @@
 This file is the operational starting point for AI-powered sessions.
 It serves as a "soft reset" and has priority for the daily context.
 
-##Scope
+## Scope
 
 - Applies to the current implementation phase (MVP, current branch).
 - Repository status is the source of truth.
@@ -11,7 +11,7 @@ It serves as a "soft reset" and has priority for the daily context.
 
 ## Current work rules
 
-1.architecture
+1. Architecture
    - DDD with Bounded Context `Analysis`.
    - CQRS in phases and strictly per use case.
    - SOLID as a mandatory gate for implementations and reviews.
@@ -46,11 +46,12 @@ If the chat context has grown significantly, use this file as a reset basis:
 - Ignore older chat details unless explicitly referenced.
 - If you are unclear, pause briefly and ask questions.
 
-**Current session summary:**
-See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status (if available).
+**Current session summary**
+
+See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status, if available.
 
 **Current working mode:** Agent mode (branch-agnostic)
-**Focus:** Commit 36 ​​(Roadmap Planning & Documentation Sync) with status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md` and `docs/history/COMMIT_HISTORY_2026.md` — details in `docs/history/PLANNING_COMMIT_36.md`.
+**Focus:** Commit 36 (Roadmap Planning & Documentation Sync) with status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md`, and `docs/history/COMMIT_HISTORY_2026.md` — details in `docs/history/PLANNING_COMMIT_36.md`.
 
 **Recommended reset order:**
 1. This file (`WORKING_BASELINE.md`)
@@ -58,7 +59,7 @@ See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status (if available).
 3. `COMMIT_PLAN.md` (Status overview)
 4. `AGENT_CONTEXT.md` (Work Rules Details)
 
-##Care
+## Care
 
 - Update this file when making architectural or process decisions.
 - Document changes briefly (e.g. in the commit plan / changelog).
@@ -83,5 +84,5 @@ See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status (if available).
 
 ---
 
-**Last updated**: 2026-05-11
-**Version**: 1.7 (Commit 36 ​​​​focus with roadmap planning and documentation sync)
+**Last updated**: 2026-05-27
+**Version**: 1.8 (Commit 36 focus with roadmap planning and documentation sync)

@@ -226,9 +226,9 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-05-11)
+# 📊 Current status (2026-05-27)
 
-## ✅ Abgeschlossen
+## ✅ Completed
 - Phase 1 (MVP): Komplett umgesetzt
 - DDD-Architektur mit Commands/Handlers/UseCases/Actions
 - CQRS-Pattern (Phase 1 abgeschlossen, Phase 2 in Arbeit)
@@ -250,25 +250,25 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
 - Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad (abgeschlossen)
 - Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
-- Commit 35: Auth/Claim UX-Polish (Result-Restore + tokenbasierte Redirects + Claim-Feedback) (abgeschlossen)
+- Commit 35: Auth/Claim UX polish (result restore, token-based redirects, claim feedback) (completed)
 
-## 🔄 In Arbeit
-- Commit 36: Roadmap-Planung & Doku-Sync
-  - Statusangleichung zwischen `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md` und `docs/history/COMMIT_HISTORY_2026.md`
-  - Priorisierung des nächsten Umsetzungs-Commits nach Commit 35
+## 🔄 In progress
+- Commit 36: Roadmap planning & documentation sync
+  - Status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md`, and `docs/history/COMMIT_HISTORY_2026.md`
+  - Prioritize the next implementation commit after Commit 35
 
-## 📋 Geplant
-- Commit 30+: Ausbau der CV-Verwaltung nach MVP-Cut (z. B. Filter, Suche, Pagination-Konfigurierbarkeit)
-- **Phase 5: Provider-agnostischer LLM-Layer (Restarbeiten)**
-  - Offene Entscheidungen zu Plugin-Interface/Fallback/Provider-Konfiguration
-  - Offene Fragen: siehe Phase-5-Abschnitt oben
-- GitHub CI/CD Workflow (Commit 23 ✅)
-- arc42 Dokumentationsstruktur
-- req42 Requirements Management
-- Acceptance-Tests (Commit 27 ✅)
+## 📋 Planned
+- Commit 30+: expand CV management beyond the MVP cut (e.g. filters, search, pagination configurability)
+- **Phase 5: provider-agnostic LLM layer (remaining work)**
+  - Open decisions around plugin interface, fallback, and provider configuration
+  - Follow-up questions are listed in the Phase 5 section above
+- GitHub CI/CD workflow (Commit 23 ✅)
+- arc42 documentation structure
+- req42 requirements management
+- Acceptance tests (Commit 27 ✅)
 - renovate.js
-- Mutation-Testing (Commit 28: Vorbereitung ✅, Detailplanung später)
-- Architecture-Testing (Commit 28 ✅)
+- Mutation testing (Commit 28: preparation ✅, detailed planning later)
+- Architecture testing (Commit 28 ✅)
 
 ---
 
