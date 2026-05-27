@@ -52,14 +52,14 @@ make test-acceptance-gate   # Pint + PHPStan + Acceptance tests
 make test-security          # OWASP-oriented security tests
 make test-security-strict   # Extended security tests (stop-on-failure)
 make test-security-gate     # Security tests + PHPStan + Pint analysis
-make test-coverage          # Tests with coverage (requires Xdebug, min 95%)
+make test-coverage          # Tests with coverage (requires Xdebug, min 99%)
 make test-coverage-report   # Coverage files (clover+xml/html)
 make coverage-open          # Opens HTML coverage report in browser
 make coverage-clean         # Deletes old coverage reports
 ```
 
 **Code Coverage Requirements:**
-- **Minimum:** 95% total coverage
+- **Minimum:** 99% total coverage
 - **GeminiAiAnalyzer.php:** ≥80%
 - **Current status:** 98.2% Total ✅
 
@@ -112,7 +112,7 @@ make php-shell      # Shell (XDEBUG_CONFIG is already set)
 **Coverage reports:**
 ```bash
 make debug-on               # Enable Xdebug
-make test-coverage          # Coverage check (min 95%)
+make test-coverage          # Coverage check (min 99%)
 make test-coverage-report   # Coverage files under src/coverage-report/
 make coverage-open          # Open HTML report in browser
 make coverage-clean         # Delete old reports
@@ -202,7 +202,7 @@ Active jobs:
 - `pint`
 - `phpstan`
 - `pest_acceptance` (core flows + edge cases, `AI_PROVIDER=mock`)
-- `pest_coverage` (incl. coverage gate `>=95%`)
+- `pest_coverage` (incl. coverage gate `>=99%`)
 
 Triggers:
 - `push` (all branches except `main`)

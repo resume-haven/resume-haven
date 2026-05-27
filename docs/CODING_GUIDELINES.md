@@ -645,7 +645,7 @@ class AnalyzeJobAndResumeHandler
 - **Every change requires testing** (Plague 3)
 - After code changes: `php artisan test --compact` or `make test`
 - At least feature tests, ideally also unit tests
-- Coverage minimum: **95%**
+- Coverage minimum: **99%**
 
 ### Pint formatting
 - **After each PHP change:** `vendor/bin/pint --dirty --format agent`
@@ -659,7 +659,7 @@ class AnalyzeJobAndResumeHandler
 - Command: `make phpstan`
 
 ### Coverage gate
-- **Minimum:** 95% total coverage
+- **Minimum:** 99% total coverage
 - **GeminiAiAnalyzer.php:** ≥80%
 - Run tests before commit: `make test-coverage`
 - HTML report: `make test-coverage-report && make coverage-open`
@@ -1032,7 +1032,7 @@ class RecommendationService {
 - [ ] Write unit tests
 - [ ] Write feature tests
 - [ ] Security tests for security-relevant changes (OWASP-oriented)
-- [ ] Coverage ≥95%
+- [ ] Coverage ≥99%
 - [ ] PHPStan level 9 without errors
 - [ ] Pint without style issues
 

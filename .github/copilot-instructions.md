@@ -45,7 +45,7 @@ Du arbeitest am **ResumeHaven MVP** — einem Laravel 12 Projekt mit Domain-Driv
 - **Tests:** Jede Änderung benötigt Tests (Pest 3)
 - **PHPStan:** Level 9, 0 Errors
 - **Pint:** `vendor/bin/pint --dirty --format agent` nach Änderungen
-- **Coverage:** Minimum 95% (aktuell: 98.2%)
+- **Coverage:** Minimum 99% (aktuell: 99.0%)
 
 ### Code-Standards
 - **Single-Action-Controller:** `__invoke()` statt named methods
@@ -59,7 +59,7 @@ Du arbeitest am **ResumeHaven MVP** — einem Laravel 12 Projekt mit Domain-Driv
 
 ```bash
 make test                  # Alle Tests
-make test-coverage         # Coverage-Check (min 95%)
+make test-coverage         # Coverage-Check (min 99%)
 make phpstan               # Static Analysis (Level 9)
 make pint-fix              # Code-Formatting
 make debug-on              # Xdebug + Coverage

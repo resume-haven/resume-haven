@@ -14,7 +14,7 @@ The MVP is designed to be:
 - easy to understand
 - without unnecessary complexity
 - backed by SOLID & DDD principles
-- thoroughly tested (min. 95% coverage)
+- thoroughly tested (min. 99% coverage)
 
 Please adhere to these principles when contributing.
 
@@ -79,7 +79,7 @@ Please ensure that all tests run successfully:
 make test
 ```
 
-New features must be covered with tests (minimum 95% coverage).
+New features must be covered with tests (minimum 99% coverage).
 
 Run full quality gate before submitting a PR:
 
@@ -98,7 +98,7 @@ Please note:
 - PRs need to be small and focused
 - Commit messages clear and descriptive
 - No new dependencies without discussion
-- All changes must pass CI (Pint + PHPStan Level 9 + Tests + Coverage ≥ 95%)
+- All changes must pass CI (Pint + PHPStan Level 9 + Tests + Coverage ≥ 99%)
 - Follow the [Coding Guidelines](CODING_GUIDELINES.md)
 
 ---

@@ -31,7 +31,7 @@ It serves as a "soft reset" and has priority for the daily context.
    - Tests required (Feature + Unit, Pest).
    - `phpstan` without errors.
    - `pint` on changed files.
-   - Coverage Minimum value according to the project configuration (currently 95%).
+   - Coverage Minimum value according to the project configuration (currently 99%).
 
 5. AI and error robustness
    - Providers interchangeable (currently Mock, Gemini, OpenAI, Anthropic via interface binding).

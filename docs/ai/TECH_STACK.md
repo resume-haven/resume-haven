@@ -28,9 +28,9 @@
 ### Current metrics
 - **Tests:** 128 (100+ Unit, 20+ Feature)
 - **Assertions:** 335+
-- **Coverage:** 98.2% ✅
+- **Coverage:** 99.0% ✅
 - **PHPStan Errors:** 0
-- **Coverage minimum:** 95%
+- **Coverage minimum:** 99%
 
 ---
 

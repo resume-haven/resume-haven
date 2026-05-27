@@ -239,7 +239,7 @@ class AnalyzeJobAndResumeHandler {
 ## ✅ Quality gates (mandatory)
 
 ### Test coverage
-- **Minimum:** 95% total coverage
+- **Minimum:** 99% total coverage
 - **Current:** 98.2% ✅
 - **GeminiAiAnalyzer:** ≥80%
 - **Exam:** `make test-coverage`
@@ -335,7 +335,7 @@ class AnalyzeController {
 Every commit is only “Done” when:
 
 1. ✅ **Tests:** All tests green (plague)
-2. ✅ **Coverage:** ≥95%
+2. ✅ **Coverage:** ≥99%
 3. ✅ **PHPStan:** Level 9, 0 Errors
 4. ✅ **Pint:** Code formatting clean
 5. ✅ **SOLID:** All SOLID principles adhered to
@@ -365,7 +365,7 @@ Every commit is only “Done” when:
 - [ ] Unit tests available?
 - [ ] Feature testing available?
 - [ ] Edge cases tested?
-- [ ] Coverage ≥95%?
+- [ ] Coverage ≥99%?
 
 ### Security (OWASP)
 - [ ] Input treated as untrusted?
