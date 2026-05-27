@@ -26,11 +26,12 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback) (abgeschlossen)
 
 ### In Arbeit
-- Commit 36: Roadmap-Planning & Documentation Sync (status alignment, prioritization, next commit order)
+- Commit 36: Roadmap-Planning & Documentation Sync ✅
 
 ### In Planung (Folge)
-- Commit 37: next implementation focus after Commit 36 (to be decided and documented in the roadmap and history index)
-- Deployment: re-evaluate after the user/CV and LLM blocks, not as the immediate next step
+- Commit 37: **Deployment-Basis & Infrastructure Härtung**
+  - Ziel: Projekt "production-ready" machen (Config, Logging, Env-Validation)
+- Commit 38: CV-Verwaltung (Ausbau Filter/Suche)
 
 ### Commit-31 Reihenfolge (abgeschlossen)
 - 3) Acceptance-Gate fuer Multi-CV erweitern (S, niedriges Risiko)
@@ -45,8 +46,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
   - Commit L4: Konfigurierbarer Retry-PoC + Error-Hardening ✅ **Commit 34**
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Auth/Claim UX-Polish:** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ✅ **Commit 35**
-- **Roadmap-Planning & Documentation Sync:** align commit and roadmap status, prioritize Commit 36 ← **Commit 36**
-- **Deployment:** erst nach User-/LLM-Block neu einordnen
+- **Roadmap-Planning & Documentation Sync:** align commit and roadmap status, prioritize Commit 36 ✅ **Commit 36**
+- **Deployment-Basis & Infrastructure Härtung:** Projekt "production-ready" machen ← **Commit 37**
 
 ### Commit 32 - L2 Plugin-Interface + OpenAI (abgeschlossen)
 
@@ -72,11 +73,17 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **Umfang:** `result.show`-Route fuer Session-basierten Ergebnis-Restore, expliziter Session-Key `analysis_result_view_data`, claim-spezifische Redirect-Hinweise, Back-Button-freundliche Persistenz, Auth-/Result-Microcopy schaerfen.
 - **Nicht-Scope:** Keine neue Domain-Logik fuer Claiming, kein Dashboard-Ausbau, keine Deployment-Arbeit.
 
-### Commit 36 - Roadmap-Planning & Documentation Sync (in Arbeit)
+### Commit 36 - Roadmap-Planning & Documentation Sync (abgeschlossen)
 
 - **Ziel:** Planungs- und Statusdokumente nach Abschluss von Commit 35 konsistent auf den naechsten Umsetzungsfokus ausrichten.
-- **Umfang:** Statusangleichung in `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md` sowie neuer Detailplan fuer Commit 36.
-- **Nicht-Scope:** Keine Produktlogik, keine Controller-/Domain-Aenderungen, keine Deployment-Implementierung.
+- **Umfang:** Statusangleichung in `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md` sowie Abschluss von Commit 36.
+- **Ergebnis:** Commit 37 wurde als "Deployment-Basis & Infrastructure Härtung" priorisiert.
+
+### Commit 37 - Deployment-Basis & Infrastructure Härtung (geplant)
+
+- **Ziel:** Das Projekt technologisch auf ein produktives Deployment vorbereiten.
+- **Umfang:** Production-Config Audit, Environment-Validation (required Vars), Logging-Profile (JSON/Stack), Security-Header-Härtung.
+- **Nicht-Scope:** Tatsächliches Cloud-Deployment, CI/CD Pipeline Ausbau (nur lokale Vorbereitung).
 
 ---
 

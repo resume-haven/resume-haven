@@ -51,7 +51,7 @@ If the chat context has grown significantly, use this file as a reset basis:
 See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status, if available.
 
 **Current working mode:** Agent mode (branch-agnostic)
-**Focus:** Commit 36 (Roadmap Planning & Documentation Sync) with status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md`, and `docs/history/COMMIT_HISTORY_2026.md` — details in `docs/history/PLANNING_COMMIT_36.md`.
+**Focus:** Commit 37 (Deployment-Basis & Infrastructure Härtung) — Status-Alignment in Commit 36 abgeschlossen.
 
 **Recommended reset order:**
 1. This file (`WORKING_BASELINE.md`)
