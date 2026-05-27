@@ -1,47 +1,47 @@
-# 🐛 Debugging mit Xdebug
+# 🐛 Debugging with Xdebug
 
-Vollständige Anleitung für lokales Debugging mit Xdebug in Docker.
+Complete guide to local debugging with Xdebug in Docker.
 
 ---
 
 ## ⚡ Quick Start
 
 ```bash
-make debug-on       # Xdebug aktivieren
-make debug-status   # Status prüfen
-make php-shell      # In Container gehen (XDEBUG_CONFIG ist bereits gesetzt!)
-php artisan tinker  # Debuggen!
+make debug-on       # Enable Xdebug
+make debug-status   # Check status
+make php-shell      # Enter container (XDEBUG_CONFIG is already set!)
+php artisan tinker  # Debug!
 ```
 
 ---
 
-## 📋 Verfügbare Kommandos
+## 📋 Available commands
 
-| Kommando | Beschreibung |
+| Command | Description |
 |----------|-------------|
-| `make debug-on` | Xdebug aktivieren (rebuild mit override.yml) |
-| `make debug-off` | Xdebug deaktivieren (normaler schneller Mode) |
-| `make debug-status` | Xdebug-Status prüfen |
-| `make debug-test` | Test-Request mit XDEBUG_SESSION Cookie senden |
-| `make debug-logs` | Xdebug-Logs anzeigen |
-| `make test-coverage` | Coverage in Konsole prüfen (min 80%) |
-| `make test-coverage-report` | Coverage-Dateien erzeugen (`src/coverage-report/`) |
+| `make debug-on` | Enable Xdebug (rebuild with override.yml) |
+| `make debug-off` | Disable Xdebug (normal fast mode) |
+| `make debug-status` | Check Xdebug status |
+| `make debug-test` | Send test request with XDEBUG_SESSION cookie |
+| `make debug-logs` | Show Xdebug logs |
+| `make test-coverage` | Check coverage in console (min 80%) |
+| `make test-coverage-report` | Generate coverage files (`src/coverage-report/`) |
 
 ---
 
-## 🔧 Wie es funktioniert
+## 🔧 How it works
 
-### **Architektur:**
+### **Architecture:**
 
-1. **Build-Zeit (`make debug-on`):**
-   - `docker-compose.override.yml` wird erstellt/kopiert
-   - PHP-Container mit `INSTALL_XDEBUG=true` gebaut
-   - Xdebug wird via `pecl install xdebug` kompiliert
+1. **Build time (`make debug-on`):**
+   - `docker-compose.override.yml` is created/copied
+   - PHP container built with `INSTALL_XDEBUG=true`
+   - Xdebug is compiled via `pecl install xdebug`
 
-2. **Xdebug-Konfiguration (nur wenn installiert):**
+2. **Xdebug configuration (only if installed):**
 ```ini
 [xdebug]
-; Modi: debug (Debugger), coverage (Code-Coverage)
+; Modes: debug (Debugger), coverage (Code-Coverage)
 xdebug.mode=debug,coverage
 xdebug.start_with_request=yes
 xdebug.discover_client_host=true
@@ -50,26 +50,26 @@ xdebug.client_port=9003
 xdebug.idekey=resumehaven
 ```
 
-**Runtime-Config:**
-- `XDEBUG_MODE=debug,coverage` (für Debugging + Coverage)
-- Umgebungsvariable wird automatisch gesetzt via `docker-compose.override.yml`
+**Runtime Config:**
+- `XDEBUG_MODE=debug,coverage` (for debugging + coverage)
+- Environment variable is set automatically via `docker-compose.override.yml`
 
-3. **Deaktivieren (`make debug-off`):**
-   - `docker-compose.override.yml` wird gelöscht
-   - Rebuild ohne Xdebug
-   - Alles läuft 50% schneller
+3. **Disable (`make debug-off`):**
+   - `docker-compose.override.yml` is deleted
+   - Rebuild without Xdebug
+   - Everything runs 50% faster
 
 ---
 
 ## 🎯 VSCode Setup
 
-### **1. Erweiterung installieren**
+### **1. Install extension**
 
-- Install: "PHP Debug" (Felix Becker) oder "PHP Intelephense"
+- Install: "PHP Debug" (Felix Becker) or "PHP Intelephense"
 
-### **2. Launch-Konfiguration**
+### **2. Launch configuration**
 
-Die Datei `.vscode/launch.json` wird automatisch erstellt, enthalten sollte:
+The file `.vscode/launch.json` will be created automatically, should contain:
 
 ```json
 {
@@ -93,23 +93,23 @@ Die Datei `.vscode/launch.json` wird automatisch erstellt, enthalten sollte:
 }
 ```
 
-### **3. Debuggen**
+### **3. Debug**
 
-1. **Xdebug aktivieren:**
+1. **Enable Xdebug:**
    ```bash
    make debug-on
    ```
 
-2. **Breakpoint setzen:** Zeile klicken (roten Punkt)
+2. **Set breakpoint:** Click line (red dot)
 
-3. **Debugger starten:** VSCode → Run and Debug (Ctrl+Shift+D) → "Listen for Xdebug (Docker)"
+3. **Start debugger:** VSCode → Run and Debug (Ctrl+Shift+D) → "Listen for Xdebug (Docker)"
 
-4. **Script ausführen:**
+4. **Run script:**
    ```bash
    make php-shell
    php artisan tinker
    ```
-   → Debugger stoppt bei Breakpoint!
+→ Debugger stops at breakpoint!
 
 5. **Debugging Controls:**
    - ▶ Continue (F5)
@@ -121,49 +121,49 @@ Die Datei `.vscode/launch.json` wird automatisch erstellt, enthalten sollte:
 
 ## 🎯 PhpStorm Setup
 
-### **1. Server konfigurieren**
+### **1. Configure server**
 
 - `Preferences → Languages & Frameworks → PHP → Servers`
-- **Neuer Server:**
+- **New Servers:**
   - Name: `localhost`
   - Host: `localhost`
   - Port: `8080`
   - Debugger: `Xdebug`
-  - Path Mapping:
+  - Path mapping:
     - `/var/www/html` → `<project>/src`
 
-### **2. Debug-Konfiguration**
+### **2. Debug configuration**
 
 - `Run → Edit Configurations`
-- **Neuer PHP Remote Debug:**
+- **New PHP Remote Debug:**
   - Server: `localhost`
   - Port: `9003`
 
-### **3. Debuggen**
+### **3. Debug**
 
-1. **Xdebug aktivieren:**
+1. **Enable Xdebug:**
    ```bash
    make debug-on
    ```
 
-2. **Breakpoint setzen:** Zeile klicken
+2. **Set breakpoint:** Click line
 
-3. **Debugger starten:** 
+3. **Start debugger:**
    - `Run → Debug 'PHP Remote Debug'` (Shift+F9)
-   - oder: `Run → Break on first line`
+   - or: `Run → Break on first line`
 
-4. **Script ausführen:**
+4. **Run script:**
    ```bash
    make php-shell
    php artisan test
    ```
-   → Debugger stoppt bei Breakpoint!
+→ Debugger stops at breakpoint!
 
 ---
 
-## 💻 CLI-Debugging (Mit und ohne IDE)
+## 💻 CLI debugging (With and without IDE)
 
-### **Variante A: Mit IDE**
+### **Variant A: With IDE**
 
 ```bash
 make debug-on
@@ -174,38 +174,38 @@ export XDEBUG_CONFIG="idekey=vscode"
 php artisan test --filter="TestName"
 ```
 
-IDE muss auf Port 9003 lauschen!
+IDE must listen on port 9003!
 
-### **Variante B: Mit var_dump() / dd()
+### **Variant B: With var_dump() / dd()
 
 ```bash
 make debug-on
 make php-shell
 
-# Im Code:
+# In the code:
 dd($variable);  // Laravel Dump & Die
-// oder
+// or
 var_dump($variable);  // PHP Standard
 ```
 
-### **Variante C: Mit Logging**
+### **Variant C: With logging**
 
 ```bash
 make debug-on
 make php-shell
 
-# Im Code:
+# In the code:
 Log::info('Debug: ', ['data' => $variable]);
 
-# Logs anzeigen:
+# Show logs:
 tail -f storage/logs/laravel.log
 ```
 
 ---
 
-## 🧪 Tests mit Xdebug
+## 🧪 Testing with Xdebug
 
-### **Feature-Tests debuggen:**
+### **Debug feature tests:**
 
 ```bash
 make debug-on
@@ -215,77 +215,77 @@ make php-shell
 vendor/bin/pest tests/Feature/AnalyzeControllerTest.php
 ```
 
-### **Coverage-Reports generieren:**
+### **Generate coverage reports:**
 
 ```bash
-make debug-on                      # Xdebug mit coverage-Mode aktivieren
-make test-coverage                 # Coverage-Check in Konsole (min 95%)
-make test-coverage-report          # Dateien erzeugen (Clover + HTML)
-make coverage-open                 # HTML-Report im Browser öffnen
-make coverage-clean                # Alte Reports löschen
+make debug-on                      # Enable Xdebug with coverage mode
+make test-coverage                 # Coverage check in console (min 95%)
+make test-coverage-report          # Generate files (Clover + HTML)
+make coverage-open                 # Open HTML report in browser
+make coverage-clean                # Delete old reports
 ```
 
-**Coverage-Dateien im Dateisystem:**
+**Coverage files in the file system:**
 
 - `src/coverage-report/clover.xml`
 - `src/coverage-report/html/index.html`
 
-**Aktuelle Coverage:**
+**Current coverage:**
 - **Total:** 98.2% ✅
 - **Minimum:** 95%
 
 ---
 
-## 📊 Performance-Vergleich
+## 📊 Performance comparison
 
-| Modus | Speed | Code Coverage | Debugger | Verwendung |
+| Mode | Speed | Code Coverage | Debugger | Usage |
 |-------|-------|---------------|----------|------------|
-| **debug-off** | ✅ 1x (normal) | ❌ Nein | ❌ Nein | Normale Entwicklung |
-| **debug-on** | 🐢 0.5x (50% langsamer) | ✅ Ja | ✅ Ja | Debugging + Coverage |
+| **debug off** | ✅ 1x (normal) | ❌ No | ❌ No | Normal development |
+| **debug on** | 🐢 0.5x (50% slower) | ✅ Yes | ✅ Yes | Debugging + Coverage |
 
-**Empfehlung:**
-- Normale Entwicklung & Tests: `make debug-off`
-- Debugging nötig: `make debug-on`
-- Coverage-Check: `make test-coverage`
-- Coverage-Dateien: `make test-coverage-report`
+**Recommendation:**
+- Normal Development & Testing: `make debug-off`
+- Debugging required: `make debug-on`
+- Coverage check: `make test-coverage`
+- Coverage files: `make test-coverage-report`
 
 ---
 
 ## 🔍 Troubleshooting
 
-### **Breakpoint wird nicht erreicht?**
+### **Breakpoint is not reached?**
 
-1. IDE muss auf Port 9003 lauschen
-2. VSCode: "Listen for Xdebug" starten
-3. PhpStorm: "Debug" oder "Break on first line" aktivieren
-4. Browser: `make debug-test` ausführen
+1. IDE must listen on port 9003
+2. VSCode: Start “Listen for Xdebug”.
+3. PhpStorm: Enable “Debug” or “Break on first line”.
+4. Browser: Run `make debug-test`
 
 ### **"Port 9003 already in use"?**
 
 ```bash
-# Andere IDE-Session schließen oder anderen Port:
+# Close other IDE session or use a different port:
 sudo lsof -i :9003
 kill -9 <PID>
 ```
 
-### **Xdebug nicht installiert?**
+### **Xdebug not installed?**
 
 ```bash
 make debug-status
 
-# Sollte anzeigen:
-# ✅ Xdebug ist INSTALLIERT
+# Should display:
+# ✅ Xdebug is INSTALLED
 ```
 
-Wenn nicht: `make debug-on` erneut ausführen.
+If not: run `make debug-on` again.
 
-### **Performance-Probleme?**
+### **Performance issues?**
 
-Das ist normal! Xdebug ist ~50% langsamer.
+This is normal! Xdebug is ~50% slower.
 
-Für normale Entwicklung: `make debug-off`
+For normal development: `make debug-off`
 
-### **Logs anzeigen?**
+### **Show logs?**
 
 ```bash
 make debug-logs
@@ -293,7 +293,7 @@ make debug-logs
 
 ---
 
-## 📚 Weitere Ressourcen
+## 📚 More resources
 
 - [Xdebug Official Docs](https://xdebug.org/)
 - [VSCode PHP Debug Extension](https://github.com/felixbecker/vscode-php-debug)
@@ -301,15 +301,13 @@ make debug-logs
 
 ---
 
-## ✅ Checkliste zum Starten
+## ✅ Starting checklist
 
-- [ ] Xdebug-Erweiterung in IDE installiert
-- [ ] `make debug-on` ausgeführt
-- [ ] `make debug-status` zeigt "✅ Xdebug ist INSTALLIERT"
-- [ ] IDE lauscht auf Port 9003
-- [ ] Breakpoint gesetzt
-- [ ] Script ausgeführt → Debugger stoppt
+- [ ] Xdebug extension installed in IDE
+- [ ] `make debug-on` executed
+- [ ] `make debug-status` shows "✅ Xdebug is INSTALLED"
+- [ ] IDE listens on port 9003
+- [ ] Breakpoint set
+- [ ] Script executed → Debugger stops
 
-**Viel Spaß beim Debuggen!** 🎉
-
-
+**Happy debugging!** 🎉

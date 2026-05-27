@@ -4,6 +4,15 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
+# 🚀 Aktueller Stand (Stand: Commit 36)
+
+- **Phase 1-4:** Kern-Features (Analyse, UI, Auth, Multi-CV) sind weitgehend stabil und umgesetzt.
+- **Phase 5 (LLM-Layer):** Meilensteine L1 bis L4 sind erfolgreich abgeschlossen (Provider-Abstraktion, OpenAI/Anthropic Integration, Retry-Logik).
+- **UX/Auth:** Commit 35 hat den Auth/Claim-Flow poliert (Ergebnis-Restore).
+- **Nächster Fokus:** Konsolidierung und Vorbereitung auf Deployment vs. weitere Feature-Härtung.
+
+---
+
 # 🚀 Phase 1 – MVP ✅ (abgeschlossen)
 
 ## 1. Projektinitialisierung ✅
@@ -75,13 +84,13 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
-# 🎨 Phase 3 – UI/UX‑Optimierung (geplant)
+# 🎨 Phase 3 – UI/UX‑Optimierung (in Arbeit)
 
 - Dark Mode → **✅ umgesetzt**
 - bessere Panels → **teilweise umgesetzt, weitere Polishes geplant**
 - mobile Optimierung → **✅ Basis umgesetzt**
 - Export der Analyse (ohne PDF‑Generierung) → **geplant**
-- Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise) → **geplant als Follow-up nach Commit 29**
+- Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise) → **✅ abgeschlossen in Commit 35**
 
 ## 1. Legal‑Seiten & Compliance (geplant für Commit 20b)
 - Impressum erstellen  
@@ -104,7 +113,7 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
-# 🔌 Phase 5 – Provider-agnostischer LLM-Layer (geplant)
+# 🔌 Phase 5 – Provider-agnostischer LLM-Layer ✅ (abgeschlossen)
 
 ## Ziel
 
@@ -112,48 +121,36 @@ Den AI-Analyzer von der konkreten Gemini-Implementierung lösen, sodass beliebig
 über ein einheitliches Plugin-Interface eingebunden werden können — ohne Änderungen am
 Domain-Code.
 
-## Ausgangssituation
+## Status Quo (nach Commit 34)
 
-Die aktuelle Architektur ist bereits gut vorbereitet:
+- **L1:** `AbstractLlmAiAnalyzer` extrahiert, `GeminiAiAnalyzer` umgestellt. ✅
+- **L2:** Plugin-Interface `LlmProviderPluginInterface` formalisiert, `AI_PROVIDER=openai` verfügbar. ✅
+- **L3:** `AnthropicAiAnalyzer` als zweiten Provider (PoC) integriert. ✅
+- **L4:** Konfigurierbare Retry-Logik + Error-Hardening im AI-Layer umgesetzt. ✅
 
-- `AiAnalyzerInterface` → provideragnostische Abstraktion ✅
-- `AppServiceProvider` → Strategy-Pattern-Binding über `AI_PROVIDER`-Config ✅
-- `GeminiAiAnalyzer` → konkrete Gemini-Implementierung (korrekt benannt) ✅
-- `MockAiAnalyzer` → Test-/Dev-Implementierung ✅
-
-Was fehlt: ein generischer Basisanalyzer sowie ein formalisiertes Plugin-Konzept für
-provider-spezifische Eigenheiten.
-
-## Geplante Architektur
+## Erreichte Architektur
 
 ```
 AiAnalyzerInterface                    ← unverändert, bleibt Vertragsgrundlage
     │
-    ├── AbstractLlmAiAnalyzer          ← neu: generischer Basis-Analyzer
-    │       gemeinsame Logik:          (Sanitization, Error-Handling, Logging,
-    │                                   JSON-Encoding, Response-Validierung)
+    ├── AbstractLlmAiAnalyzer          ← generischer Basis-Analyzer (Sanitization, Retry, Logging)
+    │       uses LlmProviderPluginInterface
     │
-    ├── GeminiAiAnalyzer               ← bleibt, extends AbstractLlmAiAnalyzer
-    ├── OpenAiAnalyzer                 ← zukünftig
-    ├── AnthropicAiAnalyzer            ← zukünftig
+    ├── GeminiAiAnalyzer               ← implementiert LlmProviderPluginInterface
+    ├── OpenAiAnalyzer                 ← implementiert LlmProviderPluginInterface
+    ├── AnthropicAiAnalyzer            ← implementiert LlmProviderPluginInterface
     └── MockAiAnalyzer                 ← bleibt unverändert
 ```
 
 ## Plugin-Konzept für LLM-Eigenheiten
 
-Jeder Provider kann in seinem Analyzer von der Basis abweichen, wo nötig:
+Jeder Provider implementiert das `LlmProviderPluginInterface`, um provider-spezifische Eigenheiten abzubilden:
 
-| Aspekt | Beispiel für provider-spezifische Abweichung |
+| Aspekt | Umsetzung |
 |---|---|
-| **Prompt-Format** | Gemini: JSON-Objekt; OpenAI: System+User-Message-Struktur |
-| **Structured Output** | Unterschiedliche Schema-Übergabe pro SDK |
-| **Token-Limits** | Provider-spezifische Max-Token-Konfiguration |
-| **Fehler-Codes** | HTTP-429 (Rate Limit), API-spezifische Exception-Typen |
-| **Retry-Strategie** | Exponential Backoff je nach Provider-Verhalten |
-| **Response-Normalisierung** | Unterschiedliche `toArray()`-Strukturen der SDK-Responses |
-
-Jeder Analyzer überschreibt nur die Methoden, bei denen echte Abweichungen bestehen
-(Template-Method-Pattern). Gemeinsame Logik bleibt in `AbstractLlmAiAnalyzer`.
+| **Prompt-Format** | Über `getPromptPayload()` |
+| **Structured Output** | Über `getPromptPayload()` (JSON-Struktur) |
+| **Fehler-Mapping** | Über `mapToTransientException()` (Retry-Steuerung) |
 
 ## Mutation-Testing-Vorbereitung (Commit 28)
 
@@ -226,9 +223,9 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 
 ---
 
-# 📊 Aktueller Stand (2026-04-24)
+# 📊 Current status (2026-05-27)
 
-## ✅ Abgeschlossen
+## ✅ Completed
 - Phase 1 (MVP): Komplett umgesetzt
 - DDD-Architektur mit Commands/Handlers/UseCases/Actions
 - CQRS-Pattern (Phase 1 abgeschlossen, Phase 2 in Arbeit)
@@ -246,28 +243,32 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 28: Architecture-Tests & Engineering-Härtung (abgeschlossen)
 - Commit 29: Auth + Rollen + Claim-Flow (abgeschlossen)
 - Commit 30: CV-Verwaltung (Multi-CV CRUD) (abgeschlossen)
+- Commit 31: Delete/AuthZ-Gate + provider-generische AI-Basis (abgeschlossen)
+- Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
+- Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad (abgeschlossen)
+- Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
+- Commit 35: Auth/Claim UX polish (result restore, token-based redirects, claim feedback) (completed)
 
-## 🔄 In Arbeit
-- Commit 31: Reihenfolge **3 → 1 → 2**
-  - 3) Acceptance-Gate fuer Multi-CV ausbauen
-  - 1) Delete-Flow (Owner/Admin) mit Session-Cleanup
-  - 2) Session-Token-Handling vereinheitlichen
+## 🔄 In progress
+- Commit 36: Roadmap planning & documentation sync ✅
+  - Status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md`, and `docs/history/COMMIT_HISTORY_2026.md`
+  - Prioritize the next implementation commit (Commit 37)
 
-## 📋 Geplant
-- Commit 29 Follow-up: Auth/Claim UX Polish (CTA, Microcopy, Status-Hinweise)
-- Commit 30+: Ausbau der CV-Verwaltung nach MVP-Cut (z. B. Filter, Suche, Pagination-Konfigurierbarkeit)
-- **Phase 5: Provider-agnostischer LLM-Layer**
-  - AbstractLlmAiAnalyzer als gemeinsame Basis
-  - Plugin-Konzept für provider-spezifische Eigenheiten
-  - Erster Zweit-Provider als Proof of Concept
-  - Offene Fragen: siehe Phase-5-Abschnitt oben
-- GitHub CI/CD Workflow (Commit 23 ✅)
-- arc42 Dokumentationsstruktur
-- req42 Requirements Management
-- Acceptance-Tests (Commit 27 ✅)
+## 📋 Planned
+- Commit 37: **Deployment-Basis & Infrastructure Härtung** (Empfehlung)
+  - Ziel: Das Projekt auf einen Zustand heben, der ein produktives Deployment ermöglicht.
+  - Fokus: Production-ready Config, Environment-Validation, Logging-Verschärfung.
+- Commit 38+: CV-Verwaltung Ausbau (Filter, Suche, Paginierung)
+- **Phase 5: provider-agnostic LLM layer (Erweiterung)**
+  - Open decisions around plugin interface, fallback, and provider configuration
+  - Follow-up questions are listed in the Phase 5 section above
+- GitHub CI/CD workflow (Commit 23 ✅)
+- arc42 documentation structure
+- req42 requirements management
+- Acceptance tests (Commit 27 ✅)
 - renovate.js
-- Mutation-Testing (Commit 28: Vorbereitung ✅, Detailplanung später)
-- Architecture-Testing (Commit 28 ✅)
+- Mutation testing (Commit 28: preparation ✅, detailed planning later)
+- Architecture testing (Commit 28 ✅)
 
 ---
 

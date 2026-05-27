@@ -1,128 +1,126 @@
-# Detailplanung Commit 32 — L2 Plugin-Interface + OpenAI Auswahl
+# Detailed planning Commit 32 — L2 plugin interface + OpenAI selection
 
-**Branch:** `feature/commit-32-llm-provider-plugin-interface`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-04-28  
-**Abgeschlossen:** 2026-04-30
-
----
-
-## Ziel
-
-Den provider-agnostischen LLM-Layer aus L1 so erweitern, dass provider-spezifische
-Abweichungen formal ueber ein Plugin-Interface steuerbar sind und `AI_PROVIDER=openai`
-als konkrete Auswahl ohne Domain-Aenderungen funktioniert.
+**Branch:** `feature/commit-32-llm-provider-plugin-interface`
+**Status:** Completed
+**Created:** 2026-04-28
+**Completed:** 2026-04-30
 
 ---
 
-## Entscheidungslog (Planungs-Session 2026-04-28)
+##Goal
 
-| # | Frage | Entscheidung |
+Extend the provider-agnostic LLM layer from L1 so that provider-specific
+Deviations can be formally controlled via a plugin interface and `AI_PROVIDER=openai`
+works as a concrete selection without domain changes.
+
+---
+
+## Decision log (planning session 2026-04-28)
+
+| # | Question | decision |
 |---|-------|--------------|
-| 1 | OpenAI in L2 nur vorbereiten oder aktiv auswählbar machen | Aktiv auswählbar in Commit 32 |
-| 2 | Exception-Mapping zentral vs. provider-spezifisch | Provider-spezifisch ueber Plugin-Hook |
-| 3 | Umsetzungszuschnitt | Ein Commit, nicht gesplittet |
+| 1 | Just prepare OpenAI in L2 or make it actively selectable | Actively selectable in commit 32 |
+| 2 | Exception mapping centrally vs. provider-specific | Provider-specific via plugin hook |
+| 3 | Implementation plan | One commit, not split |
 
 ---
 
-## Scope
+##Scope
 
-### Schritt 1 — Plugin-Vertrag formalisieren
+### Step 1 — Formalize plugin contract
 
-- Neues `LlmProviderPluginInterface` unter `Services/AiAnalyzer/Contracts`
-- Hooks fuer provider-spezifische Abweichungen:
+- New `LlmProviderPluginInterface` under `Services/AiAnalyzer/Contracts`
+- Hooks for provider-specific deviations:
   - `buildPromptPayload()`
   - `normalizeResponse()`
   - `mapProviderException()`
 
-### Schritt 2 — Abstract-Flow auf Plugin-Hooks umstellen
+### Step 2 — Switch Abstract Flow to Plugin Hooks
 
-- `AbstractLlmAiAnalyzer` verwendet den Plugin-Vertrag im `analyze()`-/`callAi()`-Pfad
-- Gemeinsame Orchestrierung bleibt zentral (Sanitizing, Validate, Parse, Logging)
-- Abweichungen werden ueber Hook-Punkte ausgelagert
+- `AbstractLlmAiAnalyzer` uses the plugin contract in the `analyze()`/`callAi()` path
+- Shared orchestration remains central (sanitizing, validating, parsing, logging)
+- Deviations are outsourced via hook points
 
-### Schritt 3 — Gemini auf neuen Vertrag ziehen
+### Step 3 — Move Gemini to new contract
 
-- `GeminiAiAnalyzer` implementiert provider-spezifische Hook-Methoden
-- Bestehendes Laufzeitverhalten bleibt funktional aehnlich
-- Provider-spezifisches Error-Mapping wird explizit
+- `GeminiAiAnalyzer` implements provider-specific hook methods
+- Existing runtime behavior remains functionally similar
+- Provider-specific error mapping becomes explicit
 
-### Schritt 4 — OpenAI als auswählbarer Provider
+### Step 4 — OpenAI as a selectable provider
 
-- Neuer `OpenAiAnalyzer` als L2-Implementierung
-- `isAvailable()` ueber `ai.providers.openai.key`
-- Aufnahme in `ai.analyzers` und Auswahl per `AI_PROVIDER=openai`
+- New `OpenAiAnalyzer` as L2 implementation
+- `isAvailable()` over `ai.providers.openai.key`
+- Admission to `ai.analyzers` and selection via `AI_PROVIDER=openai`
 
-### Schritt 5 — Binding/Config absichern
+### Step 5 — Secure Binding/Config
 
-- `AppServiceProvider` bleibt config-driven
-- Registry-/Typ-Guards bleiben aktiv
-- Fehlermeldungen fuer ungueltige Konfigurationen bleiben deterministic
+- `AppServiceProvider` remains config-driven
+- Registry/type guards remain active
+- Error messages for invalid configurations remain deterministic
 
-### Schritt 6 — Tests & Gates
+### Step 6 — Tests & Gates
 
-- Unit-Tests fuer Plugin-Hooks und provider-spezifisches Exception-Mapping
-- Binding-Tests fuer `openai`-Auswahlpfad
-- Relevante Pest-Tests, Pint, PHPStan
+- Unit tests for plugin hooks and provider-specific exception mapping
+- Binding tests for `openai` selection path
+- Relevant plague tests, pint, PHPStan
 
 ---
 
-## Testkatalog
+## Test catalog
 
-### Unit-Tests
+### Unit testing
 
 - `AbstractLlmAiAnalyzer`:
-  - Hook-Pipeline fuer Prompt/Response
-  - provider-spezifischer Exception-Mapping-Pfad
+  - Hook pipeline for prompt/response
+  - provider-specific exception mapping path
 - `GeminiAiAnalyzer`:
-  - Hook-Implementierung und Availability-Check
+  - Hook implementation and availability check
 - `OpenAiAnalyzer`:
-  - Provider-Name, Availability, Basis-Hook-Verhalten
+  - Provider name, availability, basic hook behavior
 - `AppServiceProvider`:
-  - Binding fuer `ai.provider=openai`
-  - Registry-Guardrails bleiben gruen
+  - Binding for `ai.provider=openai`
+  - Registry guardrails remain green
 
 ### Regression
 
-- Bestehende Analyzer-Tests fuer `mock`/`gemini` bleiben gruen
-- Keine Regression fuer bestehende Analyse-Use-Cases
+- Existing analyzer tests for `mock`/`gemini` remain green
+- No regression for existing analysis use cases
 
 ---
 
-## Nicht-Scope in Commit 32
+## Non scope in commit 32
 
-- Kein Provider-Fallback (z. B. Gemini -> OpenAI bei Timeout)
-- Kein dritter produktiver Provider
-- Keine UI-Aenderungen
-- Kein Retry-/Backoff-Framework
-- Keine Aenderung der Domain-Vertraege (Commands/Queries/DTOs)
+- No provider fallback (e.g. Gemini -> OpenAI on timeout)
+- No third productive provider
+- No UI changes
+- No retry/backoff framework
+- No change to the domain contracts (Commands/Queries/DTOs)
 
 ---
 
-## Erfolgskriterien
+## Success criteria
 
-- `AI_PROVIDER=openai` liefert eine gueltige `AiAnalyzerInterface`-Instanz
-- Provider-spezifische Abweichungen laufen ueber das Plugin-Interface
-- Exception-Mapping ist provider-spezifisch testbar
+- `AI_PROVIDER=openai` returns a valid `AiAnalyzerInterface` instance
+- Provider-specific deviations occur via the plugin interface
+- Exception mapping can be tested on a provider-specific basis
 - PHPStan Level 9: 0 Errors
-- Pint: sauber
-- Relevante Tests: gruen
+- Pint: clean
+- Relevant tests: green
 
 ---
 
-## Risiken / offene Punkte
+## Risks / open points
 
-- Hook-Signaturen muessen klein bleiben, um Over-Engineering zu vermeiden
-- OpenAI-Integration in L2 soll bewusst minimal bleiben (kein Scope-Creep)
-- Fehlertexte duerfen UX-seitig nicht inkonsistent zwischen Providern wirken
+- Hook signatures must remain small to avoid over-engineering
+- OpenAI integration in L2 should deliberately remain minimal (no scope creep)
+- From a UX perspective, error texts must not appear inconsistent between providers
 
 ---
 
-## Verweise
+## References
 
-- Aktiver Plan: `../../COMMIT_PLAN.md`
+- Active plan: `../../COMMIT_PLAN.md`
 - Roadmap: `../ROADMAP.md`
-- Vorheriger Detailplan: `PLANNING_COMMIT_30.md`
-- Historie-Index: `../COMMIT_HISTORY_INDEX.md`
-
-
+- Previous detailed plan: `PLANNING_COMMIT_30.md`
+- History index: `../COMMIT_HISTORY_INDEX.md`

@@ -1,69 +1,69 @@
-# 🤖 Agent-Kontext – Zentrale Arbeitsregeln
+# 🤖 Agent Context – Central Working Rules
 
-Diese Datei ist die **Single Source of Truth** für alle KI-Agenten (GitHub Copilot, Windsurf, etc.).
+This file is the **Single Source of Truth** for all AI agents (GitHub Copilot, Windsurf, etc.).
 
-> Session-Startpunkt / Soft-Reset: `docs/ai/WORKING_BASELINE.md`
+> Session start point / soft reset: `docs/ai/WORKING_BASELINE.md`
 > 
-> Nutze diese Baseline fuer den aktuellen Tageskontext und behandle den Repository-Stand als verbindlich.
+> Use this baseline for the current daily context and treat the repository status as binding.
 
 ---
 
-## 🎯 Architektur-Prinzipien (Pflicht)
+## 🎯 Architecture principles (required)
 
 ### 1. CQRS (Command Query Responsibility Segregation) — Strict Mode
 
-**Regel:** Commands und Queries sind **strikt getrennt**.
+**Rule:** Commands and queries are **strictly separated**.
 
 #### Commands (Write Operations)
-- **Zweck:** Zustandsänderungen
-- **Return:** `void` oder Bestätigungs-DTO
-- **Beispiel:** `AnalyzeJobAndResumeCommand` → `AnalyzeJobAndResumeHandler`
-- **Struktur:**
+- **Purpose:** State changes
+- **Return:** `void` or confirmation DTO
+- **Example:** `AnalyzeJobAndResumeCommand` → `AnalyzeJobAndResumeHandler`
+- **Structure:**
   ```php
   app/Domains/{Context}/Commands/     // Command-DTOs
   app/Domains/{Context}/Handlers/     // Command-Handler
   ```
 
 #### Queries (Read Operations)
-- **Zweck:** Daten lesen, keine Zustandsänderungen
-- **Return:** DTO oder Collection
-- **Beispiel:** `GetCachedAnalysisQuery` → `GetCachedAnalysisHandler`
-- **Struktur:**
+- **Purpose:** Read data, no state changes
+- **Return:** DTO or Collection
+- **Example:** `GetCachedAnalysisQuery` → `GetCachedAnalysisHandler`
+- **Structure:**
   ```php
   app/Domains/{Context}/Queries/      // Query-DTOs
   app/Domains/{Context}/Handlers/     // Query-Handler
   ```
 
-#### Phasenweise Einführung (aktueller Stand)
-- ✅ **Phase 1 (abgeschlossen):** Commands + Handlers implementiert
-- 🔄 **Phase 2 (in Arbeit):** Queries + Query-Handler für Cache-Zugriffe
-- ⏳ **Phase 3 (geplant):** Alle Read-Operationen auf Queries umstellen
+#### Phased introduction (current status)
+- ✅ **Phase 1 (complete):** Commands + Handlers implemented
+- 🔄 **Phase 2 (in progress):** Queries + query handler for cache accesses
+- ⏳ **Phase 3 (planned):** Switch all read operations to queries
 
-**DoD für CQRS-Compliance:**
-- [ ] Command hat keinen Return-Wert außer Bestätigungs-DTO
-- [ ] Query ändert keinen Zustand
-- [ ] Handler ist in korrektem Ordner (`Commands/` oder `Queries/`)
+**DoD for CQRS Compliance:**
+- [ ] Command has no return value except confirmation DTO
+- [ ] Query does not change state
+- [ ] Handler is in correct folder (`Commands/` or `Queries/`)
 
 ---
 
-### 2. SOLID-Prinzipien — Pflicht-Review-Gate
+### 2. SOLID Principles — Mandatory Review Gate
 
-**Regel:** Jeder Commit MUSS SOLID-Prinzipien einhalten.
+**Rule:** Every commit MUST adhere to SOLID principles.
 
 #### Single Responsibility Principle (SRP)
-- ✅ Eine Klasse = Eine Verantwortlichkeit
-- ✅ Methoden < 20 Zeilen
-- ✅ Klassen < 200 Zeilen
+- ✅ One class = One responsibility
+- ✅ Methods < 20 lines
+- ✅ Classes < 200 lines
 - ✅ Cyclomatic Complexity < 5
 
-**Beispiel (gut):**
+**Example (good):**
 ```php
 class CalculateScoreAction {
     public function execute(array $matches, array $gaps): ScoreResultDto { }
 }
 ```
 
-**Beispiel (schlecht):**
+**Example (bathroom):**
 ```php
 class AnalyzeController {
     public function analyze() {
@@ -77,43 +77,43 @@ class AnalyzeController {
 ```
 
 #### Open/Closed Principle (OCP)
-- ✅ Erweiterbar ohne Änderung
-- ✅ Nutze Interfaces (z.B. `AiAnalyzerInterface`)
-- ✅ Strategy Pattern für austauschbare Komponenten
+- ✅ Expandable without modification
+- ✅ Use interfaces (e.g. `AiAnalyzerInterface`)
+- ✅ Strategy Pattern for interchangeable components
 
 #### Liskov Substitution Principle (LSP)
-- ✅ Interfaces müssen austauschbar sein
-- ✅ Keine Breaking Changes in Subtypen
+- ✅ Interfaces must be interchangeable
+- ✅ No breaking changes in subtypes
 
 #### Interface Segregation Principle (ISP)
-- ✅ Kleine, fokussierte Interfaces
-- ✅ Clients sollen nicht von ungenutzten Methoden abhängen
+- ✅ Small, focused interfaces
+- ✅ Clients should not depend on unused methods
 
 #### Dependency Inversion Principle (DIP)
-- ✅ Abhängigkeiten zu Abstractions (Interfaces), nicht zu Konkretionen
-- ✅ Constructor Injection für alle Dependencies
+- ✅ Dependencies on abstractions (interfaces), not on concretions
+- ✅ Constructor Injection for all dependencies
 
-**SOLID-Gate Checkliste (in jedem PR):**
-- [ ] SRP: Jede Klasse/Methode hat nur eine Verantwortlichkeit
-- [ ] OCP: Neue Features ohne Änderung bestehender Klassen
-- [ ] LSP: Interfaces sind korrekt austauschbar
-- [ ] ISP: Keine "fetten" Interfaces
-- [ ] DIP: Dependencies via Constructor Injection
+**SOLID Gate checklist (in every PR):**
+- [ ] SRP: Each class/method has only one responsibility
+- [ ] OCP: New features without changing existing classes
+- [ ] LSP: Interfaces are correctly interchangeable
+- [ ] ISP: No "fat" interfaces
+- [ ] DIP: Dependencies via constructor injection
 
 ---
 
-### 3. Domain-Driven Design (DDD)
+### 3. Domain Driven Design (DDD)
 
-**Regel:** Code ist nach fachlichen Domänen strukturiert.
+**Rule:** Code is structured according to technical domains.
 
-#### Aktueller Bounded Context
-- **`Analysis`** (Haupt-Domain)
-  - Job-/CV-Analyse
-  - Matching & Gap-Analysis
+#### Current Bounded Context
+- **`Analysis`** (main domain)
+  - Job/CV analysis
+  - Matching & gap analysis
   - Scoring
-  - Cache-Management
+  - Cache management
 
-#### Struktur
+####Structure
 ```
 app/Domains/Analysis/
 ├── Commands/        # CQRS Commands
@@ -132,43 +132,43 @@ app/Domains/Analysis/
 └── Dto/             # Data Transfer Objects (immutable)
 ```
 
-#### Geplante Bounded Contexts (Roadmap)
-- **`Profile`** (Phase 3) — Lebenslauf-Speicherung, User-Präferenzen
-- **`Recommendations`** (Phase 4) — KI-Empfehlungen, Verbesserungsvorschläge
-- **`Reporting`** (Phase 5) — Analyse-Historie, Statistiken, Exports
+#### Planned Bounded Contexts (Roadmap)
+- **`Profile`** (Phase 3) — CV storage, user preferences
+- **`Recommendations`** (Phase 4) — AI recommendations, suggestions for improvement
+- **`Reporting`** (Phase 5) — Analysis history, statistics, exports
 
-**DDD-Compliance Checkliste:**
-- [ ] Code liegt in korrektem Bounded Context (`app/Domains/{Context}/`)
-- [ ] Keine Cross-Context-Dependencies (außer via Events/DTOs)
-- [ ] Ubiquitous Language in Code-Namen verwendet
+**DDD compliance checklist:**
+- [ ] Code is in correctly bounded context (`app/Domains/{Context}/`)
+- [ ] No cross-context dependencies (except via events/DTOs)
+- [ ] Ubiquitous Language used in code names
 
 ---
 
-### 4. Interface-based Design
+### 4. Interface-based design
 
-**Regel:** "Program to an Interface, not an Implementation"
+**Rule:** "Program to an Interface, not an Implementation"
 
-#### Warum Interfaces?
-- ✅ **Austauschbarkeit:** Implementierungen können ohne Code-Änderung gewechselt werden
-- ✅ **Testbarkeit:** Interfaces können einfach gemockt werden
-- ✅ **Dependency Inversion:** High-Level-Module abhängig von Abstractions
-- ✅ **Open/Closed:** Neue Implementierungen ohne Änderung bestehender Klassen
+#### Why interfaces?
+- ✅ **Interchangeability:** Implementations can be changed without code changes
+- ✅ **Testability:** Interfaces can be easily mocked
+- ✅ **Dependency Inversion:** High-level modules dependent on abstractions
+- ✅ **Open/Closed:** New implementations without changing existing classes
 
-#### Wann ein Interface erstellen?
+#### When to create an interface?
 
-**JA — Interface erstellen wenn:**
-- ✅ Mehrere Implementierungen existieren (z.B. `GeminiAiAnalyzer`, `MockAiAnalyzer`)
-- ✅ Implementierung austauschbar sein soll (z.B. Cache-Provider, AI-Provider)
-- ✅ External Dependencies (z.B. API-Calls, Datenbank)
-- ✅ Strategie-Pattern benötigt wird
+**YES — Create interface if:**
+- ✅ Several implementations exist (e.g. `GeminiAiAnalyzer`, `MockAiAnalyzer`)
+- ✅ Implementation should be interchangeable (e.g. cache provider, AI provider)
+- ✅ External dependencies (e.g. API calls, database)
+- ✅ Strategy pattern is needed
 
-**NEIN — Kein Interface wenn:**
-- ❌ Nur eine Implementierung existiert und keine weitere geplant
-- ❌ Reine Data Objects (DTOs)
-- ❌ Simple Actions ohne External Dependencies
-- ❌ Laravel-Framework-Klassen (Controller, Models)
+**NO — No interface if:**
+- ❌ Only one implementation exists and no others are planned
+- ❌ Pure Data Objects (DTOs)
+- ❌ Simple actions without external dependencies
+- ❌ Laravel framework classes (Controllers, Models)
 
-#### Beispiel (gut)
+#### Example (good)
 
 ```php
 // Interface definieren
@@ -191,7 +191,7 @@ class AnalyzeJobAndResumeHandler {
 }
 ```
 
-#### Beispiel (schlecht)
+#### Example (bad)
 
 ```php
 // ❌ SCHLECHT: Direkte Dependency auf Konkretion
@@ -208,66 +208,66 @@ class AnalyzeJobAndResumeHandler {
 
 #### Naming Convention
 
-| Interface | Konvention | Beispiel |
+| Interface | Convention | Example |
 |-----------|------------|----------|
 | **Service/Provider** | `{Noun}Interface` | `AiAnalyzerInterface` |
 | **Repository** | `{Noun}RepositoryInterface` | `CacheRepositoryInterface` |
 | **Strategy** | `{Noun}StrategyInterface` | `ScoringStrategyInterface` |
 
-**NICHT:** `I{Noun}` (C#-Style) oder `{Noun}Contract` (Laravel alt)
+**NOT:** `I{Noun}` (C# style) or `{Noun}Contract` (Laravel old)
 
-#### Interface-Checkliste
+#### Interface checklist
 
-- [ ] Interface liegt in `Contracts/` Unterordner
-- [ ] Methoden-Signaturen vollständig typisiert
-- [ ] PHPDoc mit `@return` für komplexe Typen
-- [ ] Mindestens 2 Implementierungen (aktuell oder geplant)
-- [ ] Interface-Name endet auf `Interface`
+- [ ] Interface is located in `Contracts/` subfolder
+- [ ] Method signatures fully typed
+- [ ] PHPDoc with `@return` for complex types
+- [ ] At least 2 implementations (current or planned)
+- [ ] Interface name ends in `Interface`
 
-#### Aktuelle Interfaces im Projekt
+#### Current interfaces in the project
 
-✅ **Vorhanden:**
+✅ **Available:**
 - `AiAnalyzerInterface` (Gemini, Mock)
 
-⏳ **Geplant (Roadmap):**
+⏳ **Planned (Roadmap):**
 - `CacheRepositoryInterface` (Database, Redis, Memory)
 - `ScoringStrategyInterface` (Simple, Weighted, ML-based)
-- `RecommendationProviderInterface` (AI, Rule-based)
+- `RecommendationProviderInterface` (AI, rule-based)
 
 ---
 
-## ✅ Quality-Gates (Pflicht)
+## ✅ Quality gates (mandatory)
 
-### Test-Coverage
-- **Minimum:** 95% Total Coverage
-- **Aktuell:** 98.2% ✅
+### Test coverage
+- **Minimum:** 99% total coverage
+- **Current:** 98.2% ✅
 - **GeminiAiAnalyzer:** ≥80%
-- **Prüfung:** `make test-coverage`
+- **Exam:** `make test-coverage`
 
 ### PHPStan
 - **Level:** 9 (strict)
 - **Errors:** 0
-- **Prüfung:** `make phpstan`
+- **Exam:** `make phpstan`
 
-### Pint (Code-Formatting)
-- **Regel:** Nach jeder PHP-Änderung ausführen
-- **Befehl:** `vendor/bin/pint --dirty --format agent`
-- **Prüfung:** `make pint-analyse`
+### Pint (code formatting)
+- **Rule:** Run after every PHP change
+- **Command:** `vendor/bin/pint --dirty --format agent`
+- **Exam:** `make pint-analyse`
 
 ### Tests
-- **Pflicht:** Jede Änderung benötigt Tests
-- **Framework:** Pest 3
-- **Typen:** Unit + Feature
-- **Prüfung:** `make test`
+- **Mandatory:** Every change requires testing
+- **Framework:** Plague 3
+- **Types:** Unit + Feature
+- **Exam:** `make test`
 
-### OWASP-Compliance
-- **Regel:** Sicherheitsrelevante Änderungen müssen OWASP-orientiert geprüft werden
-- **Mindestens:** Input-Validation, Output-Encoding, AuthZ/CSRF, Secret-Handling
-- **Prüfung:** Security-Tests + Review gegen OWASP Top 10
+### OWASP compliance
+- **Rule:** Security-relevant changes must be checked in an OWASP-oriented manner
+- **At least:** Input validation, output encoding, AuthZ/CSRF, secret handling
+- **Test:** Security tests + review against OWASP Top 10
 
 ---
 
-## 🚫 Verbotene Patterns
+## 🚫 Forbidden Patterns
 
 ### ❌ God Objects
 ```php
@@ -279,7 +279,7 @@ class AnalyzeController {
 }
 ```
 
-### ❌ Raw SQL außerhalb von Repositories
+### ❌ Raw SQL outside of repositories
 ```php
 // SCHLECHT
 DB::table('analysis_cache')->where(...)->get();
@@ -288,7 +288,7 @@ DB::table('analysis_cache')->where(...)->get();
 $this->cacheRepository->getByHash($hash);
 ```
 
-### ❌ `env()` außerhalb von Config-Files
+### ❌ `env()` outside of config files
 ```php
 // SCHLECHT
 $apiKey = env('GEMINI_API_KEY');
@@ -312,7 +312,7 @@ readonly class AnalyzeRequestDto {
 }
 ```
 
-### ❌ Mixed Responsibilities
+### ❌ Mixed responsibilities
 ```php
 // SCHLECHT: Validation + Business Logic gemischt
 class AnalyzeController {
@@ -332,67 +332,67 @@ class AnalyzeController {
 
 ## 📋 Definition of Done (DoD)
 
-Jeder Commit ist erst "Done", wenn:
+Every commit is only “Done” when:
 
-1. ✅ **Tests:** Alle Tests grün (Pest)
-2. ✅ **Coverage:** ≥95%
+1. ✅ **Tests:** All tests green (plague)
+2. ✅ **Coverage:** ≥99%
 3. ✅ **PHPStan:** Level 9, 0 Errors
-4. ✅ **Pint:** Code-Formatting sauber
-5. ✅ **SOLID:** Alle SOLID-Prinzipien eingehalten
-6. ✅ **CQRS:** Commands/Queries korrekt getrennt
-7. ✅ **DDD:** Code im korrekten Bounded Context
-8. ✅ **Documentation:** PHPDoc für alle Public Methods
+4. ✅ **Pint:** Code formatting clean
+5. ✅ **SOLID:** All SOLID principles adhered to
+6. ✅ **CQRS:** Commands/Queries separated correctly
+7. ✅ **DDD:** Code in the correctly bounded context
+8. ✅ **Documentation:** PHPDoc for all public methods
 
 ---
 
-## 🔍 Code-Review Checkliste
+## 🔍 Code review checklist
 
-### Architektur
-- [ ] SOLID-Prinzipien eingehalten?
-- [ ] CQRS: Commands/Queries korrekt getrennt?
-- [ ] DDD: Richtiger Bounded Context?
-- [ ] Single-Action-Controller (`__invoke()`)?
+###Architecture
+- [ ] SOLID principles adhered to?
+- [ ] CQRS: Commands/Queries separated correctly?
+- [ ] DDD: Correct Bounded Context?
+- [ ] Single action controller (`__invoke()`)?
 - [ ] Immutable DTOs (`readonly`)?
 
-### Code-Qualität
+### Code quality
 - [ ] PHPStan Level 9: 0 Errors?
-- [ ] Pint: Code-Formatting sauber?
-- [ ] Methoden < 20 Zeilen?
-- [ ] Klassen < 200 Zeilen?
+- [ ] Pint: Code formatting clean?
+- [ ] Methods < 20 lines?
+- [ ] Classes < 200 lines?
 - [ ] Cyclomatic Complexity < 5?
 
 ### Tests
-- [ ] Unit-Tests vorhanden?
-- [ ] Feature-Tests vorhanden?
-- [ ] Edge-Cases getestet?
-- [ ] Coverage ≥95%?
+- [ ] Unit tests available?
+- [ ] Feature testing available?
+- [ ] Edge cases tested?
+- [ ] Coverage ≥99%?
 
 ### Security (OWASP)
-- [ ] Input als untrusted behandelt?
-- [ ] Output kontextgerecht escaped/encoded?
-- [ ] AuthN/AuthZ/CSRF berücksichtigt?
-- [ ] Keine Secrets im Code?
-- [ ] Security-Tests bei sicherheitsrelevanten Änderungen?
+- [ ] Input treated as untrusted?
+- [ ] Output contextually escaped/encoded?
+- [ ] AuthN/AuthZ/CSRF taken into account?
+- [ ] No secrets in the code?
+- [ ] Security testing for security-relevant changes?
 
-### Dokumentation
-- [ ] PHPDoc für Public Methods?
-- [ ] Komplexe Logik kommentiert?
-- [ ] README/Docs aktualisiert (wenn nötig)?
+### Documentation
+- [ ] PHPDoc for public methods?
+- [ ] Complex logic commented?
+- [ ] README/Docs updated (if necessary)?
 
 ---
 
-## 📚 Siehe auch
+## 📚 See then
 
-- **Projektüberblick:** `docs/ai/PROJECT_OVERVIEW.md`
+- **Project overview:** `docs/ai/PROJECT_OVERVIEW.md`
 - **Tech Stack:** `docs/ai/TECH_STACK.md`
-- **Architektur:** `docs/ARCHITECTURE.md`
+- **Architecture:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
-- **Commit-Plan:** `COMMIT_PLAN.md`
+- **Commit plan:** `COMMIT_PLAN.md`
 - **Roadmap:** `docs/ROADMAP.md`
 - **Changelog:** `CHANGELOG.md`
 - **Laravel Boost:** `src/AGENTS.md`
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-09  
-**Version**: 2.1 (Verweis auf WORKING_BASELINE als Session-Startpunkt)
+**Last updated**: 2026-03-09
+**Version**: 2.1 (reference to WORKING_BASELINE as session starting point)

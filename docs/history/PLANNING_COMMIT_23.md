@@ -1,70 +1,70 @@
 # Commit 23 - GitHub Actions CI + Branch Protection
 
-**Branch:** `feature/commit-23-github-actions-ci`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-03-11  
-**Abgeschlossen:** 2026-03-13
+**Branch:** `feature/commit-23-github-actions-ci`
+**Status:** Completed
+**Created:** 2026-03-11
+**Completed:** 2026-03-13
 
 ---
 
-## Ziel
+##Goal
 
-Quality Gates automatisch zwischen Feature-Branches und `main` absichern, ohne bereits Deployment-Themen vorzuziehen.
+Automatically secure quality gates between feature branches and `main` without already prioritizing deployment topics.
 
 ---
 
-## Scope
+##Scope
 
-### Enthalten
+###Contain
 - GitHub Actions CI (CI-first)
 - Jobs: `pint`, `phpstan`, `pest` + Coverage (`>=95%`)
-- Trigger: `push`, `pull_request` auf `main`, `workflow_dispatch`
-- Coverage-Artefakte als Build-Artifact (Retention: 7 Tage)
-- Codecov-Upload fuer Coverage-Badge (public Repo)
-- Status-Badges in `README.md`
-- Dokumentation fuer Branch-Protection (`main`)
+- Trigger: `push`, `pull_request` on `main`, `workflow_dispatch`
+- Coverage artifacts as build artifacts (retention: 7 days)
+- Codecov upload for coverage badge (public repo)
+- Status badges in `README.md`
+- Documentation for branch protection (`main`)
 
-### Nicht enthalten
-- Kein Deployment
-- Keine Cloud-Infrastruktur
-- Keine Release-Automation
-
----
-
-## Technische Entscheidungen
-
-1. CI-Stack: `shivammathur/setup-php` (PHP 8.5) statt Docker-build in CI
-2. Coverage: bestehende `clover.xml` wird fuer Codecov genutzt
-3. APP_KEY: wird zur Laufzeit im Workflow erzeugt (nicht im Repo)
-4. AI im CI: `AI_PROVIDER=mock`, `GEMINI_API_KEY` als leerer Platzhalter
-5. Protected Branch: `main` mit Required Checks (`pint`, `phpstan`, `pest_coverage`)
+### Not included
+- No deployment
+- No cloud infrastructure
+- No release automation
 
 ---
 
-## Geplante Dateien
+## Technical decisions
+
+1. CI stack: `shivammathur/setup-php` (PHP 8.5) instead of Docker build in CI
+2. Coverage: existing `clover.xml` is used for Codecov
+3. APP_KEY: is created at runtime in the workflow (not in the repo)
+4. AI in CI: `AI_PROVIDER=mock`, `GEMINI_API_KEY` as empty placeholders
+5. Protected Branch: `main` with Required Checks (`pint`, `phpstan`, `pest_coverage`)
+
+---
+
+## Scheduled files
 
 - `.github/workflows/ci.yml`
 - `src/.env.ci`
 - `README.md` (Badges)
-- `docs/DEVELOPMENT.md` (Branch-Protection + Codecov-Setup)
+- `docs/DEVELOPMENT.md` (branch protection + codecov setup)
 - `COMMIT_PLAN.md` (Status/Scope)
-- `docs/ROADMAP.md` (Status aktualisieren)
+- `docs/ROADMAP.md` (update status)
 
 ---
 
 ## Definition of Done
 
-- CI startet fuer Push/PR/manuell und laeuft reproduzierbar
-- `pint`, `phpstan`, `pest --coverage --min=95` sind aktiv
-- Coverage-Artefakte werden hochgeladen (7 Tage)
-- Codecov-Badge in `README.md` verfuegbar
-- Branch-Protection fuer `main` dokumentiert
-- Alle lokalen Quality Gates bleiben gruen
+- CI starts for push/PR/manually and runs reproducibly
+- `pint`, `phpstan`, `pest --coverage --min=95` are active
+- Coverage artifacts are uploaded (7 days)
+- Codecov badge available in `README.md`
+- Branch protection for `main` documented
+- All local quality gates remain green
 
 ---
 
-## Geklaerte Punkte
+## Clarified points
 
-- Repo ist public -> Codecov ohne Token moeglich
-- `clover.xml` existiert bereits
-- Deployment bleibt fuer Commit 24+ eingeplant
+- Repo is public -> Codecov possible without token
+- `clover.xml` already exists
+- Deployment remains scheduled for commit 24+

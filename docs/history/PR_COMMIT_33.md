@@ -1,48 +1,48 @@
 # PR: Commit 33 — Anthropic Provider PoC
 
-**Branch:** `feature/commit-33-anthropic-provider-poc`  
-**Merge-Ziel:** `main`  
-**Datum:** 2026-05-04  
-**Status:** ✅ Bereit für Review
+**Branch:** `feature/commit-33-anthropic-provider-poc`
+**Merge target:** `main`
+**Date:** 2026-05-04
+**Status:** ✅ Ready for review
 
 ---
 
-## 🎯 Ziel
+## 🎯 Target
 
-Zweiten LLM-Provider als Proof of Concept integrieren und das in Commit 32 eingeführte
-`LlmProviderPluginInterface` im minimalen E2E-Analysepfad validieren.
-
----
-
-## 📦 Was wurde geändert?
-
-### Neue Dateien
-| Datei | Beschreibung |
-|-------|-------------|
-| `src/app/Services/AiAnalyzer/AnthropicAiAnalyzer.php` | Anthropic Claude als zweiter LLM-Provider via `AbstractLlmAiAnalyzer` |
-| `src/tests/Unit/AnthropicAiAnalyzerTest.php` | Unit-Tests: Provider Identity, Availability, Exception Mapping (14 Tests) |
-| `src/tests/Feature/AnthropicProviderE2eTest.php` | No-Egress E2E-Tests: Provider-Registrierung, Config-Binding, Isolation (125 LOC) |
-| `docs/history/PLANNING_COMMIT_33.md` | Detailplanung für Commit 33 |
-| `docs/ai/SESSION_RESUME_2026-04-30.md` | Session-Resume-Datei für Agent-Mode-Kontext |
-
-### Geänderte Dateien
-| Datei | Beschreibung |
-|-------|-------------|
-| `src/config/ai.php` | Anthropic-Provider-Config hinzugefügt (`providers.anthropic.key`) |
-| `src/tests/Unit/AiProviderBindingTest.php` | Anthropic-Binding-Tests ergänzt |
-| `src/tests/Unit/AppServiceProviderTest.php` | Service-Provider-Tests für Anthropic erweitert |
-| `COMMIT_PLAN.md` | Status-Update: Commit 33 in Arbeit → abgeschlossen |
-| `docs/COMMIT_HISTORY_INDEX.md` | Commit 33 eingetragen |
-| `docs/ai/WORKING_BASELINE.md` | Baseline auf Commit 33 aktualisiert |
-| `docs/history/PLANNING_COMMIT_32.md` | Commit 32 als abgeschlossen markiert |
+Integrate second LLM provider as proof of concept and that introduced in commit 32
+Validate `LlmProviderPluginInterface` in the minimum E2E analysis path.
 
 ---
 
-## 🏗️ Architektur-Entscheidungen
+## 📦 What has changed?
 
-### Plugin-Interface-Validierung
-`AnthropicAiAnalyzer` erweitert `AbstractLlmAiAnalyzer` und implementiert
-`LlmProviderPluginInterface` — damit ist das Muster aus Commit 32 als erweiterbar bestätigt.
+### New files
+| File | Description |
+|-------|------------|
+| `src/app/Services/AiAnalyzer/AnthropicAiAnalyzer.php` | Anthropic Claude as second LLM provider via `AbstractLlmAiAnalyzer` |
+| `src/tests/Unit/AnthropicAiAnalyzerTest.php` | Unit Tests: Provider Identity, Availability, Exception Mapping (14 Tests) |
+| `src/tests/Feature/AnthropicProviderE2eTest.php` | No-Egress E2E Tests: Provider Registration, Config Binding, Isolation (125 LOC) |
+| `docs/history/PLANNING_COMMIT_33.md` | Detailed planning for commit 33 |
+| `docs/ai/SESSION_RESUME_2026-04-30.md` | Agent Mode Context Session Resume File |
+
+### Changed files
+| File | Description |
+|-------|------------|
+| `src/config/ai.php` | Added Anthropic Provider Config (`providers.anthropic.key`) |
+| `src/tests/Unit/AiProviderBindingTest.php` | Anthropic binding tests added |
+| `src/tests/Unit/AppServiceProviderTest.php` | Service Provider Testing Expanded for Anthropic |
+| `COMMIT_PLAN.md` | Status update: Commit 33 in progress → completed |
+| `docs/COMMIT_HISTORY_INDEX.md` | Commit 33 entered |
+| `docs/ai/WORKING_BASELINE.md` | Baseline updated to commit 33 |
+| `docs/history/PLANNING_COMMIT_32.md` | Commit 32 marked complete |
+
+---
+
+## 🏗️ Architecture decisions
+
+### Plugin interface validation
+`AnthropicAiAnalyzer` extends and implements `AbstractLlmAiAnalyzer`
+`LlmProviderPluginInterface` — this confirms the pattern from commit 32 as expandable.
 
 ```
 AbstractLlmAiAnalyzer (implements AiAnalyzerInterface, LlmProviderPluginInterface)
@@ -51,79 +51,78 @@ AbstractLlmAiAnalyzer (implements AiAnalyzerInterface, LlmProviderPluginInterfac
 └── AnthropicAiAnalyzer  ← NEU (Commit 33 / L3, PoC)
 ```
 
-### Provider-spezifisches Exception Mapping
-Anthropic-Fehler werden präzise klassifiziert (Reihenfolge ist bewusst gewählt):
-1. Token-Limit (`insufficient_tokens`, `context_length`) — vor Rate-Limit geprüft
+### Provider-specific exception mapping
+Anthropic errors are classified precisely (order is deliberately chosen):
+1. Token limit (`insufficient_tokens`, `context_length`) — checked before rate limit
 2. Rate Limit (`rate_limit_error`, HTTP 429)
 3. Overloaded (`overloaded_error`)
 4. Authentication (`authentication_error`, `unauthorized`)
 5. Invalid Request (`invalid_request_error`)
-6. Fallback: originale Exception unverändert zurückgeben
+6. Fallback: return original exception unchanged
 
-### Config-Zugriff
-Kein `env()` direkt — Zugriff ausschließlich via `config('ai.providers.anthropic.key')`.
+### Config access
+No `env()` direct — access only via `config('ai.providers.anthropic.key')`.
 
 ---
 
-## ✅ Quality-Gate-Nachweis
+## ✅ Quality Gate proof
 
 | Gate | Status | Detail |
 |------|--------|--------|
-| **Tests (Pest 3)** | ✅ GRÜN | 14 Unit-Tests + E2E-Tests, alle bestanden |
-| **Coverage** | ✅ ≥95% | AnthropicAiAnalyzer vollständig abgedeckt |
-| **PHPStan Level 9** | ✅ 0 Errors | Strict-Mode bestanden |
-| **Pint** | ✅ Sauber | `vendor/bin/pint --dirty` ohne Befund |
-| **No-Egress CI** | ✅ OK | Kein externer AI-Aufruf in Tests |
+| **Tests (Plague 3)** | ✅ GREEN | 14 unit tests + E2E tests, all passed |
+| **Coverage** | ✅ ≥95% | AnthropicAiAnalyzer fully covered |
+| **PHPStan Level 9** | ✅ 0 Errors | Strict mode passed |
+| **Pint** | ✅ Clean | `vendor/bin/pint --dirty` without findings |
+| **No-Egress CI** | ✅ OK | No external AI call in tests |
 
 ---
 
-## 🔍 Review-Check gegen AGENT_CONTEXT.md
+## 🔍 Review check against AGENT_CONTEXT.md
 
 ### SOLID
 
-| Prinzip | Status | Nachweis |
+| Principle | Status | Proof |
 |---------|--------|---------|
-| **SRP** | ✅ | `AnthropicAiAnalyzer` hat genau eine Verantwortung: Anthropic-spezifische Provider-Logik |
-| **OCP** | ✅ | Neuer Provider durch Extend von `AbstractLlmAiAnalyzer`, keine bestehende Klasse geändert |
-| **LSP** | ✅ | Austauschbar gegen `GeminiAiAnalyzer` / `OpenAiAnalyzer` via `AiAnalyzerInterface` |
-| **ISP** | ✅ | Implementiert beide fokussierten Interfaces (`AiAnalyzerInterface`, `LlmProviderPluginInterface`) |
-| **DIP** | ✅ | Consumer hängt an `AiAnalyzerInterface`, nicht an `AnthropicAiAnalyzer` direkt |
+| **SRP** | ✅ | `AnthropicAiAnalyzer` has exactly one responsibility: Anthropic-specific provider logic |
+| **OCP** | ✅ | New provider by extending `AbstractLlmAiAnalyzer`, no existing class changed |
+| **LSP** | ✅ | Interchangeable with `GeminiAiAnalyzer` / `OpenAiAnalyzer` via `AiAnalyzerInterface` |
+| **ISP** | ✅ | Implements both focused interfaces (`AiAnalyzerInterface`, `LlmProviderPluginInterface`) |
+| **DIP** | ✅ | Consumer attaches to `AiAnalyzerInterface`, not to `AnthropicAiAnalyzer` directly |
 
-### CQRS
-Keine Commands oder Queries verändert — Provider-Layer liegt unterhalb des CQRS-Handlers,
-keine Boundary-Verletzung.
+###CQRS
+No commands or queries changed — provider layer is below the CQRS handler,
+no boundary violation.
 
 ### DDD
-`AnthropicAiAnalyzer` liegt in `App\Services\AiAnalyzer` — konsistent mit dem bestehenden
-AI-Layer im `Analysis`-Bounded-Context.
+`AnthropicAiAnalyzer` is in `App\Services\AiAnalyzer` — consistent with the existing one
+AI layer in `Analysis` bounded context.
 
-### Verbotene Patterns — Keine Verletzungen
-- ✅ Kein `env()` direkt
-- ✅ Kein Raw-SQL
-- ✅ Kein Mutable DTO
-- ✅ Klasse < 200 Zeilen (79 LOC)
-- ✅ Alle Methoden < 20 Zeilen
+### Forbidden Patterns — No violations
+- ✅ No `env()` directly
+- ✅ No raw SQL
+- ✅ No Mutable DTO
+- ✅ Class < 200 lines (79 LOC)
+- ✅ All methods < 20 lines
 
 ---
 
-## 🔍 Review-Check gegen COMMIT_PLAN.md
+## 🔍 Review check against COMMIT_PLAN.md
 
-| Anforderung (Commit 33) | Status |
+| Requirement (Commit 33) | Status |
 |-------------------------|--------|
-| `AnthropicAiAnalyzer` implementiert | ✅ |
-| Config-/Binding-Erweiterung | ✅ `config/ai.php` + Service-Provider |
-| Provider-spezifisches Mapping | ✅ 6 Error-Typen abgedeckt |
-| Minimaler no-egress E2E-Testpfad | ✅ `AnthropicProviderE2eTest.php` |
-| **Nicht-Scope eingehalten** | |
-| Kein Provider-Fallback | ✅ nicht implementiert |
-| Kein Retry-/Backoff-Framework | ✅ nicht implementiert |
-| Keine UI-Änderungen | ✅ keine View-Dateien geändert |
+| `AnthropicAiAnalyzer` implemented | ✅ |
+| Config/Binding Extension | ✅ `config/ai.php` + Service Provider |
+| Provider-specific mapping | ✅ 6 Error Types Covered |
+| Minimum no-egress E2E test path | ✅ `AnthropicProviderE2eTest.php` |
+| **Non-Scope Compliance** | |
+| No provider fallback | ✅ not implemented |
+| No retry/backoff framework | ✅ not implemented |
+| No UI changes | ✅ no view files changed |
 
 ---
 
-## 🚀 Nächste Schritte (Commit 34+)
+## 🚀 Next steps (Commit 34+)
 
-- Provider-Auswahl konfigurierbar machen (UI oder `.env` zur Laufzeit)
-- Retry-/Backoff-Framework evaluieren (Roadmap Phase 5)
-- Deployment-Planung (nach LLM-Block abgeschlossen)
-
+- Make provider selection configurable (UI or `.env` at runtime)
+- Evaluate retry/backoff framework (Roadmap Phase 5)
+- Deployment planning (completed after LLM block)

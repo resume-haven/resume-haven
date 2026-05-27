@@ -1,34 +1,34 @@
 # Session Resume – 2026-03-09
 
-Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
+This file serves as an entry point after a context reset.
 
 ---
 
-## ✅ Was wurde heute erreicht?
+## ✅ What was achieved today?
 
-### 1. Kontext-Konsolidierung & Soft-Reset-Baseline
+### 1. Context consolidation & soft reset baseline
 
-**Problem:** Überladen gewachsener Chat-Kontext über viele Tage/Commits.
+**Problem:** Chat context overloaded over many days/commits.
 
-**Lösung:**
-- Neue Datei `docs/ai/WORKING_BASELINE.md` als operativer Session-Startpunkt
-- Verweis in `docs/ai/AGENT_CONTEXT.md` auf Baseline ergänzt
-- Verweis in `docs/index.md` (Doku-Navigation) auf Baseline
-- Versionierungskonvention (Major.Minor) definiert
+**Solution:**
+- New file `docs/ai/WORKING_BASELINE.md` as operational session starting point
+- Reference in `docs/ai/AGENT_CONTEXT.md` to Baseline added
+- Reference in `docs/index.md` (document navigation) to Baseline
+- Versioning convention (Major.Minor) defined
 
-**Ergebnis:**
-- Konsistenter Einstieg für neue Sessions
-- Klare Hierarchie: WORKING_BASELINE → AGENT_CONTEXT → Detaildokumentation
+**Result:**
+- Consistent entry for new sessions
+- Clear hierarchy: WORKING_BASELINE → AGENT_CONTEXT → detailed documentation
 
 ---
 
-### 2. Dokumentations-Metadaten vereinheitlicht
+### 2. Documentation metadata unified
 
-**Was:** Alle zentralen KI-Dokumentationsdateien haben jetzt Footer mit:
-- Letzte Aktualisierung: 2026-03-09
-- Version: 2.1 (konsolidierter KI-Dokumentationskontext)
+**What:** All core AI documentation files now have footers with:
+- Last updated: 2026-03-09
+- Version: 2.1 (Consolidated AI Documentation Context)
 
-**Dateien:**
+**Files:**
 - `docs/index.md`
 - `docs/ai/WORKING_BASELINE.md`
 - `docs/ai/AGENT_CONTEXT.md`
@@ -37,215 +37,215 @@ Diese Datei dient als Einstiegspunkt nach einem Kontext-Reset.
 
 ---
 
-### 3. COMMIT_PLAN.md aktualisiert
+### 3. COMMIT_PLAN.md updated
 
-**Was:**
-- Status von Commit 20b auf "Abgeschlossen" gesetzt
-- Zusammenfassung der durchgeführten Arbeiten hinzugefügt
-- Status-Überblick am Anfang eingefügt (Commits 1-21 abgeschlossen)
-- Letzte Aktualisierung: 2026-03-09
+**What:**
+- Commit 20b status set to Complete
+- Added summary of work carried out
+- Status overview added at the beginning (commits 1-21 completed)
+- Last updated: 2026-03-09
 
 ---
 
-### 4. COMMIT_20b_IMPLEMENTATION_GUIDE.md aktualisiert
+### 4. COMMIT_20b_IMPLEMENTATION_GUIDE.md updated
 
-**Was:**
-- Status auf "Abgeschlossen" gesetzt
-- Implementierungs-Ergebnis zusammengefasst (Phasen 1-6 + Quality-Gates)
-- Nächste Schritte (Commit 21, 21a, 22) hinzugefügt
-- Kontext-Reset-Sektion mit Soft-Reset-Anleitung ergänzt
-- Letzte Aktualisierung: 2026-03-09
+**What:**
+- Status set to "Completed".
+- Implementation result summarized (phases 1-6 + quality gates)
+- Added next steps (commit 21, 21a, 22).
+- Context reset section added with soft reset instructions
+- Last updated: 2026-03-09
 
 ---
 
 ### 5. Commit 21 – Responsive Layout & Mobile-First
 
-**Was:**
-- Alpine.js via CDN integriert (Mobile-Menu-Toggle)
-- Responsive Header mit Hamburger-Menu
-- Responsive Footer (Stack vertikal Mobile → horizontal Desktop)
-- Analyze-Form: Grid-Layout (1 Column Mobile → 2 Columns Desktop)
-- Result-View: Responsive Score-Panel (5xl → 6xl → 7xl)
-- Touch-Optimierungen (WCAG 44px, Focus-States, iOS-Zoom-Prevention)
-- 6 Feature-Tests für Responsive-Layout
-- Alle Tests grün, PHPStan Level 9: 0 Errors
+**What:**
+- Alpine.js integrated via CDN (mobile menu toggle)
+- Responsive header with hamburger menu
+- Responsive footer (stack vertical mobile → horizontal desktop)
+- Analyze form: Grid layout (1 column mobile → 2 columns desktop)
+- Result View: Responsive Score Panel (5xl → 6xl → 7xl)
+- Touch optimizations (WCAG 44px, focus states, iOS zoom prevention)
+- 6 feature tests for responsive layout
+- All tests green, PHPStan Level 9: 0 Errors
 
 ---
 
-### 6. Legal-Views nachträglich erstellt & korrigiert
+### 6. Legal views subsequently created & corrected
 
-**Problem 1:** Legal-Blade-Views waren im Commit 20b nicht vorhanden
+**Issue 1:** Legal blade views were not present in commit 20b
 
-**Gelöst:**
-- `resources/views/legal/impressum.blade.php` erstellt
-- `resources/views/legal/datenschutz.blade.php` erstellt
-- `resources/views/legal/kontakt.blade.php` erstellt (mit responsive Formular)
-- `resources/views/legal/lizenzen.blade.php` erstellt (mit responsive Tabellen)
-- Alle Views mit Mobile-First Design + Dark-Mode Support
-- Controller (LegalController, ContactController) existierten bereits
-- Routes existierten bereits
+**Solved:**
+- `resources/views/legal/impressum.blade.php` created
+- `resources/views/legal/datenschutz.blade.php` created
+- `resources/views/legal/kontakt.blade.php` created (with responsive form)
+- `resources/views/legal/lizenzen.blade.php` created (with responsive tables)
+- All views with mobile-first design + dark mode support
+- Controllers (LegalController, ContactController) already existed
+- Routes already existed
 
-**Problem 2:** Escaped Quotes in Legal-Views (\" statt ")
+**Problem 2:** Escaped quotes in legal views (\" instead of ")
 
-**Ursache:** Views wurden über Terminal-Pipe erstellt, was Quotes escaped hat
+**Cause:** Views were created via terminal pipe, which escaped quotes
 
-**Gelöst:**
-- Alle 4 Legal-Views korrigiert (escaped \" → normale ")
-- Blade-Syntax jetzt sauber und korrekt
+**Solved:**
+- All 4 legal views corrected (escaped \" → normal ")
+- Blade syntax now clean and correct
 
-**Problem 3:** InvalidArgumentException "Cannot end a section without first starting one"
+**Issue 3:** InvalidArgumentException "Cannot end a section without first starting one"
 
-**Ursache:** `kontakt.blade.php` hatte doppeltes `@endsection` und überflüssiges `</div>`
+**Cause:** `kontakt.blade.php` had double `@endsection` and redundant `</div>`
 
-**Gelöst:**
-- Doppeltes `@endsection` entfernt
-- Überflüssiges `</div>` entfernt
-- Blade-Syntax jetzt korrekt
+**Solved:**
+- Duplicate `@endsection` removed
+- Removed unnecessary `</div>`
+- Blade syntax now correct
 
-**Verifikation:**
-- ✅ Alle Tests grün (182 passed)
+**Verification:**
+- ✅ All tests green (182 passed)
 - ✅ PHPStan Level 9: 0 Errors
-- ✅ Alle Legal-Routes funktionieren
-- ✅ Keine Blade-Syntax-Fehler mehr
+- ✅ All legal routes work
+- ✅ No more blade syntax errors
 
 ---
 
-### 7. Lizenzgenerator final umgesetzt & abgeschlossen ✅
+### 7. License generator finally implemented & completed ✅
 
-**Umgesetzt:**
-- `licenses:generate` Command implementiert (`GenerateLicenseDataCommand`)
-- Exportiert `php`, `node`, `generated_at` nach `storage/app/licenses.json`
-- Datenmodell erweitert: optionales Feld `homepage` pro Paket
-- `lizenzen.blade.php` auf Controller-Daten umgestellt (kein Dateizugriff in der View)
-- Paketname wird als klickbarer Link gerendert, wenn `homepage` vorhanden ist
-- Neue Feature-Tests: `GenerateLicenseDataCommandTest.php`
-- **Makefile-Target hinzugefügt:** `make licenses-generate` ✅
-- **Erstellt:** `storage/app/licenses.json` (78 PHP-Pakete, 203 Node-Pakete)
+**Implemented:**
+- `licenses:generate` Command implemented (`GenerateLicenseDataCommand`)
+- Exports `php`, `node`, `generated_at` to `storage/app/licenses.json`
+- Data model extended: optional field `homepage` per package
+- `lizenzen.blade.php` switched to controller data (no file access in the view)
+- Package name is rendered as a clickable link when `homepage` is present
+- New Feature Tests: `GenerateLicenseDataCommandTest.php`
+- **Added Makefile target:** `make licenses-generate` ✅
+- **Created:** `storage/app/licenses.json` (78 PHP packages, 203 Node packages)
 
-**Verifikation:**
+**Verification:**
 - ✅ Tests: 184 passed (1471 assertions)
 - ✅ PHPStan: 0 Errors
 - ✅ Pint: PASS
-- ✅ Route `/lizenzen` funktioniert und zeigt alle Pakete an
+- ✅ Route `/lizenzen` works and shows all packages
 
 ---
 
-### 8. Commit 21a: Dark-Mode Support abgeschlossen ✅
+### 8. Commit 21a: Dark mode support completed ✅
 
-**Umgesetzt:**
-- Tailwind `darkMode: 'class'` in tailwind.config.js aktiviert
-- DarkModeManager als globales `window.DarkModeManager` Objekt (Inline-Script)
-- System-Präferenz-Detection (`prefers-color-scheme: dark`)
-- LocalStorage-Persistierung für User-Präferenz
-- Toggle-Button im Header mit Sun/Moon Icons
-- Dark-Mode CSS für HTML, Header, Footer, Navigation
-- 10 Feature-Tests in `DarkModeTest.php`
+**Implemented:**
+- Tailwind `darkMode: 'class'` enabled in tailwind.config.js
+- DarkModeManager as global `window.DarkModeManager` object (inline script)
+- System preference detection (`prefers-color-scheme: dark`)
+- LocalStorage persistence for user preference
+- Toggle button in the header with sun/moon icons
+- Dark mode CSS for HTML, header, footer, navigation
+- 10 feature tests in `DarkModeTest.php`
 
-**Bugfix (2026-03-10):**
-- "DarkModeManager is not defined" Fehler behoben
-- Inline-Script im `<head>` statt separates JS-Modul
-- Initialisierung vor Page-Render (kein Flackern)
+**Bug fix (2026-03-10):**
+- “DarkModeManager is not defined” error fixed
+- Inline script in `<head>` instead of separate JS module
+- Initialization before page render (no flickering)
 
-**Verifikation:**
+**Verification:**
 - ✅ Tests: 194 passed (1499 assertions)
 - ✅ PHPStan: 0 Errors
 - ✅ Pint: PASS
-- ✅ Assets: Neu gebaut mit Dark-Mode Support
-- ✅ Dokumentation: `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` aktualisiert
-- ✅ Browser-Funktionalität: Dark-Mode Toggle funktioniert einwandfrei
+- ✅ Assets: Newly built with dark mode support
+- ✅ Documentation: `docs/history/COMMIT_21a_IMPLEMENTATION_GUIDE.md` updated
+- ✅ Browser functionality: Dark mode toggle works perfectly
 
 ---
 
-## 🎯 Aktueller Projekt-Stand
+## 🎯 Current project status
 
-### Abgeschlossene Commits
-- **Commit 1-21a:** Vollständig abgeschlossen
-- **Letzter Commit:** 21a (Dark-Mode Support)
-- **Hinweis:** Commit 19 wurde historisch übersprungen (Nummerierungslücke)
+### Completed commits
+- **Commit 1-21a:** Completely completed
+- **Last commit:** 21a (dark mode support)
+- **Note:** Commit 19 was historically skipped (numbering gap)
 
-### Quality-Metriken
+### Quality metrics
 - **Tests:** 194 passed (1499 assertions) ✅
 - **PHPStan:** Level 9, 0 Errors ✅
-- **Pint:** Code-Style konform ✅
+- **Pint:** Code style compliant ✅
 - **Coverage:** 98.2% ✅
 
-### Implementierte Features (Stand Commit 21a)
-- Docker-Setup + Laravel 12
-- KI-Integration (Gemini + Mock-Provider)
-- Analyse-Engine (Matching, Gap-Analysis, Scoring)
-- Cache-Management (Hash-basiert, DB)
-- Security (Input-Validation, Prompt-Injection-Schutz, OWASP)
-- Tags & Empfehlungen (Match-Tags, Gap-Tags, Recommendations mit Priority-Badges)
-- Legal-Seiten (Impressum, Datenschutz, Kontakt, Lizenzen - responsive + Dark-Mode)
-- **Responsive Layout** (Mobile-First, Alpine.js Mobile-Menu, Touch-Optimierungen WCAG 44px)
-- **Dark-Mode Support** (System-Präferenz-Detection, Toggle-Button, LocalStorage-Persistierung)
+### Implemented features (as of commit 21a)
+- Docker setup + Laravel 12
+- AI integration (Gemini + mock provider)
+- Analysis engine (matching, gap analysis, scoring)
+- Cache management (hash-based, DB)
+- Security (input validation, prompt injection protection, OWASP)
+- Tags & Recommendations (match tags, gap tags, recommendations with priority badges)
+- Legal pages (imprint, data protection, contact, licenses - responsive + dark mode)
+- **Responsive Layout** (Mobile-First, Alpine.js Mobile Menu, Touch Optimizations WCAG 44px)
+- **Dark mode support** (system preference detection, toggle button, local storage persistence)
 
-**Commit-Nummerierung:** Commit 19 wurde übersprungen (historische Entwicklung), Features wurden als Commit 17 implementiert.
+**Commit numbering:** Commit 19 was skipped (historical development), features were implemented as commit 17.
 
 ---
 
-## 📋 Nächste geplante Commits
+## 📋 Next scheduled commits
 
-### Commit 22: CV-Speicherung (Profile Context) — 🔄 In Planung
-- **Status:** Planung abgeschlossen (2026-03-10)
+### Commit 22: CV storage (Profile Context) — 🔄 In planning
+- **Status:** Planning completed (2026-03-10)
 - **Branch:** `feature/commit-22-profile-cv-storage`
-- **Detailplan:** `docs/history/PLANNING_COMMIT_22.md`
-- **Architektur-Entscheidungen:**
-  - Neuer Bounded Context `Profile`
-  - Token: URL-safe Base64, 32 Bytes (nicht erratbar)
-  - Verschlüsselung: Token als Secret (MVP-Kompromiss)
+- **Detailed plan:** `docs/history/PLANNING_COMMIT_22.md`
+- **Architecture Decisions:**
+  - New Bounded Context `Profile`
+  - Token: URL-safe Base64, 32 bytes (cannot be guessed)
+  - Encryption: Token as Secret (MVP compromise)
   - CQRS: `StoreResumeCommand` + `GetResumeByTokenQuery`
-  - Unbegrenzte Gültigkeit (kein TTL)
-- **Migration zu User-Accounts:** Detaillierte Planung verpflichtend (Phase 3)
-- **Geschätzter Aufwand:** ~6.5h
+  - Unlimited validity (no TTL)
+- **Migration to user accounts:** Detailed planning mandatory (Phase 3)
+- **Estimated effort:** ~6.5h
 
 ### Commit 23+: CI/CD & Deployment
 - GitHub Actions
-- Production-Deployment (IONOS)
+- Production deployment (IONOS)
 
 ---
 
-## 🔄 Soft-Reset-Protokoll (für neue Sessions)
+## 🔄 Soft reset protocol (for new sessions)
 
-**Bei Kontext-Reset:**
+**On context reset:**
 
-1. **Start:** Lies `docs/ai/WORKING_BASELINE.md`
-2. **Überblick:** Lies diese Datei (`SESSION_RESUME_2026-03-09.md`)
-3. **Details:** Lies `COMMIT_PLAN.md` für vollständigen Status
-4. **Architektur:** Lies `docs/ai/AGENT_CONTEXT.md` für Arbeitsregeln
+1. **Start:** Read `docs/ai/WORKING_BASELINE.md`
+2. **Overview:** Read this file (`SESSION_RESUME_2026-03-09.md`)
+3. **Details:** Read `COMMIT_PLAN.md` for full status
+4. **Architecture:** Read `docs/ai/AGENT_CONTEXT.md` for working rules
 
-**Wichtigste Regel:**
-Repository-Stand ist Source of Truth, ältere Chat-Details ignorieren.
-
----
-
-## 📚 Zentrale Dokumentation (Lesefolge)
-
-1. `WORKING_BASELINE.md` — Session-Startpunkt
-2. `SESSION_RESUME_2026-03-09.md` — Diese Datei (aktueller Stand)
-3. `AGENT_CONTEXT.md` — Arbeitsregeln (CQRS, SOLID, DDD, Quality-Gates)
-4. `PROJECT_OVERVIEW.md` — MVP-Scope, Datenstrukturen, Request-Flow
-5. `TECH_STACK.md` — Versionen, Make-Kommandos, Docker-Setup
-6. `../../COMMIT_PLAN.md` — Detaillierter Commit-by-Commit-Plan
-7. `../ARCHITECTURE.md` — Vollständige Architektur-Dokumentation
-8. `../CODING_GUIDELINES.md` — Best Practices, Patterns, Checklisten
+**Most important rule:**
+Repository status is source truth of, ignore older chat details.
 
 ---
 
-## 🎯 Action Items (wenn Kontext wiederhergestellt)
+## 📚 Central documentation (reading sequence)
 
-### Sofort verfügbar:
-- ✅ Alle Quality-Gates sind grün
-- ✅ Dokumentation ist konsistent
-- ✅ Commit 20b ist abgeschlossen
-
-### Bereit für:
-- 🔄 Commit 21a (Dark-Mode Support) kann gestartet werden
-- 🔄 Weitere Architektur-Diskussionen (z. B. Event Sourcing, Hexagonal Architecture)
-- 🔄 Production-Deployment-Planung
+1. `WORKING_BASELINE.md` — Session start point
+2. `SESSION_RESUME_2026-03-09.md` — This file (current status)
+3. `AGENT_CONTEXT.md` — work rules (CQRS, SOLID, DDD, quality gates)
+4. `PROJECT_OVERVIEW.md` — MVP scope, data structures, request flow
+5. `TECH_STACK.md` — versions, make commands, Docker setup
+6. `../../COMMIT_PLAN.md` — Detailed commit-by-commit plan
+7. `../ARCHITECTURE.md` — Complete architecture documentation
+8. `../CODING_GUIDELINES.md` — Best practices, patterns, checklists
 
 ---
 
-**Erstellt:** 2026-03-09  
-**Zweck:** Soft-Reset-Einstieg nach Kontextverlust  
-**Gültigkeit:** Bis zum nächsten Major-Meilenstein (z. B. Commit 25 oder MVP-Release)
+## 🎯 Action Items (when context restored)
+
+### Available immediately:
+- ✅ All quality gates are green
+- ✅ Documentation is consistent
+- ✅ Commit 20b is completed
+
+### Ready for:
+- 🔄 Commit 21a (Dark Mode Support) can be started
+- 🔄 More architecture discussions (e.g. Event Sourcing, Hexagonal Architecture)
+- 🔄 Production deployment planning
+
+---
+
+**Created:** 2026-03-09
+**Purpose:** Soft reset entry after loss of context
+**Validity:** Until the next major milestone (e.g. commit 25 or MVP release)

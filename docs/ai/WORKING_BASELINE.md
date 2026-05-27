@@ -1,87 +1,88 @@
-# Working Baseline
+# Working baseline
 
-Diese Datei ist der operative Startpunkt fuer KI-gestuetzte Sessions.
-Sie dient als "Soft-Reset" und hat Vorrang fuer den Tageskontext.
+This file is the operational starting point for AI-powered sessions.
+It serves as a "soft reset" and has priority for the daily context.
 
-## Geltungsbereich
+## Scope
 
-- Gilt fuer die aktuelle Implementierungsphase (MVP, aktueller Branch).
-- Repository-Stand ist die Source of Truth.
-- Bei Konflikten gilt: System/Tooling-Regeln > diese Datei > aeltere Chat-Kontexte.
+- Applies to the current implementation phase (MVP, current branch).
+- Repository status is the source of truth.
+- In case of conflicts: system/tooling rules > this file > older chat contexts.
 
-## Aktuelle Arbeitsregeln
+## Current work rules
 
-1. Architektur
-   - DDD mit Bounded Context `Analysis`.
-   - CQRS phasenweise und strikt pro Use-Case.
-   - SOLID als Pflicht-Gate bei Implementierungen und Reviews.
-   - Program to an interface (Interface-based Design, Abstraktion statt Konkretisierung).
+1. Architecture
+   - DDD with Bounded Context `Analysis`.
+   - CQRS in phases and strictly per use case.
+   - SOLID as a mandatory gate for implementations and reviews.
+   - Program to an interface (interface-based design, abstraction instead of concretization).
 
-2. Controller und Use-Cases
-   - Single-Action-Controller bevorzugen (`__invoke()`), ausser explizit begruendet.
-   - Business-Logik in Actions/UseCases/Services, nicht im Controller.
-   - Kleine, testbare Methoden mit klaren Verantwortlichkeiten.
+2. Controllers and use cases
+   - Prefer single-action controllers (`__invoke()`), unless explicitly justified.
+   - Business logic in Actions/UseCases/Services, not in the controller.
+   - Small, testable methods with clear responsibilities.
 
-3. Datenmodellierung
-   - DTO-first fuer Input/Output zwischen Schichten.
-   - DTOs nach Moeglichkeit immutable (`readonly`).
-   - Typisierung vollstaendig (PHPStan Level 9 kompatibel).
+3. Data modeling
+   - DTO-first for input/output between layers.
+   - DTOs immutable if possible (`readonly`).
+   - Typing complete (PHPStan Level 9 compatible).
 
-4. Qualitaets-Gates
-   - Tests erforderlich (Feature + Unit, Pest).
-   - `phpstan` ohne Fehler.
-   - `pint` auf geaenderten Dateien.
-   - Coverage-Mindestwert gemaess Projektkonfiguration (aktuell 95%).
+4. Quality gates
+   - Tests required (Feature + Unit, Pest).
+   - `phpstan` without errors.
+   - `pint` on changed files.
+   - Coverage Minimum value according to the project configuration (currently 99%).
 
-5. AI und Fehlerrobustheit
-   - Provider austauschbar (aktuell Mock, Gemini, OpenAI, Anthropic ueber Interface-Binding).
-   - API-Timeouts, leere/ungueltige Antworten und Parsing-Fehler robust behandeln.
-   - Cache-Verhalten reproduzierbar und testbar halten.
+5. AI and error robustness
+   - Providers interchangeable (currently Mock, Gemini, OpenAI, Anthropic via interface binding).
+   - Robustly handle API timeouts, empty/invalid responses, and parsing errors.
+   - Keep cache behavior reproducible and testable.
 
-## Session-Reset-Protokoll
+## Session reset protocol
 
-Bei stark gewachsenem Chatkontext diese Datei als Reset-Basis verwenden:
+If the chat context has grown significantly, use this file as a reset basis:
 
-- Nur aktuellen Repo-Stand + diese Baseline als verbindlich betrachten.
-- Aeltere Chat-Details ignorieren, ausser explizit referenziert.
-- Bei Unklarheiten kurz pausieren und Rueckfrage stellen.
+- Only consider the current repo status + this baseline as binding.
+- Ignore older chat details unless explicitly referenced.
+- If you are unclear, pause briefly and ask questions.
 
-**Tagesaktuelle Session-Zusammenfassung:**
-Siehe `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` für den letzten Stand (falls vorhanden).
+**Current session summary**
 
-**Aktueller Arbeitsmodus:** Agent-Mode (branch-agnostisch)  
-**Fokus:** Commit 35 (Auth/Claim UX-Polish) mit `result.show`, explizitem Session-Key `analysis_result_view_data` und claim-spezifischem Redirect-/Feedback-Polish — Details in `docs/history/PLANNING_COMMIT_35.md`.
+See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status, if available.
 
-**Empfohlene Reset-Reihenfolge:**
-1. Diese Datei (`WORKING_BASELINE.md`)
-2. Tagesaktuelle Session-Resume (z. B. `SESSION_RESUME_2026-03-18.md`)
-3. `COMMIT_PLAN.md` (Status-Überblick)
-4. `AGENT_CONTEXT.md` (Details zu Arbeitsregeln)
+**Current working mode:** Agent mode (branch-agnostic)
+**Focus:** Commit 37 (Deployment-Basis & Infrastructure Härtung) — Status-Alignment in Commit 36 abgeschlossen.
 
-## Pflege
+**Recommended reset order:**
+1. This file (`WORKING_BASELINE.md`)
+2. Current session resume (e.g. `SESSION_RESUME_2026-03-18.md`)
+3. `COMMIT_PLAN.md` (Status overview)
+4. `AGENT_CONTEXT.md` (Work Rules Details)
 
-- Diese Datei bei Architektur- oder Prozessentscheidungen aktualisieren.
-- Aenderungen knapp dokumentieren (z. B. im Commit-Plan / Changelog).
+## Care
 
-### Versionierung
+- Update this file when making architectural or process decisions.
+- Document changes briefly (e.g. in the commit plan / changelog).
 
-**Schema:** `Major.Minor`
+### Versioning
 
-- **Major** (z. B. 1.0 → 2.0): Grundlegende Architektur- oder Prozessänderungen
-- **Minor** (z. B. 1.0 → 1.1): Ergänzungen, Präzisierungen, redaktionelle Updates
+**Scheme:** `Major.Minor`
 
-**Wann Minor erhöhen:**
-- Neue Arbeitsregeln oder Quality-Gates hinzugefügt
-- Bestehende Regeln präzisiert oder erweitert
-- Strukturelle Anpassungen (z. B. neue Use-Cases, neue Bounded Contexts)
-- Redaktionelle Überarbeitungen mit inhaltlicher Relevanz
+- **Major** (e.g. 1.0 → 2.0): Fundamental architectural or process changes
+- **Minor** (e.g. 1.0 → 1.1): Additions, clarifications, editorial updates
 
-**Wann Major erhöhen:**
-- Grundlegender Wechsel der Architektur-Prinzipien (z. B. CQRS → Event Sourcing)
-- Neue zentrale Patterns (z. B. Einführung von Hexagonal Architecture)
-- Breaking Changes in der Entwicklungsweise
+**When to increase minor:**
+- Added new work rules or quality gates
+- Existing rules clarified or expanded
+- Structural adjustments (e.g. new use cases, new bounded contexts)
+- Editorial revisions with relevance to the content
+
+**When to raise major:**
+- Fundamental change in architectural principles (e.g. CQRS → Event Sourcing)
+- New central patterns (e.g. introduction of Hexagonal Architecture)
+- Breaking changes in the way of development
 
 ---
 
-**Letzte Aktualisierung**: 2026-05-07  
-**Version**: 1.6 (Commit-35-Fokus mit Auth/Claim UX-Polish)
+**Last updated**: 2026-05-27
+**Version**: 1.8 (Commit 36 focus with roadmap planning and documentation sync)

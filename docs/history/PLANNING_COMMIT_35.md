@@ -1,87 +1,87 @@
-# Detailplanung Commit 35 - Auth/Claim UX-Polish
+yes, # Detailed Planning Commit 35 - Auth/Claim UX Polish
 
-**Branch:** `feature/commit-35-auth-claim-ux-polish`  
-**Status:** In Arbeit  
-**Erstellt:** 2026-05-07
-
----
-
-## Ziel
-
-Den bestehenden Auth-/Claim-Flow aus Nutzersicht konsistent machen, damit ein bereits erzeugtes
-Analyse-Ergebnis nach Login/Registrierung sauber wieder angezeigt wird und der Claim-Zustand klar
-kommuniziert ist - ohne neue Domain-Features einzufuehren.
+**Branch:** `feature/commit-35-auth-claim-ux-polish`
+**Status:** Completed
+**Created:** 2026-05-07
+**Completed:** 2026-05-11
 
 ---
 
-## Entscheidungen (Planungs-Session 2026-05-07)
+##Goal
 
-| # | Frage | Entscheidung |
+Make the existing auth/claim flow consistent from the user's perspective, thus creating an already created one
+Analysis result is displayed cleanly again after login/registration and the claim status is clear
+communicated - without introducing new domain features.
+
+---
+
+## Decisions (Planning Session 2026-05-07)
+
+| # | Question | decision |
 |---|-------|--------------|
-| 1 | Redirect ohne Ergebnisdaten | Claim-spezifischer Redirect mit Hinweis auf erneute Analyse |
-| 2 | Session-Verhalten Ergebnisdaten | Back-Button-freundlich, Daten bleiben in der Session erhalten |
-| 3 | Scope-Grenze | Commit strikt auf UX-/Flow-Polish begrenzt |
-| 4 | Session-Key | Explizit: `analysis_result_view_data` |
+| 1 | Redirect without result data | Claim-specific redirect with reference to re-analysis |
+| 2 | Session behavior result data | Back button friendly, data is retained in the session |
+| 3 | Scope limit | Commit strictly limited to UX/flow polish |
+| 4 | Session key | Explicit: `analysis_result_view_data` |
 
 ---
 
-## Scope
+##Scope
 
-### Schritt 1 - Ergebnis-Route fuer Session-Restore
+### Step 1 - Result route for session restore
 
-- `GET /result` mit Route-Name `result.show`
-- Single-Action-Controller zum Rendern von `result.blade.php` aus Session-Daten
-- Redirect auf `analyze`, wenn `analysis_result_view_data` fehlt
+- `GET /result` with route name `result.show`
+- Single-action controller for rendering `result.blade.php` from session data
+- Redirect to `analyze` if `analysis_result_view_data` is missing
 
-### Schritt 2 - Session-Persistenz im Analyse-Flow
+### Step 2 - Session persistence in the analysis flow
 
-- In `AnalyzeController` die View-Daten unter `analysis_result_view_data` persistieren
-- Bei neuer Analyse bestehende Daten bewusst ueberschreiben
-- Keine aggressive Session-Bereinigung (Back-Button-freundlich)
+- In `AnalyzeController`, persist the view data under `analysis_result_view_data`
+- When carrying out a new analysis, consciously overwrite existing data
+- No aggressive session cleanup (back button friendly)
 
-### Schritt 3 - Auth-Redirects auf Ergebnisfluss abstimmen
+### Step 3 - Align auth redirects with result flow
 
-- Login/Register-Redirect mit `resume_token` in Session auf `result.show`
-- Ohne Token weiterhin Standardziel `analyze`
-- Bestehendes `intended`-Verhalten bleibt erhalten
+- Login/Register redirect with `resume_token` in session on `result.show`
+- Default destination `analyze` continues without token
+- Existing `intended` behavior is retained
 
-### Schritt 4 - Claim-Feedback und Microcopy schaerfen
+### Step 4 - Sharpen claim feedback and microcopy
 
-- Claim-spezifische Info bei fehlendem Ergebniszustand
-- Klarere CTA-Texte in `result.blade.php` sowie kontextbezogene Hinweise in Login/Register
-- Erfolgsfeedback fuer Auto-Claim sichtbar und konsistent
+- Claim-specific information if the result status is missing
+- Clearer CTA texts in `result.blade.php` as well as contextual notes in Login/Register
+- Success feedback for Auto-Claim visible and consistent
 
-### Schritt 5 - Tests und Quality-Gates
+### Step 5 - Tests and quality gates
 
-- Feature-Tests fuer `result.show` (mit/ohne Session-Daten)
-- Feature-Tests fuer Auth-Redirect-Verhalten mit Session-Token
-- Relevante Listener-/Result-Tests fuer Claim-Feedback erweitern
-
----
-
-## Nicht-Scope in Commit 35
-
-- Keine neue Claim-Domainlogik
-- Kein Dashboard-Ausbau, keine neuen Produktfeatures
-- Keine Deployment-Neueinordnung
-- Kein Provider-/AI-Layer-Refactoring
+- Feature tests for `result.show` (with/without session data)
+- Feature testing for auth redirect behavior with session tokens
+- Expand relevant listener/result tests for claim feedback
 
 ---
 
-## Erfolgskriterien
+## Non scope in commit 35
 
-- Ergebnis bleibt nach Login/Registrierung fuer den Nutzer nachvollziehbar verfuegbar
-- Fehlende Ergebnisdaten fuehren claim-spezifisch und klar auf `analyze`
-- Session-Verhalten ist back-button-freundlich und regressionsfrei
-- Tests, PHPStan und Pint bleiben gruen
+- No new claim domain logic
+- No dashboard expansion, no new product features
+- No deployment reordering
+- No provider/AI layer refactoring
 
 ---
 
-## Verweise
+## Success criteria
 
-- Aktiver Plan: `../../COMMIT_PLAN.md`
+- The result remains available to the user in a comprehensible manner after login/registration
+- Missing result data leads to claim-specific and clear `analyze`
+- Session behavior is back-button friendly and regression-free
+- Tests, PHPStan and Pint remain green
+
+---
+
+## References
+
+- Active plan: `../../COMMIT_PLAN.md`
 - Working Baseline: `../ai/WORKING_BASELINE.md`
-- Historie-Index: `../COMMIT_HISTORY_INDEX.md`
-- Vorheriger Detailplan: `PLANNING_COMMIT_34.md`
+- History index: `../COMMIT_HISTORY_INDEX.md`
+- Previous detailed plan: `PLANNING_COMMIT_34.md`
 - Roadmap: `../ROADMAP.md`
-

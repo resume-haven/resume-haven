@@ -1,167 +1,164 @@
-# Commit 27 - Acceptance-Tests Kernflows
+# Commit 27 - Acceptance testing core flows
 
-**Branch:** `feature/commit-27-acceptance-core-flows`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-04-13
+**Branch:** `feature/commit-27-acceptance-core-flows`
+**Status:** Completed
+**Created:** 2026-04-13
 
-### Fortschritt (2026-04-13)
-- [x] Slice 0: Ist-Stand/Lueckenanalyse abgeschlossen
-- [x] Slice 1: Analyse-Flow + Validation-Edge-Case in Acceptance abgesichert
-- [x] Slice 2: Kompetenzlebenslauf-Flow und Delta-Session-Fallback abgesichert
-- [x] Slice 3: Profile-Flow inkl. Token-Edge-Case abgesichert
-- [x] Slice 4: CI-/Command-Feinschliff umgesetzt (Composer/Makefile/CI-Job)
-- [x] Slice 5: Quality-Gates validiert (Acceptance + phpstan + pint)
-
----
-
-## Ziel
-
-Die Kern-Userflows des MVP werden ueber eine dedizierte Acceptance-Suite stabil abgesichert.
-
-Kernfragen fuer Commit 27:
-
-- Welche End-to-End-Flows sind release-kritisch und muessen als Regression-Guard vorhanden sein?
-- Welche Edge-Cases muessen zwingend in der Acceptance-Suite abgedeckt sein?
-- Wie halten wir die Suite in Pest schnell, deterministisch und CI-stabil?
+### Progress (2026-04-13)
+- [x] Slice 0: Current status/gap analysis completed
+- [x] Slice 1: Analysis flow + validation edge case secured in acceptance
+- [x] Slice 2: Skills resume flow and delta session fallback secured
+- [x] Slice 3: Profile flow including token edge case secured
+- [x] Slice 4: CI/Command fine-tuning implemented (Composer/Makefile/CI job)
+- [x] Slice 5: Quality gates validated (Acceptance + phpstan + pint)
 
 ---
 
-## Scope
+##Goal
 
-### Enthalten
-- Dedizierte Acceptance-Suite fuer Kernflows im Verzeichnis `src/tests/Acceptance/`
-- Kernflows:
-  - Analyse-Flow (Job + CV -> Ergebnis)
-  - Kompetenzlebenslauf-Flow (Erzeugen, Anzeigen, Wiederverwenden)
-  - Delta-/Vergleichs-Flow (Baseline/Fallback sichtbar)
-  - Profile-Flow ohne Auth (Speichern/Laden/Feedback)
-- Edge-Case-Abdeckung fuer diese Flows:
-  - Validierungsfehler (leere/ungueltige Eingaben)
-  - Fehlende Session-/Profildaten
-  - Fehlerhafte oder ungueltige Tokens/IDs
-  - Defensives Verhalten bei Analyzer-Fehlern/Timeout-Resultaten
-- Pest-konforme Testdatenbank-Strategie inkl. Dokumentation
-- Integration in Makefile/Composer/CI und Projekt-Dokumentation
+The core user flows of the MVP are securely secured via a dedicated acceptance suite.
 
-### Nicht enthalten
-- Neue Produktfeatures ausserhalb bestehender Kernflows
-- Auth/AuthZ-Flow
-- Externe Provider-Integration in CI
-- UI-Redesign ohne direkten Testbezug
+Key questions for commit 27:
+
+- Which end-to-end flows are release-critical and must be present as regression guard?
+- Which edge cases must be covered in the acceptance suite?
+- How do we keep the suite in Pest fast, deterministic and CI stable?
 
 ---
 
-## Testdatenbank-Strategie (Pest/Laravel)
+##Scope
 
-### Standard (bevorzugt)
-- `RefreshDatabase` fuer isolierte Tests (pro Test sauberer Zustand)
-- `sqlite` in-memory als schneller Default in der Testumgebung
-- Migrationen laufen kontrolliert ueber Laravel-Testbootstrap
+###Contain
+- Dedicated acceptance suite for core flows in the `src/tests/Acceptance/` directory
+- Core flows:
+  - Analysis flow (Job + CV -> Result)
+  - Skills Resume Flow (Create, Display, Reuse)
+  - Delta/comparison flow (baseline/fallback visible)
+  - Profile flow without auth (save/load/feedback)
+- Edge case coverage for these flows:
+  - Validation errors (empty/invalid entries)
+  - Missing session/profile data
+  - Incorrect or invalid tokens/IDs
+  - Defensive behavior in case of analyzer errors/timeout results
+- Pest-compliant test database strategy including documentation
+- Integration into Makefile/Composer/CI and project documentation
 
-### Fallback/Option
-- Separate Testing-DB nur dann, wenn in-memory fuer einzelne Szenarien nicht ausreicht
-- Umschalten transparent ueber `.env.testing` und CI-Variablen
-
-### Guardrails
-- Keine geteilten Seiteneffekte zwischen Tests
-- Deterministische Daten ueber Factories/Seeder/Fixtures
-- Keine Abhaengigkeit von externer AI-Kommunikation in CI (`AI_PROVIDER=mock`)
-
----
-
-## Technische Leitplanken
-
-- DDD/CQRS/SOLID unveraendert einhalten
-- Single-Action-Controller und Action/UseCase-Grenzen respektieren
-- Keine fachliche Logik in Acceptance-Tests duplizieren
-- Assertions auf sichtbares Verhalten und Vertragsgrenzen fokussieren
-- Testnamen im Given-When-Then-Stil fuer Lesbarkeit
+### Not included
+- New product features outside of existing core flows
+- Auth/AuthZ flow
+- External provider integration into CI
+- UI redesign without direct test reference
 
 ---
 
-## Geplante Implementierungs-Slices
+## Test database strategy (Pest/Laravel)
 
-### Slice 0 - Ist-Stand und Lueckenanalyse
-- Bestehende Acceptance-Tests inventarisieren
-- Kernflow-Matrix (Flow x Szenario) erstellen
-- Fehlende Edge-Cases als konkrete Testfaelle aufnehmen
+### Default (preferred)
+- `RefreshDatabase` for isolated tests (clean condition per test)
+- `sqlite` in-memory as a fast default in the test environment
+- Migrations are controlled via Laravel test bootstrap
 
-### Slice 1 - Analyse- und Ergebnisflow
-- Happy Path fuer Analyse-Ende-zu-Ende absichern
-- Edge-Cases: Validation, unvollstaendige Payload, Analyzer-Fehlerausgabe
-- Ergebnisdarstellung auf stabile Schluesselinhalte pruefen
+### Fallback/option
+- Separate testing DB only if in-memory is not sufficient for individual scenarios
+- Switching transparently via `.env.testing` and CI variables
 
-### Slice 2 - Kompetenzlebenslauf- und Delta-Flow
-- Erzeugen/Anzeigen/Wiederverwenden von Kompetenzdaten absichern
-- Delta-Fallback (ohne persistente Baseline) als Akzeptanzfall testen
-- Edge-Cases: fehlende Baseline, inkonsistente Vergleichsdaten
+###Guardrails
+- No shared side effects between tests
+- Deterministic data about factories/seeders/fixtures
+- No dependency on external AI communication in CI (`AI_PROVIDER=mock`)
 
-### Slice 3 - Profile-Flow ohne Auth
-- Speichern/Laden/Feedback als Kernpfad absichern
-- Edge-Cases: fehlende Sessiondaten, ungueltige Referenzen, defensive Redirects
-- Retention-Hinweise und erwartetes UX-Feedback pruefen
+---
 
-### Slice 4 - Stabilisierung und CI-Integration
-- Wiederverwendbare Test-Helper konsolidieren
-- Suite in Make-/Composer-Commands und CI einhaengen
-- Laufzeit/Stabilitaet optimieren (Reihenfolge, Isolation, Datenaufbau)
+## Technical guard rails
+
+- Adhere to DDD/CQRS/SOLID unchanged
+- Respect single-action controllers and action/use case boundaries
+- Do not duplicate technical logic in acceptance tests
+- Focus assertions on visible behavior and contract boundaries
+- Given-When-Then style test names for readability
+
+---
+
+## Planned implementation slices
+
+### Slice 0 - Current status and gap analysis
+- Inventory existing acceptance tests
+- Create core flow matrix (flow x scenario).
+- Record missing edge cases as concrete test cases
+
+### Slice 1 - Analysis and results flow
+- Secure happy path for analysis end-to-end
+- Edge cases: validation, incomplete payload, analyzer error output
+- Check result presentation for stable key content
+
+### Slice 2 - Skills CV and Delta Flow
+- Secure creation/display/reuse of competency data
+- Test delta fallback (without persistent baseline) as an acceptance case
+- Edge cases: missing baseline, inconsistent comparison data
+
+### Slice 3 - Profile flow without auth
+- Secure save/load/feedback as core path
+- Edge cases: missing session data, invalid references, defensive redirects
+- Review retention cues and expected UX feedback
+
+### Slice 4 - Stabilization and CI integration
+- Consolidate reusable test helpers
+- Include suite in make/composer commands and CI
+- Optimize runtime/stability (sequence, isolation, data structure)
 
 ### Slice 5 - Quality Gates
-- Acceptance-Suite vollstaendig gruener Lauf
-- `make test` bzw. zielgerichtete Acceptance-Targets validieren
-- `make phpstan` und `vendor/bin/pint --dirty --format agent` ohne Regression
+- Acceptance suite completely green run
+- Validate `make test` or targeted acceptance targets
+- `make phpstan` and `vendor/bin/pint --dirty --format agent` without regression
 
 ---
 
-## Erfolgskriterien (DoD)
+## Success Criteria (DoD)
 
-1. Alle definierten Kernflows sind durch Acceptance-Tests abgedeckt.
-2. Definierte Edge-Cases sind mit expliziten Testfaellen abgesichert.
-3. Testdatenbank-Strategie ist dokumentiert und reproduzierbar konfigurierbar.
-4. Acceptance-Suite laeuft stabil lokal und in CI mit `AI_PROVIDER=mock`.
-5. Tests, PHPStan und Pint bleiben gruen.
+1. All defined core flows are covered by acceptance tests.
+2. Defined edge cases are secured with explicit test cases.
+3. Test database strategy is documented and reproducibly configurable.
+4. Acceptance Suite runs stably locally and in CI with `AI_PROVIDER=mock`.
+5. Tests, PHPStan and Pint remain green.
 
 ---
 
-## Risiken & Gegenmassnahmen
+## Risks & countermeasures
 
-- **Risiko:** Flaky Tests durch geteilten Zustand oder nicht-deterministische Daten.  
-  **Massnahme:** `RefreshDatabase`, klare Fixtures, keine externen Calls.
+- **Risk:** Flaky testing through shared state or non-deterministic data.
+  **Action:** `RefreshDatabase`, clear fixtures, no external calls.
 
-- **Risiko:** Zu enge Assertions auf Markup-Details erzeugen fragile Tests.  
-  **Massnahme:** Verhalten und relevante UI-Texte statt CSS/HTML-Details pruefen.
+- **Risk:** Tight assertions on markup details produce fragile tests.
+  **Action:** Check behavior and relevant UI texts instead of CSS/HTML details.
 
-- **Risiko:** Acceptance-Suite wird zu langsam.  
-  **Massnahme:** in-memory DB als Standard, redundante Setup-Schritte reduzieren.
+- **Risk:** Acceptance Suite becomes too slow.
+  **Action:** in-memory DB as standard, reduce redundant setup steps.
 
-- **Risiko:** Edge-Cases werden uneinheitlich abgedeckt.  
-  **Massnahme:** zentrale Szenario-Matrix und Review gegen DoD.
+- **Risk:** Edge cases are covered inconsistently.
+  **Measure:** central scenario matrix and review against DoD.
 
 ---
 
 ## Definition of Ready
 
-- Kernflow-Matrix ist abgestimmt.
-- Bestehende Acceptance-Suite ist analysiert.
-- Testdatenbank-Strategie fuer lokal/CI ist festgelegt.
-- No-Egress-Guardrails fuer AI-Pfade sind klar dokumentiert.
+- Core flow matrix is ​​aligned.
+- Existing acceptance suite has been analyzed.
+- Test database strategy for local/CI is defined.
+- No-egress guardrails for AI paths are clearly documented.
 
 ## Definition of Done
 
-- Alle geplanten Slices sind umgesetzt.
-- Kern- und Edge-Case-Szenarien sind gruen.
-- CI fuehrt die Acceptance-Suite reproduzierbar aus.
-- Doku und Verweise in `COMMIT_PLAN.md` sind aktualisiert.
+- All planned slices have been implemented.
+- Core and edge case scenarios are green.
+- CI executes the acceptance suite reproducibly.
+- Documentation and references in `COMMIT_PLAN.md` are updated.
 
 ---
 
-## Verweise
+## References
 
-- Aktivplan: `COMMIT_PLAN.md`
-- Vorheriger Detailplan: `docs/history/PLANNING_COMMIT_26.md`
-- Historie: `docs/history/COMMIT_HISTORY_2026.md`
+- Activity plan: `COMMIT_PLAN.md`
+- Previous detailed plan: `docs/history/PLANNING_COMMIT_26.md`
+- History: `docs/history/COMMIT_HISTORY_2026.md`
 - Roadmap: `docs/ROADMAP.md`
-- Agent-Kontext: `docs/ai/AGENT_CONTEXT.md`
-
-
-
+- Agent context: `docs/ai/AGENT_CONTEXT.md`

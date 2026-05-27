@@ -1,333 +1,333 @@
 # 🚀 Local Development Setup
 
-Anleitung für lokale Entwicklung mit Docker.
+Guide to local development with Docker.
 
 ---
 
-## 📦 Voraussetzungen
+## 📦 Requirements
 
 - Docker & Docker Compose
-- WSL2 (Windows) oder direkt Linux/Mac
-- Make (für `make` Kommandos)
+- WSL2 (Windows) or directly Linux/Mac
+- Make (for `make` commands)
 - Git
 
 ---
 
-## 🏗️ Container starten
+## 🏗️ Start containers
 
 ```bash
 docker compose up -d
-# oder mit Make:
+# or with Make:
 make docker-up
 ```
 
-Das startet:
+This starts:
 - **PHP-FPM** (Port 9000)
 - **Nginx** (Port 8080)
-- **Node** (für Assets)
-- **Mailpit** (Test-Mailbox, Port 8025)
+- **Node** (for assets)
+- **Mailpit** (test mailbox, port 8025)
 
-Zugang: **http://localhost:8080**
+Access: **http://localhost:8080**
 
 ---
 
-## 🔨 Häufige Kommandos
+## 🔨 Common commands
 
 ### **Setup & Installation**
 
 ```bash
-make setup          # Projekt initialisieren (Composer, NPM, Migrations)
-make docker-up      # Container starten
-docker compose logs # Logs anzeigen
+make setup          # Initialize project (Composer, NPM, Migrations)
+make docker-up      # Start containers
+docker compose logs # Show logs
 ```
 
 ### **Tests**
 
 ```bash
-make test                   # Alle Tests (Pest)
-make test-unit              # Unit-Tests nur
-make test-feature           # Feature-Tests nur
-make test-acceptance        # Acceptance-Tests nur (Kernflows)
-make test-acceptance-gate   # Pint + PHPStan + Acceptance-Tests
-make test-security          # OWASP-orientierte Security-Tests
-make test-security-strict   # Erweiterte Security-Tests (stop-on-failure)
-make test-security-gate     # Security-Tests + PHPStan + Pint-Analyse
-make test-coverage          # Tests mit Coverage (benötigt Xdebug, min 95%)
-make test-coverage-report   # Coverage-Dateien (clover+xml/html)
-make coverage-open          # Öffnet HTML-Coverage-Report im Browser
-make coverage-clean         # Löscht alte Coverage-Reports
+make test                   # All tests (Pest)
+make test-unit              # Unit tests only
+make test-feature           # Feature tests only
+make test-acceptance        # Acceptance tests only (core flows)
+make test-acceptance-gate   # Pint + PHPStan + Acceptance tests
+make test-security          # OWASP-oriented security tests
+make test-security-strict   # Extended security tests (stop-on-failure)
+make test-security-gate     # Security tests + PHPStan + Pint analysis
+make test-coverage          # Tests with coverage (requires Xdebug, min 99%)
+make test-coverage-report   # Coverage files (clover+xml/html)
+make coverage-open          # Opens HTML coverage report in browser
+make coverage-clean         # Deletes old coverage reports
 ```
 
-**Code Coverage Anforderungen:**
-- **Minimum:** 95% Total Coverage
+**Code Coverage Requirements:**
+- **Minimum:** 99% total coverage
 - **GeminiAiAnalyzer.php:** ≥80%
-- **Aktueller Stand:** 98.2% Total ✅
+- **Current status:** 98.2% Total ✅
 
-### **Code-Qualität**
+### **Code Quality**
 
 ```bash
-make pint-fix       # Code automatisch formatieren
-make pint-analyse   # Nur Analyse (kein Fix)
-make phpstan        # Statische Analyse
+make pint-fix       # Format code automatically
+make pint-analyse   # Analysis only (no fix)
+make phpstan        # Static analysis
 ```
 
-### **Shells & Container**
+### **Shells & Containers**
 
 ```bash
-make php-shell      # Bash im PHP-Container
-make node-shell     # Shell im Node-Container
-make nginx-shell    # Shell im Nginx-Container
+make php-shell      # Bash in PHP container
+make node-shell     # Shell in Node container
+make nginx-shell    # Shell in Nginx container
 ```
 
-### **Datenbank**
+### **Database**
 
 ```bash
-make db-migrate     # Migrationen ausführen
-make db-seed        # Seeds laden
-make db-migrate-refresh  # Reset + Re-Migrate + Seed
+make db-migrate     # Run migrations
+make db-seed        # Load seeds
+make db-migrate-refresh  # Reset + re-migrate + seed
 ```
 
 ### **Cache & Services**
 
 ```bash
-make php-cache-clear    # Laravel-Cache leeren
-make docker-logs        # Docker-Logs folgen
-make docker-restart     # Container neu starten (schnell)
-make docker-rebuild     # Neuer Build (nach Docker-Änderungen)
+make php-cache-clear    # Clear Laravel cache
+make docker-logs        # Follow Docker logs
+make docker-restart     # Restart containers (fast)
+make docker-rebuild     # New build (after Docker changes)
 ```
 
 ---
 
-## 🐛 Debugging mit Xdebug
+## 🐛 Debugging with Xdebug
 
-Siehe **[Debugging Guide](./DEBUGGING.md)** für vollständige Anleitung.
+See **[Debugging Guide](./DEBUGGING.md)** for complete instructions.
 
 **Quick Start:**
 ```bash
-make debug-on       # Xdebug aktivieren (debug + coverage)
-make debug-status   # Status prüfen
-make php-shell      # Shell (XDEBUG_CONFIG ist bereits gesetzt)
+make debug-on       # Enable Xdebug (debug + coverage)
+make debug-status   # Check status
+make php-shell      # Shell (XDEBUG_CONFIG is already set)
 ```
 
-**Coverage-Reports:**
+**Coverage reports:**
 ```bash
-make debug-on               # Xdebug aktivieren
-make test-coverage          # Coverage-Check (min 95%)
-make test-coverage-report   # Coverage-Dateien unter src/coverage-report/
-make coverage-open          # HTML-Report im Browser öffnen
-make coverage-clean         # Alte Reports löschen
+make debug-on               # Enable Xdebug
+make test-coverage          # Coverage check (min 99%)
+make test-coverage-report   # Coverage files under src/coverage-report/
+make coverage-open          # Open HTML report in browser
+make coverage-clean         # Delete old reports
 ```
 
-Dann in IDE auf Port 9003 Breakpoint setzen und Script ausführen!
+Then set the breakpoint to port 9003 in the IDE and run the script!
 
 ---
 
-## 📊 Workflow für Entwicklung
+## 📊 Workflow for development
 
-### **Typischer Developer-Tag:**
+### **Typical developer day:**
 
 ```bash
-# Morgens
-make docker-up          # Container starten
-make php-shell          # In Container gehen
-composer install        # Falls nötig
-php artisan migrate     # Migrations ausführen
+# Morning
+make docker-up          # Start containers
+make php-shell          # Enter container
+composer install        # If needed
+php artisan migrate     # Run migrations
 
-# Während Entwicklung
-make test               # Tests nach jeder Änderung
-make pint-fix           # Code formatieren
-make phpstan            # Analyse vor Commit
+# During development
+make test               # Tests after every change
+make pint-fix           # Format code
+make phpstan            # Analysis before commit
 
-# Debugging nötig?
-make debug-on           # Xdebug an
-make php-shell          # Debuggen
-make debug-off          # Xdebug aus (schneller)
+# Need debugging?
+make debug-on           # Enable Xdebug
+make php-shell          # Debug
+make debug-off          # Disable Xdebug (faster)
 
-# Feierabend
-make docker-down        # Container stoppen
+# End of day
+make docker-down        # Stop containers
 ```
 
 ---
 
-## 🐚 PHP-Shell Tipps
+## 🐚 PHP Shell Tips
 
 ```bash
 make php-shell
 
-# Im Container:
+# Inside container:
 php artisan tinker              # PHP REPL
 vendor/bin/pest                 # Tests
-php artisan make:migration xyz  # Neue Migration
-php artisan route:list          # Routes anzeigen
-composer install                # Abhängigkeiten
+php artisan make:migration xyz  # New migration
+php artisan route:list          # Show routes
+composer install                # Dependencies
 ```
 
 ---
 
 ## 🔄 Docker troubleshooting
 
-### **Container nicht erreichbar?**
+### **Container not reachable?**
 
 ```bash
-docker ps                   # Laufen alle Container?
-docker compose logs         # Fehler in den Logs?
-make docker-restart         # Schnell neu starten
-make docker-rebuild         # Komplett neu bauen
+docker ps                   # Are all containers running?
+docker compose logs         # Errors in the logs?
+make docker-restart         # Quick restart
+make docker-rebuild         # Full rebuild
 ```
 
-### **Port schon belegt?**
+### **Port already occupied?**
 
 ```bash
-sudo lsof -i :8080         # Wer nutzt Port 8080?
-make docker-down            # Container stoppen
+sudo lsof -i :8080         # Who is using port 8080?
+make docker-down            # Stop containers
 ```
 
-### **Cache/Daten löschen?**
+### **Clear cache/data?**
 
 ```bash
-make docker-clean           # Container + Volumes löschen
-make docker-up              # Neu starten (frisch!)
+make docker-clean           # Delete containers + volumes
+make docker-up              # Restart (fresh!)
 ```
 
 ---
 
 ## 🔁 GitHub CI & Branch Protection (Commit 23)
 
-### CI-Workflow
+### CI workflow
 
-Der Workflow liegt in:
+The workflow lies in:
 - `.github/workflows/ci.yml`
 
-Aktive Jobs:
+Active jobs:
 - `pint`
 - `phpstan`
-- `pest_acceptance` (Kernflows + Edge-Cases, `AI_PROVIDER=mock`)
-- `pest_coverage` (inkl. Coverage-Gate `>=95%`)
+- `pest_acceptance` (core flows + edge cases, `AI_PROVIDER=mock`)
+- `pest_coverage` (incl. coverage gate `>=99%`)
 
-Trigger:
-- `push` (alle Branches ausser `main`)
-- `pull_request` auf `main`
-- `workflow_dispatch` (manuell)
+Triggers:
+- `push` (all branches except `main`)
+- `pull_request` to `main`
+- `workflow_dispatch` (manual)
 
-Coverage-Artefakte:
-- Upload als GitHub Artifact `coverage-report`
-- Retention: 7 Tage
+Coverage artifacts:
+- Upload as GitHub Artifact `coverage-report`
+- Retention: 7 days
 
-### CI-Umgebungsdatei
+### CI environment file
 
-- `src/.env.ci` enthaelt die CI-spezifischen Defaultwerte
-- `AI_PROVIDER=mock` verhindert externe API-Abhaengigkeiten
-- `GEMINI_API_KEY` bleibt als leerer Platzhalter
-- `APP_KEY` wird im Workflow zur Laufzeit erzeugt
+- `src/.env.ci` contains the CI-specific default values
+- `AI_PROVIDER=mock` prevents external API dependencies
+- `GEMINI_API_KEY` remains as an empty placeholder
+- `APP_KEY` is created in the workflow at runtime
 
 ### Codecov Setup (public repository)
 
-1. Bei `codecov.io` mit GitHub anmelden
-2. Repository aktivieren
-3. Keine Tokens notwendig (public Repo)
-4. Workflow lädt `src/coverage-report/clover.xml` hoch
+1. Sign in to `codecov.io` using GitHub
+2. Activate repository
+3. No tokens necessary (public repo)
+4. Workflow uploads `src/coverage-report/clover.xml`
 
-### Status-Badges
+### Status Badges
 
-Im `README.md` sind drei Badges vorgesehen:
+Three badges are provided in the `README.md`:
 - CI (GitHub Actions)
 - Coverage (Codecov)
 - PHPStan Level 9
 
-Hinweis: Ersetze in den Badge-URLs `<owner>/<repo>` durch den echten GitHub-Pfad.
+Note: In the badge URLs, replace `<owner>/<repo>` with the real GitHub path.
 
-### Branch-Protection fuer `main`
+### Branch protection for `main`
 
 Status:
-- **Done (im Repo):** CI-Checks existieren als Jobs `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
-- **To-do (in GitHub Settings manuell setzen):** Branch-Protection-Regel inkl. Required Checks aktivieren
+- **Done (in the repo):** CI checks exist as jobs `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
+- **To-do (set manually in GitHub Settings):** Activate branch protection rule including required checks
 
-GitHub Einstellungen (To-do):
+GitHub Settings (To-do):
 1. `Settings -> Branches -> Add rule`
-2. Branch-Pattern: `main`
-3. Aktivieren:
+2. Branch pattern: `main`
+3. Activate:
    - `Require a pull request before merging`
    - `Require status checks to pass before merging`
    - `Require branches to be up to date before merging`
    - `Do not allow bypassing the above settings`
-4. Required checks auswaehlen:
+4. Select required checks:
    - `pint`
    - `phpstan`
    - `pest_acceptance`
    - `pest_coverage`
 
-Checkliste Branch-Protection:
-- [ ] Regel fuer `main` erstellt
-- [ ] `Require a pull request before merging` aktiv
-- [ ] `Require status checks to pass before merging` aktiv
-- [ ] Required checks gesetzt: `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
+Branch protection checklist:
+- [ ] Rule created for `main`
+- [ ] `Require a pull request before merging` active
+- [ ] `Require status checks to pass before merging` active
+- [ ] Required checks set: `pint`, `phpstan`, `pest_acceptance`, `pest_coverage`
 
 ---
 
-## 📚 Weitere Dokumentation
+## 📚 More documentation
 
-| Thema | Link |
+| Topic | Link |
 |-------|------|
 | **Roadmap** | [docs/ROADMAP.md](./docs/ROADMAP.md) |
 | **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
 | **Debugging** | [docs/DEBUGGING.md](./docs/DEBUGGING.md) |
-| **Architektur** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) |
+| **Architecture** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) |
 | **Coding Guidelines** | [docs/CODING_GUIDELINES.md](./docs/CODING_GUIDELINES.md) |
 | **Contributing** | [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) |
 
 ---
 
-## ✅ Checkliste zum Starten
+## ✅ Starting checklist
 
-- [ ] Docker & Docker Compose installiert
-- [ ] `docker compose up -d` ausgeführt
-- [ ] http://localhost:8080 öffnet die Seite
-- [ ] `make php-shell` funktioniert
-- [ ] `make test` laufen die Tests grün
+- [ ] Docker & Docker Compose installed
+- [ ] `docker compose up -d` executed
+- [ ] http://localhost:8080 opens the page
+- [ ] `make php-shell` works
+- [ ] `make test` the tests run green
 
-**Viel Erfolg beim Entwickeln!** 🚀
+**Good luck developing!** 🚀
 
-## 🛡️ Security-Test-Template (OWASP-orientiert)
+## 🛡️ Security test template (OWASP-oriented)
 
-Nutze dieses Template bei sicherheitsrelevanten Änderungen (Input-Validierung, Auth, externe Requests, Prompting).
+Use this template for security-relevant changes (input validation, auth, external requests, prompting).
 
-### 1) Minimaler Sicherheits-Testlauf
+### 1) Minimum security test run
 
 ```bash
-# Basis-Qualitätsgates
+# Basic quality gates
 make test
 make phpstan
 make pint-analyse
 
-# gezielte Security-Tests
+# Targeted security tests
 make test-security
 
-# optional: strikter Lauf
+# Optional: strict run
 make test-security-strict
 
-# empfohlen vor Merge
+# Recommended before merge
 make test-security-gate
 ```
 
-### 2) PR-Checkliste Security
+### 2) PR checklist security
 
-- [ ] Eingaben als untrusted behandelt (Validation + Sanitization)
-- [ ] Output kontextgerecht escaped/encoded (kein unescaped HTML/JS)
-- [ ] CSRF für alle POST-Formulare vorhanden (`@csrf`)
-- [ ] Keine Secrets im Code (nur Config/Env)
-- [ ] Externe Requests mit Timeouts/Allowlist abgesichert
-- [ ] Prompt-/Input-Injection berücksichtigt
-- [ ] Security-Regression-Tests ergänzt/aktualisiert
+- [ ] Inputs treated as untrusted (validation + sanitization)
+- [ ] Output contextually escaped/encoded (no unescaped HTML/JS)
+- [ ] CSRF present for all POST forms (`@csrf`)
+- [ ] No secrets in the code (only Config/Env)
+- [ ] External requests secured with timeouts/allowlist
+- [ ] Prompt/input injection taken into account
+- [ ] Security regression tests added/updated
 
-### 3) OWASP-Mapping Kurzcheck
+###3) OWASP mapping quick check
 
-- **A01 Access Control**: Unauthorized Access Tests vorhanden
-- **A03 Injection**: SQL/XSS/Prompt-Injection Tests vorhanden
-- **A05 Misconfiguration**: Sichere Defaults geprüft
-- **A06 Vulnerable Components**: Dependency-Update/CVE-Check berücksichtigt
-- **A09 Logging/Monitoring**: Sicherheitsrelevante Fehler werden ohne Secrets geloggt
+- **A01 Access Control**: Unauthorized access tests present
+- **A03 Injection**: SQL/XSS/Prompt injection tests available
+- **A05 Misconfiguration**: Safe defaults checked
+- **A06 Vulnerable Components**: Dependency update/CVE check taken into account
+- **A09 Logging/Monitoring**: Security-relevant errors are logged without secrets
 
-### 4) Empfohlene Testdatei-Namen
+### 4) Recommended test file names
 
 - `tests/Feature/SecurityPromptInjectionTest.php`
 - `tests/Feature/InputValidationTest.php`

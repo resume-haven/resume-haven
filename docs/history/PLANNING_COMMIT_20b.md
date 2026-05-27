@@ -1,77 +1,77 @@
-# Commit 20b – Legal-Seiten & Vertrauen
-## Detaillierter Implementierungsplan
+# Commit 20b – Legal Sites & Trust
+## Detailed implementation plan
 
-**Datum:** 2026-03-08  
-**Status:** 🔄 In Planung  
-**Geschätzter Aufwand:** ~4h  
-**Abhängigkeiten:** Commit 17 & 18a abgeschlossen ✅
-
----
-
-## 🎯 Ziel
-
-Rechtliche MVP-Anforderungen erfüllen:
-- ⚖️ Impressum (Anbieterkennzeichnung)
-- 🔒 Datenschutzerklärung (DSGVO-konform)
-- 📧 Kontaktformular (validiert, sicher)
-- 📜 Lizenzen (automatisch generiert)
+**Date:** 2026-03-08
+**Status:** 🔄 In planning
+**Estimated effort:** ~4h
+**Dependencies:** Commit 17 & 18a completed ✅
 
 ---
 
-## 📋 Checkliste
+## 🎯 Target
 
-### Phase 1: Routes & Controller ⏱️ 30min
+Meet Legal MVP Requirements:
+- ⚖️ Imprint (provider identification)
+- 🔒 Data protection declaration (GDPR compliant)
+- 📧 Contact form (validated, secure)
+- 📜 Licenses (automatically generated)
 
-- [ ] Routes in `web.php` definieren
+---
+
+## 📋 Checklist
+
+### Phase 1: Routes & Controllers ⏱️ 30min
+
+- [ ] Define routes in `web.php`
   - [ ] `GET /impressum` → `LegalController@impressum`
   - [ ] `GET /datenschutz` → `LegalController@datenschutz`
   - [ ] `GET /lizenzen` → `LegalController@lizenzen`
   - [ ] `GET /kontakt` → `ContactController@show`
   - [ ] `POST /kontakt` → `ContactController@submit`
 
-- [ ] Controller erstellen
+- [ ] Create controller
   - [ ] `app/Http/Controllers/LegalController.php`
   - [ ] `app/Http/Controllers/ContactController.php`
 
-**Architektur-Notizen:**
-- LegalController: Named methods (Ausnahme von Single-Action für statische Content-Seiten)
-- ContactController: 2 methods (show/submit) - Standard-CRUD-Pattern
+**Architecture Notes:**
+- LegalController: Named methods (Exception from single action for static content pages)
+- ContactController: 2 methods (show/submit) - Standard CRUD pattern
 
 ---
 
 ### Phase 2: Legal Views ⏱️ 45min
 
-- [ ] Verzeichnis erstellen: `resources/views/legal/`
-- [ ] Views erstellen:
-  - [ ] `impressum.blade.php` (mit Platzhalter-Content)
-  - [ ] `datenschutz.blade.php` (DSGVO-Vorlage)
-  - [ ] `kontakt.blade.php` (Formular)
-  - [ ] `lizenzen.blade.php` (Tabellen-Layout)
+- [ ] Create directory: `resources/views/legal/`
+- [ ] Create views:
+  - [ ] `impressum.blade.php` (with placeholder content)
+  - [ ] `datenschutz.blade.php` (GDPR template)
+  - [ ] `kontakt.blade.php` (form)
+  - [ ] `lizenzen.blade.php` (table layout)
 
-**Content-Strategie:**
-- Platzhalter-Texte mit deutlichem Hinweis: "Vor Produktivbetrieb anpassen"
-- Prose-Styling (`prose dark:prose-invert`)
-- Responsive Design (Tailwind-Breakpoints)
+**Content strategy:**
+- Placeholder texts with a clear note: “Adapt before productive operation”
+- Prose styling (`prose dark:prose-invert`)
+- Responsive design (Tailwind breakpoints)
 
 ---
 
-### Phase 3: Footer-Navigation ⏱️ 15min
+### Phase 3: Footer navigation ⏱️ 15min
 
-- [ ] `layouts/app.blade.php` erweitern
-  - [ ] Legal-Links hinzufügen (Impressum, Datenschutz, Kontakt, Lizenzen)
+- [ ] `layouts/app.blade.php` expand
+  - [ ] Add legal links (imprint, data protection, contact, licenses)
   - [ ] Responsive Layout (Stack < 768px, Horizontal ≥ 768px)
-  - [ ] Dark-Mode-Support
+  - [ ] Dark mode support
 
-**Design-Vorgaben:**
-- Links: `hover:text-primary`
+**Design specifications:**
+- Left: `hover:text-primary`
 - Separator: `•` (text-gray-300)
-- Footer bleibt unten (mt-16)
+- Footer stays down (mt-16)
 
 ---
 
-### Phase 4: Kontaktformular Backend ⏱️ 1h
+### Phase 4: Contact form backend ⏱️ 1h
 
-**4.1 DTO erstellen**
+**4.1 Create DTO**
 - [ ] `app/Dto/ContactRequestDto.php`
   ```php
   readonly class ContactRequestDto {
@@ -92,45 +92,45 @@ Rechtliche MVP-Anforderungen erfüllen:
 
 **4.3 UseCase (optional)**
 - [ ] `app/Domains/Contact/UseCases/SendContactMessageAction.php`
-  - [ ] Eingabe validieren
-  - [ ] In Log schreiben (MVP: kein E-Mail-Versand)
-  - [ ] Success-DTO zurückgeben
+  - [ ] Validate input
+  - [ ] Write to log (MVP: no email sending)
+  - [ ] Return Success DTO
 
-**4.4 ContactController implementieren**
+**4.4 Implement ContactController**
 - [ ] `show()`: return view
-- [ ] `submit()`: Validierung → UseCase → Redirect mit Success-Message
+- [ ] `submit()`: Validation → UseCase → Redirect with success message
 
 ---
 
-### Phase 5: Kontaktformular Frontend ⏱️ 30min
+### Phase 5: Frontend contact form ⏱️ 30min
 
 **5.1 View** (`resources/views/legal/kontakt.blade.php`)
-- [ ] Formular mit Feldern:
+- [ ] Form with fields:
   - [ ] Name (Input Text)
-  - [ ] E-Mail (Input Email)
-  - [ ] Nachricht (Textarea)
-  - [ ] Submit-Button
-- [ ] CSRF-Token (`@csrf`)
-- [ ] Validation-Errors anzeigen (`@error`)
-- [ ] Success-Message anzeigen (`@if (session('success'))`)
+  - [ ] Email (Input Email)
+  - [ ] Message (text area)
+  - [ ] Submit button
+- [ ] CSRF token (`@csrf`)
+- [ ] Show validation errors (`@error`)
+- [ ] Show success message (`@if (session('success'))`)
 
 **5.2 Styling**
-- [ ] Tailwind Forms Plugin (falls nicht vorhanden)
-- [ ] Responsive Layout
-- [ ] Dark-Mode
+- [ ] Tailwind Forms Plugin (if not available)
+- [ ] Responsive layout
+- [ ] Dark mode
 
 ---
 
-### Phase 6: Lizenzen-Generator ⏱️ 1h
+### Phase 6: License Generator ⏱️ 1h
 
 **6.1 Artisan Command**
 - [ ] `app/Console/Commands/GenerateLicenseDataCommand.php`
   - [ ] Signature: `licenses:generate`
-  - [ ] Methode: `parseComposerLock()`
-  - [ ] Methode: `parsePackageLock()`
+  - [ ] Method: `parseComposerLock()`
+  - [ ] Method: `parsePackageLock()`
   - [ ] Output: `storage/app/licenses.json`
 
-**6.2 Parser-Logik**
+**6.2 Parser logic**
 ```php
 parseComposerLock() {
     $composer = json_decode(file_get_contents('composer.lock'), true);
@@ -144,25 +144,25 @@ parseComposerLock() {
 }
 ```
 
-**6.3 LegalController::lizenzen()**
-- [ ] Lizenzen-JSON laden
-- [ ] An View übergeben (php, node, generated_at)
+**6.3 LegalController::licenses()**
+- [ ] Load license JSON
+- [ ] Pass to View (php, node, generated_at)
 
-**6.4 Composer-Integration**
-- [ ] `composer.json` erweitern unter `"scripts"`:
+**6.4 Composer integration**
+- [ ] `composer.json` expand under `"scripts"`:
   ```json
   "licenses:generate": "@php artisan licenses:generate"
   ```
 
-**6.5 Makefile-Integration**
-- [ ] Neues Target in `Makefile` hinzufügen:
+**6.5 Makefile integration**
+- [ ] Add new target in `Makefile`:
   ```makefile
   licenses: ## Lizenzen neu generieren
       docker exec -it resumehaven-php composer run licenses:generate
   ```
 
-**6.6 Build-Integration (Post-Update)**
-- [ ] `composer.json` erweitern unter `"scripts"` → `"post-update-cmd"`:
+**6.6 Build Integration (Post Update)**
+- [ ] `composer.json` expand under `"scripts"` → `"post-update-cmd"`:
   ```json
   "post-update-cmd": [
       "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
@@ -174,7 +174,7 @@ parseComposerLock() {
 
 ### Phase 7: Tests ⏱️ 45min
 
-**7.1 Feature-Tests erstellen**
+**7.1 Create feature tests**
 
 - [ ] `tests/Feature/LegalPagesTest.php`
   - [ ] `test('impressum ist erreichbar')`
@@ -197,7 +197,7 @@ parseComposerLock() {
   - [ ] `test('lizenzen zeigt node-pakete')`
   - [ ] `test('lizenzen zeigt generierungsdatum')`
 
-**7.2 Unit-Tests (optional)**
+**7.2 Unit tests (optional)**
 - [ ] `tests/Unit/ContactRequestDtoTest.php`
 - [ ] `tests/Unit/GenerateLicenseDataCommandTest.php`
 
@@ -205,65 +205,65 @@ parseComposerLock() {
 
 ### Phase 8: Quality Gates ⏱️ 30min
 
-- [ ] `make test` → Alle Tests grün
+- [ ] `make test` → All tests green
 - [ ] `make phpstan` → 0 Errors (Level 9)
-- [ ] `make pint-analyse` → Code-Style konform
-- [ ] `php artisan licenses:generate` → licenses.json erstellt
-- [ ] Manuelle Browser-Tests:
-  - [ ] Alle Legal-Seiten erreichbar
-  - [ ] Footer-Links funktionieren
-  - [ ] Kontaktformular validiert
-  - [ ] Success-Message wird angezeigt
+- [ ] `make pint-analyse` → Code style compliant
+- [ ] `php artisan licenses:generate` → licenses.json created
+- [ ] Manual browser tests:
+  - [ ] All legal sites accessible
+  - [ ] Footer links work
+  - [ ] Contact form validated
+  - [ ] Success message is displayed
   - [ ] Responsive Design (Mobile + Desktop)
-  - [ ] Dark-Mode funktioniert
+  - [ ] Dark mode works
 
 ---
 
-## 🚀 Implementierungsreihenfolge (Step-by-Step)
+## 🚀 Implementation order (step-by-step)
 
-### Step 1: Statische Seiten (Quick Win)
-1. Routes definieren (Impressum, Datenschutz)
-2. LegalController erstellen (2 Methoden)
-3. Views erstellen (mit Platzhalter)
-4. Footer-Links hinzufügen
-5. Tests schreiben + ausführen
+### Step 1: Static Pages (Quick Win)
+1. Define routes (legal notice, data protection)
+2. Create LegalController (2 methods)
+3. Create views (with placeholders)
+4. Add footer links
+5. Write + run tests
 
-**Checkpoint:** Impressum + Datenschutz erreichbar, Footer-Links funktionieren
+**Checkpoint:** Imprint + data protection accessible, footer links work
 
 ---
 
-### Step 2: Kontaktformular
+### Step 2: Contact form
 1. ContactController + ContactRequest
-2. kontakt.blade.php (Formular)
-3. Validation + Success-Message
-4. Tests schreiben + ausführen
+2. contact.blade.php (form)
+3. Validation + success message
+4. Write + run tests
 
-**Checkpoint:** Kontaktformular funktioniert, validiert korrekt
+**Checkpoint:** Contact form works, validates correctly
 
 ---
 
-### Step 3: Lizenzen-Generator
+### Step 3: License generator
 1. GenerateLicenseDataCommand
 2. parseComposerLock() + parsePackageLock()
-3. lizenzen.blade.php
-4. Command ausführen + testen
-5. Tests schreiben + ausführen
+3. licenses.blade.php
+4. Run command + test
+5. Write + run tests
 
-**Checkpoint:** Lizenzen werden automatisch generiert
-
----
-
-### Step 4: Final Polish
-1. PHPStan + Pint
-2. Manuelle Browser-Tests
-3. Dokumentation aktualisieren
-4. Commit erstellen
-
-**Checkpoint:** Alle Quality Gates grün ✅
+**Checkpoint:** Licenses are generated automatically
 
 ---
 
-## 📦 Erwartete Dateistruktur nach Implementierung
+### Step 4: Final polish
+1. PHPStan + pint
+2. Manual browser testing
+3. Update documentation
+4. Create commit
+
+**Checkpoint:** All quality gates green ✅
+
+---
+
+## 📦 Expected file structure after implementation
 
 ```
 src/
@@ -300,60 +300,58 @@ src/
     └── licenses.json                               [GENERIERT]
 ```
 
-**Gesamt:**
-- **Neu:** 15 Dateien
-- **Ändern:** 2 Dateien
-- **Generiert:** 1 Datei
+**In total:**
+- **New:** 15 files
+- **Change:** 2 files
+- **Generated:** 1 file
 
 ---
 
-## ⚠️ Wichtige Hinweise
+## ⚠️ Important Notes
 
-### MVP-Einschränkungen
-- **Kein E-Mail-Versand:** Kontaktformular loggt nur (später mit Mail-Queue)
-- **Platzhalter-Content:** Impressum/Datenschutz müssen vor Produktivbetrieb angepasst werden
-- **Kein Rate-Limiting:** Kommt später mit Redis
-- **Keine Admin-UI:** Contact-Messages nur im Log sichtbar
+### MVP limitations
+- **No email sending:** Contact form only logs (later with email queue)
+- **Placeholder content:** Imprint/data protection must be adjusted before productive operation
+- **No rate limiting:** Coming later with Redis
+- **No admin UI:** Contact messages only visible in the log
 
-### DSGVO-Relevanz
-- ✅ Datenschutzerklärung vorhanden (Muster)
-- ✅ Kontaktformular mit Zweckbindung
-- ⚠️ Cookie-Banner fehlt noch (kommt mit Analytics)
-- ⚠️ Opt-in für Newsletter fehlt (nicht MVP-relevant)
+### GDPR relevance
+- ✅ Data protection declaration available (sample)
+- ✅ Contact form with earmarked purpose
+- ⚠️ Cookie banner is still missing (comes with analytics)
+- ⚠️ Opt-in for newsletter is missing (not relevant to MVP)
 
-### Architektur-Kompromisse
-- **LegalController:** Named Methods statt Single-Action (Pragmatismus für statische Seiten)
-- **ContactController:** Zwei Methods (show/submit) statt separate Controller
-- **Begründung:** Single-Action-Prinzip primär für komplexe Business-Logic, nicht für simple CRUD/Views
+### Architectural compromises
+- **LegalController:** Named Methods instead of Single-Action (pragmatism for static pages)
+- **ContactController:** Two methods (show/submit) instead of separate controllers
+- **Reason:** Single-action principle primarily for complex business logic, not for simple CRUD/views
 
 ---
 
-## 📊 Erfolgskriterien
+## 📊 Success criteria
 
-### Funktional
-- [x] Alle 4 Legal-Seiten erreichbar (200 OK)
-- [x] Footer-Links auf allen Seiten sichtbar
-- [x] Kontaktformular validiert serverseitig
-- [x] Success-/Error-Messages werden angezeigt
-- [x] Lizenzen automatisch generiert
+### Functional
+- [x] All 4 legal pages accessible (200 OK)
+- [x] Footer links visible on all pages
+- [x] Contact form validated on the server side
+- [x] Success/Error messages are displayed
+- [x] Licenses generated automatically
 
-### Technisch
-- [x] Tests: 100% grün (Pest)
-- [x] PHPStan: Level 9, 0 Errors
-- [x] Pint: Code-Style konform
-- [x] CSRF-Protection aktiv
-- [x] Responsive + Dark-Mode
+### Technically
+- [x] Tests: 100% green (plague)
+- [x] PHPStan: Level 9, 0 errors
+- [x] Pint: Code style compliant
+- [x] CSRF protection active
+- [x] Responsive + Dark Mode
 
-### Qualität
-- [x] Code folgt SOLID-Prinzipien
+###Quality
+- [x] Code follows SOLID principles
 - [x] DTOs immutable
-- [x] Input-Validierung strikt
+- [x] Input validation strict
 - [x] Security Best Practices
 
 ---
 
-## 🎉 Fertig!
+## 🎉 Done!
 
-Nach Abschluss von Commit 20b ist ResumeHaven rechtlich MVP-ready und kann mit Commit 20 (Responsive Design) und 20a (Dark-Mode) produktiv gehen! 🚀
-
-
+After completing Commit 20b, ResumeHaven is legally MVP-ready and can go live with Commit 20 (Responsive Design) and 20a (Dark Mode)! 🚀

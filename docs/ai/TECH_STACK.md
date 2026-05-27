@@ -1,10 +1,10 @@
-# ⚙️ Tech Stack & Versionen
+# ⚙️ Tech Stack & Versions
 
 ## 📦 PHP & Laravel
 
 - **PHP:** 8.5.3
 - **Laravel:** 12.x
-- **Laravel AI:** v0.2.1 (Gemini-Provider aktiv)
+- **Laravel AI:** v0.2.1 (Gemini provider active)
 - **Laravel Prompts:** v0
 - **Laravel Pail:** v1.2.2
 - **Laravel Pint:** v1.24
@@ -16,7 +16,7 @@
 ## 🧪 Testing & Quality
 
 ### Testing Frameworks
-- **Pest:** v3.8 (Primary Test Framework)
+- **Plague:** v3.8 (Primary Test Framework)
 - **PHPUnit:** v11.5.3 (Underlying Framework)
 - **Mockery:** v1.6 (Mocking)
 
@@ -25,12 +25,12 @@
 - **Laravel Pint:** v1.24 (PSR-12 + Laravel style)
 - **Xdebug:** Optional (via `make debug-on`)
 
-### Aktuelle Metriken
+### Current metrics
 - **Tests:** 128 (100+ Unit, 20+ Feature)
 - **Assertions:** 335+
-- **Coverage:** 98.2% ✅
+- **Coverage:** 99.0% ✅
 - **PHPStan Errors:** 0
-- **Coverage-Minimum:** 95%
+- **Coverage minimum:** 99%
 
 ---
 
@@ -39,15 +39,15 @@
 ### Build Tools
 - **TailwindCSS:** v3
 - **PostCSS:** Latest
-- **Vite:** Laravel-integriert
-- **Node:** Latest LTS (im Docker-Container)
+- **Vite:** Laravel integrated
+- **Node:** Latest LTS (in Docker container)
 
-### CSS Framework
+### CSS framework
 - **Utility-First:** TailwindCSS
-- **Responsive:** Mobile-First (geplant: Commit 20)
-- **Dark-Mode:** Geplant (Commit 20a)
+- **Responsive:** Mobile-First (planned: Commit 20)
+- **Dark mode:** Planned (Commit 20a)
 
-### Build-Kommandos
+### Build commands
 ```bash
 npm run dev        # Development-Modus (watch)
 npm run build      # Production-Build (minified)
@@ -55,23 +55,23 @@ npm run build      # Production-Build (minified)
 
 ---
 
-## 🐳 Docker-Services
+## 🐳 Docker Services
 
-### PHP-FPM
+### PHP FPM
 - **Image:** PHP 8.5-FPM Alpine
-- **Port:** 9000 (intern)
+- **Port:** 9000 (internal)
 - **Features:**
   - Composer 2.x
   - Xdebug (optional, build-time ARG)
-  - SQLite Support
-  - GD Extension
+  - SQLite support
+  - DG Extension
   - Intl Extension
 
-**Volumes:**
+**Volume:**
 - `./src:/var/www/html`
 - `./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini`
 
-**User:** `appuser:appgroup` (UID:GID dynamisch via `.env`)
+**User:** `appuser:appgroup` (UID:GID dynamic via `.env`)
 
 ---
 
@@ -87,11 +87,11 @@ npm run build      # Production-Build (minified)
 
 ### Node
 - **Image:** node:lts-alpine
-- **Zweck:** Tailwind Build Pipeline
+- **Purpose:** Tailwind Build Pipeline
 - **Working Dir:** `/app`
 - **Volume:** `./src:/app`
 
-**Kommandos:**
+**Commands:**
 ```bash
 docker exec resumehaven-node npm install
 docker exec resumehaven-node npm run build
@@ -106,82 +106,82 @@ docker exec resumehaven-node npm run build
 
 **URL:** http://localhost:8025
 
-**Zweck:** Lokaler SMTP-Testserver für E-Mails
+**Purpose:** Local SMTP test server for email
 
 ---
 
-## 🗄️ Datenbank
+## 🗄️Database
 
-### Entwicklung
+### Development
 - **Engine:** SQLite
 - **File:** `src/database/database.sqlite`
-- **Vorteil:** In-App, keine externe DB nötig
+- **Advantage:** In-app, no external DB required
 
-### Production (geplant)
+### Production (planned)
 - **Engine:** MySQL 8.x
-- **Hoster:** IONOS Webspace
+- **Hoster:** IONOS web space
 - **Config:** `.env` (`DB_CONNECTION=mysql`)
 
 ### Migrations
 ```bash
-php artisan migrate              # Migrationen ausführen
+php artisan migrate              # Run migrations
 php artisan migrate:fresh --seed # Reset + Seed
 ```
 
-**Aktuelle Tabellen:**
-- `analysis_cache` — Cache für Analyse-Ergebnisse
+**Current tables:**
+- `analysis_cache` — Cache for analysis results
 
 ---
 
-## 🔧 Make-Kommandos (wichtigste)
+## 🔧 Make commands (most important)
 
 ### Tests & Coverage
 ```bash
-make test                   # Alle Tests (Pest)
-make test-unit              # Nur Unit-Tests
-make test-feature           # Nur Feature-Tests
-make test-coverage          # Coverage-Check (min 95%)
-make test-coverage-report   # HTML-Report erzeugen
-make coverage-open          # Report im Browser
-make coverage-clean         # Reports löschen
+make test                   # All tests (Pest)
+make test-unit              # Unit tests only
+make test-feature           # Feature tests only
+make test-coverage          # Coverage check (min 95%)
+make test-coverage-report   # Generate HTML report
+make coverage-open          # Open report in browser
+make coverage-clean         # Delete reports
 ```
 
-### Code-Qualität
+### Code quality
 ```bash
-make phpstan                # Static Analysis (Level 9)
-make pint-fix               # Code-Formatting
-make pint-analyse           # Nur Analyse (kein Fix)
+make phpstan                # Static analysis (Level 9)
+make pint-fix               # Code formatting
+make pint-analyse           # Analysis only (no fix)
 ```
 
 ### Debugging
 ```bash
-make debug-on               # Xdebug aktivieren (rebuild)
-make debug-off              # Xdebug deaktivieren
-make debug-status           # Status prüfen
+make debug-on               # Enable Xdebug (rebuild)
+make debug-off              # Disable Xdebug
+make debug-status           # Check status
 ```
 
 ### Docker
 ```bash
-make docker-up              # Container starten
-make docker-down            # Container stoppen
-make docker-restart         # Schneller Neustart
-make docker-rebuild         # Neuer Build
-make docker-clean           # Volumes löschen
+make docker-up              # Start containers
+make docker-down            # Stop containers
+make docker-restart         # Quick restart
+make docker-rebuild         # New build
+make docker-clean           # Delete volumes
 ```
 
-### Shell-Zugriff
+### Shell access
 ```bash
-make php-shell              # Bash im PHP-Container
-make node-shell             # Shell im Node-Container
-make nginx-shell            # Shell im Nginx-Container
+make php-shell              # Bash in PHP container
+make node-shell             # Shell in Node container
+make nginx-shell            # Shell in Nginx container
 ```
 
 ### Cache & DB
 ```bash
-make php-cache-clear        # Laravel-Cache leeren
-make db-migrate             # Migrationen ausführen
-make db-seed                # Seeds laden
-make cache-clear-analysis   # Analyse-Cache leeren
+make php-cache-clear        # Clear Laravel cache
+make db-migrate             # Run migrations
+make db-seed                # Load seeds
+make cache-clear-analysis   # Clear analysis cache
 ```
 
 ---
@@ -192,15 +192,15 @@ make cache-clear-analysis   # Analyse-Cache leeren
 - **App:** http://localhost:8080
 - **Mailpit UI:** http://localhost:8025
 
-### Production (geplant)
+### Production (planned)
 - **Domain:** TBD (IONOS Webspace)
-- **SSL:** Let's Encrypt (geplant)
+- **SSL:** Let's Encrypt (planned)
 
 ---
 
-## 📝 Konfiguration
+## 📝 Configuration
 
-### AI-Provider (`.env`)
+### AI Provider (`.env`)
 ```env
 # Provider: mock (dev) oder gemini (prod)
 AI_PROVIDER=gemini
@@ -223,7 +223,7 @@ XDEBUG_MODE=debug,coverage
 XDEBUG_CONFIG="idekey=resumehaven"
 ```
 
-### Docker-User (`.env`)
+### Docker user (`.env`)
 ```env
 # User-ID und Group-ID für PHP-Container
 UID=1000
@@ -232,7 +232,7 @@ GID=1000
 
 ---
 
-## 🔄 Update-Strategie
+## 🔄 Update strategy
 
 ### Dependencies
 ```bash
@@ -246,114 +246,114 @@ npm update
 composer update laravel/boost
 ```
 
-### PHPStan-Baseline
-Bei Major-Updates von PHPStan Baseline neu generieren:
+### PHPStan baseline
+Regenerate baseline for major updates of PHPStan:
 ```bash
 vendor/bin/phpstan analyse --generate-baseline
 ```
 
-### Docker-Images
-Bei Dockerfile-Änderungen neu bauen:
+### Docker images
+Rebuild for Dockerfile changes:
 ```bash
 make docker-rebuild
 ```
 
 ---
 
-## 🧰 Entwicklungs-Tools
+## 🧰 Development tools
 
-### IDE-Support
+### IDE support
 - **VSCode:** `.vscode/launch.json` (Xdebug)
-- **PhpStorm:** Path-Mapping `/var/www/html` → `./src`
+- **PhpStorm:** Path mapping `/var/www/html` → `./src`
 
-### Git-Workflow
-- **Branch-Strategie:** Feature-Branches (`feature/commit-XX-name`)
-- **Commit-Convention:** Siehe `COMMIT_PLAN.md`
-- **PR-Template:** `.github/PULL_REQUEST_TEMPLATE.md` (inkl. SOLID-Gate)
+### Git workflow
+- **Branch strategy:** Feature branches (`feature/commit-XX-name`)
+- **Commit Convention:** See `COMMIT_PLAN.md`
+- **PR template:** `.github/PULL_REQUEST_TEMPLATE.md` (incl. SOLID Gate)
 
-### CI/CD (geplant)
-- **GitHub Actions:** Geplant (Commit 23+)
-- **Pre-Commit Hooks:** Geplant (Pint, PHPStan, Tests)
+### CI/CD (planned)
+- **GitHub Actions:** Planned (Commit 23+)
+- **Pre-Commit Hooks:** Planned (Pint, PHPStan, Tests)
 
 ---
 
-## 📊 Performance-Benchmarks
+## 📊 Performance benchmarks
 
-### Test-Execution
-- **Ohne Xdebug:** ~60s (128 Tests)
-- **Mit Xdebug:** ~80s (+33% Overhead)
+### Test execution
+- **Without Xdebug:** ~60s (128 tests)
+- **With Xdebug:** ~80s (+33% overhead)
 
-### Coverage-Report-Generierung
+### Coverage report generation
 - **Clover XML:** ~10s
-- **HTML-Report:** ~15s
+- **HTML report:** ~15s
 
-### Cache-Hit-Rate
-- **Development:** ~80% (bei wiederholten Anfragen)
+### Cache hit rate
+- **Development:** ~80% (for repeated requests)
 - **Production:** TBD
 
 ---
 
 ## 🔐 Security
 
-### Input-Validierung
-- **Max File Size:** 50KB pro Input
-- **Pattern-Detection:** SQL, XSS, Event-Handler
-- **Sanitization:** Null-Bytes, Whitespace, Line-Endings
+### Input validation
+- **Max File Size:** 50KB per input
+- **Pattern detection:** SQL, XSS, event handler
+- **Sanitization:** Zero bytes, whitespace, line endings
 
-### CSRF-Protection
-- **Laravel CSRF:** Aktiv in allen POST-Formularen
-- **Token:** `@csrf` in Blade-Templates
+### CSRF protection
+- **Laravel CSRF:** Active in all POST forms
+- **Token:** `@csrf` in blade templates
 
-### SQL-Injection-Prävention
+### SQL injection prevention
 - **Repository Pattern:** Prepared Statements
-- **Kein Raw-SQL:** Außer in Repositories
+- **No Raw SQL:** Except in repositories
 
-### Prompt-Injection-Schutz
-- **Strikte System-Rules:** Im AI-Analyzer-Prompt
-- **Input-Behandlung:** Als "UNVERTRAUTER INHALT"
+### Prompt injection protection
+- **Strict system rules:** In the AI ​​Analyzer prompt
+- **Input Treatment:** As "UNTRAVIDENT CONTENT"
 
 ---
 
-## 📚 Dokumentations-Stack
+## 📚 Documentation stack
 
 ### Markdown
 - **Docs:** `/docs/*.md`
 - **GitHub Pages:** Jekyll (Theme: Minimal)
 
 ### PHPDoc
-- **Standard:** PHPStan-kompatibel
-- **Array-Shapes:** Detaillierte Type-Hints
+- **Default:** PHPStan compatible
+- **Array shapes:** Detailed type hints
 
-### Code-Kommentare
-- **Komplexität:** Nur bei komplexer Logik
-- **Regeln:** Beschreibe "Warum", nicht "Was"
+### Code comments
+- **Complexity:** Only for complex logic
+- **Rules:** Describe “Why,” not “What”
 
 ---
 
-## 🎯 Browser-Support (geplant)
+## 🎯 Browser support (planned)
 
-### Desktop
-- **Chrome:** Latest 2 Versionen
-- **Firefox:** Latest 2 Versionen
-- **Safari:** Latest 2 Versionen
-- **Edge:** Latest 2 Versionen
+###Desktop
+- **Chrome:** Latest 2 versions
+- **Firefox:** Latest 2 versions
+- **Safari:** Latest 2 versions
+- **Edge:** Latest 2 versions
 
 ### Mobile (Commit 20)
-- **iOS Safari:** Latest 2 Versionen
-- **Chrome Android:** Latest 2 Versionen
+- **iOS Safari:** Latest 2 versions
+- **Chrome Android:** Latest 2 versions
 
 ---
 
-## 📚 Siehe auch
+## 📚 See then
 
-- **Projektüberblick:** `docs/ai/PROJECT_OVERVIEW.md`
-- **Agent-Kontext:** `docs/ai/AGENT_CONTEXT.md`
-- **Architektur:** `docs/ARCHITECTURE.md`
+- **Project overview:** `docs/ai/PROJECT_OVERVIEW.md`
+- **Agent Context:** `docs/ai/AGENT_CONTEXT.md`
+- **Architecture:** `docs/ARCHITECTURE.md`
 - **Coding Guidelines:** `docs/CODING_GUIDELINES.md`
 - **Development Setup:** `docs/DEVELOPMENT.md`
 - **Debugging:** `docs/DEBUGGING.md`
 
 ---
 
-**Letzte Aktualisierung**: 2026-03-09  
-**Version**: 2.1 (konsolidierter KI-Dokumentationskontext)
+**Last updated**: 2026-03-09
+**Version**: 2.1 (Consolidated AI Documentation Context)

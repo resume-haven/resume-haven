@@ -1,193 +1,191 @@
-# Commit 28 – Architecture-Tests & Engineering-Härtung
+# Commit 28 – Architecture testing & engineering hardening
 
-**Branch:** `feature/commit-28-architecture-tests`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-04-17
-**Abgeschlossen:** 2026-04-20
-
----
-
-## Ziel
-
-Automatisierte Architektur-Tests (Pest Arch) sichern die bestehenden Layer-Regeln, DDD/CQRS-Grenzen und SOLID-Prinzipien ab. Ergänzend werden Engineering-Härtungsmaßnahmen (Mutation-Testing-Vorbereitung, Git-Hooks, erweiterte Quality-Gates) implementiert.
-
-### Abschluss (2026-04-20)
-
-- ✅ Architecture-Suite umgesetzt (`DddArchTest`, `CqrsArchTest`, `SolidArchTest`)
-- ✅ Composer/Makefile um `test:pest-arch`, `quality:arch-gate`, `test-mutation`, `hooks-install` erweitert
-- ✅ Mutation-Testing vorbereitet (optional, separater Lauf)
-- ✅ Git-Hooks vorbereitet (`.githooks/pre-commit`, manuelle Aktivierung)
-- ✅ Dokumentation in `COMMIT_PLAN.md` und `docs/ROADMAP.md` auf Abschlussstand gebracht
-
-### Kernfragen für Commit 28
-
-- Welche Layer- und Boundary-Regeln müssen automatisiert abgesichert sein?
-- Wie wird Mutation-Testing als optionales, isoliertes Tool vorbereitet?
-- Wie werden Git-Hooks sinnvoll und optional integriert?
+**Branch:** `feature/commit-28-architecture-tests`
+**Status:** Completed
+**Created:** 2026-04-17
+**Completed:** 2026-04-20
 
 ---
 
-## Scope
+##Goal
 
-### Enthalten
+Automated architecture tests (Pest Arch) ensure existing layer rules, DDD/CQRS boundaries and SOLID principles. In addition, engineering hardening measures (mutation testing preparation, Git hooks, extended quality gates) are implemented.
 
-- **Architecture-Test-Suite** in `src/tests/Architecture/` mit Pest 3 `arch()`-API:
-  - `DddArchTest.php`: Bounded-Context-Grenzen (Profile ↔ Analysis)
-  - `CqrsArchTest.php`: Command/Query-Segregation
-  - `SolidArchTest.php`: Single-Action-Controller, Interface-based Design, readonly DTOs
-- **Vollständiger Scope:** Alle `app/`-Namespaces (Domains, Http, Services, Ai, Dto)
-- **Mutation-Testing-Vorbereitung** mit `pestphp/pest-plugin-mutate`:
-  - Composer dev-dependency hinzugefügt
-  - `make test-mutation` als eigenes Target (Scope: `app/Domains`)
-  - Nicht im Standard-CI enthalten (separater Workflow möglich)
-  - Offene Detailfragen in `docs/ROADMAP.md` dokumentiert
-- **Git-Hooks** in `.githooks/pre-commit`:
-  - `pint --dirty`, `phpstan analyse --no-progress`, Commit-Message-Convention-Check
-  - Manuell via `make hooks-install` aktivierbar (kein Auto-Install)
-- **Makefile & Composer-Scripts erweitert:**
-  - `make test-arch` – nur Architecture-Tests
+### Graduation (2026-04-20)
+
+- ✅ Architecture suite implemented (`DddArchTest`, `CqrsArchTest`, `SolidArchTest`)
+- ✅ Composer/Makefile expanded to include `test:pest-arch`, `quality:arch-gate`, `test-mutation`, `hooks-install`
+- ✅ Mutation testing prepared (optional, separate run)
+- ✅ Git hooks prepared (`.githooks/pre-commit`, manual activation)
+- ✅ Documentation in `COMMIT_PLAN.md` and `docs/ROADMAP.md` brought to completion
+
+### Key questions for commit 28
+
+- Which layer and boundary rules need to be secured automatically?
+- How is mutation testing prepared as an optional, isolated tool?
+- How are Git hooks integrated sensibly and optionally?
+
+---
+
+##Scope
+
+###Contain
+
+- **Architecture Test Suite** in `src/tests/Architecture/` with Pest 3 `arch()` API:
+  - `DddArchTest.php`: Bounded Context Boundaries (Profile ↔ Analysis)
+  - `CqrsArchTest.php`: Command/Query segregation
+  - `SolidArchTest.php`: Single-action controller, interface-based design, read-only DTOs
+- **Full Scope:** All `app/` namespaces (Domains, Http, Services, Ai, Dto)
+- **Mutation testing preparation** with `pestphp/pest-plugin-mutate`:
+  - Added composer dev dependency
+  - `make test-mutation` as its own target (Scope: `app/Domains`)
+  - Not included in the standard CI (separate workflow possible)
+  - Open detailed questions documented in `docs/ROADMAP.md`
+- **Git hooks** in `.githooks/pre-commit`:
+  - `pint --dirty`, `phpstan analyse --no-progress`, commit message convention check
+  - Can be activated manually via `make hooks-install` (no auto-install)
+- **Makefile & Composer scripts extended:**
+  - `make test-arch` – Architecture tests only
   - `make test-arch-gate` – Arch + PHPStan + Pint
-  - `make test-mutation` – Mutation-Tests (Domains, dry-run)
-  - `make hooks-install` – Git-Hooks manuell aktivieren
-  - Composer-Script `quality:arch-gate`
-- **CI-Integration:**
-  - Architecture-Suite in `phpunit.xml` hinzugefügt
-  - CI-Job `pest_architecture` in `.github/workflows/ci.yml` (optional: separater Mutation-Workflow)
-- **Dokumentation:**
-  - Detailplan nach `docs/history/PLANNING_COMMIT_28.md` ausgelagert
-  - `docs/ARCHITECTURE.md` aktualisiert (Architecture-Testing Status)
-  - `docs/ROADMAP.md` erweitert (Mutation-Testing offene Fragen)
-  - `COMMIT_PLAN.md` aktualisiert (Status und nächste Commits)
+  - `make test-mutation` – Mutation tests (domains, dry-run)
+  - `make hooks-install` – Enable Git hooks manually
+  - Composer script `quality:arch-gate`
+- **CI integration:**
+  - Added Architecture Suite in `phpunit.xml`
+  - CI job `pest_architecture` in `.github/workflows/ci.yml` (optional: separate mutation workflow)
+- **Documentation:**
+  - Detailed plan outsourced to `docs/history/PLANNING_COMMIT_28.md`
+  - `docs/ARCHITECTURE.md` updated (architecture testing status)
+  - `docs/ROADMAP.md` expanded (mutation testing open questions)
+  - `COMMIT_PLAN.md` updated (status and next commits)
 
-### Nicht enthalten
+### Not included
 
-- Neue Produktfeatures
-- Mutation-Testing im Standard-CI (nur Optional/Workflow-Dispatch)
-- Automatische Git-Hook-Installation via `composer install`
-- Weitere Engineering-Tools (Deptrac, PhpMetrics, etc.)
-
----
-
-## Technische Leitplanken
-
-- **Pest Arch vs. Deptrac:** Pest 3 genügt für Layer-Regeln; Deptrac würde zu viel Komplexität bringen
-- **Architecture-Tests:** Schreiben Tests in Given-Style (prägnante Aussagen), nicht als Einzelheiten
-- **Mutation-Testing:** Scope begrenzt auf `app/Domains` zur Laufzeitoptimierung
-- **Git-Hooks:** Shell-Script (POSIX-kompatibel), funktioniert auf WSL + macOS + Linux
-- **SOLID-Enforcement:** Überprüfung von Schnittstellen-Implementierungen, readonly-Klassen, Controller-Pattern
+- New product features
+- Mutation testing in standard CI (optional/workflow dispatch only)
+- Automatic Git Hook installation via `composer install`
+- Other engineering tools (Deptrac, PhpMetrics, etc.)
 
 ---
 
-## Geplante Implementierungs-Slices
+## Technical guard rails
 
-### Slice 0 – Architektur-Analyse & Vorbereitung
-- Architecture-Test-Suite Struktur planen (DDD, CQRS, SOLID)
-- Bestehende Layer-Regeln inventarisieren
-- Pest Arch Syntax und Pest-Plugin-Mutate dokumentieren
-
-### Slice 1 – DDD-Tests implementieren
-- `DddArchTest.php`: Bounded-Context-Grenzen (Profile ↔ Analysis)
-- Kopplung auf Action-/UseCase-Ebene validieren
-- Modell-Zugriffe (Eloquent) verhindern
-
-### Slice 2 – CQRS-Tests implementieren
-- `CqrsArchTest.php`: Command/Query-Segregation
-- Namespace-Konventionen validieren (Commands, Queries, Handlers)
-- Keine Command-in-Query-Nutzung, keine Query-in-Command-Nutzung
-
-### Slice 3 – SOLID-Tests implementieren
-- `SolidArchTest.php`: Single-Action-Controller, Interface-based Design, readonly DTOs
-- Controller `__invoke`-Methode prüfen
-- DTOs immutable validieren
-- Service-Schnittstellen-Nutzung prüfen
-
-### Slice 4 – Mutation-Testing vorbereiten
-- `pestphp/pest-plugin-mutate` in `composer.json` als dev-dependency hinzufügen
-- `test:pest-mutation` Composer-Script implementieren (Scope: `app/Domains`)
-- `make test-mutation` Target ergänzen
-- Offene Fragen (MSI-Schwellwert, Slow-Test-Strategie) in Roadmap dokumentieren
-
-### Slice 5 – Git-Hooks einrichten
-- `.githooks/pre-commit` Script schreiben (Pint, PHPStan, Commit-Message-Check)
-- `make hooks-install` Target implementieren
-- Hook-Ausführung lokal validieren
-
-### Slice 6 – Makefile & Composer erweitern
-- `make test-arch`, `make test-arch-gate`, `make test-mutation`, `make hooks-install` hinzufügen
-- `quality:arch-gate` Composer-Script definieren
-- `.PHONY` Targets aktualisieren
-
-### Slice 7 – CI-Integration & Quality-Gates
-- `phpunit.xml`: Architecture-Suite als Testsuite registrieren
-- `pest/Pest.php`: Architecture-Tests einbinden
-- Neuer CI-Job `pest_architecture` in `.github/workflows/ci.yml` (oder separater `mutation.yml`)
-- `make test` und Quality-Gates validieren
-
-### Slice 8 – Dokumentation abschließen
-- Detailplan nach `docs/history/PLANNING_COMMIT_28.md` auslagern
-- `docs/ARCHITECTURE.md`: Architecture-Testing-Status aktualisieren
-- `docs/ROADMAP.md`: Mutation-Testing offene Fragen dokumentieren
-- `COMMIT_PLAN.md`: Status auf Commit 28 setzen, nächste Commits aufzählen
-- Changelog im Unreleased-Block aktualisieren
+- **Pest Arch vs. Deptrac:** Pest 3 is sufficient for layer rules; Deptrac would add too much complexity
+- **Architecture Tests:** Write tests in given-style (concise statements), not as details
+- **Mutation testing:** Scope limited to `app/Domains` for runtime optimization
+- **Git Hooks:** Shell script (POSIX compatible), works on WSL + macOS + Linux
+- **SOLID-Enforcement:** Checking interface implementations, readonly classes, controller patterns
 
 ---
 
-## Erfolgskriterien (DoD)
+## Planned implementation slices
 
-1. Architecture-Suite ist vollständig grün (alle drei Test-Dateien bestanden).
-2. DDD-Grenzen werden automatisiert überprüft (Profile ↔ Analysis koppeln nicht auf Command/Handler-Ebene).
-3. CQRS-Segregation ist validiert (Commands → `void`, Queries → read-only).
-4. SOLID-Regeln sind getestet (Single-Action-Controller, readonly DTOs, Interface-Nutzung).
-5. Mutation-Testing ist vorbereitet (dev-dependency, Script, Target vorhanden; offene Fragen dokumentiert).
-6. Git-Hooks sind installierbar und funktionsfähig (`make hooks-install`).
-7. Makefile und Composer-Scripts sind erweitert (test-arch, test-mutation, hooks-install).
-8. CI ist angepasst (Architecture-Suite läuft im Standard-CI).
-9. Alle Standard-Gates bleiben grün (Pint, PHPStan, Test-Suites).
-10. Dokumentation ist aktualisiert und verlinkt.
+### Slice 0 – Architecture Analysis & Preparation
+- Architecture test suite plan structure (DDD, CQRS, SOLID)
+- Inventory existing layer rules
+- Document Pest Arch syntax and Pest plugin mutates
+
+### Slice 1 – Implement DDD testing
+- `DddArchTest.php`: Bounded Context Boundaries (Profile ↔ Analysis)
+- Validate coupling at Action/UseCase level
+- Prevent model access (Eloquent).
+
+### Slice 2 – Implement CQRS testing
+- `CqrsArchTest.php`: Command/Query segregation
+- Validate namespace conventions (commands, queries, handlers)
+- No command-in-query usage, no query-in-command usage
+
+### Slice 3 – Implement SOLID testing
+- `SolidArchTest.php`: Single-action controller, interface-based design, read-only DTOs
+- Check controller `__invoke` method
+- Validate DTOs immutable
+- Check service interface usage
+
+### Slice 4 – Prepare mutation testing
+- Add `pestphp/pest-plugin-mutate` in `composer.json` as a dev dependency
+- `test:pest-mutation` Implement composer script (Scope: `app/Domains`)
+- `make test-mutation` Add target
+- Document open questions (MSI threshold, slow test strategy) in the roadmap
+
+### Slice 5 – Setting up Git hooks
+- `.githooks/pre-commit` Write script (Pint, PHPStan, commit message check)
+- `make hooks-install` Implement target
+- Validate hook execution locally
+
+### Slice 6 – Extend Makefile & Composer
+- Add `make test-arch`, `make test-arch-gate`, `make test-mutation`, `make hooks-install`
+- `quality:arch-gate` Define composer script
+- `.PHONY` Update targets
+
+### Slice 7 – CI integration & quality gates
+- `phpunit.xml`: Register Architecture Suite as a test suite
+- `pest/Pest.php`: Include architecture tests
+- New CI job `pest_architecture` in `.github/workflows/ci.yml` (or separate `mutation.yml`)
+- Validate `make test` and quality gates
+
+### Slice 8 – Complete documentation
+- Outsource detailed plan to `docs/history/PLANNING_COMMIT_28.md`
+- `docs/ARCHITECTURE.md`: Update architecture testing status
+- `docs/ROADMAP.md`: Mutation testing document open questions
+- `COMMIT_PLAN.md`: Set status to commit 28, list next commits
+- Update changelog in the unreleased block
 
 ---
 
-## Risiken & Gegenmassnahmen
+## Success Criteria (DoD)
 
-- **Risiko:** Arch-Tests zu streng/fragmentiert → zu viele False-Positives.  
-  **Massnahme:** Schrittweise Implementierung, Review nach Slice 3.
+1. Architecture Suite is completely green (all three test files passed).
+2. DDD limits are checked automatically (Profile ↔ Analysis is not linked at the command/handler level).
+3. CQRS segregation is validated (Commands → `void`, Queries → read-only).
+4. SOLID rules are tested (single action controller, readonly DTOs, interface usage).
+5. Mutation testing is prepared (dev dependency, script, target available; open questions documented).
+6. Git hooks are installable and functional (`make hooks-install`).
+7. Makefile and Composer scripts are extended (test-arch, test-mutation, hooks-install).
+8. CI is customized (architecture suite runs in standard CI).
+9. All standard gates remain green (Pint, PHPStan, test suites).
+10. Documentation is updated and linked.
 
-- **Risiko:** Mutation-Tests werden zu langsam.  
-  **Massnahme:** Scope auf `app/Domains` begrenzt; Option für parallele Ausführung vorbereiten.
+---
 
-- **Risiko:** Git-Hooks funktionieren nicht auf allen Plattformen.  
-  **Massnahme:** POSIX-kompatibles Shell-Script, WSL/macOS/Linux getestet.
+## Risks & countermeasures
 
-- **Risiko:** CI-Komplexität wächst.  
-  **Massnahme:** Architecture-Tests im Standard-CI, Mutation im separaten Workflow (optional).
+- **Risk:** Arch tests too strict/fragmented → too many false positives.
+  **Measure:** Step-by-step implementation, review after Slice 3.
+
+- **Risk:** Mutation testing becomes too slow.
+  **Measure:** Scope limited to `app/Domains`; Prepare option for parallel execution.
+
+- **Risk:** Git hooks do not work on all platforms.
+  **Action:** POSIX-compatible shell script, WSL/macOS/Linux tested.
+
+- **Risk:** CI complexity grows.
+  **Measure:** Architecture tests in the standard CI, mutation in a separate workflow (optional).
 
 ---
 
 ## Definition of Ready
 
-- Pest Arch Syntax ist dokumentiert.
-- Layer-Regeln sind konkret aufgelistet.
-- Mutation-Testing Framework ist ausgewählt (pest-plugin-mutate).
-- Git-Hook-Anforderungen sind klar (Pint, PHPStan, Commit-Message).
+- Pest Arch syntax is documented.
+- Layer rules are specifically listed.
+- Mutation testing framework is selected (pest-plugin-mutate).
+- Git hook requirements are clear (Pint, PHPStan, commit message).
 
 ## Definition of Done
 
-- Alle geplanten Slices sind umgesetzt.
-- Architecture-Suite läuft lokal und in CI grün.
-- Mutation-Testing ist vorbereitet (dev-dependency, Script, offene Fragen dokumentiert).
-- Git-Hooks sind manuell aktivierbar und funktionsfähig.
-- `make test-arch-gate`, `make test-mutation`, `make hooks-install` funktionieren.
-- Doku ist aktualisiert und verlinkt.
-- Changelog ist im Unreleased-Block gepflegt.
+- All planned slices have been implemented.
+- Architecture Suite runs locally and in CI green.
+- Mutation testing is prepared (dev dependency, script, open questions documented).
+- Git hooks can be activated manually and are functional.
+- `make test-arch-gate`, `make test-mutation`, `make hooks-install` work.
+- Documentation is updated and linked.
+- Changelog is maintained in the Unreleased block.
 
 ---
 
-## Verweise
+## References
 
-- Aktivplan: `COMMIT_PLAN.md`
-- Vorheriger Detailplan: `docs/history/PLANNING_COMMIT_27.md`
+- Activity plan: `COMMIT_PLAN.md`
+- Previous detailed plan: `docs/history/PLANNING_COMMIT_27.md`
 - Roadmap: `docs/ROADMAP.md`
-- Architektur-Dokumentation: `docs/ARCHITECTURE.md`
-- Agent-Kontext: `docs/ai/AGENT_CONTEXT.md`
-
-
+- Architecture documentation: `docs/ARCHITECTURE.md`
+- Agent context: `docs/ai/AGENT_CONTEXT.md`

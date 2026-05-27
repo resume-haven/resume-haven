@@ -1,146 +1,145 @@
-# Detailplanung Commit 30 — CV-Verwaltung (Multi-CV CRUD)
+# Detailed planning Commit 30 — CV management (Multi-CV CRUD)
 
-**Branch:** `feature/commit-30-multi-cv-crud`  
-**Status:** Abgeschlossen  
-**Erstellt:** 2026-04-23  
-**Abgeschlossen:** 2026-04-24
-
----
-
-## Ziel
-
-Die bisherige Profilfunktion von einem einzelnen, tokenbasierten CV-Flow zu einer
-robusten CV-Verwaltung pro User ausbauen. Nutzer sollen mehrere gespeicherte CVs
-sehen, bearbeiten, loeschen und erneut fuer Analysen verwenden koennen.
+**Branch:** `feature/commit-30-multi-cv-crud`
+**Status:** Completed
+**Created:** 2026-04-23
+**Completed:** 2026-04-24
 
 ---
 
-## Entscheidungslog (aus Planungs-Session 2026-04-23)
+##Goal
 
-| # | Frage | Entscheidung |
+The previous profile function from a single, token-based CV flow to one
+Expand robust CV management per user. Users should have multiple saved CVs
+View, edit, delete and reuse for analysis.
+
+---
+
+## Decision log (from planning session 2026-04-23)
+
+| # | Question | decision |
 |---|-------|--------------|
-| 1 | Restarbeiten aus Commit 29 | Nicht als `29a`, sondern als Roadmap-Follow-up |
-| 2 | Startumfang Commit 30 | Direkt kompletter CRUD-Scope |
-| 3 | Migration `resume_token` → `resume_tokens[]` | Pragmatic Cutover ohne Backward-Compat-Garantie |
-| 4 | Pagination | Ja, initial fixe Seitengroesse `10` |
-| 5 | Testtiefe | Vollstaendiger Testkatalog inkl. Edge-Cases |
+| 1 | Remaining work from commit 29 | Not as a `29a`, but as a roadmap follow-up |
+| 2 | Starting scope commit 30 | Directly complete CRUD scope |
+| 3 | Migration `resume_token` → `resume_tokens[]` | Pragmatic Cutover without Backward Compat Guarantee |
+| 4 | Pagination | Yes, initially fixed page size `10` |
+| 5 | Test depth | Complete test catalog including edge cases |
 
 ---
 
-## Scope
+##Scope
 
-### Schritt 1 — Dashboard / CV-Uebersicht
+### Step 1 — Dashboard / CV overview
 
-- Neue User-Ansicht fuer gespeicherte CVs
-- Pagination mit fixer Seitengroesse `10`
-- Sortierung: zuletzt aktualisierte CVs zuerst
-- Nur eigene CVs sichtbar; Admin darf im Rahmen der Policy zugreifen
+- New user view for saved CVs
+- Pagination with fixed page size `10`
+- Sorting: most recently updated CVs first
+- Only your own CVs visible; Admin is allowed access within the scope of the policy
 
-### Schritt 2 — Multi-CV speichern
+### Step 2 — Save Multi CV
 
-- Speichern erzeugt zusaetzliche CV-Eintraege statt den impliziten Single-Flow fortzuschreiben
-- Bei eingeloggten Nutzern wird `user_id` direkt gesetzt
-- Session fuehrt Tokens in `resume_tokens[]`
-- Duplikatbehandlung fuer Session-Tokens eindeutig definieren
+- Saving creates additional CV entries instead of updating the implicit single flow
+- For logged in users, `user_id` is set directly
+- Session brings tokens into `resume_tokens[]`
+- Clearly define duplicate handling for session tokens
 
-### Schritt 3 — CV bearbeiten
+### Step 3 — Edit CV
 
-- Owner kann vorhandene CVs aktualisieren
-- Admin kann moderierend zugreifen
-- Token-/Owner-Verknuepfung bleibt stabil
-- Analyse-Reuse mit aktualisiertem CV bleibt moeglich
+- Owner can update existing CVs
+- Admin can have moderating access
+- Token/owner linkage remains stable
+- Analysis reuse with updated CV remains possible
 
-### Schritt 4 — CV loeschen
+### Step 4 — Delete CV
 
-- Owner kann eigene CVs loeschen
-- Admin darf loeschen
-- Loeschen entfernt Token sauber aus `resume_tokens[]`
-- Nicht mehr vorhandene CVs sind nicht erneut ladbar
+- Owner can delete his own CVs
+- Admin can delete
+- Delete cleanly removes tokens from `resume_tokens[]`
+- CVs that no longer exist cannot be reloaded
 
-### Schritt 5 — Ownership / Policy / Routing
+### Step 5 — Ownership / Policy / Routing
 
-- `ProfilePolicy` wird auf Dashboard-/CRUD-Flows konsequent angewandt
-- Keine Repository-Bypaesse an Controllergrenzen
-- Routen und Use-Cases trennen Lesefluessen und Schreibpfade klar
+- `ProfilePolicy` is consistently applied to dashboard/CRUD flows
+- No repository bypasses at controller boundaries
+- Routes and use cases clearly separate read flows and write paths
 
-### Schritt 6 — Regressionen absichern
+### Step 6 — Secure regressions
 
-- Bestehende Flows fuer Claim, Load, Retention und Analyse-Reuse bleiben gruen
-- `resume_token` wird nicht mehr als primaerer Vertrag vorausgesetzt
-- Leere oder fehlende `resume_tokens[]`-Session wird robust behandelt
-
----
-
-## Testkatalog
-
-### Feature-Tests
-
-- User sieht nur eigene CVs in paginierter Liste
-- Pagination liefert maximal 10 Eintraege pro Seite
-- Owner kann CV erstellen, bearbeiten, loeschen
-- Fremder User darf weder bearbeiten noch loeschen
-- Admin darf auf freigegebene Verwaltungsoperationen zugreifen
-- `resume_tokens[]` wird beim Speichern erweitert und beim Loeschen bereinigt
-- Bestehende Claim-/Load-Flows bleiben funktionsfaehig
-
-### Unit-Tests
-
-- Repository-Sortierung / Pagination-Vertrag
-- Session-Token-Helfer fuer `resume_tokens[]`
-- Policy-Entscheidungen (Owner / Fremder / Admin)
-- Action-/DTO-Raender fuer Update/Delete/Cutover
-
-### Edge-Cases
-
-- Leere CV-Liste
-- Ungueltiger oder nicht mehr vorhandener Token
-- Doppelte Tokens in der Session
-- Loeschen eines bereits geloeschten Datensatzes
-- Update mit ungueltigem Inhalt / Validierungsfehler
+- Existing flows for claim, load, retention and analysis reuse remain green
+- `resume_token` is no longer required as a primary contract
+- Empty or missing `resume_tokens[]` session is handled robustly
 
 ---
 
-## Nicht-Scope in Commit 30
+## Test catalog
 
-- ❌ Keine Team-/Mandantenverwaltung
-- ❌ Keine User-basierte Schluesselrotation fuer gespeicherte CVs
-- ❌ Keine Admin-UI ausser notwendiger Vorbereitungen
-- ❌ Keine frei konfigurierbare Pagination im MVP
-- ❌ Keine Suche / Filter / Tags in der CV-Liste (spaeterer Ausbau)
+### Feature testing
+
+- Users only see their own CVs in a paginated list
+- Pagination provides a maximum of 10 entries per page
+- Owner can create, edit, delete CV
+- External users are not allowed to edit or delete
+- Admin is allowed to access shared administrative operations
+- `resume_tokens[]` is expanded when saved and cleaned up when deleted
+- Existing claim/load flows remain functional
+
+### Unit testing
+
+- Repository sorting/pagination contract
+- Session token helper for `resume_tokens[]`
+- Policy decisions (owner / stranger / admin)
+- Action/DTO borders for update/delete/cutover
+
+### Edge cases
+
+- Empty CV list
+- Invalid or no longer existing token
+- Duplicate tokens in the session
+- Deleting an already deleted data record
+- Update with invalid content/validation error
 
 ---
 
-## Erfolgskriterien
+## Non scope in commit 30
 
-- Nutzer sehen ihre CVs paginiert und nach Aktualitaet sortiert
-- CRUD funktioniert fuer Owner/Admin gemaess Policy
-- `resume_tokens[]` ersetzt den alten Single-Token-Flow robust
-- Claim-, Load- und Retention-Flows bleiben regressionsfrei
+- ❌ No team/client management
+- ❌ No user-based key rotation for saved CVs
+- ❌ No admin UI other than necessary preparations
+- ❌ No configurable pagination in the MVP
+- ❌ No search / filter / tags in the CV list (later expansion)
+
+---
+
+## Success criteria
+
+- Users see their CVs paginated and sorted by topicality
+- CRUD works for Owner/Admin according to policy
+- `resume_tokens[]` robustly replaces the old single token flow
+- Claim, load and retention flows remain regression-free
 - PHPStan Level 9: 0 Errors
-- Pint: sauber
-- Coverage-Ziel bleibt eingehalten
+- Pint: clean
+- Coverage target remains met
 
 ---
 
-## Risiken / offene Punkte
+## Risks / open points
 
-- Pragmatic Cutover auf `resume_tokens[]` erfordert saubere Session-Migration innerhalb des laufenden Flows
-- Delete-/Update-Aktionen duerfen bestehende Analyse- oder Claim-Flows nicht inkonsistent machen
-- Die Dashboard-UI soll klar bleiben, obwohl noch keine spaeteren Komfortfunktionen (Suche/Filter) vorhanden sind
+- Pragmatic cutover on `resume_tokens[]` requires clean session migration within the running flow
+- Delete/Update actions must not make existing analysis or claim flows inconsistent
+- The dashboard UI should remain clear, although no later convenience functions (search/filter) are available
 
 ---
 
-## Verweise
+## References
 
-- Aktiver Plan: `../../COMMIT_PLAN.md`
+- Active plan: `../../COMMIT_PLAN.md`
 - Roadmap: `../ROADMAP.md`
-- Vorheriger Detailplan: `PLANNING_COMMIT_29.md`
-- Historie-Index: `../COMMIT_HISTORY_INDEX.md`
+- Previous detailed plan: `PLANNING_COMMIT_29.md`
+- History index: `../COMMIT_HISTORY_INDEX.md`
 
 ---
 
-## Abschlussnotiz
+## Closing note
 
-- Commit 30 wurde erfolgreich abgeschlossen und gemerged.
-- Naechste Umsetzungsreihenfolge fuer Commit 31 wurde festgelegt: **3, 1, 2**.
-
+- Commit 30 was successfully completed and merged.
+- The next implementation order for commit 31 has been set: **3, 1, 2**.

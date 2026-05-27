@@ -3,8 +3,8 @@
 Dieser Plan enthaelt nur den **aktiven** und **naechsten** Arbeitsfokus.  
 Abgeschlossene Details sind in die Historie ausgelagert.
 
-**Letzte Aktualisierung:** 2026-05-07  
-**Aktueller Stand:** Commit 34 abgeschlossen, Commit 35 (Auth/Claim UX-Polish) in Arbeit
+**Letzte Aktualisierung:** 2026-05-27  
+**Aktueller Stand:** Commit 35 abgeschlossen, Commit 36 (Roadmap-Planning & Documentation Sync) in Arbeit
 
 ---
 
@@ -23,12 +23,15 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 32: L2 Plugin-Interface + OpenAI auswählbar + provider-spezifisches Exception-Mapping (abgeschlossen)
 - Commit 33: L3 Anthropic Provider PoC + minimaler E2E-Analyse-Pfad (abgeschlossen)
 - Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
+- Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback) (abgeschlossen)
 
 ### In Arbeit
-- Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback)
+- Commit 36: Roadmap-Planning & Documentation Sync ✅
 
 ### In Planung (Folge)
-- Deployment: nach CV-Verwaltung und LLM-Block neu einordnen
+- Commit 37: **Deployment-Basis & Infrastructure Härtung**
+  - Ziel: Projekt "production-ready" machen (Config, Logging, Env-Validation)
+- Commit 38: CV-Verwaltung (Ausbau Filter/Suche)
 
 ### Commit-31 Reihenfolge (abgeschlossen)
 - 3) Acceptance-Gate fuer Multi-CV erweitern (S, niedriges Risiko)
@@ -42,8 +45,9 @@ Abgeschlossene Details sind in die Historie ausgelagert.
   - Commit L3: Erster Zweit-Provider als Proof of Concept ✅ **Commit 33**
   - Commit L4: Konfigurierbarer Retry-PoC + Error-Hardening ✅ **Commit 34**
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
-- **Auth/Claim UX-Polish (naechster Commit):** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ← **Commit 35**
-- **Deployment:** erst nach User-/LLM-Block neu einordnen
+- **Auth/Claim UX-Polish:** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ✅ **Commit 35**
+- **Roadmap-Planning & Documentation Sync:** align commit and roadmap status, prioritize Commit 36 ✅ **Commit 36**
+- **Deployment-Basis & Infrastructure Härtung:** Projekt "production-ready" machen ← **Commit 37**
 
 ### Commit 32 - L2 Plugin-Interface + OpenAI (abgeschlossen)
 
@@ -63,11 +67,23 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - **Umfang:** Konfigurierbarer Retry-PoC im `AbstractLlmAiAnalyzer`, provider-spezifische Transient-Heuristiken, erweitertes Logging, expliziter Rollback per Config.
 - **Nicht-Scope:** Kein Provider-Fallback, keine UI-Änderungen, keine Deployment-Neueinordnung, kein vollwertiges Retry-/Backoff-Framework.
 
-### Commit 35 - Auth/Claim UX-Polish (in Arbeit)
+### Commit 35 - Auth/Claim UX-Polish (abgeschlossen)
 
 - **Ziel:** Auth-/Claim-Flow aus Nutzersicht konsistent machen, ohne neue Domain-Features einzufuehren.
 - **Umfang:** `result.show`-Route fuer Session-basierten Ergebnis-Restore, expliziter Session-Key `analysis_result_view_data`, claim-spezifische Redirect-Hinweise, Back-Button-freundliche Persistenz, Auth-/Result-Microcopy schaerfen.
 - **Nicht-Scope:** Keine neue Domain-Logik fuer Claiming, kein Dashboard-Ausbau, keine Deployment-Arbeit.
+
+### Commit 36 - Roadmap-Planning & Documentation Sync (abgeschlossen)
+
+- **Ziel:** Planungs- und Statusdokumente nach Abschluss von Commit 35 konsistent auf den naechsten Umsetzungsfokus ausrichten.
+- **Umfang:** Statusangleichung in `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md` sowie Abschluss von Commit 36.
+- **Ergebnis:** Commit 37 wurde als "Deployment-Basis & Infrastructure Härtung" priorisiert.
+
+### Commit 37 - Deployment-Basis & Infrastructure Härtung (geplant)
+
+- **Ziel:** Das Projekt technologisch auf ein produktives Deployment vorbereiten.
+- **Umfang:** Production-Config Audit, Environment-Validation (required Vars), Logging-Profile (JSON/Stack), Security-Header-Härtung.
+- **Nicht-Scope:** Tatsächliches Cloud-Deployment, CI/CD Pipeline Ausbau (nur lokale Vorbereitung).
 
 ---
 
@@ -195,7 +211,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 - CI/Branch-Protection wurde in Commit 23 abgeschlossen
 - Planung wurde auf produktnahen Mehrwert neu priorisiert (`A,B,D,C,E`)
-- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist Commit 35 (Auth/Claim UX-Polish)
+- User/Auth wurde in Commit 29 eingefuehrt; aktueller Fokus ist Commit 36 (Roadmap-Planung & Doku-Sync)
 - Deployment wird bewusst spaeter und kontextabhaengig neu bewertet
 
 ---
@@ -217,6 +233,7 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 33: `docs/history/PLANNING_COMMIT_33.md`
 - Detailplanung Commit 34: `docs/history/PLANNING_COMMIT_34.md`
 - Detailplanung Commit 35: `docs/history/PLANNING_COMMIT_35.md`
+- Detailplanung Commit 36: `docs/history/PLANNING_COMMIT_36.md`
 - Roadmap: `docs/ROADMAP.md`
 
 ---
