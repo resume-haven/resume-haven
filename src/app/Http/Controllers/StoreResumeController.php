@@ -24,12 +24,20 @@ class StoreResumeController extends Controller
     {
         /** @var string $cvText */
         $cvText = $request->validated('cv_text');
+        $fileName = $request->validated('file_name');
+        $originalFilename = $request->validated('original_filename');
+
         $authId = Auth::id();
         $userId = is_int($authId) ? $authId : null;
 
         /** @var ResumeTokenDto $tokenDto */
         $tokenDto = $dispatcher->dispatch(
-            new StoreResumeCommand(new StoreResumeDto($cvText, $userId))
+            new StoreResumeCommand(new StoreResumeDto(
+                cvText: $cvText,
+                userId: $userId,
+                fileName: is_string($fileName) ? $fileName : null,
+                originalFilename: is_string($originalFilename) ? $originalFilename : null,
+            ))
         );
 
         $this->resumeTokenSession->add($request->session(), $tokenDto->token);

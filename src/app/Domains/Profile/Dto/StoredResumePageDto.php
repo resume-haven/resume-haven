@@ -13,6 +13,9 @@ readonly class StoredResumePageDto
         public int $lastPage,
         public int $perPage,
         public int $total,
+        public ?string $search = null,
+        public string $sort = 'updated_at',
+        public string $direction = 'desc',
     ) {}
 
     public function hasPreviousPage(): bool
@@ -37,8 +40,11 @@ readonly class StoredResumePageDto
 
     /**
      * @return array{
-     *     items: list<array{token: string, preview: string, updated_at: string, is_current: bool}>,
-     *     pagination: array{current_page: int, last_page: int, per_page: int, total: int, has_previous: bool, has_next: bool, previous_page: int|null, next_page: int|null}
+     *     items: list<array{token: string, preview: string, updated_at: string, is_current: bool, file_name: ?string, original_filename: ?string}>,
+     *     pagination: array{current_page: int, last_page: int, per_page: int, total: int, has_previous: bool, has_next: bool, previous_page: int|null, next_page: int|null},
+     *     search: ?string,
+     *     sort: string,
+     *     direction: string
      * }
      */
     public function toArray(): array
@@ -58,6 +64,9 @@ readonly class StoredResumePageDto
                 'previous_page' => $this->previousPage(),
                 'next_page' => $this->nextPage(),
             ],
+            'search' => $this->search,
+            'sort' => $this->sort,
+            'direction' => $this->direction,
         ];
     }
 }

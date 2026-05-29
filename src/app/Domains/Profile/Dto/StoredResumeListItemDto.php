@@ -11,9 +11,11 @@ readonly class StoredResumeListItemDto
         public string $preview,
         public string $updatedAt,
         public bool $isCurrent,
+        public ?string $fileName = null,
+        public ?string $originalFilename = null,
     ) {}
 
-    /** @return array{token: string, preview: string, updated_at: string, is_current: bool} */
+    /** @return array{token: string, preview: string, updated_at: string, is_current: bool, file_name: ?string, original_filename: ?string} */
     public function toArray(): array
     {
         return [
@@ -21,6 +23,8 @@ readonly class StoredResumeListItemDto
             'preview' => $this->preview,
             'updated_at' => $this->updatedAt,
             'is_current' => $this->isCurrent,
+            'file_name' => $this->fileName,
+            'original_filename' => $this->originalFilename,
         ];
     }
 }

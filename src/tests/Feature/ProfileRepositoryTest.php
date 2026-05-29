@@ -318,3 +318,79 @@ test('profile repository prune keeps claimed resumes even if stale', function ()
     expect($deleted)->toBe(1);
     expect(StoredResume::query()->pluck('token')->all())->toBe([str_repeat('R', 32)]);
 });
+
+test('profile repository searches resumes by file name or original filename', function (): void {
+    $repository = new ProfileRepository();
+    $user = User::factory()->create();
+
+    StoredResume::query()->insert([
+        [
+            'token' => str_pad('SEARCH1', 32, '1'),
+            'user_id' => $user->id,
+            'file_name' => 'Mein Super Lebenslauf',
+            'original_filename' => 'cv_final.pdf',
+            'encrypted_cv' => 'content',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ],
+        [
+            'token' => str_pad('SEARCH2', 32, '2'),
+            'user_id' => $user->id,
+            'file_name' => 'Anderes Dokument',
+            'original_filename' => 'beispiel.pdf',
+            'encrypted_cv' => 'content',
+            'created_at' => Carbon::now()->subMinute(),
+            'updated_at' => Carbon::now()->subMinute(),
+        ],
+    ]);
+
+    // Suche nach file_name
+    $result = $repository->paginateByUser($user->id, 10, 1, 'Super');
+    expect($result->total())->toBe(1);
+    expect($result->items()[0]->token)->toBe(str_pad('SEARCH1', 32, '1'));
+
+    // Suche nach original_filename
+    $result = $repository->paginateByUser($user->id, 10, 1, 'final');
+    expect($result->total())->toBe(1);
+    expect($result->items()[0]->token)->toBe(str_pad('SEARCH1', 32, '1'));
+
+    // Suche ohne Treffer
+    $result = $repository->paginateByUser($user->id, 10, 1, 'NichtExistierend');
+    expect($result->total())->toBe(0);
+});
+
+test('profile repository sorts resumes by different columns and directions', function (): void {
+    $repository = new ProfileRepository();
+    $user = User::factory()->create();
+
+    StoredResume::query()->insert([
+        [
+            'token' => str_pad('SORT1', 32, '1'),
+            'user_id' => $user->id,
+            'file_name' => 'B Lebenslauf',
+            'encrypted_cv' => 'content',
+            'created_at' => Carbon::now()->subHours(2),
+            'updated_at' => Carbon::now()->subHours(2),
+        ],
+        [
+            'token' => str_pad('SORT2', 32, '2'),
+            'user_id' => $user->id,
+            'file_name' => 'A Lebenslauf',
+            'encrypted_cv' => 'content',
+            'created_at' => Carbon::now()->subHour(),
+            'updated_at' => Carbon::now()->subHour(),
+        ],
+    ]);
+
+    // Sortierung nach Name ASC
+    $result = $repository->paginateByUser($user->id, 10, 1, null, 'file_name', 'asc');
+    expect($result->items()[0]->token)->toBe(str_pad('SORT2', 32, '2'));
+
+    // Sortierung nach Name DESC
+    $result = $repository->paginateByUser($user->id, 10, 1, null, 'file_name', 'desc');
+    expect($result->items()[0]->token)->toBe(str_pad('SORT1', 32, '1'));
+
+    // Sortierung nach Aktualisierung (Standard: DESC)
+    $result = $repository->paginateByUser($user->id, 10, 1, null, 'updated_at', 'desc');
+    expect($result->items()[0]->token)->toBe(str_pad('SORT2', 32, '2'));
+});

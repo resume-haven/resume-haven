@@ -14,6 +14,9 @@ final class ListStoredResumesQuery
         public readonly int $page = 1,
         public readonly int $perPage = 10,
         public readonly ?string $currentToken = null,
+        public readonly ?string $search = null,
+        public readonly string $sort = 'updated_at',
+        public readonly string $direction = 'desc',
     ) {}
 
     public function handle(ListStoredResumesHandler $handler): StoredResumePageDto

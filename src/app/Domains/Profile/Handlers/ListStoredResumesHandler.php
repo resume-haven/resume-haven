@@ -20,7 +20,14 @@ final class ListStoredResumesHandler
 
     public function handle(ListStoredResumesQuery $query): StoredResumePageDto
     {
-        $paginator = $this->repository->paginateByUser($query->userId, $query->perPage, $query->page);
+        $paginator = $this->repository->paginateByUser(
+            userId: $query->userId,
+            perPage: $query->perPage,
+            page: $query->page,
+            search: $query->search,
+            sort: $query->sort,
+            direction: $query->direction,
+        );
 
         $items = array_values(array_map(
             fn (StoredResume $resume): StoredResumeListItemDto => $this->mapResume($resume, $query->currentToken),
@@ -33,6 +40,9 @@ final class ListStoredResumesHandler
             lastPage: $paginator->lastPage(),
             perPage: $paginator->perPage(),
             total: $paginator->total(),
+            search: $query->search,
+            sort: $query->sort,
+            direction: $query->direction,
         );
     }
 
@@ -46,6 +56,8 @@ final class ListStoredResumesHandler
             preview: $preview,
             updatedAt: $resume->updated_at->format('d.m.Y H:i'),
             isCurrent: $currentToken === $resume->token,
+            fileName: $resume->file_name,
+            originalFilename: $resume->original_filename,
         );
     }
 

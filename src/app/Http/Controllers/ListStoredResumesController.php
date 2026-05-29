@@ -31,13 +31,20 @@ final class ListStoredResumesController extends Controller
         $currentToken = $this->resumeTokenSession->current($request->session());
 
         $page = max((int) $request->integer('page', 1), 1);
+        $perPage = max((int) $request->integer('per_page', 10), 1);
+        $search = $request->string('search')->trim()->value();
+        $sort = $request->string('sort', 'updated_at')->value();
+        $direction = $request->string('direction', 'desc')->value();
 
         /** @var StoredResumePageDto $resumePage */
         $resumePage = $dispatcher->dispatch(new ListStoredResumesQuery(
             userId: $userId,
             page: $page,
-            perPage: 10,
+            perPage: $perPage,
             currentToken: $currentToken,
+            search: $search !== '' ? $search : null,
+            sort: $sort,
+            direction: $direction,
         ));
 
         return view('profile.index', $resumePage->toArray());

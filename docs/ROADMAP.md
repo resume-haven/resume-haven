@@ -275,16 +275,14 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
 - Commit 35: Auth/Claim UX polish (result restore, token-based redirects, claim feedback) (completed)
 
-## 🔄 In progress
-- Commit 36: Roadmap planning & documentation sync ✅
-  - Status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md`, and `docs/history/COMMIT_HISTORY_2026.md`
-  - Re-prioritize: Swap Commit 37 and 38 (CV management before deployment basis)
-
-## 📋 Planned
+## ✅ Completed
 - Commit 37: **CV-Verwaltung Ausbau**
-  - Ziel: Filter, Suche und Paginierung für gespeicherte Lebensläufe im Dashboard.
-  - Fokus: UX-Verbesserung für Nutzer mit vielen Dokumenten.
-- Commit 38: **Paperdoc-Integration & Dokument-Parsing**
+  - Datenmodell-Erweiterung (`file_name`, `original_filename`).
+  - Dashboard-Suche und flexible Sortierung.
+  - Konfigurierbare Paginierung.
+
+## 🔄 In progress
+- Commit 38: **Paperdoc-Integration & Dokument-Parsing** *
   - Ziel: PDF/DOCX Import via Paperdoc.dev.
   - Fokus: Automatisierung des Inputs für CV und Job.
 - Commit 39: **Bewerbungs-Lifecycle & Persistenz**
