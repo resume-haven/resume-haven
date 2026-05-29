@@ -26,17 +26,16 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback) (abgeschlossen)
 
 ### In Arbeit
+- Commit 37: CV-Verwaltung Ausbau (in Planung)
+
+### Abgeschlossen (neu)
 - Commit 36: Roadmap-Planning & Documentation Sync ✅
 
 ### In Planung (Folge)
-- Commit 37: **Deployment-Basis & Infrastructure Härtung**
+- Commit 38: **Deployment-Basis & Infrastructure Härtung**
   - Ziel: Projekt "production-ready" machen (Config, Logging, Env-Validation)
-- Commit 38: CV-Verwaltung (Ausbau Filter/Suche)
-
-### Commit-31 Reihenfolge (abgeschlossen)
-- 3) Acceptance-Gate fuer Multi-CV erweitern (S, niedriges Risiko)
-- 1) Autorisierter Delete-Flow mit Session-Token-Cleanup (M, mittleres Risiko)
-- 2) Session-Token-Handling vereinheitlichen (S-M, niedrig-mittleres Risiko)
+- Commit 39: **Engineering-Exzellenz & Dokumentation**
+  - Ziel: arc42, req42, Mutation Testing
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**
@@ -47,7 +46,8 @@ Abgeschlossene Details sind in die Historie ausgelagert.
   - Details & offene Fragen: `docs/ROADMAP.md` → Phase 5
 - **Auth/Claim UX-Polish:** Ergebnis-Restore + Redirect-/Feedback-Schaerfung ✅ **Commit 35**
 - **Roadmap-Planning & Documentation Sync:** align commit and roadmap status, prioritize Commit 36 ✅ **Commit 36**
-- **Deployment-Basis & Infrastructure Härtung:** Projekt "production-ready" machen ← **Commit 37**
+- **CV-Verwaltung Ausbau:** Suche/Filter/Paginierung im Dashboard ← **Commit 37**
+- **Deployment-Basis & Infrastructure Härtung:** Projekt "production-ready" machen ← **Commit 38**
 
 ### Commit 32 - L2 Plugin-Interface + OpenAI (abgeschlossen)
 
@@ -77,9 +77,15 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 
 - **Ziel:** Planungs- und Statusdokumente nach Abschluss von Commit 35 konsistent auf den naechsten Umsetzungsfokus ausrichten.
 - **Umfang:** Statusangleichung in `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md` sowie Abschluss von Commit 36.
-- **Ergebnis:** Commit 37 wurde als "Deployment-Basis & Infrastructure Härtung" priorisiert.
+- **Ergebnis:** Commit 37 wurde als "CV-Verwaltung Ausbau" priorisiert.
 
-### Commit 37 - Deployment-Basis & Infrastructure Härtung (geplant)
+### Commit 37 - CV-Verwaltung Ausbau (geplant)
+
+- **Ziel:** Die Nutzbarkeit des Dashboards bei vielen Lebenslaeufen durch Filter- und Suchmoeglichkeiten verbessern.
+- **Umfang:** Paginierung schaerfen, Suche nach Dateiname/Inhalt (optional), Filtern nach Zeitraum oder Status.
+- **Nicht-Scope:** Massen-Aktionen (Bulk-Delete), Team-Features, PDF-Vorschau.
+
+### Commit 38 - Deployment-Basis & Infrastructure Härtung (geplant)
 
 - **Ziel:** Das Projekt technologisch auf ein produktives Deployment vorbereiten.
 - **Umfang:** Production-Config Audit, Environment-Validation (required Vars), Logging-Profile (JSON/Stack), Security-Header-Härtung.
@@ -234,7 +240,26 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Detailplanung Commit 34: `docs/history/PLANNING_COMMIT_34.md`
 - Detailplanung Commit 35: `docs/history/PLANNING_COMMIT_35.md`
 - Detailplanung Commit 36: `docs/history/PLANNING_COMMIT_36.md`
+- Detailplanung Commit 37: `docs/history/PLANNING_COMMIT_37.md`
 - Roadmap: `docs/ROADMAP.md`
+
+---
+
+## Commit 37 — CV-Verwaltung Ausbau
+
+**Branch:** `feature/commit-37-cv-management-expansion`
+**Status:** In Planung
+
+### Ziel
+- Ein paginiertes User-Dashboard mit Such- und Filterfunktionen bereitstellen
+
+### Scope
+- Suche nach Dateiname/Inhalt
+- Filter nach Datum/Status
+- Konfigurierbare Pagination
+
+### Detailplan
+- Siehe: `docs/history/PLANNING_COMMIT_37.md`
 
 ---
 

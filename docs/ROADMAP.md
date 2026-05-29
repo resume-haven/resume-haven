@@ -45,7 +45,32 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 
 ---
 
-# 🧠 Phase 2 – Engine‑Verbesserungen (in Arbeit)
+# 🧠 Phase 2 – Bewerbungs-Management & Dokument-Workflow (Neu fokussiert)
+
+## 1. Dokument-Handling & Paperdoc-Integration (Commit 39)
+- [ ] **Import:** Automatisches Auslesen von PDF/DOCX via Paperdoc.dev.
+- [ ] **Validierung:** Prüfung auf Dateigröße und Formate (mimes:pdf,docx).
+- [ ] **Fallbacks:** Nahtloser Wechsel zwischen File-Upload und Copy-Paste.
+
+## 2. Persistenz & Bewerbungs-Lifecycle (Commit 41)
+- [ ] **Application-Model:** Einführung einer `Application`-Entity (Job + CV + Status).
+- [ ] **Bewerbungshistorie:** Tracking von Events (Abgeschickt, Interview, Zusage, Absage).
+- [ ] **Metadaten:** Erfassung von Gehaltswunsch, Notizen und Bewerbungsdatum.
+
+## 3. Generierung & Interaktives Editing (Commit 42)
+- [ ] **Rohdaten-Modus:** KI generiert optimierten CV und Anschreiben als editierbare Rohdaten (Markdown/JSON).
+- [ ] **Inline-Editor:** UI zum Anpassen der Vorschläge vor der Finalisierung.
+- [ ] **Versionierung:** Speicherung der Rohdaten + PDFs pro Iteration.
+- [ ] **Export:** Finaler PDF-Download via Paperdoc.
+
+## 4. Dashboard & Analytics (Commit 43)
+- [ ] **Übersicht:** Status-Board aller aktiven und vergangenen Bewerbungen.
+- [ ] **Analytics:** Auswertung von Erfolgsquoten (z. B. "Interview-Rate").
+- [ ] **Suche & Filter:** Schneller Zugriff auf spezifische Stellenausschreibungen.
+
+---
+
+# 🧠 Phase 3 – Engine‑Verbesserungen (fortlaufend)
 
 ## 1. Verbesserte Extraktion
 - robustere Erkennung von Anforderungen  
@@ -226,7 +251,8 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 # 📊 Current status (2026-05-27)
 
 ## ✅ Completed
-- Phase 1 (MVP): Komplett umgesetzt
+- **Phase 1 (MVP):** Komplett umgesetzt
+- **Phase 2 (BMS & Dokumente):** Integration von Paperdoc, Bewerbungshistorie und Dashboard (Neu fokussiert)
 - DDD-Architektur mit Commands/Handlers/UseCases/Actions
 - CQRS-Pattern (Phase 1 abgeschlossen, Phase 2 in Arbeit)
 - Code-Coverage: >=95% abgesichert
@@ -252,13 +278,30 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 ## 🔄 In progress
 - Commit 36: Roadmap planning & documentation sync ✅
   - Status alignment between `COMMIT_PLAN.md`, `docs/ROADMAP.md`, `docs/COMMIT_HISTORY_INDEX.md`, `docs/ai/WORKING_BASELINE.md`, and `docs/history/COMMIT_HISTORY_2026.md`
-  - Prioritize the next implementation commit (Commit 37)
+  - Re-prioritize: Swap Commit 37 and 38 (CV management before deployment basis)
 
 ## 📋 Planned
-- Commit 37: **Deployment-Basis & Infrastructure Härtung** (Empfehlung)
-  - Ziel: Das Projekt auf einen Zustand heben, der ein produktives Deployment ermöglicht.
-  - Fokus: Production-ready Config, Environment-Validation, Logging-Verschärfung.
-- Commit 38+: CV-Verwaltung Ausbau (Filter, Suche, Paginierung)
+- Commit 37: **CV-Verwaltung Ausbau**
+  - Ziel: Filter, Suche und Paginierung für gespeicherte Lebensläufe im Dashboard.
+  - Fokus: UX-Verbesserung für Nutzer mit vielen Dokumenten.
+- Commit 38: **Paperdoc-Integration & Dokument-Parsing**
+  - Ziel: PDF/DOCX Import via Paperdoc.dev.
+  - Fokus: Automatisierung des Inputs für CV und Job.
+- Commit 39: **Bewerbungs-Lifecycle & Persistenz**
+  - Ziel: Speicherung von Bewerbungen inkl. Historie und Events.
+  - Fokus: Datenbank-Schema für ApplicationManagement Domain.
+- Commit 40: **Interaktives Editing & Generierung**
+  - Ziel: Editierbare Rohdaten für CV/Anschreiben vor PDF-Export.
+  - Fokus: UI-Editor und Versionierung.
+- Commit 41: **Dashboard & Analytics**
+  - Ziel: Zentrales Board für Bewerbungsverfolgung.
+  - Fokus: KPI-Visualisierung und Status-Tracking.
+- Commit 42: **Deployment-Basis & Infrastructure Härtung**
+  - Ziel: Projekt "production-ready" machen (Config, Logging, Env-Validation).
+  - Fokus: Sicherheits-Header, Logging-Profile, Environment-Checks.
+- Commit 43: **Engineering-Exzellenz & Dokumentation**
+  - Ziel: Formale Dokumentation und fortgeschrittene Qualitätssicherung.
+  - Fokus: arc42 (Architektur), req42 (Anforderungen), Mutation Testing (Infection/Pest Mutate).
 - **Phase 5: provider-agnostic LLM layer (Erweiterung)**
   - Open decisions around plugin interface, fallback, and provider configuration
   - Follow-up questions are listed in the Phase 5 section above
