@@ -36,7 +36,7 @@ This file contains the compressed history of the already completed commits.
 - Commit 33: L3 Anthropic Provider PoC + minimal E2E analysis path
 - Commit 34: L4 Retry-PoC + error hardening in the AI ​​layer (incl. coverage hardening on `AbstractLlmAiAnalyzer`)
 - Commit 35: Auth/Claim UX-Polish (result restore via `result.show`, token-based auth redirects, clear claim feedback)
-- Commit 36: Roadmap-Planning & Documentation Sync (Alignment, 99% Coverage Gate, Priorisierung Commit 37)
+- Commit 36: Roadmap-Planning & Documentation Sync (Alignment, 99% Coverage Gate, Priorisierung Commit 37: CV-Verwaltung)
 
 ## Detailed individual plans
 

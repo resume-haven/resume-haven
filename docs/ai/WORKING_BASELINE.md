@@ -51,7 +51,7 @@ If the chat context has grown significantly, use this file as a reset basis:
 See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status, if available.
 
 **Current working mode:** Agent mode (branch-agnostic)
-**Focus:** Commit 37 (Deployment-Basis & Infrastructure Härtung) — Status-Alignment in Commit 36 abgeschlossen.
+**Focus:** Commit 37 (CV-Verwaltung Ausbau) — Detailplanung gestartet.
 
 **Recommended reset order:**
 1. This file (`WORKING_BASELINE.md`)
@@ -85,4 +85,4 @@ See `docs/ai/SESSION_RESUME_YYYY-MM-DD.md` for the latest status, if available.
 ---
 
 **Last updated**: 2026-05-27
-**Version**: 1.8 (Commit 36 focus with roadmap planning and documentation sync)
+**Version**: 1.9 (Commit 37 planning and Roadmap expansion)
