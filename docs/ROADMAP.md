@@ -52,18 +52,22 @@ Diese Roadmap beschreibt die geplanten Schritte für das ResumeHaven‑MVP und m
 - [ ] **Validierung:** Prüfung auf Dateigröße und Formate (mimes:pdf,docx).
 - [ ] **Fallbacks:** Nahtloser Wechsel zwischen File-Upload und Copy-Paste.
 
-## 2. Persistenz & Bewerbungs-Lifecycle (Commit 41)
-- [ ] **Application-Model:** Einführung einer `Application`-Entity (Job + CV + Status).
-- [ ] **Bewerbungshistorie:** Tracking von Events (Abgeschickt, Interview, Zusage, Absage).
-- [ ] **Metadaten:** Erfassung von Gehaltswunsch, Notizen und Bewerbungsdatum.
+## 2. Bewerbungserstellung & Lifecycle (Commit 39)
+- [ ] **Bewerbung erstellen:** Button nach Analyse führt zu einer dedizierten Seite zur Erstellung einer Bewerbung.
+- [ ] **Metadaten:** Erfassung von zusätzlichen Daten (Gehaltswunsch, Notizen, Bewerbungsdatum).
+- [ ] **Kompetenzlebenslauf:** Erstellung eines optimierten Lebenslaufs basierend auf den Analysedaten.
+- [ ] **Speicherung:** Versionierte Speicherung von Anschreiben, CV, Ausschreibung und Analysedaten.
 
-## 3. Generierung & Interaktives Editing (Commit 42)
+## 3. Stärken & Schwächen (Commit 40)
+- [ ] **Übersicht:** Dedizierte Seite zur Darstellung der gesammelten Matches (Stärken) und Gaps (Schwächen) über alle Analysen hinweg.
+- [ ] **Visualisierung:** Grafische Aufbereitung der Kompetenzprofile.
+
+## 4. Interaktives Editing & Generierung (Commit 41)
 - [ ] **Rohdaten-Modus:** KI generiert optimierten CV und Anschreiben als editierbare Rohdaten (Markdown/JSON).
 - [ ] **Inline-Editor:** UI zum Anpassen der Vorschläge vor der Finalisierung.
-- [ ] **Versionierung:** Speicherung der Rohdaten + PDFs pro Iteration.
 - [ ] **Export:** Finaler PDF-Download via Paperdoc.
 
-## 4. Dashboard & Analytics (Commit 43)
+## 5. Dashboard & Analytics (Commit 42)
 - [ ] **Übersicht:** Status-Board aller aktiven und vergangenen Bewerbungen.
 - [ ] **Analytics:** Auswertung von Erfolgsquoten (z. B. "Interview-Rate").
 - [ ] **Suche & Filter:** Schneller Zugriff auf spezifische Stellenausschreibungen.
@@ -285,21 +289,17 @@ Diese Roadmap ist flexibel und wird bei Bedarf angepasst.
 - Commit 38: **Paperdoc-Integration & Dokument-Parsing** *
   - Ziel: PDF/DOCX Import via Paperdoc.dev.
   - Fokus: Automatisierung des Inputs für CV und Job.
-- Commit 39: **Bewerbungs-Lifecycle & Persistenz**
-  - Ziel: Speicherung von Bewerbungen inkl. Historie und Events.
-  - Fokus: Datenbank-Schema für ApplicationManagement Domain.
-- Commit 40: **Interaktives Editing & Generierung**
+- Commit 39: **Bewerbungserstellung & Lifecycle**
+  - Ziel: Direkter Übergang von Analyse zur Bewerbungserstellung.
+  - Fokus: Zusätzliche Metadaten, Kompetenzlebenslauf-Generierung und versionierte Speicherung.
+- Commit 40: **Stärken & Schwächen**
+  - Ziel: Zentrale Übersicht über alle Matches und Gaps.
+- Commit 41: **Interaktives Editing & Generierung**
   - Ziel: Editierbare Rohdaten für CV/Anschreiben vor PDF-Export.
-  - Fokus: UI-Editor und Versionierung.
-- Commit 41: **Dashboard & Analytics**
+- Commit 42: **Dashboard & Analytics**
   - Ziel: Zentrales Board für Bewerbungsverfolgung.
-  - Fokus: KPI-Visualisierung und Status-Tracking.
-- Commit 42: **Deployment-Basis & Infrastructure Härtung**
-  - Ziel: Projekt "production-ready" machen (Config, Logging, Env-Validation).
-  - Fokus: Sicherheits-Header, Logging-Profile, Environment-Checks.
-- Commit 43: **Engineering-Exzellenz & Dokumentation**
-  - Ziel: Formale Dokumentation und fortgeschrittene Qualitätssicherung.
-  - Fokus: arc42 (Architektur), req42 (Anforderungen), Mutation Testing (Infection/Pest Mutate).
+- Commit 43: **Deployment-Basis & Infrastructure Härtung**
+- Commit 44: **Engineering-Exzellenz & Dokumentation**
 - **Phase 5: provider-agnostic LLM layer (Erweiterung)**
   - Open decisions around plugin interface, fallback, and provider configuration
   - Follow-up questions are listed in the Phase 5 section above
