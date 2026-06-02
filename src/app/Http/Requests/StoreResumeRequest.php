@@ -20,6 +20,8 @@ class StoreResumeRequest extends FormRequest
     {
         return [
             'cv_text' => ['required', 'string', 'min:30', 'max:50000'],
+            'file_name' => ['nullable', 'string', 'max:255'],
+            'original_filename' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

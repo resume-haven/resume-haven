@@ -25,17 +25,19 @@ Abgeschlossene Details sind in die Historie ausgelagert.
 - Commit 34: L4 Retry-PoC + Error-Hardening im AI-Layer (abgeschlossen)
 - Commit 35: Auth/Claim UX-Polish (result.show + claim-spezifisches Feedback) (abgeschlossen)
 
-### In Arbeit
-- Commit 37: CV-Verwaltung Ausbau (in Planung)
-
 ### Abgeschlossen (neu)
 - Commit 36: Roadmap-Planning & Documentation Sync ✅
+- Commit 37: CV-Verwaltung Ausbau (Suche, Paginierung, Metadaten) ✅
+
+### In Arbeit
+- Commit 38: Paperdoc-Integration & Dokument-Parsing *
 
 ### In Planung (Folge)
-- Commit 38: **Deployment-Basis & Infrastructure Härtung**
-  - Ziel: Projekt "production-ready" machen (Config, Logging, Env-Validation)
-- Commit 39: **Engineering-Exzellenz & Dokumentation**
-  - Ziel: arc42, req42, Mutation Testing
+- Commit 39: **Bewerbungs-Lifecycle & Persistenz**
+- Commit 40: **Interaktives Editing & Generierung**
+- Commit 41: **Dashboard & Analytics**
+- Commit 42: **Deployment-Basis & Infrastructure Härtung**
+- Commit 43: **Engineering-Exzellenz & Dokumentation**
 
 ### Geplante Folge-Reihenfolge (neu priorisiert)
 - **LLM-Block (nach Commit 31):** Provider-agnostischer AI-Layer ← **aktuell**

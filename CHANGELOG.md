@@ -10,6 +10,29 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 ## [Unreleased]
 
 ### Added
+- **Commit 37 – CV-Verwaltung Ausbau (Dashboard UX)**
+  - Suche: Volltextsuche über Dateinamen im CV-Dashboard.
+  - Sortierung: Flexible Sortierung nach Name oder Datum (ASC/DESC).
+  - Paginierung: Konfigurierbare Trefferanzahl (10, 25, 50) pro Seite.
+  - Metadaten: Unterstützung für `file_name` und `original_filename` in der Datenbank.
+  - UI: Neue Suchleiste, Sortier-Dropdowns und Anzeige von Dateinamen in der Lebenslauf-Liste.
+  - Frontend: "Keine Ergebnisse"-Zustand für Suchen ohne Treffer.
+  - Backend: `ProfileRepository::paginateByUser` unterstützt nun Suchfilter und Sortierung.
+  - Tests: Zusätzliche Feature-Tests für die Such- und Sortierlogik im Repository.
+
+### Changed
+- `StoreResumeController`: Verarbeitet nun optionale Dateinamen beim Speichern.
+- `StoredResumePageDto` & `StoredResumeListItemDto`: Erweiterung um Suchbegriff, Sortierstatus und Dateinamen-Metadaten.
+- `ListStoredResumesHandler`: Mapping der neuen Metadaten-Felder und Sortierparameter.
+- `profile/index.blade.php`: Integration der Such- und Sortier-Form sowie aktualisierte Paginierungs-Links.
+
+### Fixed
+- Paginierungs-Links verlieren nicht mehr den Suchbegriff oder die Sortierung beim Blättern.
+- Konsistente Darstellung von Dateinamen (Fallback auf "Lebenslauf", falls kein Name vorhanden).
+
+---
+
+### Added
 - **Commit 28 – Architecture-Tests & Engineering-Härtung (abgeschlossen)**
   - Dedizierte Architecture-Test-Suite in `src/tests/Architecture/`:
     - `DddArchTest.php`: Bounded-Context-Grenzen (Profile ↔ Analysis strikt getrennt)

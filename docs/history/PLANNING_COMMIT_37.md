@@ -1,7 +1,7 @@
 # Detailplanung Commit 37 - CV-Verwaltung Ausbau
 
-**Branch:** `feature/commit-37-cv-management-expansion`
-**Status:** In Planung
+**Branch:** `feature/cv-management-ux`
+**Status:** In Arbeit
 **Erstellt:** 2026-05-27
 
 ---

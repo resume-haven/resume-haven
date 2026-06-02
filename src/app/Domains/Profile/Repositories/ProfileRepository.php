@@ -18,11 +18,13 @@ class ProfileRepository
         return StoredResume::query()->where('token', $token)->exists();
     }
 
-    public function store(string $token, string $encryptedCv, ?int $userId = null): void
+    public function store(string $token, string $encryptedCv, ?int $userId = null, ?string $fileName = null, ?string $originalFilename = null): void
     {
         StoredResume::query()->create([
             'token' => $token,
             'user_id' => $userId,
+            'file_name' => $fileName,
+            'original_filename' => $originalFilename,
             'encrypted_cv' => $encryptedCv,
             'last_accessed_at' => null,
         ]);
@@ -49,12 +51,29 @@ class ProfileRepository
     }
 
     /** @return LengthAwarePaginator<int, StoredResume> */
-    public function paginateByUser(int $userId, int $perPage = 10, int $page = 1): LengthAwarePaginator
-    {
+    public function paginateByUser(
+        int $userId,
+        int $perPage = 10,
+        int $page = 1,
+        ?string $search = null,
+        string $sort = 'updated_at',
+        string $direction = 'desc'
+    ): LengthAwarePaginator {
+        $query = StoredResume::query()->where('user_id', $userId);
+
+        if ($search !== null && $search !== '') {
+            $query->where(function ($q) use ($search): void {
+                $q->where('file_name', 'like', "%{$search}%")
+                    ->orWhere('original_filename', 'like', "%{$search}%");
+            });
+        }
+
+        $allowedSorts = ['updated_at', 'file_name', 'created_at'];
+        $sort = in_array($sort, $allowedSorts, true) ? $sort : 'updated_at';
+        $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
+
         /** @var LengthAwarePaginator<int, StoredResume> $paginator */
-        $paginator = StoredResume::query()
-            ->where('user_id', $userId)
-            ->orderByDesc('updated_at')
+        $paginator = $query->orderBy($sort, $direction)
             ->paginate($perPage, ['*'], 'page', $page);
 
         return $paginator;

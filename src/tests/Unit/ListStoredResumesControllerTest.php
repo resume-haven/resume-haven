@@ -13,9 +13,9 @@ use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-function makeProfileRequest(int $page, mixed $resumeToken, mixed $resumeTokens = null): Request
+function makeProfileRequest(int $page, mixed $resumeToken, mixed $resumeTokens = null, ?string $search = null): Request
 {
-    $request = Request::create('/profile', 'GET', ['page' => $page]);
+    $request = Request::create('/profile', 'GET', ['page' => $page, 'search' => $search]);
 
     /** @var Store $session */
     $session = app('session')->driver('array');
@@ -32,10 +32,10 @@ function makeProfileRequest(int $page, mixed $resumeToken, mixed $resumeTokens =
 }
 
 describe('ListStoredResumesController', function (): void {
-    test('dispatches query with normalized auth id, token and page and returns profile view', function (): void {
+    test('dispatches query with normalized auth id, token, page and search and returns profile view', function (): void {
         Auth::shouldReceive('id')->once()->andReturn('42');
 
-        $request = makeProfileRequest(-3, 'TOKEN-42');
+        $request = makeProfileRequest(-3, 'TOKEN-42', null, '  my search  ');
 
         $pageDto = new StoredResumePageDto(
             items: [
@@ -44,12 +44,14 @@ describe('ListStoredResumesController', function (): void {
                     preview: 'Kurzprofil',
                     updatedAt: '24.04.2026 12:30',
                     isCurrent: true,
+                    fileName: 'resume.pdf'
                 ),
             ],
             currentPage: 1,
             lastPage: 1,
             perPage: 10,
             total: 1,
+            search: 'my search'
         );
 
         $dispatcher = Mockery::mock(Dispatcher::class);
@@ -59,7 +61,8 @@ describe('ListStoredResumesController', function (): void {
                 return $query->userId === 42
                     && $query->page === 1
                     && $query->perPage === 10
-                    && $query->currentToken === 'TOKEN-42';
+                    && $query->currentToken === 'TOKEN-42'
+                    && $query->search === 'my search';
             })
             ->andReturn($pageDto);
 
@@ -68,7 +71,8 @@ describe('ListStoredResumesController', function (): void {
 
         expect($view->name())->toBe('profile.index')
             ->and($view->getData()['items'])->toHaveCount(1)
-            ->and($view->getData()['pagination']['current_page'])->toBe(1);
+            ->and($view->getData()['pagination']['current_page'])->toBe(1)
+            ->and($view->getData()['search'])->toBe('my search');
     });
 
     test('normalizes non-string session token to null before dispatching', function (): void {

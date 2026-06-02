@@ -13,6 +13,8 @@ describe('StoredResume model', function (): void {
         expect($resume->getFillable())->toBe([
             'token',
             'user_id',
+            'file_name',
+            'original_filename',
             'encrypted_cv',
             'last_accessed_at',
         ]);

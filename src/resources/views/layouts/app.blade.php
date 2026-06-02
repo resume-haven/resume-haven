@@ -89,6 +89,7 @@
                 <div class="flex items-center gap-2">
                     <x-atoms.darkmode-button />
                     <button
+                        type="button"
                         x-on:click="mobileMenuOpen = !mobileMenuOpen"
                         class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                         aria-label="Toggle Menu"
